@@ -1,0 +1,5 @@
+/*
+CREATE USER myapp PASSWORD 'sloj92GOM';
+CREATE DATABASE thehoods WITH OWNER myapp;
+DROP DATABASE thehoods;
+*/
