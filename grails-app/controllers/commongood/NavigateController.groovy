@@ -11,13 +11,14 @@ class NavigateController {
             it.name
         }
         println "Navigate to top of application instance ${hoods}"
-        [result:
+        Map result =
             [
                 navContext: [navPath: '(list of map {levelName (string), levelValue (string)}, navBackLevel (string), navBackId (long) }'],
                 navSelection: 'Common Good Running Here!',
                 navChildren: hoods
             ]
-        ]
+
+        render(view: "organize", model: result)
     }
 
     def neighbourhood( ) {
@@ -25,48 +26,57 @@ class NavigateController {
         Neighbourhood theHood = Neighbourhood.where{ id == hoodId }.get( )
         List blocks = Block.where{ neighbourhood.id == hoodId }.list( sort:'orderWithinNeighbourhood', order:'asc' )
         blocks = blocks.collect{
-            it.code
+            [ id:it.id, name:it.code]
         }
-        println "Navigate to neighbourhood ${hoodId} ${blocks}"
+        println "Navigate to neighbourhood ${hoodId} ${theHood.name}"
         Map result =
             [
             navContext:
                 [
                 navPath:
-                    [
-                    [levelName:'fruit',levelValue:'cherry'],
-                    [levelName:'dog',levelValue:'labrador'],
-                    [levelName:'cloud',levelValue:'cumulus']
-                    ],
-                navBackLevel: 'cloud :)',
-                navBackId: 'cumulus'
+                    // There is nothing to show for "what is above the selected object".
+                    [:],
+                navBackLevel: '',
+                navBackId: 0
                 ],
 
-            navSelection: "Neighbourhood ${hoodId}, ${theHood.name}",
+            navSelection: theHood.name,
 
             navChildren:
                 [
-                childType: 'Location',
-                children:
-                    [
-                        [
-                        id: 1,
-                        name: 'bobby'
-                        ],
-                        [
-                        id: 2,
-                        name: 'sally'
-                        ]
-                    ]
+                childType: 'Block',
+                children: blocks
                 ]
             ]
         render(view: "organize", model: result)
     }
 
     def block( ) {
-        Integer id = Integer.valueOf( params.id )
-        List locations = Location.where{ block.id == id }.list( sort:'orderWithinBlock', order:'asc' )
-        render "Navigate to block ${id} ${locations}"
+        Integer blockId = Integer.valueOf( params.id )
+        Block theBlock = Block.where{ id == blockId }.get( )
+        List locations = Location.where{ block.id == blockId }.list( sort:'orderWithinBlock', order:'asc' )
+        locations = locations.collect{
+            [ id:it.id, name:it.officialAddress]
+        }
+        Map result =
+            [
+            navContext:
+                [
+                navPath:
+                    [ [levelName: 'Block', levelValue: 12345] ],
+                navBackLevel: 'Neighbourhood',
+                navBackId: theBlock.neighbourhood.id
+                ],
+
+            navSelection: theBlock.code,
+
+            navChildren:
+                [
+                childType: 'Location',
+                children: locations
+                ]
+            ]
+        render(view: "organize", model: result)
     }
 
     def location( ) {
