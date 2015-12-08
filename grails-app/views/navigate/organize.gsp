@@ -17,17 +17,17 @@
                 <div id="organize-search">organize | <a href="#">search</a></div>
             </div>
             <div id="nav-path">
-                <g:each in="${result.navContext.navPath}" var="level">
+                <g:each in="${navContext.navPath}" var="level">
 
                     <span>${level.levelName}: <span style="font-weight:bold;"><a href="#">${level.levelValue}</a></span></span><span class="nav-path-space"></span>
                 </g:each>
             </div>
             <div id="nav-back">
-                <a href="${result.navContext.navBackId}">&lt; back to ${result.navContext.navBackLevel}</a>
+                <a href="${navContext.navBackId}">&lt; back to ${navContext.navBackLevel}</a>
             </div>
             <div id="content-detail">
                 <div id="content-detail-title">Identify Level</div>
-                <div>Name: ${result.navSelection}</div>
+                <div>Name: ${navSelection}</div>
                 <div id="content-actions">
                     <div class="content-action"><a href="#">Edit</a></div>
                     <div class="content-action"><a href="#">Delete</a></div>
@@ -35,9 +35,9 @@
                 </div>
             </div>
             <div id="content-children">
-                <div id="content-children-title">${result.navChildren.childType} for ${result.navSelection}&nbsp;&nbsp;<a href="#">+ Add New Response</a></div>
+                <div id="content-children-title">${navChildren.childType} for ${navSelection}&nbsp;&nbsp;<a href="#">+ Add New Response</a></div>
                 <div id="content-children-heading">Name</div>
-                <g:each in="${result.navChildren.children}" var="child">
+                <g:each in="${navChildren.children}" var="child">
                     <div class="content-children-row"><a href="${child.id}">${child.name}</a></div>
                 </g:each>
             </div>
