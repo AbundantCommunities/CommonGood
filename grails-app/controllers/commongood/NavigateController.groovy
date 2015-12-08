@@ -76,6 +76,7 @@ class NavigateController {
                 children: locations
                 ]
             ]
+        println "Navigate to block ${blockId}"
         render(view: "organize", model: result)
     }
 
@@ -86,9 +87,14 @@ class NavigateController {
     }
 
     def family( ) {
-        Integer id = Integer.valueOf( params.id )
-        List members = Person.where{ family.id == id }.list( )
-        render "Navigate to family ${id} ${members}"
+        Integer familyId = Integer.valueOf( params.id )
+        Block theFamily = Family.where{ id == familyId }.get( )
+        List members = Person.where{ family.id == familyId }.list( sort:'firstNames', order:'asc' )
+        members = members.collect{
+            [ id:it.id, name:(it.firstNames+' '+it.lastName) ]
+        }
+        println "Navigate to family ${familyId} ${members}"
+        render(view: "organize", model: result)
     }
 
     def familyMember( ) {
