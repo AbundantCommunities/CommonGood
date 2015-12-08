@@ -20,7 +20,7 @@ class NavigateController {
         ]
     }
 
-    def organize( ) {
+    def neighbourhood( ) {
         Integer hoodId = Integer.valueOf( params.id )
         Neighbourhood theHood = Neighbourhood.where{ id == hoodId }.get( )
         List blocks = Block.where{ neighbourhood.id == hoodId }.list( sort:'orderWithinNeighbourhood', order:'asc' )
@@ -28,7 +28,7 @@ class NavigateController {
             it.code
         }
         println "Navigate to neighbourhood ${hoodId} ${blocks}"
-        [result:
+        Map result =
             [
             navContext:
                 [
@@ -60,7 +60,7 @@ class NavigateController {
                     ]
                 ]
             ]
-        ]
+        render(view: "organize", model: result)
     }
 
     def block( ) {
