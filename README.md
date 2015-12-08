@@ -1,2 +1,3 @@
 # CommonGood
-A webapp for managing 'conversation' information. Multiple neighbourhoods' data kept separate.
+A webapp that records and manages information from Abundant Communities Initiative (ACI) interviews.
+Multiple neighbourhoods' data kept separate.
