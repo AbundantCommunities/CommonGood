@@ -62,10 +62,7 @@ class NavigateController {
             [
             navContext:
                 [
-                navPath:
-                    [ [levelName: 'Block', levelValue: 12345] ],
-                navBackLevel: 'Neighbourhood',
-                navBackId: theBlock.neighbourhood.id
+                    [id: theBlock.neighbourhood.id, level: 'Neighbourhood', description: theBlock.neighbourhood.name]
                 ],
 
             navSelection: [ levelInHierarchy: 'Block', description:theBlock.code ],
