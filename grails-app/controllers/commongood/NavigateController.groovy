@@ -20,7 +20,7 @@ class NavigateController {
         ]
     }
 
-    def neighbourhood( ) {
+    def organize( ) {
         Integer hoodId = Integer.valueOf( params.id )
         Neighbourhood theHood = Neighbourhood.where{ id == hoodId }.get( )
         List blocks = Block.where{ neighbourhood.id == hoodId }.list( sort:'orderWithinNeighbourhood', order:'asc' )
@@ -30,12 +30,34 @@ class NavigateController {
         println "Navigate to neighbourhood ${hoodId} ${blocks}"
         [result:
             [
-            navContext: 'context',
-            navSelection: "Selected neighbourhood ${hoodId} ${theHood.name}",
+            navContext:
+                [
+                navPath:
+                    [
+                    [levelName:'fruit',levelValue:'cherry'],
+                    [levelName:'dog',levelValue:'labrador'],
+                    [levelName:'cloud',levelValue:'cumulus']
+                    ],
+                navBackLevel: 'cloud :)',
+                navBackId: 'cumulus'
+                ],
+
+            navSelection: "Neighbourhood ${hoodId}, ${theHood.name}",
+
             navChildren:
                 [
-                id: 1,
-                name: 'bobby'
+                childType: 'Location',
+                children:
+                    [
+                        [
+                        id: 1,
+                        name: 'bobby'
+                        ],
+                        [
+                        id: 2,
+                        name: 'sally'
+                        ]
+                    ]
                 ]
             ]
         ]

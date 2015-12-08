@@ -5,17 +5,15 @@
 <p>
     Nav Selection ${result.navSelection}
 </p>
+
 <p>
-    Nav Children ${result.navChildren}
+    Nav Children type is ${result.navChildren.childType}
 </p>
-<p>
-Nav Children type is ${result.navChildren.childType}
-</p>
-<g:each in="${result.navChildren}" var="child">
+
+<g:each in="${result.navChildren.children}" var="child">
     <p>
-        ${child}
+        ${child.id}. {child.name}
     </p>
 </g:each>
 
-</p>
 </body>
