@@ -22,12 +22,9 @@
                     <span>${level.levelName}: <span style="font-weight:bold;"><a href="#">${level.levelValue}</a></span></span><span class="nav-path-space"></span>
                 </g:each>
             </div>
-            <div id="nav-back">
-                <a href="${navContext.navBackId}">&lt; back to ${navContext.navBackLevel}</a>
-            </div>
             <div id="content-detail">
-                <div id="content-detail-title">Identify Level</div>
-                <div>Name: ${navSelection}</div>
+                <div id="content-detail-title">${navSelection.levelInHierarchy}</div>
+                <div>Name: ${navSelection.description}</div>
                 <div id="content-actions">
                     <div class="content-action"><a href="#">Edit</a></div>
                     <div class="content-action"><a href="#">Delete</a></div>

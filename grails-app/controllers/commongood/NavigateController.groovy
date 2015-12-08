@@ -1,7 +1,7 @@
 package commongood
 
 /*
-A bit of stuff. We handle GET requests that navigate to some part of our data's "natural hierarchy".
+We handle GET requests that navigate to some part of our data's "natural hierarchy".
 */
 class NavigateController {
 
@@ -68,7 +68,7 @@ class NavigateController {
                 navBackId: theBlock.neighbourhood.id
                 ],
 
-            navSelection: theBlock.code,
+            navSelection: [ levelInHierarchy: 'Block', description:theBlock.code ],
 
             navChildren:
                 [
