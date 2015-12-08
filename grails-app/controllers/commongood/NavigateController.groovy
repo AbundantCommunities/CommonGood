@@ -1,7 +1,7 @@
 package commongood
 
 /*
-We handle GET requests that navigate to some part of our data's "natural hierarchy".
+A bit of stuff. We handle GET requests that navigate to some part of our data's "natural hierarchy".
 */
 class NavigateController {
 
