@@ -8,17 +8,22 @@ class NavigateController {
     def application( ) {
         List hoods = Neighbourhood.list( sort:'name', order:'asc')
         hoods = hoods.collect{
-            it.name
+            [ id:it.id, name:it.name]
         }
-        println "Navigate to top of application instance ${hoods}"
         Map result =
             [
-                navContext: [navPath: '(list of map {levelName (string), levelValue (string)}, navBackLevel (string), navBackId (long) }'],
-                navSelection: 'Common Good Running Here!',
-                navChildren: hoods
-            ]
+            navContext: [ ],
 
-        render(view: "organize", model: result)
+            navSelection: [ levelInHierarchy: 'Application', description:'Installation Name Goes Here' ],
+
+            navChildren:
+                [
+                childType: 'Neighbourhood',
+                children: hoods
+                ]
+            ]
+        println 'Navigate to application'
+        render( view: 'organize', model: result )
     }
 
     def neighbourhood( ) {
@@ -28,19 +33,11 @@ class NavigateController {
         blocks = blocks.collect{
             [ id:it.id, name:it.code]
         }
-        println "Navigate to neighbourhood ${hoodId} ${theHood.name}"
         Map result =
             [
-            navContext:
-                [
-                navPath:
-                    // There is nothing to show for "what is above the selected object".
-                    [:],
-                navBackLevel: '',
-                navBackId: 0
-                ],
+            navContext: [ ],
 
-            navSelection: theHood.name,
+            navSelection: [ levelInHierarchy: 'Neighbourhood', description:theHood.name ],
 
             navChildren:
                 [
@@ -48,6 +45,7 @@ class NavigateController {
                 children: blocks
                 ]
             ]
+        println "Navigate to neighbourhood ${hoodId} ${theHood.name}"
         render(view: "organize", model: result)
     }
 
@@ -78,25 +76,99 @@ class NavigateController {
     }
 
     def location( ) {
-        Integer id = Integer.valueOf( params.id )
-        List families = Family.where{ location.id == id }.list( )
-        render "Navigate to location ${id} ${families}"
+        Integer locationId = Integer.valueOf( params.id )
+        Location theLocation = Location.where{ id == locationId }.get( )
+        List families = Family.where{ location.id == locationId }.list( )
+        families = families.collect{
+            [ id:it.id, name:it.familyName]
+        }
+        Map result =
+            [
+            navContext:
+                [
+                    [id: theLocation.block.neighbourhood.id, level: 'Neighbourhood', description: theLocation.block.neighbourhood.name],
+                    [id: theLocation.block.id, level: 'Block', description: theLocation.block.code]
+                ],
+
+            navSelection: [ levelInHierarchy: 'Location', description:theLocation.officialAddress ],
+
+            navChildren:
+                [
+                childType: 'Family',
+                children: families
+                ]
+            ]
+        println "Navigate to location ${locationId}"
+        render(view: "organize", model: result)
     }
 
     def family( ) {
         Integer familyId = Integer.valueOf( params.id )
-        Block theFamily = Family.where{ id == familyId }.get( )
+        Family theFamily = Family.where{ id == familyId }.get( )
         List members = Person.where{ family.id == familyId }.list( sort:'firstNames', order:'asc' )
         members = members.collect{
             [ id:it.id, name:(it.firstNames+' '+it.lastName) ]
         }
-        println "Navigate to family ${familyId} ${members}"
-        render(view: "organize", model: result)
+        Map result =
+            [
+            navContext:
+                [
+                    [id: theFamily.location.block.neighbourhood.id, level: 'Neighbourhood', description: theFamily.location.block.neighbourhood.name],
+                    [id: theFamily.location.block.id, level: 'Block', description: theFamily.location.block.code],
+                    [id: theFamily.location.id, level: 'Location', description: theFamily.location.officialAddress]
+                ],
+
+            navSelection: [ levelInHierarchy: 'Family', description:theFamily.familyName ],
+
+            navChildren:
+                [
+                childType: 'Familymember',
+                children: members
+                ]
+            ]
+        println "Navigate to family ${familyId}"
+        render( view: 'organize', model: result )
     }
 
-    def familyMember( ) {
-        Integer id = Integer.valueOf( params.id )
-        List answers = Response.where{ person.id == id }.list( )
-        render "Navigate to familyMember ${id} ${answers}"
+    // Lower case M because of the way our GSP constructs navigation URLs
+    def familymember( ) {
+        Integer memberId = Integer.valueOf( params.id )
+        Person theMember = Person.where{ id == memberId }.get( )
+        List answers = Response.where{ person.id == memberId }.list( sort:'questionCode', order:'asc' )
+        def questions = [ 1:'Great', 2:'Better', 3:'Activities', 4:'Interests', 5:'Skill', 6:'Life' ]
+        def groupedAnswers = [:]
+        answers.each {
+            def qCode = it.questionCode
+            def soFar = groupedAnswers[ qCode ]
+            if( soFar ) {
+                groupedAnswers[ qCode ] += ', ' + it.response
+            } else {
+                groupedAnswers[ qCode ] = questions[qCode] + ': ' + it.response
+            }
+        }
+        def children = [ ]
+        groupedAnswers = groupedAnswers.each { key, value ->
+            children << [ id:key, name:value ]
+        }
+        Map result =
+        [
+            navContext:
+            [
+                [id: theMember.family.location.block.neighbourhood.id, level: 'Neighbourhood', description: theMember.family.location.block.neighbourhood.name],
+                [id: theMember.family.location.block.id, level: 'Block', description: theMember.family.location.block.code],
+                [id: theMember.family.location.id, level: 'Location', description: theMember.family.location.officialAddress],
+                [id: theMember.family.id, level: 'Family', description: theMember.family.familyName]
+            ],
+
+            navSelection: [ levelInHierarchy: 'Family Member', description:(theMember.firstNames+' '+theMember.lastName) ],
+
+            navChildren:
+            [
+            childType: 'Question',
+            children: children
+            ]
+        ]
+        println "Navigate to family member ${memberId}"
+        render( view: 'organize', model: result )
     }
 }
