@@ -134,16 +134,16 @@ class NavigateController {
     def familymember( ) {
         Integer memberId = Integer.valueOf( params.id )
         Person theMember = Person.where{ id == memberId }.get( )
-        List answers = Response.where{ person.id == memberId }.list( sort:'questionCode', order:'asc' )
+        List answers = Answer.where{ person.id == memberId }.list( sort:'questionCode', order:'asc' )
         def questions = [ 1:'1. Great', 2:'2. Better', 3:'3. Activities', 4:'4. Interests', 5:'5. Skill', 6:'6. Life' ]
         def groupedAnswers = [:]
         answers.each {
             def qCode = it.questionCode
             def soFar = groupedAnswers[ qCode ]
             if( soFar ) {
-                groupedAnswers[ qCode ] += ', ' + it.response
+                groupedAnswers[ qCode ] += ', ' + it.text
             } else {
-                groupedAnswers[ qCode ] = questions[qCode] + ': ' + it.response
+                groupedAnswers[ qCode ] = questions[qCode] + ': ' + it.text
             }
         }
         def children = [ ]

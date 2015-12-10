@@ -22,7 +22,7 @@ class Person {
     Date dateCreated
     Date lastUpdated
 
-    static hasMany = [ answers:Response ]
+    static hasMany = [ answers:Answer ]
 
     static constraints = {
         family nullable: true

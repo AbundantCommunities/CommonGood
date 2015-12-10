@@ -108,7 +108,7 @@ def getBlockId( String code ) {
 println "INSERT INTO neighbourhood( id, version, name ) VALUES( 1, 0, \'Bonnie Doon\' );"
 
 nextPersonId = 1
-nextResponseId = 1
+nextAnswerId = 1
 previousAddress = ''
 familyName = ''
 
@@ -183,46 +183,44 @@ new File('./pureNewLines.txt').eachLine {
 
         texts = breakDown( fields, VALUES )
         texts.each {
-            println 'INSERT INTO response( id, version, person_id, question_code, response, would_lead, would_organize ) VALUES( ' +
-                nextResponseId++ + ', 0, ' + nextPersonId + ', 1, \'' + it + '\', false, true );'
+            println 'INSERT INTO answer( id, version, person_id, question_code, text, would_lead, would_organize ) VALUES( ' +
+                nextAnswerId++ + ', 0, ' + nextPersonId + ', 1, \'' + it + '\', false, true );'
         }
 
         texts = breakDown( fields, IDEALS )
         texts.each {
-            println 'INSERT INTO response( id, version, person_id, question_code, response, would_lead, would_organize ) VALUES( ' +
-                nextResponseId++ + ', 0, ' + nextPersonId + ', 2, \'' + it + '\', false, true );'
+            println 'INSERT INTO answer( id, version, person_id, question_code, text, would_lead, would_organize ) VALUES( ' +
+                nextAnswerId++ + ', 0, ' + nextPersonId + ', 2, \'' + it + '\', false, true );'
         }
 
         texts = breakDown( fields, ACTIVITIES )
         texts.each {
-            println 'INSERT INTO response( id, version, person_id, question_code, response, would_lead, would_organize ) VALUES( ' +
-                nextResponseId++ + ', 0, ' + nextPersonId + ', 3, \'' + it + '\', false, true );'
+            println 'INSERT INTO answer( id, version, person_id, question_code, text, would_lead, would_organize ) VALUES( ' +
+                nextAnswerId++ + ', 0, ' + nextPersonId + ', 3, \'' + it + '\', false, true );'
 
         }
 
         texts = breakDown( fields, INTERESTS )
         texts.each {
-            println 'INSERT INTO response( id, version, person_id, question_code, response, would_lead, would_organize ) VALUES( ' +
-                nextResponseId++ + ', 0, ' + nextPersonId + ', 4, \'' + it + '\', false, true );'
+            println 'INSERT INTO answer( id, version, person_id, question_code, text, would_lead, would_organize ) VALUES( ' +
+                nextAnswerId++ + ', 0, ' + nextPersonId + ', 4, \'' + it + '\', false, true );'
         }
 
         texts = breakDown( fields, HELP )
         texts.each {
-            println 'INSERT INTO response( id, version, person_id, question_code, response, would_lead, would_organize ) VALUES( ' +
-                nextResponseId++ + ', 0, ' + nextPersonId + ', 5, \'' + it + '\', false, true );'
+            println 'INSERT INTO answer( id, version, person_id, question_code, text, would_lead, would_organize ) VALUES( ' +
+                nextAnswerId++ + ', 0, ' + nextPersonId + ', 5, \'' + it + '\', false, true );'
         }
 
         texts = breakDown( fields, SHARE )
         texts.each {
-            println 'INSERT INTO response( id, version, person_id, question_code, response, would_lead, would_organize ) VALUES( ' +
-                nextResponseId++ + ', 0, ' + nextPersonId + ', 6, \'' + it + '\', false, true );'
+            println 'INSERT INTO answer( id, version, person_id, question_code, text, would_lead, would_organize ) VALUES( ' +
+                nextAnswerId++ + ', 0, ' + nextPersonId + ', 6, \'' + it + '\', false, true );'
         }
 
         nextPersonId++
     }
 }
-
-//println 'INSERT INTO Domain_authorization( id, version, name ) VALUES( 1, 0, 1, \'A\', null );'
 
 println 'INSERT INTO question( id, version, neighbourhood_id, text ) VALUES( 1, 0, 1, \'What makes a great neighbourhood?\' );'
 println 'INSERT INTO question( id, version, neighbourhood_id, text ) VALUES( 2, 0, 1, \'What else can we do to make our neighbourhood a great place to live?\' );'
@@ -231,14 +229,7 @@ println 'INSERT INTO question( id, version, neighbourhood_id, text ) VALUES( 4, 
 println 'INSERT INTO question( id, version, neighbourhood_id, text ) VALUES( 5, 0, 1, \'Do you have a skill, gift or ability that you would be comfortable using to help neighbours or the neighbourhood? \' );'
 println 'INSERT INTO question( id, version, neighbourhood_id, text ) VALUES( 6, 0, 1, \'Are there some life experiences that you would consider sharing for the benefit of neighbours?\' );'
 
-/*
-DELETE FROM response;
-UPDATE family SET primary_member_id = NULL;
-UPDATE family SET interviewer_id = NULL;
-DELETE FROM person;
-DELETE FROM family;
-DELETE FROM location;
-DELETE FROM block;
-DELETE FROM question;
-DELETE FROM neighbourhood;
-*/
+// This singleton record describes the installation of CommonGood on this server:
+println "INSERT INTO this_installation( id, version, name, logo, configured ) VALUES( 1, 0, 'Abundant Edmonton Online', NULL, TRUE );"
+
+// That's all folks!

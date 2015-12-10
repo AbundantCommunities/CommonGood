@@ -1,9 +1,9 @@
 package commongood
 
-class Response {
+class Answer {
     Person person
-    Integer questionCode // 1 to 7
-    String response
+    Integer questionCode // 1 to 6
+    String text
     Boolean wouldLead
     Boolean wouldOrganize
 
