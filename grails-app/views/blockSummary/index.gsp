@@ -87,8 +87,8 @@
             <div class="myCell3">${block.bcPhone}</div>
             <div class="myCell4">${block.bcEmail}</div>
             <div class="myCell5"></div>
-            <div class="myCell6">${block.firstInterview}</div>
-            <div class="myCell7">${block.lastInterview}</div>
+            <div class="myCell6"><g:formatDate format="yyyy-MM-dd" date="${block.firstInterview}"/></div>
+            <div class="myCell7"><g:formatDate format="yyyy-MM-dd" date="${block.lastInterview}"/></div>
             <div class="myCell8">${block.numFamilies}</div>
             <div class="myCell9">${block.numInterviews}</div>
             <div class="myCell10">${block.numDeclined}</div>

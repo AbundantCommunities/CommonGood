@@ -4,20 +4,19 @@ class BlockConnectorSummaryController {
 
     def index() {
         String query = "\
-            select blk.code, count(loc.id), count(fam.id), min(fam.initialInterviewDate), max(fam.initialInterviewDate)\
-            from Block as blk left outer join blk.locations as loc left outer join loc.families as fam group by blk.code"
+            select fam.interviewer.firstNames, fam.interviewer.lastName, fam.interviewer.emailAddress, fam.interviewer.phoneNumber,\
+                count(fam.id), min(fam.initialInterviewDate), max(fam.initialInterviewDate)\
+                from Block as blk left outer join blk.locations as loc left outer join loc.families as fam\
+                group by fam.interviewer.firstNames, fam.interviewer.lastName, fam.interviewer.emailAddress, fam.interviewer.phoneNumber"
         List conex = Block.executeQuery( query ).collect {
             [
-                code: it[0],
-                bcName: 'Grace Hopper',
-                bcPhone: '333-444-5555',
-                bcEmail: 'grace@abundantedmonton.ca',
-                firstInterview: it[3],
-                lastInterview: it[4],
-                numFamilies: it[1],
-                numInterviews: it[2],
-                numDeclined: 0,
-                numRemaining: it[1].longValue()-it[2].longValue()
+                bcName: it[0]+' '+it[1],
+                bcEmail: it[2],
+                bcPhone: it[3],
+                firstInterview: it[5],
+                lastInterview: it[6],
+                numFamilies: it[4],
+                numDeclined: 99
             ]
         }
         [result:
