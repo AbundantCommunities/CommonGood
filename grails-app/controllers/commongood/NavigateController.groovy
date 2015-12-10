@@ -135,7 +135,7 @@ class NavigateController {
         Integer memberId = Integer.valueOf( params.id )
         Person theMember = Person.where{ id == memberId }.get( )
         List answers = Response.where{ person.id == memberId }.list( sort:'questionCode', order:'asc' )
-        def questions = [ 1:'Great', 2:'Better', 3:'Activities', 4:'Interests', 5:'Skill', 6:'Life' ]
+        def questions = [ 1:'1. Great', 2:'2. Better', 3:'3. Activities', 4:'4. Interests', 5:'5. Skill', 6:'6. Life' ]
         def groupedAnswers = [:]
         answers.each {
             def qCode = it.questionCode
