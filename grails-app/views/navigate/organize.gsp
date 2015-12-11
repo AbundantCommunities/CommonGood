@@ -12,17 +12,27 @@
         <div id="pagecontainer">
             <div id="aci-logo-line">
                 <img src="${resource(dir:'images',file:'aci-logo.png')}" />
-                <div id="welcome-line">Welcome Mark Gordon <span id="sign-out"><a href="#">sign out</a> | <a href="#">account</a></span></div>
+                <div id="welcome-line">Welcome Marie-Danielle <span id="sign-out"><a href="#">sign out</a> | <a href="#">account</a></span></div>
                 <div id="role-line">Neighbourhood Connector for Bonnie Doon</div>
             </div>
-            <div id="nav-path">
-                <g:each in="${navContext}" var="oneLevel">
-                    <span>${oneLevel.level}: <span style="font-weight:bold;"><a href="${resource(dir:'navigate/'+oneLevel.level.toLowerCase(),file:"${oneLevel.id}")}">${oneLevel.description}</a></span></span><span class="nav-path-space"></span>
-                </g:each>
-            </div>
+            <g:if test="${navContext.size() > 0}">
+                <div id="nav-path">
+                    <g:each in="${navContext}" var="oneLevel">
+                        <span>${oneLevel.level}: <span style="font-weight:bold;"><a href="${resource(dir:'navigate/'+oneLevel.level.toLowerCase(),file:"${oneLevel.id}")}">${oneLevel.description}</a></span></span><span class="nav-path-space"></span>
+                    </g:each>
+                </div>
+            </g:if>
             <div id="content-detail">
                 <div id="content-detail-title">${navSelection.levelInHierarchy}</div>
                 <div>Name: ${navSelection.description}</div>
+
+                <g:if test="${navSelection.levelInHierarchy.toLowerCase() == 'neighbourhood'}">
+                    <div id="content-actions-left-side">
+                        <div class="content-left-action"><a href="${resource(dir:'blockSummary',file:"index")}" target="_blank">Block Summary</a></div>
+                        <div class="content-left-action"><a href="${resource(dir:'blockConnectorSummary',file:"index")}" target="_blank">Block Connector Summary</a></div>
+                    </div>
+                </g:if>
+
                 <div id="content-actions">
                     <div class="content-action"><a href="#">Edit</a></div>
                     <div class="content-action"><a href="#">Delete</a></div>
