@@ -47,7 +47,8 @@ class BlockSummaryController {
 
     def index() {
         String query = "\
-            select blk.code, count(loc.id), count(fam.id), min(fam.initialInterviewDate), max(fam.initialInterviewDate)\
+            select blk.code, count(loc.id), count(fam.id), min(fam.initialInterviewDate), max(fam.initialInterviewDate),\
+            SUM(CASE WHEN fam.participateInInterview = FALSE THEN 1 ELSE 0 END) AS Declined\
             from Block as blk left outer join blk.locations as loc left outer join loc.families as fam group by blk.code"
         List blox = Block.executeQuery( query ).collect {
             [
@@ -58,9 +59,9 @@ class BlockSummaryController {
                 firstInterview: it[3],
                 lastInterview: it[4],
                 numFamilies: it[1],
-                numInterviews: it[2],
-                numDeclined: 0,
-                numRemaining: it[1].longValue()-it[2].longValue()
+                numInterviews: it[2].longValue() - it[5].longValue(),
+                numDeclined: it[5],
+                numRemaining: it[1].longValue() - it[2].longValue()
             ]
         }
         [result:
