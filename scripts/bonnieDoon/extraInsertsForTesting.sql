@@ -1,5 +1,5 @@
 /*
-    Made-up data for Bonnie Doon, in order to test CG features.
+    Made-up data for Bonnie Doon, in order to test CommonGood features.
     Creates location-less blocks, a family with participate_in_interview false, etc.
 */
 
@@ -12,16 +12,6 @@ VALUES(  902,  0,  FALSE,  1902,  CURRENT_DATE,  'rryan@sunnydays.ca',  NULL,  '
 
 INSERT INTO person( id, version,  app_user,   birth_year,  date_created,  email_address,  family_id,  first_names,  last_name,  last_updated,  password_hash,  phone_number )
 VALUES(  903,  0,  FALSE,  1902,  CURRENT_DATE,  'angela@leanforward.ca',  NULL,  'Angela',  'Taylor',  CURRENT_DATE,  44555,  '780-434-6071' );
-
-
-/* Arbitrarily assign those 3 block connectors to bonnie doon's families */
-UPDATE family
-   SET interviewer_id = 901 +(id % 2)
-WHERE id < 80;
-
-UPDATE family
-   SET interviewer_id = 903
-WHERE id >= 80;
 
 
 /* Make a location-less block (id 101, code BC55) */
@@ -40,6 +30,15 @@ VALUES( 802, 0, 13, 'House is painted black', '9303-93 St', 7 );
 
 INSERT INTO family( id, version, family_name, initial_interview_date, interviewer_id, location_id, participate_in_interview, permission_to_contact, primary_member_id )
 VALUES( 601, 0, 'Grinch', CURRENT_DATE, 903, 802, FALSE, TRUE, NULL );
+
+/* Arbitrarily assign those 3 block connectors to bonnie doon's families */
+UPDATE family
+   SET interviewer_id = 901 +(id % 2)
+WHERE id < 80;
+
+UPDATE family
+   SET interviewer_id = 903
+WHERE id >= 80;
 
 /* Not Bonnie Doon related but still useful. */
 INSERT INTO neighbourhood VALUES( 99, 0, current_date, current_date, null, 'Sunnyvale' );
