@@ -22,11 +22,15 @@ class Person {
     Date dateCreated
     Date lastUpdated
 
-    static hasMany = [ answers:Answer ]
+    static hasMany = [ answers:Answer, privileges:DomainAuthorization ]
 
     static constraints = {
         family nullable: true
         dateCreated nullable: true
         lastUpdated nullable: true
+    }
+    
+    def getFullName( ) {
+        return firstNames + ' ' + lastName
     }
 }

@@ -31,6 +31,8 @@ VALUES( 802, 0, 13, 'House is painted black', '9303-93 St', 7 );
 INSERT INTO family( id, version, family_name, initial_interview_date, interviewer_id, location_id, participate_in_interview, permission_to_contact, primary_member_id )
 VALUES( 601, 0, 'Grinch', CURRENT_DATE, 903, 802, FALSE, TRUE, NULL );
 
+UPDATE family SET initial_interview_date = CURRENT_DATE - cast((random()*500) as integer);
+
 /* Arbitrarily assign those 3 block connectors to bonnie doon's families */
 UPDATE family
    SET interviewer_id = 901 +(id % 2)
@@ -39,6 +41,39 @@ WHERE id < 80;
 UPDATE family
    SET interviewer_id = 903
 WHERE id >= 80;
+
+INSERT INTO domain_authorization( id, version, date_created, domain_code, domain_key, last_updated, person_id )
+VALUES( 1, 0, CURRENT_DATE, 'B', 1, CURRENT_DATE, 901 );
+INSERT INTO domain_authorization( id, version, date_created, domain_code, domain_key, last_updated, person_id )
+VALUES( 2, 0, CURRENT_DATE, 'B', 2, CURRENT_DATE, 901 );
+INSERT INTO domain_authorization(id, version, date_created, domain_code, domain_key, last_updated, person_id )
+VALUES( 3, 0, CURRENT_DATE, 'B', 3, CURRENT_DATE, 901 );
+INSERT INTO domain_authorization( id, version, date_created, domain_code, domain_key, last_updated, person_id )
+VALUES( 4, 0, CURRENT_DATE, 'B', 4, CURRENT_DATE, 901 );
+INSERT INTO domain_authorization( id, version, date_created, domain_code, domain_key, last_updated, person_id )
+VALUES( 5, 0, CURRENT_DATE, 'B', 5, CURRENT_DATE, 901 );
+
+INSERT INTO domain_authorization( id, version, date_created, domain_code, domain_key, last_updated, person_id )
+VALUES( 6, 0, CURRENT_DATE, 'B', 6, CURRENT_DATE, 902 );
+INSERT INTO domain_authorization( id, version, date_created, domain_code, domain_key, last_updated, person_id )
+VALUES( 7, 0, CURRENT_DATE, 'B', 7, CURRENT_DATE, 902 );
+INSERT INTO domain_authorization( id, version, date_created, domain_code, domain_key, last_updated, person_id )
+VALUES( 8, 0, CURRENT_DATE, 'B', 8, CURRENT_DATE, 902 );
+INSERT INTO domain_authorization( id, version, date_created, domain_code, domain_key, last_updated, person_id )
+VALUES( 9, 0, CURRENT_DATE, 'B', 9, CURRENT_DATE, 902 );
+INSERT INTO domain_authorization( id, version, date_created, domain_code, domain_key, last_updated, person_id )
+VALUES( 10, 0, CURRENT_DATE, 'B', 10, CURRENT_DATE, 902 );
+
+INSERT INTO domain_authorization( id, version, date_created, domain_code, domain_key, last_updated, person_id )
+VALUES( 11, 0, CURRENT_DATE, 'B', 11, CURRENT_DATE, 903 );
+INSERT INTO domain_authorization( id, version, date_created, domain_code, domain_key, last_updated, person_id )
+VALUES( 12, 0, CURRENT_DATE, 'B', 12, CURRENT_DATE, 903 );
+INSERT INTO domain_authorization( id, version, date_created, domain_code, domain_key, last_updated, person_id )
+VALUES( 13, 0, CURRENT_DATE, 'B', 13, CURRENT_DATE, 903 );
+INSERT INTO domain_authorization( id, version, date_created, domain_code, domain_key, last_updated, person_id )
+VALUES( 14, 0, CURRENT_DATE, 'B', 14, CURRENT_DATE, 903 );
+INSERT INTO domain_authorization( id, version, date_created, domain_code, domain_key, last_updated, person_id )
+VALUES( 15, 0, CURRENT_DATE, 'B', 101, CURRENT_DATE, 903 );
 
 /* Not Bonnie Doon related but still useful. */
 INSERT INTO neighbourhood VALUES( 99, 0, current_date, current_date, null, 'Sunnyvale' );

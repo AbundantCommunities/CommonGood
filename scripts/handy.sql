@@ -8,6 +8,7 @@ DROP DATABASE thehoods;
 DELETE FROM answer;
 UPDATE family SET primary_member_id = NULL;
 UPDATE family SET interviewer_id = NULL;
+UPDATE domain_authorization SET person_id = NULL;
 DELETE FROM person;
 DELETE FROM family;
 DELETE FROM location;
