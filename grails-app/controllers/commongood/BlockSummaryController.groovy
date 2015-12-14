@@ -22,6 +22,7 @@ class BlockSummaryController {
                 numRemaining: it[2].longValue() - it[3].longValue()
             ]
         }
+        // a comment
         [result:
             [
                 ncName: 'Marie-Danielle',
