@@ -7,6 +7,16 @@
         <meta name="description" content="Abundant Communities - Edmonton" />
         <link rel="stylesheet" href="${resource(dir:'css',file:'common.css')}" />
         <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Quicksand">
+        <g:if test="${navChildren.childType.toLowerCase() == 'family'}">
+            <script type="text/javascript">
+                function presentFamilyModal() {
+                    document.getElementById("add-edit-family-container").style.visibility='visible';
+                }
+                function dismissFamilyModal() {
+                    document.getElementById("add-edit-family-container").style.visibility='hidden';
+                }
+            </script>
+        </g:if>
     </head>
     <body>
         <div id="pagecontainer">
@@ -41,7 +51,7 @@
                 </div>
             </div>
             <div id="content-children">
-                <div id="content-children-title">${navChildren.childType+'s'} for ${navSelection.levelInHierarchy} ${navSelection.description}&nbsp;&nbsp;<a href="#">+ Add New ${navChildren.childType}</a></div>
+                <div id="content-children-title">${navChildren.childType+'s'} for ${navSelection.levelInHierarchy} ${navSelection.description}&nbsp;&nbsp;<a <g:if test="${navChildren.childType.toLowerCase() == 'family'}">onclick="presentFamilyModal()"</g:if> href="#">+ Add New ${navChildren.childType}</a></div>
                 <div id="content-children-heading">Name</div>
                 <g:each in="${navChildren.children}" var="child">
                     <div class="content-children-row"><a href="${resource(dir:'navigate/'+navChildren.childType.toLowerCase(),file:"${child.id}")}">${child.name}</a></div>
@@ -50,6 +60,22 @@
             <div id="footer">
                 &copy;2015 Common Good, A Society for Connected Neighbourhoods. All rights reserved.
             </div>
+            <g:if test="${navChildren.childType.toLowerCase() == 'family'}">
+                <div id="add-edit-family-container">
+                    <p style="font-weight:bold;font-size:14px;">New Family</p>
+                    <form action=${resource(file:'saveFamily')} method="post">
+                        Family name: <input type="text" name="familyName" />
+                        <br />
+                        <input type="checkbox" name="permissionToContact" /> Permission to contact
+                        <br />
+                        <input type="checkbox" name="participateInInterview" /> Has agreed to interview
+                        <br />
+
+                        <input id="savebutton" type="submit" value="Save">
+                    </form>
+                    <button id="cancelbutton" type="button" onclick="JavaScript:dismissFamilyModal();">Cancel</button>
+                </div>
+            </g:if>
         </div>
     </body>
 </html>
