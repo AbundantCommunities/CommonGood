@@ -17,3 +17,10 @@ DELETE FROM question;
 DELETE FROM neighbourhood;
 DELETE FROM this_installation;
 */
+
+/* Ignoring case, see all unique answer strings */
+SELECT DISTINCT lower(text) AS ltext
+FROM answer
+WHERE question_code = 1
+ORDER BY ltext;
+

@@ -10,6 +10,7 @@ class BlockSummaryController {
         List blox = Block.executeQuery( query ).collect {
             [
                 code: it[0],
+                // TODO If we replace 'collect' with 'each' we won't hit Block table 3 times
                 bcName: getBlockConnector(it[1]).fullName,
                 bcPhone: getBlockConnector(it[1]).phoneNumber,
                 bcEmail: getBlockConnector(it[1]).emailAddress,
@@ -31,7 +32,6 @@ class BlockSummaryController {
     }
 
     def getBlockConnector( Long blockId ) {
-        println "Get BC for block ${blockId}"
         // There can be multiple DomainAuthorization rows for a given block id
         // but we just want one (thus the call to find).
         def rights = DomainAuthorization.createCriteria().list {

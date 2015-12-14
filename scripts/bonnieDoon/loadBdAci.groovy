@@ -39,7 +39,10 @@ def getSafely( fields, columnNo ) {
 
 def breakDown( fields, columnNo ) {
     field = getSafely( fields, columnNo )
-    return field.tokenize( ',' )
+    return field.tokenize( ',' ).collect {
+        // Removed leading & trailing whitespace
+        it.trim( )
+    }
 }
 
 class Person {
