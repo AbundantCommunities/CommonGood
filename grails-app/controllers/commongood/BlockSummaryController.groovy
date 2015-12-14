@@ -35,6 +35,7 @@ class BlockSummaryController {
     def getBlockConnector( Long blockId ) {
         // There can be multiple DomainAuthorization rows for a given block id
         // but we just want one (thus the call to find).
+        println "getBlockConnector( ${blockId} )"
         def rights = DomainAuthorization.createCriteria().list {
                 and {
                     eq 'domainCode', DomainAuthorization.BLOCK
