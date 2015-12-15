@@ -1,5 +1,7 @@
 package commongood
 
+// TODO Rename Location to Address
+// |-----> Consider effect on Block and Family,
 class Location {
     Block block
     Integer orderWithinBlock

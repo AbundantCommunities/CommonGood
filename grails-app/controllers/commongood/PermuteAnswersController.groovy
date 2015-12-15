@@ -7,11 +7,12 @@ package commongood
  * 'bake bread, learn to'
  * 'bread, learn to bake'
  * 
- * The logic knows to ignore words like 'to', 'and', etc.
+ * The logic knows to ignore words like 'to', 'and', 'a', etc.
 */
 class PermuteAnswersController {
 
-    def tooCommon = ['to','for','in','the','with','at','of','and','a','as','by','out','on','like','more','fewer','less']
+    def tooCommon = ['a', 'and', 'as', 'at', 'by', 'fewer', 'for', 'in', 'is',\
+            'less', 'like', 'more', 'no', 'of', 'on', 'or', 'out', 'the', 'to', 'with']
 
     // TODO does 'no discord' work sensibly??
     def permute( text ) {
@@ -20,6 +21,8 @@ class PermuteAnswersController {
         if( words.size() == 1 ) {
             return words
         } else {
+            // FIXME Mistake to always include unpermuted text in permutations
+            // Example: 'the best parks' makes an entry stating with 'the'
             def permutations = [ text ]
             def lastWord = words.size( ) - 1
             for( i in 1..lastWord ) {

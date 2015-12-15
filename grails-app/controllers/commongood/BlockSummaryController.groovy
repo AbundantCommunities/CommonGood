@@ -10,7 +10,7 @@ class BlockSummaryController {
         List blox = Block.executeQuery( query ).collect {
             [
                 code: it[0],
-                // TODO If we replace 'collect' with 'each' we won't hit Block table 3 times
+                // TODO Replace 'collect' with 'each' so we won't hit Block table 3 times
                 bcName: getBlockConnector(it[1]).fullName,
                 bcPhone: getBlockConnector(it[1]).phoneNumber,
                 bcEmail: getBlockConnector(it[1]).emailAddress,
@@ -39,11 +39,11 @@ class BlockSummaryController {
         def rights = DomainAuthorization.createCriteria().list {
                 and {
                     eq 'domainCode', DomainAuthorization.BLOCK
-                    // FIXME allow Long blockId (converting to Integer not good!)
+                    // FIXME Allow Long blockId (converting to Integer not good!)
                     eq 'domainKey', blockId.toInteger( )
                 }
         }
-        // FIXME handle when no such blockId??
+        // FIXME Should we handle no-such-blockId??
         return rights[0].person
     }
 }
