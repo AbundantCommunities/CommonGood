@@ -67,7 +67,7 @@ class NavigateController {
 
             navChildren:
                 [
-                childType: 'Location',
+                childType: 'Address',
                 children: locations
                 ]
             ]
