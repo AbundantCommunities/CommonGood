@@ -23,7 +23,7 @@ class NavigateController {
                 ]
             ]
         println 'Navigate to application'
-        render( view: 'organize', model: result )
+        result
     }
 
     def neighbourhood( ) {
@@ -46,7 +46,7 @@ class NavigateController {
                 ]
             ]
         println "Navigate to neighbourhood ${hoodId} ${theHood.name}"
-        render(view: "organize", model: result)
+        result
     }
 
     def block( ) {
@@ -72,10 +72,10 @@ class NavigateController {
                 ]
             ]
         println "Navigate to block ${blockId}"
-        render(view: "organize", model: result)
+        result
     }
 
-    def location( ) {
+    def address( ) {
         Integer locationId = Integer.valueOf( params.id )
         Location theLocation = Location.where{ id == locationId }.get( )
         List families = Family.where{ location.id == locationId }.list( )
@@ -98,8 +98,8 @@ class NavigateController {
                 children: families
                 ]
             ]
-        println "Navigate to location ${locationId}"
-        render(view: "organize", model: result)
+        println "Navigate to address ${locationId}"
+        result
     }
 
     def family( ) {
@@ -127,7 +127,7 @@ class NavigateController {
                 ]
             ]
         println "Navigate to family ${familyId}"
-        render( view: 'organize', model: result )
+        result
     }
 
     // Lower case M because of the way our GSP constructs navigation URLs
@@ -169,6 +169,6 @@ class NavigateController {
             ]
         ]
         println "Navigate to family member ${memberId}"
-        render( view: 'organize', model: result )
+        result
     }
 }
