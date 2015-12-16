@@ -90,7 +90,7 @@ class NavigateController {
                     [id: theLocation.block.id, level: 'Block', description: theLocation.block.code]
                 ],
 
-            navSelection: [ levelInHierarchy: 'Location', description:theLocation.officialAddress ],
+            navSelection: [ levelInHierarchy: 'Address', description:theLocation.officialAddress ],
 
             navChildren:
                 [
@@ -115,7 +115,7 @@ class NavigateController {
                 [
                     [id: theFamily.location.block.neighbourhood.id, level: 'Neighbourhood', description: theFamily.location.block.neighbourhood.name],
                     [id: theFamily.location.block.id, level: 'Block', description: theFamily.location.block.code],
-                    [id: theFamily.location.id, level: 'Location', description: theFamily.location.officialAddress]
+                    [id: theFamily.location.id, level: 'Address', description: theFamily.location.officialAddress]
                 ],
 
             navSelection: [ levelInHierarchy: 'Family', description:theFamily.familyName ],
@@ -156,7 +156,7 @@ class NavigateController {
             [
                 [id: theMember.family.location.block.neighbourhood.id, level: 'Neighbourhood', description: theMember.family.location.block.neighbourhood.name],
                 [id: theMember.family.location.block.id, level: 'Block', description: theMember.family.location.block.code],
-                [id: theMember.family.location.id, level: 'Location', description: theMember.family.location.officialAddress],
+                [id: theMember.family.location.id, level: 'Address', description: theMember.family.location.officialAddress],
                 [id: theMember.family.id, level: 'Family', description: theMember.family.familyName]
             ],
 
