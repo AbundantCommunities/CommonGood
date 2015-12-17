@@ -12,6 +12,7 @@ class Location {
     specifies the building to Google Maps or Canada Post.
     */
     String officialAddress // Official because postal service recognizes it
+    String description
     String note
 
     Date dateCreated
@@ -21,6 +22,7 @@ class Location {
     static hasMany = [ families:Family ]
 
     static constraints = {
+        description nullable: true
         dateCreated nullable: true
         lastUpdated nullable: true
     }

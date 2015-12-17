@@ -7,6 +7,7 @@ class Person {
     String emailAddress
     Integer birthYear
     String phoneNumber
+    Boolean primaryMember // Within this person's family, she is the main contact
     /*
     If appUser then
         if passwordHash nonzero then
@@ -23,7 +24,10 @@ class Person {
     Date lastUpdated
 
     static hasMany = [ answers:Answer, privileges:DomainAuthorization ]
-
+    
+    static mapping = {
+        primaryMember defaultValue: "FALSE"
+    }
     static constraints = {
         family nullable: true
         dateCreated nullable: true

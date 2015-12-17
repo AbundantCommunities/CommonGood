@@ -8,6 +8,7 @@ class Family {
 
     Person interviewer // Block Connector
 
+    String note
     Boolean participateInInterview
     Boolean permissionToContact
 
@@ -17,6 +18,7 @@ class Family {
     static hasMany = [ members:Person ]
 
     static constraints = {
+        note nullable: true
         dateCreated nullable: true
         lastUpdated nullable: true
     }

@@ -11,11 +11,15 @@ class DomainAuthorization {
     final static String BLOCK = "B"
     
     Person person
+    Boolean primaryPerson // Within a given 'hood or block, she is the primary contact person
     String domainCode // A, N, B → Application Administrator, NeighbourHood Connector, Block Connector
     Integer domainKey // domainCode: A means domainKey is null, N means key is neighbourhood.id, B means block.id
-
     Date dateCreated
     Date lastUpdated
+    
+    static mapping = {
+        primaryPerson defaultValue: "FALSE"
+    }
 
     static constraints = {
         person nullable: true
