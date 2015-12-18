@@ -30,20 +30,20 @@ ALTER TABLE neighbourhood ENABLE TRIGGER ALL;
 
 ALTER TABLE block DISABLE TRIGGER ALL;
 
-INSERT INTO block VALUES (1, 0, '5', '2015-12-18 00:00:00', 'description', '2015-12-18 00:00:00', 1, 5);
-INSERT INTO block VALUES (2, 0, '30', '2015-12-18 00:00:00', 'description', '2015-12-18 00:00:00', 1, 30);
-INSERT INTO block VALUES (3, 0, '18', '2015-12-18 00:00:00', 'description', '2015-12-18 00:00:00', 1, 18);
-INSERT INTO block VALUES (4, 0, '23', '2015-12-18 00:00:00', 'description', '2015-12-18 00:00:00', 1, 23);
-INSERT INTO block VALUES (5, 0, '15', '2015-12-18 00:00:00', 'description', '2015-12-18 00:00:00', 1, 15);
-INSERT INTO block VALUES (6, 0, '50', '2015-12-18 00:00:00', 'description', '2015-12-18 00:00:00', 1, 50);
-INSERT INTO block VALUES (7, 0, '7', '2015-12-18 00:00:00', 'description', '2015-12-18 00:00:00', 1, 7);
-INSERT INTO block VALUES (8, 0, '28', '2015-12-18 00:00:00', 'description', '2015-12-18 00:00:00', 1, 28);
-INSERT INTO block VALUES (9, 0, '14', '2015-12-18 00:00:00', 'description', '2015-12-18 00:00:00', 1, 14);
-INSERT INTO block VALUES (10, 0, '20', '2015-12-18 00:00:00', 'description', '2015-12-18 00:00:00', 1, 20);
-INSERT INTO block VALUES (11, 0, '31', '2015-12-18 00:00:00', 'description', '2015-12-18 00:00:00', 1, 31);
-INSERT INTO block VALUES (12, 0, '35', '2015-12-18 00:00:00', 'description', '2015-12-18 00:00:00', 1, 35);
-INSERT INTO block VALUES (13, 0, '8', '2015-12-18 00:00:00', 'description', '2015-12-18 00:00:00', 1, 8);
-INSERT INTO block VALUES (14, 0, '11', '2015-12-18 00:00:00', 'description', '2015-12-18 00:00:00', 1, 11);
+INSERT INTO block VALUES (1, 0, '5', '2015-12-18 00:00:00', 'N of high school', '2015-12-18 00:00:00', 1, 5);
+INSERT INTO block VALUES (2, 0, '30', '2015-12-18 00:00:00', 'E of Red Creek', '2015-12-18 00:00:00', 1, 30);
+INSERT INTO block VALUES (3, 0, '18', '2015-12-18 00:00:00', 'S of high school', '2015-12-18 00:00:00', 1, 18);
+INSERT INTO block VALUES (4, 0, '23', '2015-12-18 00:00:00', 'W of 3rd St', '2015-12-18 00:00:00', 1, 23);
+INSERT INTO block VALUES (5, 0, '15', '2015-12-18 00:00:00', 'S of 3rd St', '2015-12-18 00:00:00', 1, 15);
+INSERT INTO block VALUES (6, 0, '50', '2015-12-18 00:00:00', 'Between 3rd & ravine', '2015-12-18 00:00:00', 1, 50);
+INSERT INTO block VALUES (7, 0, '7', '2015-12-18 00:00:00', 'S of Normandy', '2015-12-18 00:00:00', 1, 7);
+INSERT INTO block VALUES (8, 0, '28', '2015-12-18 00:00:00', 'E of Civic Bldg', '2015-12-18 00:00:00', 1, 28);
+INSERT INTO block VALUES (9, 0, '14', '2015-12-18 00:00:00', 'N of Civic Bldg', '2015-12-18 00:00:00', 1, 14);
+INSERT INTO block VALUES (10, 0, '20', '2015-12-18 00:00:00', 'Far SE', '2015-12-18 00:00:00', 1, 20);
+INSERT INTO block VALUES (11, 0, '31', '2015-12-18 00:00:00', 'Beside Bellegarde', '2015-12-18 00:00:00', 1, 31);
+INSERT INTO block VALUES (12, 0, '35', '2015-12-18 00:00:00', 'West Sussex Ave', '2015-12-18 00:00:00', 1, 35);
+INSERT INTO block VALUES (13, 0, '8', '2015-12-18 00:00:00', 'N by Park St', '2015-12-18 00:00:00', 1, 8);
+INSERT INTO block VALUES (14, 0, '11', '2015-12-18 00:00:00', 'Beside racine', '2015-12-18 00:00:00', 1, 11);
 
 
 ALTER TABLE block ENABLE TRIGGER ALL;

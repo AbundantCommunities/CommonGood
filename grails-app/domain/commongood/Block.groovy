@@ -10,9 +10,8 @@ class Block {
     Date lastUpdated
 
     static hasMany = [ addresses:Address ]
-
-//    static constraints = {
-//        dateCreated nullable: true
-//        lastUpdated nullable: true
-//    }
+    
+    String getDisplayName( ) {
+        "(${code}) ${description}"
+    }
 }

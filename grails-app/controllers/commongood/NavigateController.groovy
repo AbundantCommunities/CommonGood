@@ -31,7 +31,7 @@ class NavigateController {
         Neighbourhood theHood = Neighbourhood.where{ id == hoodId }.get( )
         List blocks = Block.where{ neighbourhood.id == hoodId }.list( sort:'orderWithinNeighbourhood', order:'asc' )
         blocks = blocks.collect{
-            [ id:it.id, name:it.code]
+            [ id:it.id, name:it.displayName]
         }
         Map result =
             [
@@ -63,7 +63,7 @@ class NavigateController {
                     [id: theBlock.neighbourhood.id, level: 'Neighbourhood', description: theBlock.neighbourhood.name]
                 ],
 
-            navSelection: [ levelInHierarchy: 'Block', description:theBlock.code ],
+            navSelection: [ levelInHierarchy: 'Block', description:theBlock.displayName ],
 
             navChildren:
                 [
@@ -141,7 +141,6 @@ class NavigateController {
         def groupedAnswers = [:]
         answers.each {
             def qCode = it.question.id
-            println qCode + ' is ' + qCode.class.name
             def soFar = groupedAnswers[ qCode ]
             if( soFar ) {
                 groupedAnswers[ qCode ] += ', ' + it.text
