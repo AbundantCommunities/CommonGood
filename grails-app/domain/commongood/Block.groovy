@@ -2,18 +2,17 @@ package commongood
 
 class Block {
     String code
-    String name
+    String description
     Neighbourhood neighbourhood
     Integer orderWithinNeighbourhood
 
     Date dateCreated
     Date lastUpdated
 
-    static hasMany = [ locations:Location ]
+    static hasMany = [ addresses:Address ]
 
-    static constraints = {
-        name nullable: true
-        dateCreated nullable: true
-        lastUpdated nullable: true
-    }
+//    static constraints = {
+//        dateCreated nullable: true
+//        lastUpdated nullable: true
+//    }
 }

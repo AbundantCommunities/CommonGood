@@ -1,14 +1,11 @@
 package commongood
 
 class Question {
+    Neighbourhood neighbourhood
+    String code
     String text
-    Integer neighbourhoodId
+    Integer orderWithinQuestionnaire
 
     Date dateCreated
     Date lastUpdated
-
-    static constraints = {
-        dateCreated nullable: true
-        lastUpdated nullable: true
-    }
 }

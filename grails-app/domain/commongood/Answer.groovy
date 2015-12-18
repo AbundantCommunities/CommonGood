@@ -2,16 +2,17 @@ package commongood
 
 class Answer {
     Person person
-    Integer questionCode // 1 to 6
+    Question question
     String text // the actual answer text
-    Boolean wouldLead
+    Boolean wouldLead // TODO Are wouldLead & wouldOrganize what we really need?
     Boolean wouldOrganize
 
     Date dateCreated
     Date lastUpdated
 
-    static constraints = {
-        dateCreated nullable: true
-        lastUpdated nullable: true
-    }
+//    static constraints = {
+//        question nullable: true
+//        dateCreated nullable: true
+//        lastUpdated nullable: true
+//    }
 }

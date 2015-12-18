@@ -18,3 +18,4 @@ for( id in lowId..highId ) {
     }
     println "UPDATE person SET birth_year = birth_year + ${rAdjust} WHERE id=${id};"
 }
+println "UPDATE person SET birth_year = 0 WHERE birth_year < 9;"

@@ -50,7 +50,7 @@ class Person {
     String firstNames
     int birthYear
     String block
-    int locationId
+    int addressId
     String phone
     String emailAddress
 }
@@ -64,24 +64,23 @@ class Location {
 
 nextLocationAndFamilyId = 1
 thisFamilyId = 0
-locations = [:]
+addresses = [:]
 
-def getLocationId( String address, String block, String familyName ) {
-    def location = locations[address]
-    if( location == null ) {
+def getLocationId( String familyAddress, String block, String familyName ) {
+    def address = addresses[familyAddress]
+    if( address == null ) {
         blockId = getBlockId( block )
-        locations[ address ] = new Location( id:nextLocationAndFamilyId, address:address, blockId:blockId )
-        println 'INSERT INTO location( id, version, block_id, note, official_address, order_within_block ) VALUES( ' + nextLocationAndFamilyId + ', 0, ' + blockId + ', \'\', \'' + address + '\', 10 );'
+        addresses[ familyAddress ] = new Location( id:nextLocationAndFamilyId, address:familyAddress, blockId:blockId )
+        println "INSERT INTO address( id, version, block_id, note, text, order_within_block, date_created, last_updated ) \
+            VALUES( ${nextLocationAndFamilyId}, 0, ${blockId}, 'note', '${familyAddress}', 100, CURRENT_DATE, CURRENT_DATE );"
 
-        // We set the family's primary_member_id to null because we have not yet inserted that person.
-        // Later we will update this family row.
         thisFamilyId = nextLocationAndFamilyId
-        println 'INSERT INTO family( id, version, family_name, initial_interview_date, interviewer_id, location_id, participate_in_interview, permission_to_contact, primary_member_id ) VALUES( ' +
-            thisFamilyId + ', 0, \'' + familyName + '\', \'2015-07-01\', NULL, ' + nextLocationAndFamilyId + ', true, true, NULL );'
+        println "INSERT INTO family( id, version, address_id, name, note, order_within_address, interview_date, interviewer_id, participate_in_interview, permission_to_contact, date_created, last_updated ) \
+            VALUES( ${thisFamilyId}, 0, ${nextLocationAndFamilyId}, '${familyName}', 'Note', 100, '2015-07-01', 901, TRUE, TRUE, CURRENT_DATE, CURRENT_DATE );"
 
         return nextLocationAndFamilyId++
     } else {
-        return location.id
+        return address.id
     }
 }
 
@@ -100,15 +99,36 @@ blocks = [:]
 def getBlockId( String code ) {
     def block = blocks[code]
     if( block == null ) {
+        def orderWithinBlock = Integer.valueOf( code )
         blocks[ code ] = new Block( id:nextBlockId, code:code )
-        println "INSERT INTO block( id, version, code, neighbourhood_id, order_within_neighbourhood ) VALUES( ${nextBlockId}, 0, '${code}', 1, 10 );"
+        println "INSERT INTO block( id, version, code, description, neighbourhood_id, order_within_neighbourhood, date_created, last_updated ) \
+                        VALUES( ${nextBlockId}, 0, '${code}', 'description', 1, ${orderWithinBlock}, CURRENT_DATE, CURRENT_DATE );"
         return nextBlockId++
     } else {
         return block.id
     }
 }
 
-println "INSERT INTO neighbourhood( id, version, name ) VALUES( 1, 0, \'Bonnie Doon\' );"
+// This singleton record describes the installation of CommonGood on this server:
+println "INSERT INTO this_installation( id, version, name, logo, configured ) VALUES( 1, 0, 'Abundant Edmonton Online', NULL, TRUE );"
+
+println "INSERT INTO neighbourhood( id, version, name ) VALUES( 1, 0, 'Bonnie Doon' );"
+
+println "INSERT INTO person ( id, version, app_user, birth_year, date_created, email_address, family_id, first_names, last_name, last_updated, order_within_family, password_hash, phone_number ) \
+VALUES ( 901, 0, FALSE, 0, TIMESTAMP '2014-01-01 00:00:00.000', 'fabBC@abundantedmonton.ca', NULL, 'Fabian', 'Snufflepuss', TIMESTAMP '2015-12-01 00:00:00.000', 100, 0, '780-432-6543' );"
+
+println "INSERT INTO question( id, version, code, neighbourhood_id, text, order_within_questionnaire, date_created, last_updated ) \
+         VALUES( 1, 0, '1', 1, 'What makes a great neighbourhood?', 100, CURRENT_DATE, CURRENT_DATE );"
+println "INSERT INTO question( id, version, code, neighbourhood_id, text, order_within_questionnaire, date_created, last_updated ) \
+        VALUES( 2, 0, '2', 1, 'What else can we do to make our neighbourhood a great place to live?', 100, CURRENT_DATE, CURRENT_DATE );"
+println "INSERT INTO question( id, version, code, neighbourhood_id, text, order_within_questionnaire, date_created, last_updated ) \
+        VALUES( 3, 0, '3', 1, 'What activities would you like to join in with neighbours?', 100, CURRENT_DATE, CURRENT_DATE );"
+println "INSERT INTO question( id, version, code, neighbourhood_id, text, order_within_questionnaire, date_created, last_updated ) \
+        VALUES( 4, 0, '4', 1, 'Do you have interests that you would value discussing or participating in with neighbours?', 100, CURRENT_DATE, CURRENT_DATE );"
+println "INSERT INTO question( id, version, code, neighbourhood_id, text, order_within_questionnaire, date_created, last_updated ) \
+        VALUES( 5, 0, '5', 1, 'Do you have a skill, gift or ability that you would be comfortable using to help neighbours or the neighbourhood? ', 100, CURRENT_DATE, CURRENT_DATE );"
+println "INSERT INTO question( id, version, code, neighbourhood_id, text, order_within_questionnaire, date_created, last_updated ) \
+        VALUES( 6, 0, '6', 1, 'Are there some life experiences that you would consider sharing for the benefit of neighbours?', 100, CURRENT_DATE, CURRENT_DATE );"
 
 nextPersonId = 1
 nextAnswerId = 1
@@ -148,7 +168,7 @@ new File('./pureNewLines.txt').eachLine {
                 p.firstNames = names[0..names.size()-2].join(' ')
             } else {
                 // A single name. Too bad...
-                familyName   = 'familyName?'
+                familyName   = 'SURNAME'
                 p.lastName   = familyName
                 p.firstNames = name
             }
@@ -167,72 +187,62 @@ new File('./pureNewLines.txt').eachLine {
                 }
             } else {
                 p.firstNames = name
-                p.lastName   = 'familyName?'
+                p.lastName   = 'SURNAME'
             }
         }
 
         // When houseAddress has not previously seen, this method creates INSERT statements
-        // for location and family.
-        p.locationId = getLocationId( houseAddress, p.block, familyName )
+        // for address and family.
+        p.addressId = getLocationId( houseAddress, p.block, familyName )
 
-        println 'INSERT INTO person( id, version, app_user, birth_year, email_address, family_id, first_names, last_name, password_hash, phone_number ) VALUES( ' +
-            nextPersonId + ', 0, false, ' + p.birthYear + ', \'' + p.emailAddress + '\', ' + p.locationId + ', \'' + p.firstNames + '\', \'' + p.lastName + '\', 0, \'' + p.phone + '\' );'
-
+        Integer orderWithinFamily
         if( firstPersonInFamily ) {
-            // Now that we've output the INSERT statement for the first person in the family, we can UPDATE the family
-            // row with the person's id (solves a problem with circular references).
-            println "UPDATE family SET primary_member_id=${nextPersonId} WHERE id=${p.locationId};"
+            orderWithinFamily = 100
+        } else {
+            orderWithinFamily = 200
         }
+
+        println "INSERT INTO person( id, version, app_user, birth_year, email_address, family_id, first_names, last_name, password_hash, phone_number, order_within_family, date_created, last_updated ) \
+                    VALUES( ${nextPersonId}, 0, FALSE, ${p.birthYear}, '${p.emailAddress}', ${p.addressId}, '${p.firstNames}', '${p.lastName}', 0, '${p.phone}', ${orderWithinFamily}, CURRENT_DATE, CURRENT_DATE );"
 
         texts = breakDown( fields, VALUES )
         texts.each {
-            println 'INSERT INTO answer( id, version, person_id, question_code, text, would_lead, would_organize ) VALUES( ' +
-                nextAnswerId++ + ', 0, ' + nextPersonId + ', 1, \'' + it + '\', false, true );'
+            println "INSERT INTO answer( id, version, person_id, question_id, text, would_lead, would_organize, date_created, last_updated ) \
+                VALUES( ${nextAnswerId++}, 0, ${nextPersonId}, 1, '${it}', false, false, CURRENT_DATE, CURRENT_DATE );"
         }
 
         texts = breakDown( fields, IDEALS )
         texts.each {
-            println 'INSERT INTO answer( id, version, person_id, question_code, text, would_lead, would_organize ) VALUES( ' +
-                nextAnswerId++ + ', 0, ' + nextPersonId + ', 2, \'' + it + '\', false, true );'
+            println "INSERT INTO answer( id, version, person_id, question_id, text, would_lead, would_organize, date_created, last_updated ) \
+                VALUES( ${nextAnswerId++}, 0, ${nextPersonId}, 2, '${it}', false, false, CURRENT_DATE, CURRENT_DATE );"
         }
 
         texts = breakDown( fields, ACTIVITIES )
         texts.each {
-            println 'INSERT INTO answer( id, version, person_id, question_code, text, would_lead, would_organize ) VALUES( ' +
-                nextAnswerId++ + ', 0, ' + nextPersonId + ', 3, \'' + it + '\', false, true );'
-
+            println "INSERT INTO answer( id, version, person_id, question_id, text, would_lead, would_organize, date_created, last_updated ) \
+                VALUES( ${nextAnswerId++}, 0, ${nextPersonId}, 3, '${it}', false, false, CURRENT_DATE, CURRENT_DATE );"
         }
 
         texts = breakDown( fields, INTERESTS )
         texts.each {
-            println 'INSERT INTO answer( id, version, person_id, question_code, text, would_lead, would_organize ) VALUES( ' +
-                nextAnswerId++ + ', 0, ' + nextPersonId + ', 4, \'' + it + '\', false, true );'
+            println "INSERT INTO answer( id, version, person_id, question_id, text, would_lead, would_organize, date_created, last_updated ) \
+                VALUES( ${nextAnswerId++}, 0, ${nextPersonId}, 4, '${it}', false, false, CURRENT_DATE, CURRENT_DATE );"
         }
 
         texts = breakDown( fields, HELP )
         texts.each {
-            println 'INSERT INTO answer( id, version, person_id, question_code, text, would_lead, would_organize ) VALUES( ' +
-                nextAnswerId++ + ', 0, ' + nextPersonId + ', 5, \'' + it + '\', false, true );'
+            println "INSERT INTO answer( id, version, person_id, question_id, text, would_lead, would_organize, date_created, last_updated ) \
+                VALUES( ${nextAnswerId++}, 0, ${nextPersonId}, 5, '${it}', false, false, CURRENT_DATE, CURRENT_DATE );"
         }
 
         texts = breakDown( fields, SHARE )
         texts.each {
-            println 'INSERT INTO answer( id, version, person_id, question_code, text, would_lead, would_organize ) VALUES( ' +
-                nextAnswerId++ + ', 0, ' + nextPersonId + ', 6, \'' + it + '\', false, true );'
+            println "INSERT INTO answer( id, version, person_id, question_id, text, would_lead, would_organize, date_created, last_updated ) \
+                VALUES( ${nextAnswerId++}, 0, ${nextPersonId}, 6, '${it}', false, false, CURRENT_DATE, CURRENT_DATE );"
         }
 
         nextPersonId++
     }
 }
-
-println 'INSERT INTO question( id, version, neighbourhood_id, text ) VALUES( 1, 0, 1, \'What makes a great neighbourhood?\' );'
-println 'INSERT INTO question( id, version, neighbourhood_id, text ) VALUES( 2, 0, 1, \'What else can we do to make our neighbourhood a great place to live?\' );'
-println 'INSERT INTO question( id, version, neighbourhood_id, text ) VALUES( 3, 0, 1, \'What activities would you like to join in with neighbours?\' );'
-println 'INSERT INTO question( id, version, neighbourhood_id, text ) VALUES( 4, 0, 1, \'Do you have interests that you would value discussing or participating in with neighbours?\' );'
-println 'INSERT INTO question( id, version, neighbourhood_id, text ) VALUES( 5, 0, 1, \'Do you have a skill, gift or ability that you would be comfortable using to help neighbours or the neighbourhood? \' );'
-println 'INSERT INTO question( id, version, neighbourhood_id, text ) VALUES( 6, 0, 1, \'Are there some life experiences that you would consider sharing for the benefit of neighbours?\' );'
-
-// This singleton record describes the installation of CommonGood on this server:
-println "INSERT INTO this_installation( id, version, name, logo, configured ) VALUES( 1, 0, 'Abundant Edmonton Online', NULL, TRUE );"
 
 // That's all folks!

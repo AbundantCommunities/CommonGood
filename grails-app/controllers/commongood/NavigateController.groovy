@@ -52,9 +52,9 @@ class NavigateController {
     def block( ) {
         Integer blockId = Integer.valueOf( params.id )
         Block theBlock = Block.where{ id == blockId }.get( )
-        List locations = Location.where{ block.id == blockId }.list( sort:'orderWithinBlock', order:'asc' )
-        locations = locations.collect{
-            [ id:it.id, name:it.officialAddress]
+        List addresses = Address.where{ block.id == blockId }.list( sort:'orderWithinBlock', order:'asc' )
+        addresses = addresses.collect{
+            [ id:it.id, name:it.text]
         }
         Map result =
             [
@@ -68,7 +68,7 @@ class NavigateController {
             navChildren:
                 [
                 childType: 'Address',
-                children: locations
+                children: addresses
                 ]
             ]
         println "Navigate to block ${blockId}"
@@ -76,21 +76,21 @@ class NavigateController {
     }
 
     def address( ) {
-        Integer locationId = Integer.valueOf( params.id )
-        Location theLocation = Location.where{ id == locationId }.get( )
-        List families = Family.where{ location.id == locationId }.list( )
+        Integer addressId = Integer.valueOf( params.id )
+        Address theAddress = Address.where{ id == addressId }.get( )
+        List families = Family.where{ address.id == addressId }.list( )
         families = families.collect{
-            [ id:it.id, name:it.familyName]
+            [ id:it.id, name:it.name]
         }
         Map result =
             [
             navContext:
                 [
-                    [id: theLocation.block.neighbourhood.id, level: 'Neighbourhood', description: theLocation.block.neighbourhood.name],
-                    [id: theLocation.block.id, level: 'Block', description: theLocation.block.code]
+                    [id: theAddress.block.neighbourhood.id, level: 'Neighbourhood', description: theAddress.block.neighbourhood.name],
+                    [id: theAddress.block.id, level: 'Block', description: theAddress.block.code]
                 ],
 
-            navSelection: [ levelInHierarchy: 'Address', description:theLocation.officialAddress ],
+            navSelection: [ levelInHierarchy: 'Address', description:theAddress.text ],
 
             navChildren:
                 [
@@ -98,7 +98,7 @@ class NavigateController {
                 children: families
                 ]
             ]
-        println "Navigate to address ${locationId}"
+        println "Navigate to address ${addressId}"
         result
     }
 
@@ -113,12 +113,12 @@ class NavigateController {
             [
             navContext:
                 [
-                    [id: theFamily.location.block.neighbourhood.id, level: 'Neighbourhood', description: theFamily.location.block.neighbourhood.name],
-                    [id: theFamily.location.block.id, level: 'Block', description: theFamily.location.block.code],
-                    [id: theFamily.location.id, level: 'Address', description: theFamily.location.officialAddress]
+                    [id: theFamily.address.block.neighbourhood.id, level: 'Neighbourhood', description: theFamily.address.block.neighbourhood.name],
+                    [id: theFamily.address.block.id, level: 'Block', description: theFamily.address.block.code],
+                    [id: theFamily.address.id, level: 'Address', description: theFamily.address.text]
                 ],
 
-            navSelection: [ levelInHierarchy: 'Family', description:theFamily.familyName ],
+            navSelection: [ levelInHierarchy: 'Family', description:theFamily.name ],
 
             navChildren:
                 [
@@ -134,11 +134,14 @@ class NavigateController {
     def familymember( ) {
         Integer memberId = Integer.valueOf( params.id )
         Person theMember = Person.where{ id == memberId }.get( )
-        List answers = Answer.where{ person.id == memberId }.list( sort:'questionCode', order:'asc' )
-        def questions = [ 1:'1. Great', 2:'2. Better', 3:'3. Activities', 4:'4. Interests', 5:'5. Skill', 6:'6. Life' ]
+        List answers = Answer.where{ person.id == memberId }.list( sort:'question.id', order:'asc' )
+        // TODO Join answers to questions to get orderWithinQuestionnaire
+        // ... allows us to refactor the 1L, 2L, etc map
+        def questions = [ 1L:'1. Great', 2L:'2. Better', 3L:'3. Activities', 4L:'4. Interests', 5L:'5. Skill', 6L:'6. Life' ]
         def groupedAnswers = [:]
         answers.each {
-            def qCode = it.questionCode
+            def qCode = it.question.id
+            println qCode + ' is ' + qCode.class.name
             def soFar = groupedAnswers[ qCode ]
             if( soFar ) {
                 groupedAnswers[ qCode ] += ', ' + it.text
@@ -154,10 +157,10 @@ class NavigateController {
         [
             navContext:
             [
-                [id: theMember.family.location.block.neighbourhood.id, level: 'Neighbourhood', description: theMember.family.location.block.neighbourhood.name],
-                [id: theMember.family.location.block.id, level: 'Block', description: theMember.family.location.block.code],
-                [id: theMember.family.location.id, level: 'Address', description: theMember.family.location.officialAddress],
-                [id: theMember.family.id, level: 'Family', description: theMember.family.familyName]
+                [id: theMember.family.address.block.neighbourhood.id, level: 'Neighbourhood', description: theMember.family.address.block.neighbourhood.name],
+                [id: theMember.family.address.block.id, level: 'Block', description: theMember.family.address.block.code],
+                [id: theMember.family.address.id, level: 'Address', description: theMember.family.address.text],
+                [id: theMember.family.id, level: 'Family', description: theMember.family.name]
             ],
 
             navSelection: [ levelInHierarchy: 'Family Member', description:(theMember.firstNames+' '+theMember.lastName) ],

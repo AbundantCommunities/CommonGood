@@ -17,6 +17,7 @@ class DomainAuthorization {
     Date dateCreated
     Date lastUpdated
     
+    // TODO Can we remove mapping and constraints from DomainAuthorization?
     static mapping = {
         primaryPerson defaultValue: "FALSE"
     }

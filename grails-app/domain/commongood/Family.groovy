@@ -1,25 +1,31 @@
 package commongood
 
 class Family {
-    Location location
-    String familyName
-    Person primaryMember // Person to contact
-    Date initialInterviewDate
-
+    Address address
     Person interviewer // Block Connector
 
-    String note
+    String name
+    Date interviewDate
+    Integer orderWithinAddress
     Boolean participateInInterview
     Boolean permissionToContact
+    String note
 
     Date dateCreated
     Date lastUpdated
 
     static hasMany = [ members:Person ]
 
-    static constraints = {
-        note nullable: true
-        dateCreated nullable: true
-        lastUpdated nullable: true
-    }
+//    static mapping = {
+//        orderWithinAddress defaultValue: "100"
+//        note defaultValue: "'note'"
+//        participateInInterview defaultValue: "TRUE"
+//        note defaultValue: "TRUE"
+//    }
+
+//    static constraints = {
+//        address nullable: true
+//        dateCreated nullable: true
+//        lastUpdated nullable: true
+//    }
 }
