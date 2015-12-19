@@ -30,6 +30,7 @@ class Person {
     }
 
     static constraints = {
+        // We can create a neighbourhood or block connector without identifying a family:
         family nullable: true
     }
 }
