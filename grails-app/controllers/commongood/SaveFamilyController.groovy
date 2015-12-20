@@ -3,17 +3,16 @@ package commongood
 class SaveFamilyController {
 //  static allowedMethods = [index:'POST']
 
-// http://localhost:8080/CommonGood/saveFamily/index/2?name=Claus&participateInInterview=T&permissionToContact=F&note=LMAO
+// http://localhost:8080/CommonGood/saveFamily/index/2?name=Wertzworth&participateInInterview=F&permissionToContact=T&note=Good+times
 // http://localhost:8080/CommonGood/navigate/family/2
 
     def index() {
         def name = params.name
-        def participate = params.participateInInterview
-        def permission = params.permissionToContact
+        def participate = ('participateInInterview' in params)
+        def permission = ('permissionToContact' in params)
         def note = params.note
 
         println "familyName=${name} participateInInterview=${participate} permissionToContact=${permission} note=${note}"
-        println "${name.class.name} ${participate.class.name} ${permission.class.name} ${note.class.name}"
 
         if( 'id' in params ) {
             // The request wants us to change an existing family
