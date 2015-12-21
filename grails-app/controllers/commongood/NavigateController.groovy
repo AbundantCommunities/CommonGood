@@ -135,7 +135,7 @@ class NavigateController {
                     [id: theFamily.address.id, level: 'Address', description: theFamily.address.text]
                 ],
 
-            navSelection: [ levelInHierarchy: 'Family', description:theFamily.name ],
+            navSelection: [ levelInHierarchy: 'Family', description: theFamily.name, id: theFamily.id],
 
             navChildren:
                 [
