@@ -82,6 +82,23 @@ class NavigateController {
         families = families.collect{
             [ id:it.id, name:it.name]
         }
+
+        // In order to allow "add a family" to select an interviewer,
+        // we will pass a list of NCs and relevant BCs to the browser.
+        // FIXME hard-coded for neighbourhood id 1
+        // ... and it's an Integer because DomainAuthorization has its own problem!
+        Integer neighbourhoodId = 1
+        def people = DomainAuthorization.findAll("select da.person from DomainAuthorization da where da.domainCode=? and da.domainKey=?",
+                    [ DomainAuthorization.NEIGHBOURHOOD, , neighbourhoodId ])
+        println "people are ${people}"
+        people.each {
+            println it.metaClass.methods*.name.sort().unique()
+            println "A person: ${it.toString()}"
+        }
+//            println "DA? " + it["commongood.DomainAuthorization"]
+//            println "P?  " + it["commongood.Person"]
+//        }
+
         Map result =
             [
             navContext:
