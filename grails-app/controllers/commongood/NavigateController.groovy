@@ -14,7 +14,7 @@ class NavigateController {
             [
             navContext: [ ],
 
-            navSelection: [ levelInHierarchy: 'Application', description:'Installation Name Goes Here' ],
+            navSelection: [ levelInHierarchy:'Application', description:'Installation Name Goes Here' ],
 
             navChildren:
                 [
@@ -37,7 +37,7 @@ class NavigateController {
             [
             navContext: [ ],
 
-            navSelection: [ levelInHierarchy: 'Neighbourhood', description:theHood.name ],
+            navSelection: [ levelInHierarchy:'Neighbourhood', id:hoodId, description:theHood.name ],
 
             navChildren:
                 [
@@ -60,10 +60,10 @@ class NavigateController {
             [
             navContext:
                 [
-                    [id: theBlock.neighbourhood.id, level: 'Neighbourhood', description: theBlock.neighbourhood.name]
+                    [level:'Neighbourhood', id: theBlock.neighbourhood.id, description: theBlock.neighbourhood.name]
                 ],
 
-            navSelection: [ levelInHierarchy: 'Block', description:theBlock.displayName ],
+            navSelection: [ levelInHierarchy:'Block', id:blockId, description:theBlock.displayName ],
 
             navChildren:
                 [
@@ -87,6 +87,7 @@ class NavigateController {
         // we will pass a list of NCs and relevant BCs to the browser.
         // FIXME hard-coded for neighbourhood id 1
         // ... and it's an Integer because DomainAuthorization has its own problem!
+/*
         Integer neighbourhoodId = 1
         def people = DomainAuthorization.findAll("select da.person from DomainAuthorization da where da.domainCode=? and da.domainKey=?",
                     [ DomainAuthorization.NEIGHBOURHOOD, , neighbourhoodId ])
@@ -98,7 +99,7 @@ class NavigateController {
 //            println "DA? " + it["commongood.DomainAuthorization"]
 //            println "P?  " + it["commongood.Person"]
 //        }
-
+*/
         Map result =
             [
             navContext:
@@ -107,7 +108,7 @@ class NavigateController {
                     [id: theAddress.block.id, level: 'Block', description: theAddress.block.code]
                 ],
 
-            navSelection: [ levelInHierarchy: 'Address', description:theAddress.text ],
+            navSelection: [ levelInHierarchy:'Address', id:addressId, description:theAddress.text ],
 
             navChildren:
                 [
@@ -120,6 +121,14 @@ class NavigateController {
     }
 
     def family( ) {
+        Person interviewer // Block Connector
+// Tim needs these things
+//    String name
+//    Date interviewDate
+//    Integer orderWithinAddress
+//    Boolean participateInInterview
+//    Boolean permissionToContact
+//    String note
         Integer familyId = Integer.valueOf( params.id )
         Family theFamily = Family.where{ id == familyId }.get( )
         List members = Person.where{ family.id == familyId }.list( sort:'firstNames', order:'asc' )
@@ -135,7 +144,7 @@ class NavigateController {
                     [id: theFamily.address.id, level: 'Address', description: theFamily.address.text]
                 ],
 
-            navSelection: [ levelInHierarchy: 'Family', description: theFamily.name, id: theFamily.id],
+            navSelection: [ levelInHierarchy: 'Family', id:familyId, description: theFamily.name],
 
             navChildren:
                 [
@@ -179,7 +188,7 @@ class NavigateController {
                 [id: theMember.family.id, level: 'Family', description: theMember.family.name]
             ],
 
-            navSelection: [ levelInHierarchy: 'Family Member', description:(theMember.firstNames+' '+theMember.lastName) ],
+            navSelection: [ levelInHierarchy: 'Family Member', id:memberId, description:(theMember.firstNames+' '+theMember.lastName) ],
 
             navChildren:
             [
