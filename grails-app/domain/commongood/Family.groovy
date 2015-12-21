@@ -15,17 +15,4 @@ class Family {
     Date lastUpdated
 
     static hasMany = [ members:Person ]
-
-//    static mapping = {
-//        orderWithinAddress defaultValue: "100"
-//        note defaultValue: "'note'"
-//        participateInInterview defaultValue: "TRUE"
-//        note defaultValue: "TRUE"
-//    }
-
-//    static constraints = {
-//        address nullable: true
-//        dateCreated nullable: true
-//        lastUpdated nullable: true
-//    }
 }

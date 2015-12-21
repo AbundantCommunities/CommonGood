@@ -31,7 +31,7 @@ class NavigateController {
         Neighbourhood theHood = Neighbourhood.where{ id == hoodId }.get( )
         List blocks = Block.where{ neighbourhood.id == hoodId }.list( sort:'orderWithinNeighbourhood', order:'asc' )
         blocks = blocks.collect{
-            [ id:it.id, name:it.displayName]
+            [ id:it.id, name:it.displayName ]
         }
         Map result =
             [
@@ -63,7 +63,8 @@ class NavigateController {
                     [level:'Neighbourhood', id: theBlock.neighbourhood.id, description: theBlock.neighbourhood.name]
                 ],
 
-            navSelection: [ levelInHierarchy:'Block', id:blockId, description:theBlock.displayName ],
+            navSelection: [ levelInHierarchy:'Block', id:blockId, description:theBlock.description,
+                            code:theBlock.code, orderWithinNeighbourhood:theBlock.orderWithinNeighbourhood ],
 
             navChildren:
                 [
@@ -108,7 +109,8 @@ class NavigateController {
                     [id: theAddress.block.id, level: 'Block', description: theAddress.block.code]
                 ],
 
-            navSelection: [ levelInHierarchy:'Address', id:addressId, description:theAddress.text ],
+            navSelection: [ levelInHierarchy:'Address', id:addressId, description:theAddress.text, note:theAddress.note,
+                            orderWithinBlock:theAddress.orderWithinBlock ],
 
             navChildren:
                 [
@@ -122,13 +124,6 @@ class NavigateController {
 
     def family( ) {
         Person interviewer // Block Connector
-// Tim needs these things
-//    String name
-//    Date interviewDate
-//    Integer orderWithinAddress
-//    Boolean participateInInterview
-//    Boolean permissionToContact
-//    String note
         Integer familyId = Integer.valueOf( params.id )
         Family theFamily = Family.where{ id == familyId }.get( )
         List members = Person.where{ family.id == familyId }.list( sort:'firstNames', order:'asc' )
@@ -144,7 +139,11 @@ class NavigateController {
                     [id: theFamily.address.id, level: 'Address', description: theFamily.address.text]
                 ],
 
-            navSelection: [ levelInHierarchy: 'Family', id:familyId, description: theFamily.name],
+            navSelection:[ levelInHierarchy: 'Family', id:familyId, description: theFamily.name, note:theFamily.note,
+                            interviewDate:theFamily.interviewDate,
+                            orderWithinAddress:theFamily.orderWithinAddress,
+                            participateInInterview:theFamily.participateInInterview,
+                            permissionToContact:theFamily.permissionToContact ],
 
             navChildren:
                 [
@@ -188,7 +187,10 @@ class NavigateController {
                 [id: theMember.family.id, level: 'Family', description: theMember.family.name]
             ],
 
-            navSelection: [ levelInHierarchy: 'Family Member', id:memberId, description:(theMember.firstNames+' '+theMember.lastName) ],
+            navSelection:[ levelInHierarchy: 'Family Member', id:memberId, description:theMember.fullName,
+                            firstNames:theMember.firstNames, lastName:theMember.lastName,
+                            birthYear:theMember.birthYear, emailAddress:theMember.emailAddress,
+                            phoneNumber:theMember.phoneNumber, orderWithinFamily:theMember.orderWithinFamily ],
 
             navChildren:
             [
@@ -199,4 +201,28 @@ class NavigateController {
         println "Navigate to family member ${memberId}"
         result
     }
+/*
+    def question( ) {
+        Integer questionId = Integer.valueOf( params.id )
+        Question theQuestion = Question.where{ id == questionId }.get( )
+        List answers = Answer.where{ neighbourhood.id == hoodId }.list( sort:'orderWithinNeighbourhood', order:'asc' )
+        blocks = blocks.collect{
+            [ id:it.id, name:it.displayName]
+        }
+        Map result =
+            [
+            navContext: [ ],
+
+            navSelection: [ levelInHierarchy:'Neighbourhood', id:hoodId, description:theHood.name ],
+
+            navChildren:
+                [
+                childType: 'Block',
+                children: blocks
+                ]
+            ]
+        println "Navigate to neighbourhood ${hoodId} ${theHood.name}"
+        result
+    }
+*/
 }
