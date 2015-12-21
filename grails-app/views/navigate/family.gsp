@@ -7,16 +7,59 @@
         <meta name="description" content="Abundant Communities - Edmonton" />
         <link rel="stylesheet" href="${resource(dir:'css',file:'common.css')}" />
         <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Quicksand">
-        <g:if test="${navChildren.childType.toLowerCase() == 'family'}">
-            <script type="text/javascript">
-                function presentFamilyModal() {
-                    document.getElementById("add-edit-family-container").style.visibility='visible';
-                }
-                function dismissFamilyModal() {
-                    document.getElementById("add-edit-family-container").style.visibility='hidden';
-                }
-            </script>
-        </g:if>
+        <script type="text/javascript">
+            function presentEditModal() {
+                document.getElementById("edit-container").style.visibility='visible';
+            }
+            function dismissEditModal() {
+                document.getElementById("edit-container").style.visibility='hidden';
+            }
+        </script>
+        <style type="text/css">
+            #edit-container {
+                position:absolute;;
+                top:100px;
+                left:300px;
+                width:330px;
+                height:350px;
+                padding:20px;
+                padding-top: 10px;
+                box-shadow: 0px 0px 20px #000000;
+                background-color: #FFFFFF;
+                border-radius:5px;
+                border-width: 2px;
+                border-color: #B48B6A;
+                border-style: solid;
+                visibility:hidden;
+            }
+            input#edit-savebutton{
+                position: absolute;
+                left:180px;
+                top:340px;
+                cursor:pointer; /*forces the cursor to change to a hand when the button is hovered*/
+                padding:5px 25px; /*add some padding to the inside of the button*/
+                background:transparent; /*the colour of the button*/
+                border:0px;
+                color:#B48B6A;
+                font-size: 14px;
+                font-weight: bold;
+            }
+            button#edit-cancelbutton{
+                position: absolute;
+                left:80px;
+                top:340px;
+                cursor:pointer; /*forces the cursor to change to a hand when the button is hovered*/
+                padding:5px 25px; /*add some padding to the inside of the button*/
+                background:transparent; /*the colour of the button*/
+                border:0px;
+                color:#B48B6A;
+                font-size: 14px;
+            }
+        </style>
+
+
+
+
     </head>
     <body>
         <div id="pagecontainer">
@@ -44,14 +87,14 @@
                 </g:if>
 
                 <div id="content-actions">
-                    <div class="content-action"><a href="#">Edit</a></div>
+                    <div class="content-action"><a href="#" onclick="presentEditModal()">Edit</a></div>
                     <div class="content-action"><a href="#">Delete</a></div>
                     <div class="content-action"><a href="#">Print</a> (<a href="#">preferences</a>)</div>
                     <div class="content-action"><a href="#">Search</a></div>
                 </div>
             </div>
             <div id="content-children">
-                <div id="content-children-title">${navChildren.childType+'s'} for ${navSelection.levelInHierarchy} ${navSelection.description}&nbsp;&nbsp;<a <g:if test="${navChildren.childType.toLowerCase() == 'family'}">onclick="presentFamilyModal()"</g:if> href="#">+ Add New ${navChildren.childType}</a></div>
+                <div id="content-children-title">${navChildren.childType+'s'} for ${navSelection.levelInHierarchy} ${navSelection.description}&nbsp;&nbsp;<a href="#">+ Add New ${navChildren.childType}</a></div>
                 <div id="content-children-heading">Name</div>
                 <g:each in="${navChildren.children}" var="child">
                     <div class="content-children-row"><a href="${resource(dir:'navigate/'+navChildren.childType.toLowerCase(),file:"${child.id}")}">${child.name}</a></div>
@@ -60,22 +103,22 @@
             <div id="footer">
                 &copy;2015 Common Good, A Society for Connected Neighbourhoods. All rights reserved.
             </div>
-            <g:if test="${navChildren.childType.toLowerCase() == 'family'}">
-                <div id="add-edit-family-container">
-                    <p style="font-weight:bold;font-size:14px;">New Family</p>
-                    <form action=${resource(file:'saveFamily')} method="post">
-                        Family name: <input type="text" name="familyName" />
-                        <br />
-                        <input type="checkbox" name="permissionToContact" /> Permission to contact
-                        <br />
-                        <input type="checkbox" name="participateInInterview" /> Has agreed to interview
-                        <br />
-
-                        <input id="savebutton" type="submit" value="Save">
-                    </form>
-                    <button id="cancelbutton" type="button" onclick="JavaScript:dismissFamilyModal();">Cancel</button>
-                </div>
-            </g:if>
+            <div id="edit-container">
+                <p style="font-weight:bold;font-size:14px;">Edit Family</p>
+                <form action=${resource(file:'saveFamily')} method="post">
+                    <input type="hidden" name="id" value="${navSelection.id}" />
+                    <p>Family name: <input type="text" name="name" value="${navSelection.description}"/></p>
+                    <p>Initial interview date: <input type="date" name="interviewDate" placeholder="MM/DD/YYYY"/></p>
+                    <p>Initial interviewer: <input type="text" name="interviewer"/></p>
+                    <p><input type="checkbox" name="permissionToContact" /> Permission to contact</p>
+                    <p><input type="checkbox" name="participateInInterview" /> Has agreed to interview</p>
+                    <p>Order within address: <input type="text" name="orderWithinAddress" /></p>
+                    <p>Note:</p>
+                    <p><textarea name="note" cols=44 rows=4></textarea></p>
+                    <input id="edit-savebutton" type="submit" value="Save">
+                </form>
+                <button id="edit-cancelbutton" type="button" onclick="JavaScript:dismissEditModal();">Cancel</button>
+            </div>
         </div>
     </body>
 </html>
