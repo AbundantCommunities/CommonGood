@@ -20,6 +20,7 @@ environments {
         dataSource {
             dbCreate = "update" // one of 'create', 'create-drop', 'update', 'validate', ''
             url = "jdbc:postgresql://localhost/thehoods"
+            logSql = false
         }
     }
     test {

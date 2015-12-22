@@ -5,6 +5,9 @@ We handle GET requests that navigate to some part of our data's "natural hierarc
 */
 class NavigateController {
 
+    // Automagically becomes an instance of DomainAuthorizationService:
+    def domainAuthorizationService
+    
     def application( ) {
         List hoods = Neighbourhood.list( sort:'name', order:'asc')
         hoods = hoods.collect{
@@ -85,22 +88,11 @@ class NavigateController {
         }
 
         // In order to allow "add a family" to select an interviewer,
-        // we will pass a list of NCs and relevant BCs to the browser.
-        // FIXME hard-coded for neighbourhood id 1
-        // ... and it's an Integer because DomainAuthorization has its own problem!
-/*
-        Integer neighbourhoodId = 1
-        def people = DomainAuthorization.findAll("select da.person from DomainAuthorization da where da.domainCode=? and da.domainKey=?",
-                    [ DomainAuthorization.NEIGHBOURHOOD, , neighbourhoodId ])
-        println "people are ${people}"
-        people.each {
-            println it.metaClass.methods*.name.sort().unique()
-            println "A person: ${it.toString()}"
-        }
-//            println "DA? " + it["commongood.DomainAuthorization"]
-//            println "P?  " + it["commongood.Person"]
-//        }
-*/
+        // we will pass a list of the relevant BCs and NCs to the browser.
+        Long neighbourhoodId = theAddress.block.neighbourhood.id
+        Long blockId = theAddress.block.id
+        def possibleInterviewers = domainAuthorizationService.getPossibleInterviewers( neighbourhoodId, blockId )
+        
         Map result =
             [
             navContext:
@@ -110,7 +102,7 @@ class NavigateController {
                 ],
 
             navSelection: [ levelInHierarchy:'Address', id:addressId, description:theAddress.text, note:theAddress.note,
-                            orderWithinBlock:theAddress.orderWithinBlock ],
+                            orderWithinBlock:theAddress.orderWithinBlock, possibleInterviewers:possibleInterviewers ],
 
             navChildren:
                 [
@@ -130,6 +122,13 @@ class NavigateController {
         members = members.collect{
             [ id:it.id, name:(it.firstNames+' '+it.lastName) ]
         }
+
+        // In order to allow "edit a family" to change the interviewer,
+        // we will pass a list of the relevant BCs and NCs to the browser.
+        Long neighbourhoodId = theFamily.address.block.neighbourhood.id
+        Long blockId = theFamily.address.block.id
+        def possibleInterviewers = domainAuthorizationService.getPossibleInterviewers( neighbourhoodId, blockId )
+        
         Map result =
             [
             navContext:
@@ -143,7 +142,8 @@ class NavigateController {
                             interviewDate:theFamily.interviewDate,
                             orderWithinAddress:theFamily.orderWithinAddress,
                             participateInInterview:theFamily.participateInInterview,
-                            permissionToContact:theFamily.permissionToContact ],
+                            permissionToContact:theFamily.permissionToContact,
+                            possibleInterviewers:possibleInterviewers ],
 
             navChildren:
                 [
@@ -160,23 +160,29 @@ class NavigateController {
         Integer memberId = Integer.valueOf( params.id )
         Person theMember = Person.where{ id == memberId }.get( )
         List answers = Answer.where{ person.id == memberId }.list( sort:'question.id', order:'asc' )
+        // 
         // TODO Join answers to questions to get orderWithinQuestionnaire
         // ... allows us to refactor the 1L, 2L, etc map
-        def questions = [ 1L:'1. Great', 2L:'2. Better', 3L:'3. Activities', 4L:'4. Interests', 5L:'5. Skill', 6L:'6. Life' ]
-        def groupedAnswers = [:]
+
+        def groupedAnswers = [ 1L:'1. Great: ', 2L:'2. Better: ', 3L:'3. Activities: ', 4L:'4. Interests: ', 5L:'5. Skill: ', 6L:'6. Life: ' ]
         answers.each {
             def qCode = it.question.id
             def soFar = groupedAnswers[ qCode ]
-            if( soFar ) {
-                groupedAnswers[ qCode ] += ', ' + it.text
+
+            if( soFar.endsWith(': ') ) {
+                groupedAnswers[ qCode ] += it.text
             } else {
-                groupedAnswers[ qCode ] = questions[qCode] + ': ' + it.text
+                groupedAnswers[ qCode ] += ', ' + it.text
             }
         }
         def children = [ ]
         groupedAnswers = groupedAnswers.each { key, value ->
+            if( value.endsWith(': ') ) {
+                value += '?'
+            }
             children << [ id:key, name:value ]
         }
+
         Map result =
         [
             navContext:
