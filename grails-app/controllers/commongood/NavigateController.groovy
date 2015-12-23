@@ -8,7 +8,8 @@ class NavigateController {
     // Automagically becomes an instance of DomainAuthorizationService:
     def domainAuthorizationService
     
-    def application( ) {
+    def installation( ) {
+        ThisInstallation thisInstallation = ThisInstallation.get( )
         List hoods = Neighbourhood.list( sort:'name', order:'asc')
         hoods = hoods.collect{
             [ id:it.id, name:it.name]
@@ -17,7 +18,8 @@ class NavigateController {
             [
             navContext: [ ],
 
-            navSelection: [ levelInHierarchy:'Application', description:'Installation Name Goes Here' ],
+            navSelection: [ levelInHierarchy:'Installation', description:thisInstallation.name,
+                            configured: thisInstallation.configured ],
 
             navChildren:
                 [
@@ -26,7 +28,7 @@ class NavigateController {
                 ]
             ]
         println 'Navigate to application'
-        result
+        render "This installation of CommonGood is: ${thisInstallation.name}"
     }
 
     def neighbourhood( ) {

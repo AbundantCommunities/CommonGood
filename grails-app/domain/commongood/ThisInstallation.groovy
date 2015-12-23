@@ -11,4 +11,9 @@ class ThisInstallation {
     static constraints = {
         logo nullable: true
     }
+    
+    // Get the singleton installation record
+    static ThisInstallation get( ) {
+        return ThisInstallation.get(1)
+    }
 }
