@@ -7,7 +7,6 @@ class FamilyController {
 // http://localhost:8080/CommonGood/navigate/family/2
 
     def save() {
-        def addressId = Long.valueOf( params.addressId )
         def interviewerId = Long.valueOf( params.interviewerId )
         def name = params.familyName
         def participate = ('participateInInterview' in params)
@@ -23,7 +22,6 @@ class FamilyController {
             // The request wants us to change an existing family
             def familyId = Long.valueOf( params.id )
             def family = Family.get( familyId )
-            faily.address = Address.get( addressId )
             family.interviewer = Person.get( interviewerId )
             family.name = name
             family.participateInInterview = participate
@@ -37,7 +35,8 @@ class FamilyController {
         } else {
             // The request is to create a new family
             Family family = new Family( )
-            faily.address = Address.get( addressId )
+            def addressId = Long.valueOf( params.addressId )
+            family.address = Address.get( addressId )
             family.interviewer = Person.get( interviewerId )
             family.name = name
             family.participateInInterview = participate

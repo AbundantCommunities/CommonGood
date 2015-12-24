@@ -129,7 +129,7 @@ class NavigateController {
         // we will pass a list of the relevant BCs and NCs to the browser.
         Long neighbourhoodId = theFamily.address.block.neighbourhood.id
         Long blockId = theFamily.address.block.id
-        def possibleInterviewers = domainAuthorizationService.getPossibleInterviewers( neighbourhoodId, blockId )
+        def possibleInterviewers = domainAuthorizationService.getPossibleInterviewers( neighbourhoodId, blockId, theFamily.interviewer.id )
         
         Map result =
             [
@@ -209,9 +209,10 @@ class NavigateController {
         println "Navigate to family member ${memberId}"
         result
     }
-/*
+
     def question( ) {
         Integer questionId = Integer.valueOf( params.id )
+/*
         Question theQuestion = Question.where{ id == questionId }.get( )
         List answers = Answer.where{ neighbourhood.id == hoodId }.list( sort:'orderWithinNeighbourhood', order:'asc' )
         blocks = blocks.collect{
@@ -231,6 +232,8 @@ class NavigateController {
             ]
         println "Navigate to neighbourhood ${hoodId} ${theHood.name}"
         result
-    }
 */
+        render "You asked to navigate to question id ${questionId} but that feature is not implemented!"
+    }
+
 }
