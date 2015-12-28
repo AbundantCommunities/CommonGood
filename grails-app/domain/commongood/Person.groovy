@@ -24,7 +24,12 @@ class Person {
     Date lastUpdated
 
     static hasMany = [ answers:Answer, privileges:DomainAuthorization ]
-    
+
+    Person( ) {
+        appUser = Boolean.FALSE
+        passwordHash = 0
+    }
+
     def getFullName( ) {
         return firstNames + ' ' + lastName
     }

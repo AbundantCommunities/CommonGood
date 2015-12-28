@@ -122,7 +122,7 @@ class NavigateController {
         Family theFamily = Family.where{ id == familyId }.get( )
         List members = Person.where{ family.id == familyId }.list( sort:'firstNames', order:'asc' )
         members = members.collect{
-            [ id:it.id, name:(it.firstNames+' '+it.lastName) ]
+            [ id:it.id, name:it.fullName ]
         }
 
         // In order to allow "edit a family" to change the interviewer,

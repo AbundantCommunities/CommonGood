@@ -1,50 +1,35 @@
 package commongood
 
 class FamilyController {
-//  static allowedMethods = [index:'POST']
-
-// http://localhost:8080/CommonGood/family/save/2?name=Wertzworth&participateInInterview=F&permissionToContact=T&note=Good+times
-// http://localhost:8080/CommonGood/navigate/family/2
+    static allowedMethods = [index:'POST']
 
     def save() {
-        def interviewerId = Long.valueOf( params.interviewerId )
-        def name = params.familyName
-        def participate = ('participateInInterview' in params)
-        def permission = ('permissionToContact' in params)
-        def interviewDate = new Date( ).parse( 'yyyy-MM-dd', params.initialInterviewDate )
-        def note = params.note
-        def orderWithin = params.orderWithinAddress
-
-        println "familyName=${name} participateInInterview=${participate} permissionToContact=${permission} note=${note}"
-
+        Family family
         if( 'id' in params ) {
-            println "Request to CHANGE family ${familyId}"
-            // The request wants us to change an existing family
+            // The request wants us to change an existing family.
+            // We will not change the family's address.
             def familyId = Long.valueOf( params.id )
-            def family = Family.get( familyId )
-            family.interviewer = Person.get( interviewerId )
-            family.name = name
-            family.participateInInterview = participate
-            family.permissionToContact = permission
-            family.note = note
-            family.interviewDate = interviewDate
-            family.order = orderWithin
-            // TODO Test: family.save(failOnError: true)
-            family.save( flush:true )
-            forward controller:'navigate', action:'family', id:familyId
+            println "Request to CHANGE family ${familyId}"
+            family = Family.get( familyId )
         } else {
-            // The request is to create a new family
-            Family family = new Family( )
+            // The request is to create a new family.
+            // We need to get the family's address from the request.
+            family = new Family( )
             def addressId = Long.valueOf( params.addressId )
+            println "Request to add a family to address ${addressId}"
             family.address = Address.get( addressId )
-            family.interviewer = Person.get( interviewerId )
-            family.name = name
-            family.participateInInterview = participate
-            family.permissionToContact = permission
-            family.note = note
-            family.interviewDate = interviewDate
-            family.order = orderWithin
-            family.save( flush:true )
         }
+
+        family.interviewer = Person.get( Long.valueOf( params.interviewerId ) )
+        family.name = params.familyName
+        family.participateInInterview = ('participateInInterview' in params)
+        family.permissionToContact = ('permissionToContact' in params)
+        family.note = params.note
+        family.interviewDate = new Date( ).parse( 'yyyy-MM-dd', params.initialInterviewDate )
+        family.orderWithinAddress = Integer.valueOf( params.orderWithinAddress )
+
+        // TODO Test: family.save(failOnError: true)
+        family.save( flush:true )
+        forward controller:'navigate', action:'family', id:family.id
     }
 }
