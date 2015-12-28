@@ -1634,7 +1634,5 @@ INSERT INTO this_installation VALUES (1, 0, true, NULL, 'Abundant Edmonton Onlin
 
 ALTER TABLE this_installation ENABLE TRIGGER ALL;
 
---
--- PostgreSQL database dump complete
---
-
+-- Bump up the value of the next inserted key:
+ALTER SEQUENCE hibernate_sequence RESTART WITH 1001;
