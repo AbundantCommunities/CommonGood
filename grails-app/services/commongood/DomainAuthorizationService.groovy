@@ -24,7 +24,7 @@ class DomainAuthorizationService {
                     [ DomainAuthorization.NEIGHBOURHOOD, , iNeighbourhoodId ])
         das.each {
             // each result row found above has a list like [ DomainAuthorization, Person ]
-            def checked = (it[1].id == currentInterviewerId) ? 'checked' : ''
+            def checked = (it[1].id == currentInterviewerId) ? 'true' : 'false'
             result << [ id: it[1].id, fullName:it[1].fullName, checked:checked ]
         }
 
