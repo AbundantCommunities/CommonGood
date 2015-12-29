@@ -22,16 +22,14 @@ class DomainAuthorizationService {
 
         def das = DomainAuthorization.findAll("from DomainAuthorization da join da.person where da.domainCode=? and da.domainKey=?",
                     [ DomainAuthorization.NEIGHBOURHOOD, , iNeighbourhoodId ])
-        das.each {
-            // each result row found above has a list like [ DomainAuthorization, Person ]
-            def checked = (it[1].id == currentInterviewerId) ? 'true' : 'false'
-            result << [ id: it[1].id, fullName:it[1].fullName, checked:checked ]
-        }
 
         das = DomainAuthorization.findAll("from DomainAuthorization da join da.person where da.domainCode=? and da.domainKey=?",
                     [ DomainAuthorization.BLOCK, , iBlockId ])
+
         das.each {
-            result << [ id: it[1].id, fullName:it[1].fullName ]
+            // each result row found above has a list like [ DomainAuthorization, Person ]
+            def thisOne = (it[1].id == currentInterviewerId) ? 'true' : 'false'
+            result << [ id: it[1].id, fullName:it[1].fullName, checked:thisOne ]
         }
 
         return result
