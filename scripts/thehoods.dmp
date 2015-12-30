@@ -495,12 +495,12 @@ ALTER TABLE person ENABLE TRIGGER ALL;
 
 ALTER TABLE question DISABLE TRIGGER ALL;
 
-INSERT INTO question VALUES (1, 0, '1', '2015-12-18 00:00:00', '2015-12-18 00:00:00', 1, 100, 'What makes a great neighbourhood?');
-INSERT INTO question VALUES (2, 0, '2', '2015-12-18 00:00:00', '2015-12-18 00:00:00', 1, 100, 'What else can we do to make our neighbourhood a great place to live?');
-INSERT INTO question VALUES (3, 0, '3', '2015-12-18 00:00:00', '2015-12-18 00:00:00', 1, 100, 'What activities would you like to join in with neighbours?');
-INSERT INTO question VALUES (4, 0, '4', '2015-12-18 00:00:00', '2015-12-18 00:00:00', 1, 100, 'Do you have interests that you would value discussing or participating in with neighbours?');
-INSERT INTO question VALUES (5, 0, '5', '2015-12-18 00:00:00', '2015-12-18 00:00:00', 1, 100, 'Do you have a skill, gift or ability that you would be comfortable using to help neighbours or the neighbourhood? ');
-INSERT INTO question VALUES (6, 0, '6', '2015-12-18 00:00:00', '2015-12-18 00:00:00', 1, 100, 'Are there some life experiences that you would consider sharing for the benefit of neighbours?');
+INSERT INTO question VALUES (11, 0, '1', '2015-12-18 00:00:00', '2015-12-18 00:00:00', 1, 100, 'What makes a great neighbourhood?');
+INSERT INTO question VALUES (12, 0, '2', '2015-12-18 00:00:00', '2015-12-18 00:00:00', 1, 200, 'What else can we do to make our neighbourhood a great place to live?');
+INSERT INTO question VALUES (13, 0, '3', '2015-12-18 00:00:00', '2015-12-18 00:00:00', 1, 300, 'What activities would you like to join in with neighbours?');
+INSERT INTO question VALUES (14, 0, '4', '2015-12-18 00:00:00', '2015-12-18 00:00:00', 1, 400, 'Do you have interests that you would value discussing or participating in with neighbours?');
+INSERT INTO question VALUES (15, 0, '5', '2015-12-18 00:00:00', '2015-12-18 00:00:00', 1, 500, 'Do you have a skill, gift or ability that you would be comfortable using to help neighbours or the neighbourhood? ');
+INSERT INTO question VALUES (16, 0, '6', '2015-12-18 00:00:00', '2015-12-18 00:00:00', 1, 600, 'Are there some life experiences that you would consider sharing for the benefit of neighbours?');
 
 
 ALTER TABLE question ENABLE TRIGGER ALL;

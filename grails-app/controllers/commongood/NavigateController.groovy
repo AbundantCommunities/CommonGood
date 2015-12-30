@@ -159,24 +159,36 @@ class NavigateController {
 
     // Lower case M because of the way our GSP constructs navigation URLs
     def familymember( ) {
-        Integer memberId = Integer.valueOf( params.id )
-        Person theMember = Person.where{ id == memberId }.get( )
-        List answers = Answer.where{ person.id == memberId }.list( sort:'question.id', order:'asc' )
-        // 
-        // TODO Join answers to questions to get orderWithinQuestionnaire
-        // ... allows us to refactor the 1L, 2L, etc map
+        Long memberId = Long.valueOf( params.id )
+//        Person theMember = Person.where{ id == memberId }.get( )
 
-        def groupedAnswers = [ 1L:'1. Great: ', 2L:'2. Better: ', 3L:'3. Activities: ', 4L:'4. Interests: ', 5L:'5. Skill: ', 6L:'6. Life: ' ]
+        /* The answers look like:
+//        [ [commongood.Answer : 54, commongood.Person : 7, commongood.Question : 12],
+            [commongood.Answer : 55, commongood.Person : 7, commongood.Question : 13],
+            [commongood.Answer : 56, commongood.Person : 7, commongood.Question : 14] ]
+*/
+        def answers = Answer.findAll('from Answer a join a.person p join a.question q where p.id=? order by q.orderWithinQuestionnaire, a.id', [memberId])
+        Person theMember
+        if( answers.size() == 0 ) {
+            theMember = Person.where{ id == memberId }.get( )
+        } else {
+            theMember = answers[0][1]
+        }
+
+        // FIXME Grouping of answers for a member works only for Standard 6 questions
+        def groupedAnswers = [ '1':'1. Great: ', '2':'2. Better: ', '3':'3. Activities: ', '4':'4. Interests: ', '5':'5. Skill: ', '6':'6. Life: ' ]
         answers.each {
-            def qCode = it.question.id
-            def soFar = groupedAnswers[ qCode ]
+            Answer answer = it[0]
+            Question question = it[2]
 
+            def soFar = groupedAnswers[ question.code ]
             if( soFar.endsWith(': ') ) {
-                groupedAnswers[ qCode ] += it.text
+                groupedAnswers[ question.code ] += answer.text
             } else {
-                groupedAnswers[ qCode ] += ', ' + it.text
+                groupedAnswers[ question.code ] += ', ' + answer.text
             }
         }
+
         def children = [ ]
         groupedAnswers = groupedAnswers.each { key, value ->
             if( value.endsWith(': ') ) {
