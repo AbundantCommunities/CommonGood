@@ -84,7 +84,7 @@ class NavigateController {
     def address( ) {
         Integer addressId = Integer.valueOf( params.id )
         Address theAddress = Address.where{ id == addressId }.get( )
-        List families = Family.where{ address.id == addressId }.list( )
+        List families = Family.where{ address.id == addressId }.list( sort:'orderWithinAddress', order:'asc' )
         families = families.collect{
             [ id:it.id, name:it.name]
         }
@@ -120,7 +120,7 @@ class NavigateController {
         Person interviewer // Block Connector
         Integer familyId = Integer.valueOf( params.id )
         Family theFamily = Family.where{ id == familyId }.get( )
-        List members = Person.where{ family.id == familyId }.list( sort:'firstNames', order:'asc' )
+        List members = Person.where{ family.id == familyId }.list( sort:'orderWithinFamily', order:'asc' )
         members = members.collect{
             [ id:it.id, name:it.fullName ]
         }
@@ -212,6 +212,7 @@ class NavigateController {
 
     def question( ) {
         Integer questionId = Integer.valueOf( params.id )
+        render "You asked to navigate to question id ${questionId} but that feature is not implemented!"
 /*
         Question theQuestion = Question.where{ id == questionId }.get( )
         List answers = Answer.where{ neighbourhood.id == hoodId }.list( sort:'orderWithinNeighbourhood', order:'asc' )
@@ -233,7 +234,5 @@ class NavigateController {
         println "Navigate to neighbourhood ${hoodId} ${theHood.name}"
         result
 */
-        render "You asked to navigate to question id ${questionId} but that feature is not implemented!"
     }
-
 }
