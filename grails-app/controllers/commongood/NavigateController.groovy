@@ -130,7 +130,9 @@ class NavigateController {
         Long neighbourhoodId = theFamily.address.block.neighbourhood.id
         Long blockId = theFamily.address.block.id
         def possibleInterviewers = domainAuthorizationService.getPossibleInterviewers( neighbourhoodId, blockId, theFamily.interviewer.id )
-        
+
+        def questions = Question.findAll('from Question where neighbourhood.id=? order by orderWithinQuestionnaire, id', [theFamily.address.block.neighbourhood.id])
+
         Map result =
             [
             navContext:
@@ -145,7 +147,8 @@ class NavigateController {
                             orderWithinAddress:theFamily.orderWithinAddress,
                             participateInInterview:theFamily.participateInInterview,
                             permissionToContact:theFamily.permissionToContact,
-                            possibleInterviewers:possibleInterviewers ],
+                            possibleInterviewers:possibleInterviewers,
+                            questions: questions ],
 
             navChildren:
                 [
