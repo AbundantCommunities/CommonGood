@@ -9,10 +9,4 @@ class Answer {
 
     Date dateCreated
     Date lastUpdated
-
-//    static constraints = {
-//        question nullable: true
-//        dateCreated nullable: true
-//        lastUpdated nullable: true
-//    }
 }
