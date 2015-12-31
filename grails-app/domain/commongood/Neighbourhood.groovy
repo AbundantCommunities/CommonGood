@@ -11,7 +11,5 @@ class Neighbourhood {
 
     static constraints = {
         logo nullable: true
-        dateCreated nullable: true
-        lastUpdated nullable: true
     }
 }

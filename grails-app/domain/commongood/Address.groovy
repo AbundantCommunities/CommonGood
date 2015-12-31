@@ -11,9 +11,4 @@ class Address {
 
     // In some neighbourhoods addresses have a single Family but not all.
     static hasMany = [ families:Family ]
-
-//    static constraints = {
-//        dateCreated nullable: true
-//        lastUpdated nullable: true
-//    }
 }
