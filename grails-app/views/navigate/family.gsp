@@ -28,6 +28,22 @@
                 document.getElementById('interviewerId').value = interviewerId;
                 editForm.submit();
             }
+            function presentBulkAnswersModal() {
+                var pagecontainerDiv = document.getElementById("pagecontainer");
+                document.getElementById("transparent-overlay").setAttribute("style","height:"+pagecontainerDiv.clientHeight+"px;");
+                
+                document.getElementById("transparent-overlay").style.visibility='visible';
+                document.getElementById("bulk-answers-container").style.visibility='visible';
+                //document.getElementById("familyNameInput").focus();
+            }
+            function dismissBulkAnswersModal() {
+                document.getElementById("bulk-answers-container").style.visibility='hidden';
+                document.getElementById("transparent-overlay").style.visibility='hidden';
+            }
+            function addBulkAnswers() {
+                dismissBulkAnswersModal();
+                document.getElementById('bulk-answers-form').submit();
+            }
 
             // Initialize array to hold ids for possible interviewers.
             var possibleInterviewerIds = [ ];
@@ -37,6 +53,7 @@
                     if (possibleInterviewerIds[i][1]) {
                         var possibleInterviewerSelect = document.getElementById( "possibleInterviewerSelect" );
                         possibleInterviewerSelect.selectedIndex = i;
+                        document.getElementById('initialInterviewerDiv').innerHTML = "Initial interviewer: "+possibleInterviewerSelect.value;
                     }
                 }
             }
@@ -82,6 +99,60 @@
                 color:#B48B6A;
                 font-size: 14px;
             }
+            #bulk-answers-container {
+                position:absolute;;
+                top:50px;
+                left:${(929/2) - ((290+navChildren.children.size()*180) / 2)}px;
+                width:${290+navChildren.children.size()*180}px;
+                height:${50+(navSelection.questions.size()*80)}px;
+                padding:20px;
+                padding-top: 10px;
+                box-shadow: 0px 0px 20px #000000;
+                background-color: #FFFFFF;
+                border-radius:10px;
+                border-width: 2px;
+                border-color: #B48B6A;
+                border-style: solid;
+                visibility:hidden;
+            }
+            button#bulk-answers-savebutton {
+                position: absolute;
+                left:${((290+navChildren.children.size()*180)/2) + 20}px;
+                top:${36+(navSelection.questions.size()*80)}px;
+                cursor:pointer; /*forces the cursor to change to a hand when the button is hovered*/
+                padding:5px 25px; /*add some padding to the inside of the button*/
+                background:transparent; /*the colour of the button*/
+                border:0px;
+                color:#B48B6A;
+                font-size: 14px;
+                font-weight: bold;
+            }
+            button#bulk-answers-cancelbutton {
+                position: absolute;
+                left:${((290+navChildren.children.size()*180)/2) - 80}px;
+                top:${36+(navSelection.questions.size()*80)}px;
+                cursor:pointer; /*forces the cursor to change to a hand when the button is hovered*/
+                padding:5px 25px; /*add some padding to the inside of the button*/
+                background:transparent; /*the colour of the button*/
+                border:0px;
+                color:#B48B6A;
+                font-size: 14px;
+            }
+            .heading-row {
+                height:25px;
+            }
+            .answer-row {
+                height:80px;
+            }
+            .question-column {
+                display: inline-block;
+                width: 260px;
+                vertical-align:top;
+            }
+            .answer-column {
+                display: inline-block;
+                width: 180px;
+            }
         </style>
 
 
@@ -106,7 +177,7 @@
                 <div id="content-detail-title">${navSelection.levelInHierarchy}</div>
                 <div class="content-detail-value">Name: ${navSelection.description}</div>
                 <div class="content-detail-value">Initial interview date: <g:formatDate format='yyyy-MM-dd' date='${navSelection.interviewDate}'/></div>
-                <div class="content-detail-value">Initial interviewer: coming soon ...</div>
+                <div id="initialInterviewerDiv" class="content-detail-value">Initial interviewer: </div>
                 <div class="content-detail-value">
                     <g:if test="${navSelection.permissionToContact}">
                         Permission to contact: Yes
@@ -131,7 +202,7 @@
 
 
                 <div id="content-actions-left-side">
-                    <div class="content-left-action"><a href="#">Add Interview Answers</a></div>
+                    <div class="content-left-action"><a href="#" onclick="presentBulkAnswersModal();">Add Interview Answers</a></div>
                 </div>
 
                 <div id="content-actions">
@@ -163,7 +234,7 @@
                             <g:each in="${navSelection.possibleInterviewers}" var="possibleInterviewer">
                                 <option value="${possibleInterviewer.fullName}">${possibleInterviewer.fullName}</option>
                                 <script type="text/javascript">
-                                    <g:if test="${possibleInterviewer.checked == 'true'}">
+                                    <g:if test="${possibleInterviewer.default == 'true'}">
                                         possibleInterviewerIds.push([${possibleInterviewer.id}, true]);
                                     </g:if>
                                     <g:else>
@@ -192,6 +263,26 @@
                 </form>
                 <button id="edit-savebutton" type="button" onclick="JavaScript:saveFamily();">Save</button>
                 <button id="edit-cancelbutton" type="button" onclick="JavaScript:dismissEditModal();">Cancel</button>
+            </div>
+            <div id="bulk-answers-container">
+                <div class="heading-row">
+                    <div class="question-column">Question</div>
+                    <g:each in="${navChildren.children}" var="child">
+                        <div class="answer-column">${child.name}</div>
+                    </g:each>
+                </div>
+                <form id="bulk-answers-form" action=${resource(file:'Answer/saveTable')} method="post">
+                    <g:each in="${navSelection.questions}" var="question">
+                        <div class="answer-row">
+                            <div class="question-column">${question.text}</div>
+                            <g:each in="${navChildren.children}" var="child">
+                                <div class="answer-column"><textarea name="${'answer'+child.id+'_'+question.id}" cols=22 rows=4></textarea></div>
+                            </g:each>
+                        </div>
+                    </g:each>
+                </form>
+                <button id="bulk-answers-cancelbutton" type="button" onclick="JavaScript:dismissBulkAnswersModal();">Cancel</button>
+                <button id="bulk-answers-savebutton" type="button" onclick="JavaScript:addBulkAnswers();">Add Answers</button>
             </div>
         </div>
     </body>
