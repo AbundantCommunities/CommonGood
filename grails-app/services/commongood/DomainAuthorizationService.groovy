@@ -5,6 +5,25 @@ import grails.transaction.Transactional
 @Transactional
 class DomainAuthorizationService {
     /**
+     * Result is a list of People.
+    */
+    def getBlockConnectors( blockId ) {
+        Integer iBlockId = blockId
+
+        def result = [ ]
+
+        def das = DomainAuthorization.findAll("from DomainAuthorization da join da.person where da.domainCode=? and da.domainKey=?",
+                    [ DomainAuthorization.BLOCK, iBlockId ])
+
+        println "${das.size()} entries: ${das}"
+        das.each {
+            result << it[1]
+        }
+
+        return result
+    }
+
+    /**
      * For a given block in a given neighbourhood, find the people who might
      * have interviewed a resident of that block. That will be the block's
      * connectors plus the neighourhood's connectors.
@@ -23,7 +42,7 @@ class DomainAuthorizationService {
 
         // Who are the neighbourhood connectors?
         def das = DomainAuthorization.findAll("from DomainAuthorization da join da.person where da.domainCode=? and da.domainKey=?",
-                    [ DomainAuthorization.NEIGHBOURHOOD, , iNeighbourhoodId ])
+                    [ DomainAuthorization.NEIGHBOURHOOD, iNeighbourhoodId ])
 
         das.each {
             // each result row found above has a list like [ DomainAuthorization, Person ]
@@ -33,7 +52,7 @@ class DomainAuthorizationService {
 
         // Who are the block connectors?
         das = DomainAuthorization.findAll("from DomainAuthorization da join da.person where da.domainCode=? and da.domainKey=?",
-                    [ DomainAuthorization.BLOCK, , iBlockId ])
+                    [ DomainAuthorization.BLOCK, iBlockId ])
 
         das.each {
             def thisOne = (it[1].id == currentInterviewerId) ? 'true' : 'false'
