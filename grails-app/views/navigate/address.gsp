@@ -159,8 +159,7 @@
                 </div>
             </div>
             <div id="content-children">
-                <div id="content-children-title">${navChildren.childType+'s'} for ${navSelection.levelInHierarchy} ${navSelection.description}&nbsp;&nbsp;<a onclick="presentNewModal();" href="#">+ Add New ${navChildren.childType}</a></div>
-                <div id="content-children-heading">Name</div>
+                <div id="content-children-title">Families for ${navSelection.levelInHierarchy} ${navSelection.description}&nbsp;&nbsp;<a onclick="presentNewModal();" href="#">+ Add New ${navChildren.childType}</a></div>
                 <g:each in="${navChildren.children}" var="child">
                     <div class="content-children-row"><a href="${resource(dir:'navigate/'+navChildren.childType.toLowerCase(),file:"${child.id}")}">${child.name}</a></div>
                 </g:each>

@@ -8,10 +8,29 @@
         <link rel="stylesheet" href="${resource(dir:'css',file:'common.css')}" />
         <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Quicksand">
         <script type="text/javascript">
+            function populateEditModal() {
+
+                document.getElementById('familyNameInput').value = "${navSelection.description}";
+                document.getElementById('initialInterviewDateInput').value = "<g:formatDate format='yyyy-MM-dd' date='${navSelection.interviewDate}'/>";
+
+                for (i = 0; i < possibleInterviewerIds.length; i++) {
+                    if (possibleInterviewerIds[i][1]) {
+                        var possibleInterviewerSelect = document.getElementById( "possibleInterviewerSelect" );
+                        possibleInterviewerSelect.selectedIndex = i;
+                    }
+                }
+
+                document.getElementById('permissionToContactInput').checked = ${navSelection.permissionToContact};
+                document.getElementById('participateInInterviewInput').checked = ${navSelection.participateInInterview};
+                document.getElementById('orderWithinAddressInput').value = "${navSelection.orderWithinAddress}";
+                document.getElementById('noteInput').value = "${navSelection.note}";
+            }
             function presentEditModal() {
                 var pagecontainerDiv = document.getElementById("pagecontainer");
                 document.getElementById("transparent-overlay").setAttribute("style","height:"+pagecontainerDiv.clientHeight+"px;");
                 
+                populateEditModal();
+
                 document.getElementById("transparent-overlay").style.visibility='visible';
                 document.getElementById("edit-container").style.visibility='visible';
                 document.getElementById("familyNameInput").focus();
@@ -28,6 +47,59 @@
                 document.getElementById('interviewerId').value = interviewerId;
                 editForm.submit();
             }
+
+            function presentNewModal() {
+                var pagecontainerDiv = document.getElementById("pagecontainer");
+
+                // clear UI before presenting
+                document.getElementById("firstNamesInput").value = "";
+                document.getElementById("lastNameInput").value = "";
+                document.getElementById("birthYearInput").value = "";
+                document.getElementById("emailAddressInput").value = "";
+                document.getElementById("phoneNumberInput").value = "";
+                document.getElementById("orderWithinFamilyInput").value = "";
+
+
+                // set height of overlay to match height of pagecontainer height
+                document.getElementById("transparent-overlay").setAttribute("style","height:"+pagecontainerDiv.clientHeight+"px;");
+                
+                // show overlay and new-container divs and focus to family name
+                document.getElementById("transparent-overlay").style.visibility='visible';
+                document.getElementById("new-container").style.visibility='visible';
+                document.getElementById("firstNamesInput").focus();
+            }
+
+            function dismissNewModal() {
+                document.getElementById("new-container").style.visibility='hidden';
+                document.getElementById("transparent-overlay").style.visibility='hidden';
+            }
+
+            function newFamilyMemberIsValid (firstNames, lastName) {
+                if (firstNames == "") {
+                    alert("Please enter a first name for the new family member.");
+                    return false;
+                }
+
+                if (lastName == "") {
+                    alert("Please enter a last name for the new family member.");
+                    return false;
+                }
+
+                // If initial interview date is non-blank, validate date.
+
+                return true;
+            }
+
+            function saveFamilyMember() {
+                // Validate new family
+                var firstNames = document.getElementById("firstNamesInput").value;
+                var lastName = document.getElementById("lastNameInput").value;
+                if (newFamilyMemberIsValid(firstNames, lastName)) {
+                    dismissNewModal();
+                    document.getElementById("new-form").submit();
+                }
+            }
+
             function presentBulkAnswersModal() {
                 var pagecontainerDiv = document.getElementById("pagecontainer");
                 document.getElementById("transparent-overlay").setAttribute("style","height:"+pagecontainerDiv.clientHeight+"px;");
@@ -89,6 +161,45 @@
                 font-weight: bold;
             }
             button#edit-cancelbutton{
+                position: absolute;
+                left:80px;
+                top:350px;
+                cursor:pointer; /*forces the cursor to change to a hand when the button is hovered*/
+                padding:5px 25px; /*add some padding to the inside of the button*/
+                background:transparent; /*the colour of the button*/
+                border:0px;
+                color:#B48B6A;
+                font-size: 14px;
+            }
+            #new-container {
+                position:absolute;;
+                top:100px;
+                left:300px;
+                width:330px;
+                height:360px;
+                padding:20px;
+                padding-top: 10px;
+                box-shadow: 0px 0px 20px #000000;
+                background-color: #FFFFFF;
+                border-radius:10px;
+                border-width: 2px;
+                border-color: #B48B6A;
+                border-style: solid;
+                visibility:hidden;
+            }
+            button#new-savebutton{
+                position: absolute;
+                left:180px;
+                top:350px;
+                cursor:pointer; /*forces the cursor to change to a hand when the button is hovered*/
+                padding:5px 25px; /*add some padding to the inside of the button*/
+                background:transparent; /*the colour of the button*/
+                border:0px;
+                color:#B48B6A;
+                font-size: 14px;
+                font-weight: bold;
+            }
+            button#new-cancelbutton{
                 position: absolute;
                 left:80px;
                 top:350px;
@@ -213,7 +324,7 @@
                 </div>
             </div>
             <div id="content-children">
-                <div id="content-children-title">${navChildren.childType+'s'} for ${navSelection.levelInHierarchy} ${navSelection.description}&nbsp;&nbsp;<a href="#">+ Add New ${navChildren.childType}</a></div>
+                <div id="content-children-title">Family members for ${navSelection.levelInHierarchy} ${navSelection.description}&nbsp;&nbsp;<a href="#" onclick="presentNewModal()">+ Add New Family Member</a></div>
                 <g:each in="${navChildren.children}" var="child">
                     <div class="content-children-row"><a href="${resource(dir:'navigate/'+navChildren.childType.toLowerCase(),file:"${child.id}")}">${child.name}</a></div>
                 </g:each>
@@ -228,7 +339,7 @@
                 <form id="edit-form" action=${resource(file:'Family/save')} method="post">
                     <input type="hidden" name="id" value="${navSelection.id}" />
                     <p>Family name: <input id="familyNameInput" type="text" name="familyName" value="${navSelection.description}"/></p>
-                    <p>Initial interview date: <input type="date" name="initialInterviewDate" placeholder="yyyy-MM-dd" value="<g:formatDate format='yyyy-MM-dd' date='${navSelection.interviewDate}'/>"/></p>
+                    <p>Initial interview date: <input id="initialInterviewDateInput" type="date" name="initialInterviewDate" placeholder="yyyy-MM-dd" value="<g:formatDate format='yyyy-MM-dd' date='${navSelection.interviewDate}'/>"/></p>
                     <p>Initial interviewer: 
                         <select id="possibleInterviewerSelect">
                             <g:each in="${navSelection.possibleInterviewers}" var="possibleInterviewer">
@@ -246,23 +357,37 @@
                     </p>
                     <input id="interviewerId" type="hidden" name="interviewerId" value="" />
                     <g:if test="${navSelection.permissionToContact}">
-                        <p><input type="checkbox" name="permissionToContact" value="true" checked /> Permission to contact</p>
+                        <p><input id="permissionToContactInput" type="checkbox" name="permissionToContact" value="true" checked /> Permission to contact</p>
                     </g:if>
                     <g:else>
-                        <p><input type="checkbox" name="permissionToContact" value="false" /> Permission to contact</p>
+                        <p><input id="permissionToContactInput" type="checkbox" name="permissionToContact" value="false" /> Permission to contact</p>
                     </g:else>
                     <g:if test="${navSelection.participateInInterview}">
-                        <p><input type="checkbox" name="participateInInterview" value="true" checked /> Agreed to participate in interview</p>
+                        <p><input id="participateInInterviewInput" type="checkbox" name="participateInInterview" value="true" checked /> Agreed to participate in interview</p>
                     </g:if>
                     <g:else>
-                        <p><input type="checkbox" name="participateInInterview" value="false" /> Agreed to participate in interview</p>
+                        <p><input id="participateInInterviewInput" type="checkbox" name="participateInInterview" value="false" /> Agreed to participate in interview</p>
                     </g:else>
-                    <p>Order within address: <input type="text" name="orderWithinAddress" value="${navSelection.orderWithinAddress}" /></p>
+                    <p>Order within address: <input id="orderWithinAddressInput" type="text" name="orderWithinAddress" value="${navSelection.orderWithinAddress}" /></p>
                     <p>Note:</p>
-                    <p><textarea name="note" cols=44 rows=4>${navSelection.note}</textarea></p>
+                    <p><textarea id="noteInput" name="note" cols=44 rows=4>${navSelection.note}</textarea></p>
                 </form>
                 <button id="edit-savebutton" type="button" onclick="JavaScript:saveFamily();">Save</button>
                 <button id="edit-cancelbutton" type="button" onclick="JavaScript:dismissEditModal();">Cancel</button>
+            </div>
+            <div id="new-container">
+                <p style="font-weight:bold;font-size:14px;">New Family Member</p>
+                <form id="new-form" action=${resource(file:'Person/save')} method="post">
+                    <input type="hidden" name="familyId" value="${navSelection.id}" />
+                    <p>First names: <input id="firstNamesInput" type="text" name="firstNames" value=""/></p>
+                    <p>Last name: <input id="lastNameInput" type="text" name="lastName" value=""/></p>
+                    <p>Birth year: <input id="birthYearInput" type="number" pattern="[12][90][0-9][0-9]" name="birthYear" value=""/></p>
+                    <p>Email address: <input id="emailAddressInput" type="email" name="emailAddress" value=""/></p>
+                    <p>Phone number: <input id="phoneNumberInput" type="text" name="phoneNumber" value=""/></p>
+                    <p>Order within family: <input id="orderWithinFamilyInput" type="text" name="orderWithinFamily" value=""/></p>
+                </form>
+                <button id="new-savebutton" type="button" onclick="JavaScript:saveFamilyMember();">Save</button>
+                <button id="new-cancelbutton" type="button" onclick="JavaScript:dismissNewModal();">Cancel</button>
             </div>
             <div id="bulk-answers-container">
                 <div class="heading-row">
