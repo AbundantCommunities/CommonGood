@@ -7,7 +7,8 @@ class UrlMappings {
             }
         }
 
-        "/"(view:"/index")
+//        "/"(view:"/index")
+        "/"( controller:"HomePageTest", action:"youAreHome" )
         "500"(view:'/error')
 	}
 }

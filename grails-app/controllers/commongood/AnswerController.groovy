@@ -10,10 +10,23 @@ class AnswerController {
                 answer444_34=stamp+collecting
         where \n represents a single newline character
         */
+
+        // We want every person to come from the same family
+        Long thisFamilyId = null
+
         params.each{ param, value ->
             if( param.startsWith('answer') ) {
                 def ids = param.substring(6).tokenize('_')
                 Person p = Person.get( Long.parseLong( ids[0] ) )
+                if( thisFamilyId ) {
+                    // This is not the first answer we have processed
+                    if( thisFamilyId != p.family.id ) {
+                        println "DATA INTEGRITY ERROR? Was family ${thisFamilyId} but saw person ${p.id}"
+                        throw new Exception( 'Bad bulk answers')
+                    }
+                } else {
+                    thisFamilyId = p.family.id
+                }
                 Question q = Question.get( Long.parseLong( ids[1] ) )
                 
                 // Multiple answers within this "answer" are separated by newline characters:
@@ -26,6 +39,6 @@ class AnswerController {
                 }
             }
         }
-        render "To where should we navigate??"
+        forward controller: "navigate", action: "family", id: thisFamilyId
     }
 }
