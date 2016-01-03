@@ -13,7 +13,10 @@
                 document.getElementById('firstNamesInput').value = "${navSelection.firstNames}";
                 document.getElementById('lastNameInput').value = "${navSelection.lastName}";
                 document.getElementById('birthYearInput').value = "${navSelection.birthYear}";
-                document.getElementById('emailAddressInput').value = "${navSelection.emailAddress}";
+                var emailToEncode = "${navSelection.emailAddress}";
+                var email = emailToEncode.split('&#64;').join('@');
+                document.getElementById('emailAddressInput').value = email;
+
                 document.getElementById('phoneNumberInput').value = "${navSelection.phoneNumber}";
                 document.getElementById('orderWithinFamilyInput').value = "${navSelection.orderWithinFamily}";
             }
@@ -28,6 +31,7 @@
                 document.getElementById("transparent-overlay").style.visibility='visible';
                 document.getElementById("edit-container").style.visibility='visible';
                 document.getElementById("firstNamesInput").focus();
+                document.getElementById("firstNamesInput").select();
             }
             function dismissEditModal() {
                 document.getElementById("edit-container").style.visibility='hidden';
@@ -60,14 +64,79 @@
                     document.getElementById("edit-form").submit();
                 }
             }
+
+
         </script>
         <style type="text/css">
+            #content-detail {
+                height:150px;
+            }
+            #first-names-heading {
+                position: absolute;
+                top:30px;
+                left: 10px;
+            }
+            #first-names-value {
+                position: absolute;
+                top:30px;
+                left: 160px;
+            }
+            #last-name-heading {
+                position: absolute;
+                top:50px;
+                left: 10px;
+            }
+            #last-name-value {
+                position: absolute;
+                top:50px;
+                left: 160px;
+            }
+            #birth-year-heading {
+                position: absolute;
+                top:70px;
+                left: 10px;
+            }
+            #birth-year-value {
+                position: absolute;
+                top:70px;
+                left: 160px;
+            }
+            #email-address-heading {
+                position: absolute;
+                top:90px;
+                left: 10px;
+            }
+            #email-address-value {
+                position: absolute;
+                top:90px;
+                left: 160px;
+            }
+            #phone-number-heading {
+                position: absolute;
+                top:110px;
+                left: 10px;
+            }
+            #phone-number-value {
+                position: absolute;
+                top:110px;
+                left: 160px;
+            }
+            #order-within-family-heading {
+                position: absolute;
+                top:130px;
+                left: 10px;
+            }
+            #order-within-family-value {
+                position: absolute;
+                top:130px;
+                left: 160px;
+            }
             #edit-container {
-                position:absolute;;
-                top:100px;
-                left:300px;
-                width:330px;
-                height:360px;
+                position:absolute;
+                top:140px;
+                left:260px;
+                width:420px;
+                height:280px;
                 padding:20px;
                 padding-top: 10px;
                 box-shadow: 0px 0px 20px #000000;
@@ -80,8 +149,8 @@
             }
             button#edit-savebutton{
                 position: absolute;
-                left:180px;
-                top:350px;
+                left:230px;
+                top:265px;
                 cursor:pointer; /*forces the cursor to change to a hand when the button is hovered*/
                 padding:5px 25px; /*add some padding to the inside of the button*/
                 background:transparent; /*the colour of the button*/
@@ -92,8 +161,8 @@
             }
             button#edit-cancelbutton{
                 position: absolute;
-                left:80px;
-                top:350px;
+                left:130px;
+                top:265px;
                 cursor:pointer; /*forces the cursor to change to a hand when the button is hovered*/
                 padding:5px 25px; /*add some padding to the inside of the button*/
                 background:transparent; /*the colour of the button*/
@@ -119,12 +188,18 @@
             </g:if>
             <div id="content-detail">
                 <div id="content-detail-title">${navSelection.levelInHierarchy}</div>
-                <div class="content-detail-value">First names: ${navSelection.firstNames}</div>
-                <div class="content-detail-value">Last name: ${navSelection.lastName}</div>
-                <div class="content-detail-value">Birth year: ${navSelection.birthYear}</div>
-                <div class="content-detail-value">Email address: ${navSelection.emailAddress}</div>
-                <div class="content-detail-value">Phone number: ${navSelection.phoneNumber}</div>
-                <div class="content-detail-value">Order within family: ${navSelection.orderWithinFamily}</div>
+                <div id="first-names-heading">First names: </div>
+                <div id="first-names-value">${navSelection.firstNames}</div>
+                <div id="last-name-heading">Last name: </div>
+                <div id="last-name-value">${navSelection.lastName}</div>
+                <div id="birth-year-heading">Birth year: </div>
+                <div id="birth-year-value">${navSelection.birthYear}</div>
+                <div id="email-address-heading">Email address: </div>
+                <div id="email-address-value">${navSelection.emailAddress}</div>
+                <div id="phone-number-heading">Phone number: </div>
+                <div id="phone-number-value">${navSelection.phoneNumber}</div>
+                <div id="order-within-family-heading">Order within family: </div>
+                <div id="order-within-family-value">${navSelection.orderWithinFamily}</div>
                 <br/>
 
                 <div id="content-actions">
@@ -151,8 +226,8 @@
                     <input type="hidden" name="id" value="${navSelection.id}" />
                     <p>First names: <input id="firstNamesInput" type="text" name="firstNames" value=""/></p>
                     <p>Last name: <input id="lastNameInput" type="text" name="lastName" value=""/></p>
-                    <p>Birth year: <input id="birthYearInput" type="number" pattern="[12][90][0-9][0-9]" name="birthYear" value=""/></p>
-                    <p>Email address: <input id="emailAddressInput" type="email" name="emailAddress" value=""/></p>
+                    <p>Birth year: <input id="birthYearInput" type="text" pattern="[12][90][0-9][0-9]" name="birthYear" value="" placeholder="YYYY"/></p>
+                    <p>Email address: <input id="emailAddressInput" type="email" name="emailAddress" value="" size="40"/></p>
                     <p>Phone number: <input id="phoneNumberInput" type="text" name="phoneNumber" value=""/></p>
                     <p>Order within family: <input id="orderWithinFamilyInput" type="text" name="orderWithinFamily" value=""/></p>
                 </form>

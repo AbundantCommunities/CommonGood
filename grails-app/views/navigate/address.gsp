@@ -8,7 +8,7 @@
         <link rel="stylesheet" href="${resource(dir:'css',file:'common.css')}" />
         <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Quicksand">
         <script type="text/javascript">
-            
+
             function currentDate() {
                 var today = new Date();
                 var dd = today.getDate();
@@ -55,12 +55,16 @@
                 document.getElementById("transparent-overlay").style.visibility='hidden';
             }
 
-            function newFamilyIsValid (familyName, initialInterviewDate) {
+            function newFamilyIsValid (familyName, initialInterviewDate, note) {
                 if (familyName == "") {
                     alert("Please enter a family name for the new family.");
                     return false;
                 }
 
+                if (note.indexOf('|') > -1) {
+                    alert("A note cannot contain the '|' character. Please use a different character.");
+                    return false;
+                }
                 // If initial interview date is non-blank, validate date.
 
                 return true;
@@ -70,7 +74,8 @@
                 // Validate new family
                 var familyName = document.getElementById("familyNameInput").value;
                 var initialInterviewDate = document.getElementById("initialInterviewDateInput").value;
-                if (newFamilyIsValid(familyName, initialInterviewDateInput)) {
+                var note = document.getElementById("noteTextarea").value;
+                if (newFamilyIsValid(familyName, initialInterviewDateInput, note)) {
                     dismissNewModal();
                     var newForm = document.getElementById('new-form');
                     var possibleInterviewerSelect = document.getElementById( "possibleInterviewerSelect" );
@@ -85,6 +90,39 @@
             
         </script>
         <style type="text/css">
+            #content-detail {
+                height:180px;
+            }
+            #address-heading {
+                position: absolute;
+                top:30px;
+                left: 10px;
+            }
+            #address-value {
+                position: absolute;
+                top:30px;
+                left: 155px;
+            }
+            #order-within-block-heading {
+                position: absolute;
+                top:50px;
+                left: 10px;
+            }
+            #order-within-block-value {
+                position: absolute;
+                top:50px;
+                left: 155px;
+            }
+            #note-heading {
+                position: absolute;
+                top:70px;
+                left: 10px;
+            }
+            #note-value {
+                position: absolute;
+                top:70px;
+                left: 155px;
+            }
             #new-container {
                 position:absolute;;
                 top:100px;
@@ -142,7 +180,12 @@
             </g:if>
             <div id="content-detail">
                 <div id="content-detail-title">${navSelection.levelInHierarchy}</div>
-                <div>Name: ${navSelection.description}</div>
+                <div id="address-heading">Address: </div>
+                <div id="address-value">${navSelection.description}</div>
+                <div id="order-within-block-heading">Order within block: </div>
+                <div id="order-within-block-value">${navSelection.orderWithinBlock}</div>
+                <div id="note-heading">Note: </div>
+                <div id="note-value"><textarea cols="60" rows="5" style="color: #222222;" disabled>${navSelection.note}</textarea></div>
 
                 <g:if test="${navSelection.levelInHierarchy.toLowerCase() == 'neighbourhood'}">
                     <div id="content-actions-left-side">

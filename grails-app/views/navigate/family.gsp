@@ -23,7 +23,11 @@
                 document.getElementById('permissionToContactInput').checked = ${navSelection.permissionToContact};
                 document.getElementById('participateInInterviewInput').checked = ${navSelection.participateInInterview};
                 document.getElementById('orderWithinAddressInput').value = "${navSelection.orderWithinAddress}";
-                document.getElementById('noteInput').value = "${navSelection.note}";
+
+                var noteLines = "${navSelection.note.split('\r\n').join('|')}";
+                var newNoteLines = noteLines.split('|').join('\n');
+
+                document.getElementById('noteInput').value = newNoteLines;
             }
             function presentEditModal() {
                 var pagecontainerDiv = document.getElementById("pagecontainer");
@@ -34,18 +38,29 @@
                 document.getElementById("transparent-overlay").style.visibility='visible';
                 document.getElementById("edit-container").style.visibility='visible';
                 document.getElementById("familyNameInput").focus();
+                document.getElementById("familyNameInput").select();
             }
             function dismissEditModal() {
                 document.getElementById("edit-container").style.visibility='hidden';
                 document.getElementById("transparent-overlay").style.visibility='hidden';
             }
+
+            function familyIsValid(note) {
+                if (note.indexOf('|') > -1) {
+                    alert("Notes cannot contain the '|' character. Please use a different character");
+                    return false;
+                }
+                return true;
+            }
             function saveFamily() {
-                dismissEditModal();
-                var editForm = document.getElementById('edit-form');
-                var possibleInterviewerSelect = document.getElementById( "possibleInterviewerSelect" );
-                var interviewerId = possibleInterviewerIds[possibleInterviewerSelect.selectedIndex][0];
-                document.getElementById('interviewerId').value = interviewerId;
-                editForm.submit();
+                if (familyIsValid(document.getElementById('noteInput').value)) {
+                    dismissEditModal();
+                    var editForm = document.getElementById('edit-form');
+                    var possibleInterviewerSelect = document.getElementById( "possibleInterviewerSelect" );
+                    var interviewerId = possibleInterviewerIds[possibleInterviewerSelect.selectedIndex][0];
+                    document.getElementById('interviewerId').value = interviewerId;
+                    editForm.submit();
+                }
             }
 
             function presentNewModal() {
@@ -101,12 +116,21 @@
             }
 
             function presentBulkAnswersModal() {
-                var pagecontainerDiv = document.getElementById("pagecontainer");
-                document.getElementById("transparent-overlay").setAttribute("style","height:"+pagecontainerDiv.clientHeight+"px;");
-                
-                document.getElementById("transparent-overlay").style.visibility='visible';
-                document.getElementById("bulk-answers-container").style.visibility='visible';
-                //document.getElementById("familyNameInput").focus();
+
+                if (${navChildren.children.size()} > 0) {
+
+                    var pagecontainerDiv = document.getElementById("pagecontainer");
+                    document.getElementById("transparent-overlay").setAttribute("style","height:"+pagecontainerDiv.clientHeight+"px;");
+                    
+                    document.getElementById("transparent-overlay").style.visibility='visible';
+                    document.getElementById("bulk-answers-container").style.visibility='visible';
+                    document.getElementById("familyNameInput").focus();
+                    document.getElementById("familyNameInput").select();
+                } else {
+                    alert('Please add a family member first.');
+                }
+
+
             }
             function dismissBulkAnswersModal() {
                 document.getElementById("bulk-answers-container").style.visibility='hidden';
@@ -125,15 +149,90 @@
                     if (possibleInterviewerIds[i][1]) {
                         var possibleInterviewerSelect = document.getElementById( "possibleInterviewerSelect" );
                         possibleInterviewerSelect.selectedIndex = i;
-                        document.getElementById('initialInterviewerDiv').innerHTML = "Initial interviewer: "+possibleInterviewerSelect.value;
+                        document.getElementById('initial-interviewer-value').innerHTML = possibleInterviewerSelect.value;
                     }
                 }
+
+
             }
 
         </script>
         <style type="text/css">
+            #content-detail {
+                height:250px;
+            }
+            #family-name-heading {
+                position: absolute;
+                top:30px;
+                left: 10px;
+            }
+            #family-name-value {
+                position: absolute;
+                top:30px;
+                left: 260px;
+            }
+            #initial-interview-date-heading {
+                position: absolute;
+                top:50px;
+                left: 10px;
+            }
+            #initial-interview-date-value {
+                position: absolute;
+                top:50px;
+                left: 260px;
+            }
+            #initial-interviewer-heading {
+                position: absolute;
+                top:70px;
+                left: 10px;
+            }
+            #initial-interviewer-value {
+                position: absolute;
+                top:70px;
+                left: 260px;
+            }
+            #permission-to-contact-heading {
+                position: absolute;
+                top:90px;
+                left: 10px;
+            }
+            #permission-to-contact-value {
+                position: absolute;
+                top:90px;
+                left: 260px;
+            }
+            #agreed-to-participate-heading {
+                position: absolute;
+                top:110px;
+                left: 10px;
+            }
+            #agreed-to-participate-value {
+                position: absolute;
+                top:110px;
+                left: 260px;
+            }
+            #order-within-address-heading {
+                position: absolute;
+                top:130px;
+                left: 10px;
+            }
+            #order-within-address-value {
+                position: absolute;
+                top:130px;
+                left: 260px;
+            }
+            #note-heading {
+                position: absolute;
+                top:150px;
+                left: 10px;
+            }
+            #note-value {
+                position: absolute;
+                top:150px;
+                left: 260px;
+            }
             #edit-container {
-                position:absolute;;
+                position:absolute;
                 top:100px;
                 left:300px;
                 width:330px;
@@ -172,11 +271,11 @@
                 font-size: 14px;
             }
             #new-container {
-                position:absolute;;
-                top:100px;
-                left:300px;
-                width:330px;
-                height:360px;
+                position:absolute;
+                top:140px;
+                left:260px;
+                width:420px;
+                height:280px;
                 padding:20px;
                 padding-top: 10px;
                 box-shadow: 0px 0px 20px #000000;
@@ -189,8 +288,8 @@
             }
             button#new-savebutton{
                 position: absolute;
-                left:180px;
-                top:350px;
+                left:230px;
+                top:265px;
                 cursor:pointer; /*forces the cursor to change to a hand when the button is hovered*/
                 padding:5px 25px; /*add some padding to the inside of the button*/
                 background:transparent; /*the colour of the button*/
@@ -201,8 +300,8 @@
             }
             button#new-cancelbutton{
                 position: absolute;
-                left:80px;
-                top:350px;
+                left:130px;
+                top:265px;
                 cursor:pointer; /*forces the cursor to change to a hand when the button is hovered*/
                 padding:5px 25px; /*add some padding to the inside of the button*/
                 background:transparent; /*the colour of the button*/
@@ -211,7 +310,7 @@
                 font-size: 14px;
             }
             #bulk-answers-container {
-                position:absolute;;
+                position:absolute;
                 top:50px;
                 left:${(929/2) - ((290+navChildren.children.size()*180) / 2)}px;
                 width:${290+navChildren.children.size()*180}px;
@@ -286,28 +385,34 @@
             </g:if>
             <div id="content-detail">
                 <div id="content-detail-title">${navSelection.levelInHierarchy}</div>
-                <div class="content-detail-value">Name: ${navSelection.description}</div>
-                <div class="content-detail-value">Initial interview date: <g:formatDate format='yyyy-MM-dd' date='${navSelection.interviewDate}'/></div>
-                <div id="initialInterviewerDiv" class="content-detail-value">Initial interviewer: </div>
-                <div class="content-detail-value">
+                <div id="family-name-heading">Name: </div>
+                <div id="family-name-value">${navSelection.description}</div>
+                <div id="initial-interview-date-heading">Initial interview date: </div>
+                <div id="initial-interview-date-value"><g:formatDate format='yyyy-MM-dd' date='${navSelection.interviewDate}'/></div>
+                <div id="initial-interviewer-heading">Initial interviewer: </div>
+                <div id="initial-interviewer-value"></div>
+                <div id="permission-to-contact-heading">Permission to contact: </div>
+                <div id="permission-to-contact-value">
                     <g:if test="${navSelection.permissionToContact}">
-                        Permission to contact: Yes
+                        Yes
                     </g:if>
                     <g:else>
-                        Permission to contact: No
+                        No
                     </g:else>
                 </div>
-                <div class="content-detail-value">
+                <div id="agreed-to-participate-heading">Agreed to participate in interview: </div>
+                <div id="agreed-to-participate-value">
                     <g:if test="${navSelection.participateInInterview}">
-                        Agreed to participate in interview: Yes
+                        Yes
                     </g:if>
                     <g:else>
-                        Agreed to participate in interview: No
+                        No
                     </g:else>
                 </div>
-                <div class="content-detail-value">Order within address: ${navSelection.orderWithinAddress}</div>
-                <div class="content-detail-value">Note: ${navSelection.note}</div>
-                <br/>
+                <div id="order-within-address-heading">Order within address: </div>
+                <div id="order-within-address-value">${navSelection.orderWithinAddress}</div>
+                <div id="note-heading">Note: </div>
+                <div id="note-value"><textarea cols="60" rows="5" style="color: #222222;" disabled>${navSelection.note}</textarea></div>
 
 
 
@@ -338,8 +443,8 @@
                 <p style="font-weight:bold;font-size:14px;">Edit Family</p>
                 <form id="edit-form" action=${resource(file:'Family/save')} method="post">
                     <input type="hidden" name="id" value="${navSelection.id}" />
-                    <p>Family name: <input id="familyNameInput" type="text" name="familyName" value="${navSelection.description}"/></p>
-                    <p>Initial interview date: <input id="initialInterviewDateInput" type="date" name="initialInterviewDate" placeholder="yyyy-MM-dd" value="<g:formatDate format='yyyy-MM-dd' date='${navSelection.interviewDate}'/>"/></p>
+                    <p>Family name: <input id="familyNameInput" type="text" name="familyName" value=""/></p>
+                    <p>Initial interview date: <input id="initialInterviewDateInput" type="date" name="initialInterviewDate" placeholder="yyyy-MM-dd" value=""/></p>
                     <p>Initial interviewer: 
                         <select id="possibleInterviewerSelect">
                             <g:each in="${navSelection.possibleInterviewers}" var="possibleInterviewer">
@@ -356,21 +461,11 @@
                         </select>
                     </p>
                     <input id="interviewerId" type="hidden" name="interviewerId" value="" />
-                    <g:if test="${navSelection.permissionToContact}">
-                        <p><input id="permissionToContactInput" type="checkbox" name="permissionToContact" value="true" checked /> Permission to contact</p>
-                    </g:if>
-                    <g:else>
-                        <p><input id="permissionToContactInput" type="checkbox" name="permissionToContact" value="false" /> Permission to contact</p>
-                    </g:else>
-                    <g:if test="${navSelection.participateInInterview}">
-                        <p><input id="participateInInterviewInput" type="checkbox" name="participateInInterview" value="true" checked /> Agreed to participate in interview</p>
-                    </g:if>
-                    <g:else>
-                        <p><input id="participateInInterviewInput" type="checkbox" name="participateInInterview" value="false" /> Agreed to participate in interview</p>
-                    </g:else>
-                    <p>Order within address: <input id="orderWithinAddressInput" type="text" name="orderWithinAddress" value="${navSelection.orderWithinAddress}" /></p>
+                    <p><input id="permissionToContactInput" type="checkbox" name="permissionToContact" value="false" /> Permission to contact</p>
+                    <p><input id="participateInInterviewInput" type="checkbox" name="participateInInterview" value="false" /> Agreed to participate in interview</p>
+                    <p>Order within address: <input id="orderWithinAddressInput" type="text" name="orderWithinAddress" value="" /></p>
                     <p>Note:</p>
-                    <p><textarea id="noteInput" name="note" cols=44 rows=4>${navSelection.note}</textarea></p>
+                    <p><textarea id="noteInput" name="note" cols=44 rows=4></textarea></p>
                 </form>
                 <button id="edit-savebutton" type="button" onclick="JavaScript:saveFamily();">Save</button>
                 <button id="edit-cancelbutton" type="button" onclick="JavaScript:dismissEditModal();">Cancel</button>
@@ -381,8 +476,8 @@
                     <input type="hidden" name="familyId" value="${navSelection.id}" />
                     <p>First names: <input id="firstNamesInput" type="text" name="firstNames" value=""/></p>
                     <p>Last name: <input id="lastNameInput" type="text" name="lastName" value=""/></p>
-                    <p>Birth year: <input id="birthYearInput" type="number" pattern="[12][90][0-9][0-9]" name="birthYear" value=""/></p>
-                    <p>Email address: <input id="emailAddressInput" type="email" name="emailAddress" value=""/></p>
+                    <p>Birth year: <input id="birthYearInput" type="text" pattern="[12][90][0-9][0-9]" name="birthYear" value="" placeholder="YYYY"/></p>
+                    <p>Email address: <input id="emailAddressInput" type="email" name="emailAddress" value="" size="40"/></p>
                     <p>Phone number: <input id="phoneNumberInput" type="text" name="phoneNumber" value=""/></p>
                     <p>Order within family: <input id="orderWithinFamilyInput" type="text" name="orderWithinFamily" value=""/></p>
                 </form>

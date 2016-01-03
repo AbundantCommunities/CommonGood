@@ -7,16 +7,41 @@
         <meta name="description" content="Abundant Communities - Edmonton" />
         <link rel="stylesheet" href="${resource(dir:'css',file:'common.css')}" />
         <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Quicksand">
-        <g:if test="${navChildren.childType.toLowerCase() == 'family'}">
-            <script type="text/javascript">
-                function presentFamilyModal() {
-                    document.getElementById("add-edit-family-container").style.visibility='visible';
-                }
-                function dismissFamilyModal() {
-                    document.getElementById("add-edit-family-container").style.visibility='hidden';
-                }
-            </script>
-        </g:if>
+        <style type="text/css">
+            #content-detail {
+                height:100px;
+            }
+            #block-code-heading {
+                position: absolute;
+                top:30px;
+                left: 10px;
+            }
+            #block-code-value {
+                position: absolute;
+                top:30px;
+                left: 155px;
+            }
+            #block-description-heading {
+                position: absolute;
+                top:50px;
+                left: 10px;
+            }
+            #block-description-value {
+                position: absolute;
+                top:50px;
+                left: 155px;
+            }
+            #order-within-neighbourhood-heading {
+                position: absolute;
+                top:70px;
+                left: 10px;
+            }
+            #order-within-neighbourhood-value {
+                position: absolute;
+                top:70px;
+                left: 155px;
+            }
+        </style>
     </head>
     <body>
         <div id="pagecontainer">
@@ -34,7 +59,17 @@
             </g:if>
             <div id="content-detail">
                 <div id="content-detail-title">${navSelection.levelInHierarchy}</div>
-                <div>Name: ${navSelection.description}</div>
+
+                <div id="block-code-heading">Block code: </div>
+                <div id="block-code-value">${navSelection.code}</div>
+                <div id="block-description-heading">Description: </div>
+                <div id="block-description-value">${navSelection.description}</div>
+                <div id="order-within-neighbourhood-heading">Order within block: </div>
+                <div id="order-within-neighbourhood-value">${navSelection.orderWithinNeighbourhood}</div>
+
+
+
+
 
                 <g:if test="${navSelection.levelInHierarchy.toLowerCase() == 'neighbourhood'}">
                     <div id="content-actions-left-side">
