@@ -12,33 +12,58 @@ class AnswerController {
         */
 
         // We want every person to come from the same family
-        Long thisFamilyId = null
+        Long familyId = null
+        Long lastPersonId = null
+        def personCount = 0
 
         params.each{ param, value ->
-            if( param.startsWith('answer') ) {
+            if(  value != null && value.size() > 0 && param.startsWith('answer') ) {
                 def ids = param.substring(6).tokenize('_')
                 Person p = Person.get( Long.parseLong( ids[0] ) )
-                if( thisFamilyId ) {
+                if( familyId ) {
                     // This is not the first answer we have processed
-                    if( thisFamilyId != p.family.id ) {
-                        println "DATA INTEGRITY ERROR? Was family ${thisFamilyId} but saw person ${p.id}"
+                    if( familyId != p.family.id ) {
+                        println "DATA INTEGRITY ERROR? Was family ${familyId} but saw person ${p.id}"
                         throw new Exception( 'Bad bulk answers')
                     }
                 } else {
-                    thisFamilyId = p.family.id
+                    familyId = p.family.id
                 }
+
                 Question q = Question.get( Long.parseLong( ids[1] ) )
                 
                 // Multiple answers within this "answer" are separated by newline characters:
                 def answers = value.tokenize( '\n' )
                 answers.each {
+                    // TODO test with weird answers (ex: nothing but newlines, padded with spaces)
                     Answer answer = new Answer( person:p, question:q, text:it,
                                 wouldLead:Boolean.FALSE, wouldOrganize:Boolean.TRUE  )
                     // TODO Eiminate multiple flushes (would reduce calls to the db?)
                     answer.save( flush:true )
+
+                    if( lastPersonId ) {
+                        if( p.id != lastPersonId ) {
+                            personCount++
+                        }
+                    } else {
+                        personCount++
+                    }
+                    lastPersonId = p.id
                 }
             }
         }
-        forward controller: "navigate", action: "family", id: thisFamilyId
+        
+        switch( personCount ) {
+            case 0:
+                // FIXME Handle zero answers
+                // ...we don't handle zero-length answers so don't know any person or family ids
+                throw new Exception( "yikes... what to do, what to do!!?" )
+
+            case 1:
+                forward controller: "navigate", action: "familymember", id: lastPersonId
+
+            default:
+                forward controller: "navigate", action: "family", id: familyId
+        }
     }
 }
