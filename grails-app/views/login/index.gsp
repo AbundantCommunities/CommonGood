@@ -13,7 +13,7 @@
         </g:if>
 
         <p>Login to CommonGood:</p>
-        <form action="${createLink(action: 'authenticate')}" method="post">
+        <form action="<g:createLink action='authenticate'/>" method="post">
             <p>Email address <input type="text" name="emailAddress" value="" /></p>
             <p>Password <input type="text" name="password" value="" /></p>
             <p><input type="submit" value="Login" /></p>
