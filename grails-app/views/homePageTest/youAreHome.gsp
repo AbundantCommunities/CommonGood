@@ -1,19 +1,25 @@
-<!--
-  To change this license header, choose License Headers in Project Properties.
-  To change this template file, choose Tools | Templates
-  and open the template in the editor.
--->
-
 <%@ page contentType="text/html;charset=UTF-8" %>
 
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Sample title</title>
+        <title>CommonGood Test Home Page</title>
     </head>
     <body>
-        <h1>Sample line</h1>
-        <p>${session.myval}</p>
-        <p>Logged in as ${session.user.fullName}</p>
+        <g:if test="${flash.message}">
+            <div class="flash">
+                ${flash.message}
+            </div>
+        </g:if>
+
+        <g:if test="${session.user}">
+            <p>Hi ${session.user.firstNames}.</p>
+            <p><g:link controller="navigate" action="neighbourhood" id="1">Let's go!</g:link></p>
+            <p><g:link controller="logout">Logout</g:link></p>
+        </g:if>
+        <g:else>
+            <p>Hi! This is the CommonGood application.</p>
+            <p><g:link controller="login">Login</g:link></p>
+        </g:else>
     </body>
 </html>

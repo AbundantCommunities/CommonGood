@@ -5,27 +5,26 @@ import grails.transaction.Transactional
 @Transactional
 class AuthenticateService {
 
-    // FIXME Not suitable for production!
+    // FIXME NOT SUITABLE FOR PRODUCTION !!
 
+    /**
+     * Returns a Person if and only if the emailAddress and password match.
+    */
     public Person check( emailAddress, password ) {
         
-        def phoneyHash = password.size( )
-        def peeps = Person.findAll( 'from Person where emailAddress = ? and appUser and passwordHash != 0', [emailAddress] )
+        Integer phoneyHash = password.hashCode( )
+        def peeps = Person.findAll( 'from Person where emailAddress=? and appUser=true and passwordHash=?', [emailAddress,phoneyHash] )
 
         if( peeps.size() > 1 ) {
-            println "NASTY data integrity problem; ${peeps.size()} people with passwords for ${emailAddress}"
+            println "NASTY data integrity problem; ${peeps.size()} people with matching passwords for ${emailAddress}"
 
         } else if ( peeps.size() == 0 ) {
-            println "No passwords on file for ${emailAddress}"
+            println "No password match for ${emailAddress}"
 
         } else {
-            Person peep = peeps[0]
-            if( peep.passwordHash == phoneyHash) {
-                println "Phoney authentication success for ${peep.fullName}"
-                return peep
-            } else {
-                println "Hash failure for ${emailAddress}"
-            }
+            def peep = peeps[0]
+            println "Phoney authentication success for ${peep.fullName}"
+            return peep
         }
 
         return null
