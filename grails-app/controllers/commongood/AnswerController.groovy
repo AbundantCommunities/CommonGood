@@ -1,7 +1,7 @@
 package commongood
 
 class AnswerController {
-    static allowedMethods = [frequencies:'GET', saveTable:'POST']
+    static allowedMethods = [frequencies:'GET', saveTable:'POST', search:'GET']
 
     def search( ) {
         def questionId = params.id ? Long.parseLong( params.id ) : 0
@@ -13,13 +13,15 @@ class AnswerController {
         if( questionId > 0 ) {
             // Select only answers to that particular question
             answers = Answer.executeQuery(
-                'select a.text, p.id, p.firstNames from Answer a join a.person p where a.text like ? and a.question.id = ? order by p.firstNames',
+                'select a.text, p.id, p.firstNames from Answer a join a.person p where a.text like ? and a.question.id = ? \
+                 order by p.firstNames, p.lastName, p.id',
                 [ searchTerm, questionId ] )
             questionText = Question.get( questionId ).text
         } else {
             // Select answers to all questions
             answers = Answer.executeQuery(
-                'select a.text, p.id, p.firstNames from Answer a join a.person p where a.text like ? order by p.firstNames',
+                'select a.text, p.id, p.firstNames from Answer a join a.person p where a.text like ? \
+                 order by p.firstNames, p.lastName, p.id',
                 [ searchTerm ] )
             questionText = null
         }
