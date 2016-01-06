@@ -3,6 +3,30 @@ package commongood
 class AnswerController {
     static allowedMethods = [frequencies:'GET', saveTable:'POST']
 
+    def search( ) {
+        def questionId = params.id ? Long.parseLong( params.id ) : 0
+        def searchTerm = "%${params.q}%"
+        def questionText
+        def answers
+
+        // FIXME These searches examine answers from EVERY hood!
+        if( questionId > 0 ) {
+            // Select only answers to that particular question
+            answers = Answer.executeQuery(
+                'select a.text, p.id, p.firstNames from Answer a join a.person p where a.text like ? and a.question.id = ? order by p.firstNames',
+                [ searchTerm, questionId ] )
+            questionText = Question.get( questionId ).text
+        } else {
+            // Select answers to all questions
+            answers = Answer.executeQuery(
+                'select a.text, p.id, p.firstNames from Answer a join a.person p where a.text like ? order by p.firstNames',
+                [ searchTerm ] )
+            questionText = null
+        }
+
+        [ questionId:questionId, answers:answers, q:params.q, questionText:questionText ]
+    }
+
     def frequencies( ) {
         def questionId = Long.parseLong( params.id )
 
