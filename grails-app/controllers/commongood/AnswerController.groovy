@@ -7,7 +7,9 @@ class AnswerController {
         def questionId = Long.parseLong( params.id )
 
         // Result is like [[biking,17],[dancing,4], ...]
-        def freqs = Answer.executeQuery('select a.text, count(a) from Answer as a where a.question.id=? group by a.text order by a.text',[questionId])
+        def freqs = Answer.executeQuery(
+                'select a.text, count(a) as ca from Answer as a where a.question.id=? group by a.text order by ca desc',
+                [questionId] )
         
         [ questionId:questionId, frequencies:freqs ]
     }

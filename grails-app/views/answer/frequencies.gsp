@@ -9,7 +9,7 @@
         <h1>Answer Frequencies for Question id ${questionId}</h1>
         <table>
         <g:each in="${frequencies}" var="answer">
-            <tr><td>${answer[0]}</td><td>${answer[1]}</td></tr>
+            <tr><td>${answer[1]}</td><td>${answer[0]}</td></tr>
         </g:each>
         </table>
     </body>
