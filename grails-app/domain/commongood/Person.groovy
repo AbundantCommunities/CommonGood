@@ -7,6 +7,7 @@ class Person {
     Integer birthYear
     String emailAddress
     String phoneNumber
+    String note
     Integer orderWithinFamily // first in order is our primary contact
     /*
     If appUser then

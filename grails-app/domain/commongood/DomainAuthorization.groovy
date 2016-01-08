@@ -9,11 +9,11 @@ class DomainAuthorization {
     final static String APPLICATION = "A"
     final static String NEIGHBOURHOOD = "N"
     final static String BLOCK = "B"
-    
+
     Person person
     Boolean primaryPerson // Within a given 'hood or block, she is the primary contact person
     String domainCode // A, N, B → Application Administrator, NeighbourHood Connector, Block Connector
-    
+
     // FIXME domainKey must be a Long, not an Integer
     Integer domainKey // domainCode: A means domainKey is null, N means key is neighbourhood.id, B means block.id
     Date dateCreated

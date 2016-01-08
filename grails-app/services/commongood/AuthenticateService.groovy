@@ -11,7 +11,8 @@ class AuthenticateService {
      * Returns a Person if and only if the emailAddress and password match.
     */
     public Person check( emailAddress, password ) {
-        
+        println "Request to check password of ${emailAddress}"
+
         Integer phoneyHash = password.hashCode( )
         def peeps = Person.findAll( 'from Person where emailAddress=? and appUser=true and passwordHash=?', [emailAddress,phoneyHash] )
 
@@ -23,7 +24,7 @@ class AuthenticateService {
 
         } else {
             def peep = peeps[0]
-            println "Phoney authentication success for ${peep.fullName}"
+            println "Phoney authentication SUCCESS for ${peep.fullName}"
             return peep
         }
 

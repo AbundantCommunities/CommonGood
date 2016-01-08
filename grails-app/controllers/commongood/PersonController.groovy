@@ -10,10 +10,10 @@ class PersonController {
         // Select only answers to that particular question
         def peeps = Person.executeQuery(
             'select p.id, p.firstNames, p.lastName from Person p join p.family f join f.address a \
-             where a.text like ? or f.name like ? \
+             where a.text like ? or a.note like ? or f.name like ? or f.note like ? \
              or p.firstNames like ? or p.lastName like ? or p.phoneNumber like ? or p.emailAddress like ? \
-             order by p.firstNames, p.lastName, p.id',
-            [ searchTerm ] * 6 )
+             or p.note like ? order by p.firstNames, p.lastName, p.id',
+            [ searchTerm ] * 9 )
 
         [ q:params.q, results:peeps ]
     }

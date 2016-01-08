@@ -100,7 +100,7 @@ class NavigateController {
             navContext:
                 [
                     [id: theAddress.block.neighbourhood.id, level: 'Neighbourhood', description: theAddress.block.neighbourhood.name],
-                    [id: theAddress.block.id, level: 'Block', description: theAddress.block.code]
+                    [id: theAddress.block.id, level: 'Block', description: theAddress.block.displayName]
                 ],
 
             navSelection: [ levelInHierarchy:'Address', id:addressId, description:theAddress.text, note:theAddress.note,
@@ -138,7 +138,7 @@ class NavigateController {
             navContext:
                 [
                     [id: theFamily.address.block.neighbourhood.id, level: 'Neighbourhood', description: theFamily.address.block.neighbourhood.name],
-                    [id: theFamily.address.block.id, level: 'Block', description: theFamily.address.block.code],
+                    [id: theFamily.address.block.id, level: 'Block', description: theFamily.address.block.displayName],
                     [id: theFamily.address.id, level: 'Address', description: theFamily.address.text]
                 ],
 
@@ -205,7 +205,7 @@ class NavigateController {
             navContext:
             [
                 [id: theMember.family.address.block.neighbourhood.id, level: 'Neighbourhood', description: theMember.family.address.block.neighbourhood.name],
-                [id: theMember.family.address.block.id, level: 'Block', description: theMember.family.address.block.code],
+                [id: theMember.family.address.block.id, level: 'Block', description: theMember.family.address.block.displayName],
                 [id: theMember.family.address.id, level: 'Address', description: theMember.family.address.text],
                 [id: theMember.family.id, level: 'Family', description: theMember.family.name]
             ],

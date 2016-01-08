@@ -14,7 +14,8 @@
 
         <g:if test="${session.user}">
             <p>Hi ${session.user.firstNames}.</p>
-            <p><g:link controller="navigate" action="neighbourhood" id="1">Let's go!</g:link></p>
+            <p>You have authorization to access ${session.neighbourhood.name}</p>
+            <p><g:link controller="navigate" action="neighbourhood" id="${session.neighbourhood.id}">Let's go!</g:link></p>
             <p><g:link controller="logout">Logout</g:link></p>
         </g:if>
         <g:else>

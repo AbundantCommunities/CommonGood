@@ -4,6 +4,28 @@ import grails.transaction.Transactional
 
 @Transactional
 class DomainAuthorizationService {
+    
+    def getNeighbourhoodAuthorization( person ) {
+        println "Request to getNeighbourhoodAuthorization for ${person.fullName}"
+
+        def da = DomainAuthorization.findAll( "from DomainAuthorization da where da.domainCode=? and da.person.id=?",
+                    [ DomainAuthorization.NEIGHBOURHOOD, person.id ] )
+
+        if( da.size() ) {
+            println "Got ${da.size()} Neighbourhood authorizations"
+            if( da.size() > 1 ) {
+                // TODO Improve authorization scheme to handle multiple privs
+                println "WARNING: too many DomainAuthorization entries for ${person}"
+            }
+
+            // TODO domainKey should be a Long
+            return da[0].domainKey as Long
+        } else {
+            println "Found no NH authorizations"
+            return null
+        }
+    }
+
     /**
      * Result is a list of People.
     */
