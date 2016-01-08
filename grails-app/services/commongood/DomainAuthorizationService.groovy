@@ -12,7 +12,7 @@ class DomainAuthorizationService {
                     [ DomainAuthorization.NEIGHBOURHOOD, person.id ] )
 
         if( da.size() ) {
-            println "Got ${da.size()} Neighbourhood authorizations"
+            println "Got ${da.size()} Neighbourhood authorization(s)"
             if( da.size() > 1 ) {
                 // TODO Improve authorization scheme to handle multiple privs
                 println "WARNING: too many DomainAuthorization entries for ${person}"

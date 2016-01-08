@@ -8,11 +8,6 @@ class Person {
     String emailAddress
     String phoneNumber
     String note
-
-    static mapping = {
-        note defaultValue: "'Note'"
-    }
-
     Integer orderWithinFamily // first in order is our primary contact
     /*
     If appUser then

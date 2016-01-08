@@ -2,7 +2,7 @@ package commongood
 
 class HomePageTestController {
 
-    def youAreHome( ) {
+    def index( ) {
         println "in HomePageTestController with session=${session}"
     }
 }

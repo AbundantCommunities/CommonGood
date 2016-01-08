@@ -14,22 +14,27 @@ class LoginController {
         session.user = null
         session.neighbourhood = null
 
-        if( params.emailAddress && params.password ) {
-            session.user = authenticateService.check( params.emailAddress, params.password )
-        }
+        def user = authenticateService.check( params.emailAddress, params.password )
 
-        if( session.user ) {
-            Person person = session.user
-            def neighbourhoodId = domainAuthorizationService.getNeighbourhoodAuthorization( person )
+        if( user ) {
+            def neighbourhoodId = domainAuthorizationService.getNeighbourhoodAuthorization( user )
             if( neighbourhoodId ) {
                 println "Will store info in session for NH with id=${neighbourhoodId}"
+                
+                // If the following "get" fails we do not want user in session:
                 session.neighbourhood = Neighbourhood.get( neighbourhoodId )
-                flash.message = 'You logged in successfully.'
-                forward controller: "homePageTest", action: "youAreHome"
+                session.user = user
+                flash.message = "You logged in successfully with access to ${session.neighbourhood.name}."
+            } else {
+                println "NO NH authorization to store in session"
+                flash.message = 'You authenticated okay but WITHOUT access to a neighbourhood.'
             }
-        }
+            forward controller: "homePageTest"
 
-        flash.message = 'Login failure!'
-        forward action: "index"
+        } else {
+            println 'LoginController.authenticate( ) FAILED to authenticate (back to login form)'
+            flash.message = 'Login failure!'
+            forward action: "index"
+        }
     }
 }
