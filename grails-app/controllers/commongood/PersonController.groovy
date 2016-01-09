@@ -38,8 +38,9 @@ class PersonController {
         person.emailAddress = params.emailAddress
         person.phoneNumber = params.phoneNumber
         person.orderWithinFamily = Integer.valueOf( params.orderWithinFamily )
-        // TODO Test: family.save(failOnError: true)
-        person.save( flush:true )
+
+        // TODO Replace failOnError with logic
+        person.save( flush:true, failOnError: true )
         forward controller:'navigate', action:'familymember', id:person.id
     }
 }

@@ -28,8 +28,8 @@ class FamilyController {
         family.interviewDate = new Date( ).parse( 'yyyy-MM-dd', params.initialInterviewDate )
         family.orderWithinAddress = Integer.valueOf( params.orderWithinAddress )
 
-        // TODO Test: family.save(failOnError: true)
-        family.save( flush:true )
+        // TODO Replace failOnError with logic
+        family.save( flush:true, failOnError: true )
         forward controller:'navigate', action:'family', id:family.id
     }
 }

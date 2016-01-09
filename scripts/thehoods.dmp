@@ -1434,7 +1434,7 @@ INSERT INTO domain_authorization VALUES (12, 0, '2015-12-18 00:00:00', 'B', 12, 
 INSERT INTO domain_authorization VALUES (13, 0, '2015-12-18 00:00:00', 'B', 13, '2015-12-18 00:00:00', 903, false);
 INSERT INTO domain_authorization VALUES (14, 0, '2015-12-18 00:00:00', 'B', 14, '2015-12-18 00:00:00', 903, false);
 INSERT INTO domain_authorization VALUES (15, 0, '2015-12-18 00:00:00', 'B', 101, '2015-12-18 00:00:00', 903, false);
-INSERT INTO domain_authorization VALUES (999, 0, '2015-12-20 00:00:00', 'N', 1, '2015-12-20 00:00:00', 42, false);
+INSERT INTO domain_authorization VALUES (999, 0, '2015-12-20 00:00:00', 'N', 1, '2015-12-20 00:00:00', 904, true);
 
 
 --
@@ -1775,6 +1775,41 @@ INSERT INTO person VALUES (121, 0, false, 0, '2015-12-18 00:00:00', 'Rollins290@
 INSERT INTO person VALUES (64, 0, false, 0, '2015-12-18 00:00:00', 'Merrill832@yahoo.ca', 28, 'Della', 'Merrill', '2015-12-18 00:00:00', 100, 0, '519-410-2016', 'Person note');
 INSERT INTO person VALUES (902, 0, false, 0, '2014-01-01 00:00:00', 'moniquev@evermore.org', NULL, 'Monique', 'Vautour', '2015-12-01 00:00:00', 0, 0, '587-338-0525', 'Person note');
 INSERT INTO person VALUES (903, 0, false, 0, '2014-01-01 00:00:00', 'abodnar@gmail.com', NULL, 'Anne', 'Bodnar', '2015-12-01 00:00:00', 0, 0, '780-428-7718', 'Person note');
+
+INSERT INTO person
+(
+  id,
+  version,
+  app_user,
+  birth_year,
+  date_created,
+  email_address,
+  family_id,
+  first_names,
+  last_name,
+  last_updated,
+  order_within_family,
+  password_hash,
+  phone_number,
+  note
+)
+VALUES
+(
+  904,
+  0,
+  TRUE,
+  1970,
+  TIMESTAMP '2014-01-01 00:00:00.000',
+  'sue@aci.ca',
+  NULL,
+  'Sue',
+  'Muise',
+  TIMESTAMP '2015-12-01 00:00:00.000',
+  0,
+  113843,
+  '800-lov-eaci',
+  'A real people person & well organized!'
+);
 
 
 --

@@ -40,9 +40,9 @@ class PermuteAnswersController {
     }
     
     def questionCode() {
-        def questionCode =  Integer.valueOf( params.id )
+        def questionId =  Long.valueOf( params.id )
         def permutations = [ ]
-        List answers = Answer.executeQuery( "select text from Answer where questionCode = ?", [questionCode] ).each {
+        List answers = Answer.executeQuery( "select text from Answer a where a.question.id = ?", [questionId] ).each {
             permute( it ).each {
                 if( !(it in permutations) ) {
                     permutations << it

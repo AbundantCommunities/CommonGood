@@ -76,7 +76,8 @@ class AnswerController {
                     Answer answer = new Answer( person:p, question:q, text:it,
                                 wouldLead:Boolean.FALSE, wouldOrganize:Boolean.TRUE  )
                     // TODO Eiminate multiple flushes (would reduce calls to the db?)
-                    answer.save( flush:true )
+                    // TODO Replace failOnError with logic
+                    answer.save( flush:true, failOnError: true )
 
                     if( lastPersonId ) {
                         if( p.id != lastPersonId ) {

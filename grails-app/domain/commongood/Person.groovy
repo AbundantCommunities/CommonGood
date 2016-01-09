@@ -29,6 +29,7 @@ class Person {
     Person( ) {
         appUser = Boolean.FALSE
         passwordHash = 0
+        note = ''
     }
 
     def getFullName( ) {
