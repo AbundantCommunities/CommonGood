@@ -2,11 +2,8 @@
 
 <html>
     <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+        <meta name="layout" content="navigate"/>
         <title>Abundant Communities - Edmonton</title>
-        <meta name="description" content="Abundant Communities - Edmonton" />
-        <link rel="stylesheet" href="${resource(dir:'css',file:'common.css')}" />
-        <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Quicksand">
         <script type="text/javascript">
             function populateEditModal() {
 
@@ -24,10 +21,10 @@
                 document.getElementById('participateInInterviewInput').checked = ${navSelection.participateInInterview};
                 document.getElementById('orderWithinAddressInput').value = "${navSelection.orderWithinAddress}";
 
-                var noteLines = "${navSelection.note.split('\r\n').join('|')}";
-                var newNoteLines = noteLines.split('|').join('\n');
+                var encodedNote = "${navSelection.note.split('\r\n').join('|')}";
+                var decodedNote = encodedNote.split('|').join('\n');
 
-                document.getElementById('noteInput').value = newNoteLines;
+                document.getElementById('familyNoteInput').value = decodedNote;
             }
             function presentEditModal() {
                 var pagecontainerDiv = document.getElementById("pagecontainer");
@@ -53,7 +50,7 @@
                 return true;
             }
             function saveFamily() {
-                if (familyIsValid(document.getElementById('noteInput').value)) {
+                if (familyIsValid(document.getElementById('familyNoteInput').value)) {
                     dismissEditModal();
                     var editForm = document.getElementById('edit-form');
                     var possibleInterviewerSelect = document.getElementById( "possibleInterviewerSelect" );
@@ -73,6 +70,7 @@
                 document.getElementById("emailAddressInput").value = "";
                 document.getElementById("phoneNumberInput").value = "";
                 document.getElementById("orderWithinFamilyInput").value = "";
+                document.getElementById("familyMemberNoteInput").value = "";
 
 
                 // set height of overlay to match height of pagecontainer height
@@ -89,7 +87,7 @@
                 document.getElementById("transparent-overlay").style.visibility='hidden';
             }
 
-            function newFamilyMemberIsValid (firstNames, lastName) {
+            function newFamilyMemberIsValid (firstNames, lastName, note) {
                 if (firstNames == "") {
                     alert("Please enter a first name for the new family member.");
                     return false;
@@ -97,6 +95,11 @@
 
                 if (lastName == "") {
                     alert("Please enter a last name for the new family member.");
+                    return false;
+                }
+
+                if (note.indexOf('|') > -1) {
+                    alert("Notes cannot contain the '|' character. Please use a different character");
                     return false;
                 }
 
@@ -109,7 +112,8 @@
                 // Validate new family
                 var firstNames = document.getElementById("firstNamesInput").value;
                 var lastName = document.getElementById("lastNameInput").value;
-                if (newFamilyMemberIsValid(firstNames, lastName)) {
+                var note = document.getElementById("familyMemberNoteInput").value;
+                if (newFamilyMemberIsValid(firstNames, lastName, note)) {
                     dismissNewModal();
                     document.getElementById("new-form").submit();
                 }
@@ -152,8 +156,6 @@
                         document.getElementById('initial-interviewer-value').innerHTML = possibleInterviewerSelect.value;
                     }
                 }
-
-
             }
 
         </script>
@@ -275,7 +277,7 @@
                 top:140px;
                 left:260px;
                 width:420px;
-                height:280px;
+                height:385px;
                 padding:20px;
                 padding-top: 10px;
                 box-shadow: 0px 0px 20px #000000;
@@ -289,7 +291,7 @@
             button#new-savebutton{
                 position: absolute;
                 left:230px;
-                top:265px;
+                top:375px;
                 cursor:pointer; /*forces the cursor to change to a hand when the button is hovered*/
                 padding:5px 25px; /*add some padding to the inside of the button*/
                 background:transparent; /*the colour of the button*/
@@ -301,7 +303,7 @@
             button#new-cancelbutton{
                 position: absolute;
                 left:130px;
-                top:265px;
+                top:375px;
                 cursor:pointer; /*forces the cursor to change to a hand when the button is hovered*/
                 padding:5px 25px; /*add some padding to the inside of the button*/
                 background:transparent; /*the colour of the button*/
@@ -364,25 +366,8 @@
                 width: 180px;
             }
         </style>
-
-
-
-
     </head>
     <body>
-        <div id="pagecontainer">
-            <div id="aci-logo-line">
-                <img src="${resource(dir:'images',file:'aci-logo.png')}" />
-                <div id="welcome-line">Welcome Marie-Danielle <span id="sign-out"><a href="#">sign out</a> | <a href="#">account</a></span></div>
-                <div id="role-line">Neighbourhood Connector for Bonnie Doon</div>
-            </div>
-            <g:if test="${navContext.size() > 0}">
-                <div id="nav-path">
-                    <g:each in="${navContext}" var="oneLevel">
-                        <span>${oneLevel.level}: <span style="font-weight:bold;"><a href="${resource(dir:'navigate/'+oneLevel.level.toLowerCase(),file:"${oneLevel.id}")}">${oneLevel.description}</a></span></span><span class="nav-path-space"></span>
-                    </g:each>
-                </div>
-            </g:if>
             <div id="content-detail">
                 <div id="content-detail-title">${navSelection.levelInHierarchy}</div>
                 <div id="family-name-heading">Name: </div>
@@ -434,9 +419,6 @@
                     <div class="content-children-row"><a href="${resource(dir:'navigate/'+navChildren.childType.toLowerCase(),file:"${child.id}")}">${child.name}</a></div>
                 </g:each>
             </div>
-            <div id="footer">
-                &copy;2015 Common Good, A Society for Connected Neighbourhoods. All rights reserved.
-            </div>
             <div id="transparent-overlay">
             </div>
             <div id="edit-container">
@@ -465,7 +447,7 @@
                     <p><input id="participateInInterviewInput" type="checkbox" name="participateInInterview" value="false" /> Agreed to participate in interview</p>
                     <p>Order within address: <input id="orderWithinAddressInput" type="text" name="orderWithinAddress" value="" /></p>
                     <p>Note:</p>
-                    <p><textarea id="noteInput" name="note" cols=44 rows=4></textarea></p>
+                    <p><textarea id="familyNoteInput" name="note" cols=44 rows=4></textarea></p>
                 </form>
                 <button id="edit-savebutton" type="button" onclick="JavaScript:saveFamily();">Save</button>
                 <button id="edit-cancelbutton" type="button" onclick="JavaScript:dismissEditModal();">Cancel</button>
@@ -480,6 +462,8 @@
                     <p>Email address: <input id="emailAddressInput" type="email" name="emailAddress" value="" size="40"/></p>
                     <p>Phone number: <input id="phoneNumberInput" type="text" name="phoneNumber" value=""/></p>
                     <p>Order within family: <input id="orderWithinFamilyInput" type="text" name="orderWithinFamily" value=""/></p>
+                    <p>Note: </p>
+                    <p><textarea id="familyMemberNoteInput" name="note" cols=56 rows=4></textarea></p>
                 </form>
                 <button id="new-savebutton" type="button" onclick="JavaScript:saveFamilyMember();">Save</button>
                 <button id="new-cancelbutton" type="button" onclick="JavaScript:dismissNewModal();">Cancel</button>
@@ -504,6 +488,5 @@
                 <button id="bulk-answers-cancelbutton" type="button" onclick="JavaScript:dismissBulkAnswersModal();">Cancel</button>
                 <button id="bulk-answers-savebutton" type="button" onclick="JavaScript:addBulkAnswers();">Add Answers</button>
             </div>
-        </div>
     </body>
 </html>

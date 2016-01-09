@@ -2,11 +2,8 @@
 
 <html>
     <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+        <meta name="layout" content="navigate"/>
         <title>Abundant Communities - Edmonton</title>
-        <meta name="description" content="Abundant Communities - Edmonton" />
-        <link rel="stylesheet" href="${resource(dir:'css',file:'common.css')}" />
-        <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Quicksand">
         <script type="text/javascript">
 
             function currentDate() {
@@ -165,19 +162,6 @@
         </style>
     </head>
     <body>
-        <div id="pagecontainer">
-            <div id="aci-logo-line">
-                <img src="${resource(dir:'images',file:'aci-logo.png')}" />
-                <div id="welcome-line">Welcome Marie-Danielle <span id="sign-out"><a href="#">sign out</a> | <a href="#">account</a></span></div>
-                <div id="role-line">Neighbourhood Connector for Bonnie Doon</div>
-            </div>
-            <g:if test="${navContext.size() > 0}">
-                <div id="nav-path">
-                    <g:each in="${navContext}" var="oneLevel">
-                        <span>${oneLevel.level}: <span style="font-weight:bold;"><a href="${resource(dir:'navigate/'+oneLevel.level.toLowerCase(),file:"${oneLevel.id}")}">${oneLevel.description}</a></span></span><span class="nav-path-space"></span>
-                    </g:each>
-                </div>
-            </g:if>
             <div id="content-detail">
                 <div id="content-detail-title">${navSelection.levelInHierarchy}</div>
                 <div id="address-heading">Address: </div>
@@ -207,9 +191,6 @@
                     <div class="content-children-row"><a href="${resource(dir:'navigate/'+navChildren.childType.toLowerCase(),file:"${child.id}")}">${child.name}</a></div>
                 </g:each>
             </div>
-            <div id="footer">
-                &copy;2015 Common Good, A Society for Connected Neighbourhoods. All rights reserved.
-            </div>
             <div id="transparent-overlay">
             </div>
             <div id="new-container">
@@ -238,8 +219,5 @@
                 <button id="new-savebutton" type="button" onclick="JavaScript:saveFamily();">Save</button>
                 <button id="new-cancelbutton" type="button" onclick="JavaScript:dismissNewModal();">Cancel</button>
             </div>
-
-
-        </div>
     </body>
 </html>

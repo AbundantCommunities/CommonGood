@@ -2,11 +2,8 @@
 
 <html>
     <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+        <meta name="layout" content="navigate"/>
         <title>Abundant Communities - Edmonton</title>
-        <meta name="description" content="Abundant Communities - Edmonton" />
-        <link rel="stylesheet" href="${resource(dir:'css',file:'common.css')}" />
-        <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Quicksand">
         <script type="text/javascript">
 
             function presentSelectQuestionModal() {
@@ -81,19 +78,6 @@
         </style>
     </head>
     <body>
-        <div id="pagecontainer">
-            <div id="aci-logo-line">
-                <img src="${resource(dir:'images',file:'aci-logo.png')}" />
-                <div id="welcome-line">Welcome Marie-Danielle <span id="sign-out"><a href="#">sign out</a> | <a href="#">account</a></span></div>
-                <div id="role-line">Neighbourhood Connector for Bonnie Doon</div>
-            </div>
-            <g:if test="${navContext.size() > 0}">
-                <div id="nav-path">
-                    <g:each in="${navContext}" var="oneLevel">
-                        <span>${oneLevel.level}: <span style="font-weight:bold;"><a href="${resource(dir:'navigate/'+oneLevel.level.toLowerCase(),file:"${oneLevel.id}")}">${oneLevel.description}</a></span></span><span class="nav-path-space"></span>
-                    </g:each>
-                </div>
-            </g:if>
             <div id="content-detail">
                 <div id="content-detail-title">${navSelection.levelInHierarchy}</div>
                 <div>Name: ${navSelection.description}</div>
@@ -113,19 +97,15 @@
             </div>
             <div id="content-children">
                 <div id="content-children-title">${navChildren.childType+'s'} for ${navSelection.levelInHierarchy} ${navSelection.description}&nbsp;&nbsp;<a href="#">+ Add New ${navChildren.childType}</a></div>
-                <div id="content-children-heading">Name</div>
                 <g:each in="${navChildren.children}" var="child">
                     <div class="content-children-row"><a href="${resource(dir:'navigate/'+navChildren.childType.toLowerCase(),file:"${child.id}")}">${child.name}</a></div>
                 </g:each>
-            </div>
-            <div id="footer">
-                &copy;2015 Common Good, A Society for Connected Neighbourhoods. All rights reserved.
             </div>
             <div id="transparent-overlay">
             </div>
             <div id="select-question-container">
                 <p style="font-weight:bold;font-size:14px;">Select Question for Answer Ranking</p>
-                <form id="select-question-form" action="<g:createLink controller='answer' action='frequencies'/>" method="get" target="_blank">
+                <form id="select-question-form" action="<g:createLink controller='answer' action='frequencies'/>" method="get">
                     <input id="inputId" type="hidden" name="id" value="14" />
                     <p>Question: 
                         <select id="questionsSelect">
@@ -141,6 +121,5 @@
                 <button id="select-question-generatebutton" type="button" onclick="JavaScript:generateAnswerRankingReport();">Generate Report</button>
                 <button id="select-question-cancelbutton" type="button" onclick="JavaScript:dismissSelectQuestionModal();">Cancel</button>
             </div>
-        </div>
     </body>
 </html>

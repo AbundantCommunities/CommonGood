@@ -2,11 +2,8 @@
 
 <html>
     <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+        <meta name="layout" content="navigate"/>
         <title>Abundant Communities - Edmonton</title>
-        <meta name="description" content="Abundant Communities - Edmonton" />
-        <link rel="stylesheet" href="${resource(dir:'css',file:'common.css')}" />
-        <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Quicksand">
         <script type="text/javascript">
             function populateEditModal() {
 
@@ -19,6 +16,8 @@
 
                 document.getElementById('phoneNumberInput').value = "${navSelection.phoneNumber}";
                 document.getElementById('orderWithinFamilyInput').value = "${navSelection.orderWithinFamily}";
+
+                document.getElementById('noteInput').value = "note not yet hooked up";
             }
 
 
@@ -39,7 +38,7 @@
             }
 
 
-            function familyMemberIsValid (firstNames, lastName) {
+            function familyMemberIsValid (firstNames, lastName, note) {
                 if (firstNames == "") {
                     alert("Please enter a first name for the new family member.");
                     return false;
@@ -47,6 +46,11 @@
 
                 if (lastName == "") {
                     alert("Please enter a last name for the new family member.");
+                    return false;
+                }
+
+                if (note.indexOf('|') > -1) {
+                    alert("Notes cannot contain the '|' character. Please use a different character");
                     return false;
                 }
 
@@ -59,17 +63,17 @@
                 // Validate new family
                 var firstNames = document.getElementById("firstNamesInput").value;
                 var lastName = document.getElementById("lastNameInput").value;
-                if (familyMemberIsValid(firstNames, lastName)) {
+                var note = document.getElementById("noteInput").value;
+                if (familyMemberIsValid(firstNames, lastName, note)) {
                     dismissEditModal();
                     document.getElementById("edit-form").submit();
                 }
             }
 
-
         </script>
         <style type="text/css">
             #content-detail {
-                height:150px;
+                height:250px;
             }
             #first-names-heading {
                 position: absolute;
@@ -131,12 +135,22 @@
                 top:130px;
                 left: 160px;
             }
+            #note-heading {
+                position: absolute;
+                top:150px;
+                left: 10px;
+            }
+            #note-value {
+                position: absolute;
+                top:150px;
+                left: 160px;
+            }
             #edit-container {
                 position:absolute;
                 top:140px;
                 left:260px;
                 width:420px;
-                height:280px;
+                height:385px;
                 padding:20px;
                 padding-top: 10px;
                 box-shadow: 0px 0px 20px #000000;
@@ -150,7 +164,7 @@
             button#edit-savebutton{
                 position: absolute;
                 left:230px;
-                top:265px;
+                top:375px;
                 cursor:pointer; /*forces the cursor to change to a hand when the button is hovered*/
                 padding:5px 25px; /*add some padding to the inside of the button*/
                 background:transparent; /*the colour of the button*/
@@ -162,7 +176,7 @@
             button#edit-cancelbutton{
                 position: absolute;
                 left:130px;
-                top:265px;
+                top:375px;
                 cursor:pointer; /*forces the cursor to change to a hand when the button is hovered*/
                 padding:5px 25px; /*add some padding to the inside of the button*/
                 background:transparent; /*the colour of the button*/
@@ -170,22 +184,10 @@
                 color:#B48B6A;
                 font-size: 14px;
             }
+
         </style>
     </head>
     <body>
-        <div id="pagecontainer">
-            <div id="aci-logo-line">
-                <img src="${resource(dir:'images',file:'aci-logo.png')}" />
-                <div id="welcome-line">Welcome Marie-Danielle <span id="sign-out"><a href="#">sign out</a> | <a href="#">account</a></span></div>
-                <div id="role-line">Neighbourhood Connector for Bonnie Doon</div>
-            </div>
-            <g:if test="${navContext.size() > 0}">
-                <div id="nav-path">
-                    <g:each in="${navContext}" var="oneLevel">
-                        <span>${oneLevel.level}: <span style="font-weight:bold;"><a href="${resource(dir:'navigate/'+oneLevel.level.toLowerCase(),file:"${oneLevel.id}")}">${oneLevel.description}</a></span></span><span class="nav-path-space"></span>
-                    </g:each>
-                </div>
-            </g:if>
             <div id="content-detail">
                 <div id="content-detail-title">${navSelection.levelInHierarchy}</div>
                 <div id="first-names-heading">First names: </div>
@@ -200,6 +202,8 @@
                 <div id="phone-number-value">${navSelection.phoneNumber}</div>
                 <div id="order-within-family-heading">Order within family: </div>
                 <div id="order-within-family-value">${navSelection.orderWithinFamily}</div>
+                <div id="note-heading">Note: </div>
+                <div id="note-value"><textarea cols="60" rows="5" style="color: #222222;" disabled>note not yet hooked up</textarea></div>
                 <br/>
 
                 <div id="content-actions">
@@ -215,9 +219,6 @@
                     <div class="content-children-row"><a href="${resource(dir:'navigate/'+navChildren.childType.toLowerCase(),file:"${child.id}")}">${child.name}</a></div>
                 </g:each>
             </div>
-            <div id="footer">
-                &copy;2015 Common Good, A Society for Connected Neighbourhoods. All rights reserved.
-            </div>
             <div id="transparent-overlay">
             </div>
             <div id="edit-container">
@@ -230,10 +231,11 @@
                     <p>Email address: <input id="emailAddressInput" type="email" name="emailAddress" value="" size="40"/></p>
                     <p>Phone number: <input id="phoneNumberInput" type="text" name="phoneNumber" value=""/></p>
                     <p>Order within family: <input id="orderWithinFamilyInput" type="text" name="orderWithinFamily" value=""/></p>
+                    <p>Note: </p>
+                    <p><textarea id="noteInput" name="note" cols=56 rows=4></textarea></p>
                 </form>
                 <button id="edit-savebutton" type="button" onclick="JavaScript:saveFamilyMember();">Save</button>
                 <button id="edit-cancelbutton" type="button" onclick="JavaScript:dismissEditModal();">Cancel</button>
             </div>
-        </div>
     </body>
 </html>
