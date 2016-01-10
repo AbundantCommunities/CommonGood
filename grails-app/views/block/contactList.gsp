@@ -19,9 +19,9 @@
                     <div id="content-children-heading"><div class="cell350">${familyPack.thisFamily.name} Family, ${familyPack.thisFamily.address.text}</div></div>
                     <g:each in="${familyPack.members}" var="person">
                         <div class="content-children-row">
-                            <div class="cell150">${person.fullName}</div>
+                            <g:link controller="navigate" action="familymember" id="${person.id}"><div class="cell150">${person.fullName}</div></g:link>
                             <div class="cell120">${person.phoneNumber}</div>
-                            <div class="cell300">${person.emailAddress}</div>
+                            <a href="mailto:${person.emailAddress}" target="_top"><div class="cell300">${person.emailAddress}</div></a>
                             <div class="cell80">${person.birthYear}</div>
                         </div>
                     </g:each>

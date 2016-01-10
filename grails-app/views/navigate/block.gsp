@@ -59,7 +59,6 @@
                     <div class="content-action"><a href="#">Edit</a></div>
                     <div class="content-action"><a href="#">Delete</a></div>
                     <div class="content-action"><a href="#">Print</a> (<a href="#">preferences</a>)</div>
-                    <div class="content-action"><a href="#">Search</a></div>
                 </div>
             </div>
             <div id="content-children">
@@ -67,6 +66,7 @@
                 <g:each in="${navChildren.children}" var="child">
                     <div class="content-children-row"><a href="${resource(dir:'navigate/'+navChildren.childType.toLowerCase(),file:"${child.id}")}">${child.name}</a></div>
                 </g:each>
+                <div class="content-children-row"></div>
             </div>
     </body>
 </html>

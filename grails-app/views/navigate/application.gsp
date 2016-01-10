@@ -47,7 +47,6 @@
                     <div class="content-action"><a href="#">Edit</a></div>
                     <div class="content-action"><a href="#">Delete</a></div>
                     <div class="content-action"><a href="#">Print</a> (<a href="#">preferences</a>)</div>
-                    <div class="content-action"><a href="#">Search</a></div>
                 </div>
             </div>
             <div id="content-children">
