@@ -163,7 +163,6 @@ class NavigateController {
     // Lower case M because of the way our GSP constructs navigation URLs
     def familymember( ) {
         Long memberId = Long.valueOf( params.id )
-//        Person theMember = Person.where{ id == memberId }.get( )
 
         /* The answers look like:
 //        [ [commongood.Answer : 54, commongood.Person : 7, commongood.Question : 12],
@@ -213,7 +212,8 @@ class NavigateController {
             navSelection:[ levelInHierarchy: 'Family Member', id:memberId, description:theMember.fullName,
                             firstNames:theMember.firstNames, lastName:theMember.lastName,
                             birthYear:theMember.birthYear, emailAddress:theMember.emailAddress,
-                            phoneNumber:theMember.phoneNumber, orderWithinFamily:theMember.orderWithinFamily ],
+                            phoneNumber:theMember.phoneNumber, orderWithinFamily:theMember.orderWithinFamily,
+                            note:theMember.note ],
 
             navChildren:
             [
