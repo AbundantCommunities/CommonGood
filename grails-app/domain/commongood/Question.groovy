@@ -5,7 +5,11 @@ class Question {
     String code
     String text
     Integer orderWithinQuestionnaire
-    String shortText = ''
+    String shortText
+
+    static mapping = {
+        shortText defaultValue: "'Short'"
+    }
 
     Date dateCreated
     Date lastUpdated
