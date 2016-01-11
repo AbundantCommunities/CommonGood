@@ -432,12 +432,7 @@
                             <g:each in="${navSelection.possibleInterviewers}" var="possibleInterviewer">
                                 <option value="${possibleInterviewer.fullName}">${possibleInterviewer.fullName}</option>
                                 <script type="text/javascript">
-                                    <g:if test="${possibleInterviewer.default == 'true'}">
-                                        possibleInterviewerIds.push([${possibleInterviewer.id}, true]);
-                                    </g:if>
-                                    <g:else>
-                                        possibleInterviewerIds.push([${possibleInterviewer.id}, false]);
-                                    </g:else>
+                                    possibleInterviewerIds.push([${possibleInterviewer.id}, ${possibleInterviewer.default}]);
                                 </script>
                             </g:each>
                         </select>

@@ -83,8 +83,8 @@
                 <div>Name: ${navSelection.description}</div>
 
                 <div id="content-actions-left-side">
-                    <div class="content-left-action"><g:link controller="blockSummary" action="index" target="_blank">Block Summary</g:link></div>
-                    <div class="content-left-action"><g:link controller="blockConnectorSummary" action="index" target="_blank">Block Connector Sumary</g:link></div>
+                    <div class="content-left-action"><g:link controller="blockSummary" action="index">Block Summary</g:link></div>
+                    <div class="content-left-action"><g:link controller="blockConnectorSummary" action="index">Block Connector Sumary</g:link></div>
                     <div class="content-left-action"><a href="#" onclick="presentSelectQuestionModal();">Answer Ranking</a></div>
                 </div>
 

@@ -2,74 +2,34 @@
 
 <html>
     <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-        <title>Common Good</title>
-        <meta name="description" content="Common Good likes to connect neighbourhoods." />
-        <style type="text/css">
-            body {
-                font-family: "Helvetica";
-                font-size: small;
-            }
-        div.myRow {
-            display: block;
-            height: 20px;
-        }
-        div.myRowHidden {
-            display: none;
-            height: 20px;
-        }
-        div.myCell2 {
-            display: inline-block;
-            width: 150px;
-        }
-        div.myCell3 {
-            display: inline-block;
-            width: 220px;
-        }
-        div.myCell4 {
-            display: inline-block;
-            width: 110px;
-        }
-        div.myCell6 {
-            display: inline-block;
-            width: 110px;
-        }
-        div.myCell7 {
-            display: inline-block;
-            width: 110px;
-        }
-        div.myCell8 {
-            display: inline-block;
-            width: 80px;
-        }
-        div.myCell10 {
-            display: inline-block;
-            width: 80px;
-        }
-        
-            </style>
+        <meta name="layout" content="report">
+        <title>Abundant Communities - Edmonton</title>
     </head>
     <body>
-        <div><h2>Welcome ${result.ncName}, Neighbourhood Connector for ${result.nhName}.</h2></div>
-        <div><h3>Number of block connectors in neighbourhood: ${result.connectors.size()}</h3></div>
-        <div class="myRow">
-            <div class="myCell2" style="font-weight: bold;">Block Connector</div>
-            <div class="myCell3" style="font-weight: bold;">Email</div>
-            <div class="myCell4" style="font-weight: bold;">Phone</div>
-            <div class="myCell6" style="font-weight: bold;">First Interview</div>
-            <div class="myCell7" style="font-weight: bold;">Last Interview</div>
-            <div class="myCell8" style="font-weight: bold;"># Families</div>
-            <div class="myCell10" style="font-weight: bold;"># Declined</div>
-        </div>
-        <g:each in="${result.connectors}" var="bc">
-            <div class="myCell2">${bc.bcName}</div>
-            <div class="myCell3">${bc.bcEmail}</div>
-            <div class="myCell4">${bc.bcPhone}</div>
-            <div class="myCell6"><g:formatDate format="yyyy-MM-dd" date="${bc.firstInterview}"/></div>
-            <div class="myCell7"><g:formatDate format="yyyy-MM-dd" date="${bc.lastInterview}"/></div>
-            <div class="myCell8">${bc.numFamilies}</div>
-            <div class="myCell10">${bc.numDeclined}</div>
-            </p>
-        </g:each>
+            <div id="content-children" style="padding-bottom:10px;">
+                <div style="margin-top:-15px;"><h3>Block Connector Summary for ${session.neighbourhood.name}</h3></div>
+                <div style="margin-top:-10px;"><h4>Number of block connectors in neighbourhood: ${result.connectors.size()}</h4></div>
+                <div id="content-children-heading">
+                    <div class="cell150">Block Connector</div>
+                    <div class="cell230">Email</div>
+                    <div class="cell110">Phone</div>
+                    <div class="cell100">First Int</div>
+                    <div class="cell100">Last Int</div>
+                    <div class="cell80">Families</div>
+                    <div class="cell80">Declined</div>
+                </div>
+                <g:each in="${result.connectors}" var="bc">
+                    <div class="content-children-row">
+                        <div class="cell150">${bc.bcName}</div>
+                        <div class="cell230">${bc.bcEmail}</div>
+                        <div class="cell110">${bc.bcPhone}</div>
+                        <div class="cell100"><g:formatDate format="yyyy-MM-dd" date="${bc.firstInterview}"/></div>
+                        <div class="cell100"><g:formatDate format="yyyy-MM-dd" date="${bc.lastInterview}"/></div>
+                        <div class="cell80">${bc.numFamilies}</div>
+                        <div class="cell80">${bc.numDeclined}</div>
+                        </p>
+                    </div>
+                </g:each>
+            </div>
     </body>
 </html>
