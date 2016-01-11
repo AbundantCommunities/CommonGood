@@ -29,7 +29,7 @@ class LoginController {
                 println "NO NH authorization to store in session"
                 flash.message = 'You authenticated okay but WITHOUT access to a neighbourhood.'
             }
-            forward controller: "homePageTest"
+            forward controller:'navigate', action:'neighbourhood', id:neighbourhoodId
 
         } else {
             println 'LoginController.authenticate( ) FAILED to authenticate (back to login form)'
