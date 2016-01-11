@@ -1,0 +1,37 @@
+<html>
+    <head>
+        <title>CommonGood Example</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <h1>Example League Website Showing ACI Responses</h1>
+
+        <div id="frequencies"></div>
+
+        <script>
+        var xmlhttp = new XMLHttpRequest( );
+        var url = "http://localhost:8080/CommonGood/answer/frequencies/13?json=yes";
+
+        xmlhttp.onreadystatechange = function( ) {
+            if( xmlhttp.readyState == 4 && xmlhttp.status == 200 ) {
+                var myArr = JSON.parse( xmlhttp.responseText );
+                buildTable( myArr );
+            }
+        };
+        xmlhttp.open( "GET", url, true );
+        xmlhttp.send( );
+
+        function buildTable( arr ) {
+            var out = '<table>';
+            var i;
+            for(i = 0; i < arr.length; i++) {
+                out += '<tr><td>' + arr[i][0] + '</td><td>' + arr[i][1] + '</td></tr>';
+            }
+            out += '</table>'
+            document.getElementById("frequencies").innerHTML = out;
+        }
+        </script>
+
+    </body>
+</html>
