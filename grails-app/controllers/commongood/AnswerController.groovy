@@ -36,8 +36,15 @@ class AnswerController {
         def freqs = Answer.executeQuery(
                 'select a.text, count(a) as ca from Answer as a where a.question.id=? group by a.text order by ca desc',
                 [questionId] )
-        
-        [ questionId:questionId, frequencies:freqs ]
+
+        if( params.json ) {
+            def bldr = new groovy.json.JsonBuilder( freqs )
+            def writer = new StringWriter()
+            bldr.writeTo(writer)
+            render writer
+        } else {
+            [ questionId:questionId, frequencies:freqs ]
+        }
     }
 
     def saveTable( ) {
@@ -95,7 +102,7 @@ class AnswerController {
             case 0:
                 // FIXME Handle zero answers
                 // ...we don't handle zero-length answers so don't know any person or family ids
-                throw new Exception( "yikes... what to do, what to do!!?" )
+                throw new Exception( "No answers!" )
 
             case 1:
                 forward controller: "navigate", action: "familymember", id: lastPersonId

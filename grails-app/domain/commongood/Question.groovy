@@ -5,6 +5,7 @@ class Question {
     String code
     String text
     Integer orderWithinQuestionnaire
+    String shortText = ''
 
     Date dateCreated
     Date lastUpdated
