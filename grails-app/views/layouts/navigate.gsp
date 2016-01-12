@@ -28,7 +28,7 @@
             </g:if>
             <g:layoutBody/>
             <div id="footer">
-                &copy;2015 Common Good, A Society for Connected Neighbourhoods. All rights reserved.
+                &copy;2016 Common Good, A Society for Connected Neighbourhoods. All rights reserved.
             </div>
         </div>
     </body>
