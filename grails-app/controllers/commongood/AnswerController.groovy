@@ -2,30 +2,19 @@ package commongood
 
 class AnswerController {
     static allowedMethods = [frequencies:'GET', saveTable:'POST', search:'GET']
+    def searchService
 
     def search( ) {
         def questionId = params.id ? Long.parseLong( params.id ) : 0
-        def searchTerm = "%${params.q}%"
         def questionText
-        def answers
 
-        // FIXME These searches examine answers from EVERY hood!
         if( questionId > 0 ) {
-            // Select only answers to that particular question
-            answers = Answer.executeQuery(
-                'select a.text, p.id, p.firstNames from Answer a join a.person p where a.text like ? and a.question.id = ? \
-                 order by p.firstNames, p.lastName, p.id',
-                [ searchTerm, questionId ] )
             questionText = Question.get( questionId ).text
         } else {
-            // Select answers to all questions
-            answers = Answer.executeQuery(
-                'select a.text, p.id, p.firstNames from Answer a join a.person p where a.text like ? \
-                 order by p.firstNames, p.lastName, p.id',
-                [ searchTerm ] )
-            questionText = null
+            questionText = '<All questions>'
         }
 
+        def answers = searchService.answers( questionId, params.q )
         [ questionId:questionId, answers:answers, q:params.q, questionText:questionText ]
     }
 
@@ -38,6 +27,7 @@ class AnswerController {
                 [questionId] )
 
         if( params.json ) {
+            println 'Request for json freqs'
             def bldr = new groovy.json.JsonBuilder( freqs )
             def writer = new StringWriter()
             bldr.writeTo(writer)

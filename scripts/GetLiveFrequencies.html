@@ -3,6 +3,7 @@
         <title>CommonGood Example</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
     </head>
     <body>
         <h1>Example League Website Showing ACI Responses</h1>
@@ -14,15 +15,19 @@
         var url = "http://localhost:8080/CommonGood/answer/frequencies/13?json=yes";
 
         xmlhttp.onreadystatechange = function( ) {
-            if( xmlhttp.readyState == 4 && xmlhttp.status == 200 ) {
+            alert( 'in onreadystatechange state=' + xmlhttp.readyState + ' status=' + xmlhttp.status );
+            if( xmlhttp.readyState == 4 /* && xmlhttp.status == 200 */ ) {
+                alert( '200 status!' );
                 var myArr = JSON.parse( xmlhttp.responseText );
                 buildTable( myArr );
             }
         };
         xmlhttp.open( "GET", url, true );
+        alert( 'before send' );
         xmlhttp.send( );
 
         function buildTable( arr ) {
+            alert( 'in buildTable' );
             var out = '<table>';
             var i;
             for(i = 0; i < arr.length; i++) {

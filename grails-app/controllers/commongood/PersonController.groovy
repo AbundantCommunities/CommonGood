@@ -2,20 +2,10 @@ package commongood
 
 class PersonController {
     static allowedMethods = [save:'POST', search:'GET']
+    def searchService
 
     def search( ) {
-        def searchTerm = "%${params.q}%"
-
-        // FIXME These searches examine answers from EVERY hood!
-        // Select only answers to that particular question
-        def peeps = Person.executeQuery(
-            'select p.id, p.firstNames, p.lastName from Person p join p.family f join f.address a \
-             where a.text like ? or a.note like ? or f.name like ? or f.note like ? \
-             or p.firstNames like ? or p.lastName like ? or p.phoneNumber like ? or p.emailAddress like ? \
-             or p.note like ? order by p.firstNames, p.lastName, p.id',
-            [ searchTerm ] * 9 )
-
-        [ q:params.q, results:peeps ]
+        return [ q:params.q, results:searchService.people(params.q) ]
     }
 
     def save() {
