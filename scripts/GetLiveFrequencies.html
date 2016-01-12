@@ -15,19 +15,19 @@
         var url = "http://localhost:8080/CommonGood/answer/frequencies/13?json=yes";
 
         xmlhttp.onreadystatechange = function( ) {
-            alert( 'in onreadystatechange state=' + xmlhttp.readyState + ' status=' + xmlhttp.status );
+//            alert( 'in onreadystatechange state=' + xmlhttp.readyState + ' status=' + xmlhttp.status );
             if( xmlhttp.readyState == 4 /* && xmlhttp.status == 200 */ ) {
-                alert( '200 status!' );
+//                alert( '200 status!' );
                 var myArr = JSON.parse( xmlhttp.responseText );
                 buildTable( myArr );
             }
         };
         xmlhttp.open( "GET", url, true );
-        alert( 'before send' );
+//        alert( 'before send' );
         xmlhttp.send( );
 
         function buildTable( arr ) {
-            alert( 'in buildTable' );
+//            alert( 'in buildTable' );
             var out = '<table>';
             var i;
             for(i = 0; i < arr.length; i++) {
