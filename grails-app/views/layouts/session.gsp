@@ -16,7 +16,7 @@
             </div>
             <g:layoutBody/>
             <div id="footer">
-                &copy;2016 Common Good, A Society for Connected Neighbourhoods. All rights reserved.
+                &copy;${new Date().year+1900} Common Good, A Society for Connected Neighbourhoods. All rights reserved.
             </div>
         </div>
     </body>
