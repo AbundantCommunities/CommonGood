@@ -104,7 +104,7 @@
 
         </script>
     </head>
-    <body onkeypress="alert('key');">
+    <body>
             <div id="content-detail">
                 <p>Login to CommonGood:</p>
                 <form id="loginForm" action="<g:createLink action='authenticate'/>" method="post">
