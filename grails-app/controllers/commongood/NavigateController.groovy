@@ -5,8 +5,9 @@ We handle GET requests that navigate to some part of our data's "natural hierarc
 */
 class NavigateController {
 
-    // Automagically becomes an instance of DomainAuthorizationService:
+    // Automagically become instances of the respective service:
     def domainAuthorizationService
+    def authorizationService
     
     def installation( ) {
         ThisInstallation thisInstallation = ThisInstallation.get( )
@@ -33,6 +34,7 @@ class NavigateController {
 
     def neighbourhood( ) {
         Integer hoodId = Integer.valueOf( params.id )
+        authorizationService.neighbourhood( hoodId, session )
         Neighbourhood theHood = Neighbourhood.where{ id == hoodId }.get( )
         List blocks = Block.where{ neighbourhood.id == hoodId }.list( sort:'orderWithinNeighbourhood', order:'asc' )
         blocks = blocks.collect{
@@ -56,6 +58,7 @@ class NavigateController {
 
     def block( ) {
         Integer blockId = Integer.valueOf( params.id )
+        authorizationService.block( blockId, session )
         Block theBlock = Block.where{ id == blockId }.get( )
         List addresses = Address.where{ block.id == blockId }.list( sort:'orderWithinBlock', order:'asc' )
         addresses = addresses.collect{
@@ -83,6 +86,7 @@ class NavigateController {
 
     def address( ) {
         Integer addressId = Integer.valueOf( params.id )
+        authorizationService.address( addressId, session )
         Address theAddress = Address.where{ id == addressId }.get( )
         List families = Family.where{ address.id == addressId }.list( sort:'orderWithinAddress', order:'asc' )
         families = families.collect{
@@ -119,6 +123,7 @@ class NavigateController {
     def family( ) {
         Person interviewer // Block Connector
         Integer familyId = Integer.valueOf( params.id )
+        authorizationService.family( familyId, session )
         Family theFamily = Family.where{ id == familyId }.get( )
         List members = Person.where{ family.id == familyId }.list( sort:'orderWithinFamily', order:'asc' )
         members = members.collect{
@@ -163,6 +168,7 @@ class NavigateController {
     // Lower case M because of the way our GSP constructs navigation URLs
     def familymember( ) {
         Long memberId = Long.valueOf( params.id )
+        authorizationService.familyMember( memberId, session )
 
         /* The answers look like:
 //        [ [commongood.Answer : 54, commongood.Person : 7, commongood.Question : 12],
