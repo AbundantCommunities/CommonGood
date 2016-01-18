@@ -1,7 +1,7 @@
 package commongood
 
 class FamilyController {
-    static allowedMethods = [index:'POST']
+    static allowedMethods = [save:'POST']
 
     def save() {
         Family family
