@@ -4,7 +4,20 @@ import grails.transaction.Transactional
 
 @Transactional
 class DomainAuthorizationService {
-    
+
+    def deauthorizeBlockConnector( personId, blockId ) {
+        Integer iBlockId = blockId
+
+        def das = DomainAuthorization.findAll("from DomainAuthorization da join da.person where da.domainCode=? and da.domainKey=? and da.person.id=?",
+                    [ DomainAuthorization.BLOCK, iBlockId, personId ])
+
+        if( das.size() == 1 ) {
+            das[0][0].delete( flush:true )
+        } else {
+            throw new RuntimeException('Failed to delete')
+        }
+    }
+
     def getNeighbourhoodAuthorization( person ) {
         println "Request to getNeighbourhoodAuthorization for ${person.fullName}"
 
@@ -37,7 +50,6 @@ class DomainAuthorizationService {
         def das = DomainAuthorization.findAll("from DomainAuthorization da join da.person where da.domainCode=? and da.domainKey=?",
                     [ DomainAuthorization.BLOCK, iBlockId ])
 
-        println "${das.size()} entries: ${das}"
         das.each {
             result << it[1]
         }

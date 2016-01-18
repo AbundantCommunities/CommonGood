@@ -60,6 +60,7 @@ class NavigateController {
         Integer blockId = Integer.valueOf( params.id )
         authorizationService.block( blockId, session )
         Block theBlock = Block.where{ id == blockId }.get( )
+        def blockConnectors = domainAuthorizationService.getBlockConnectors( blockId )
         List addresses = Address.where{ block.id == blockId }.list( sort:'orderWithinBlock', order:'asc' )
         addresses = addresses.collect{
             [ id:it.id, name:it.text]
@@ -72,7 +73,8 @@ class NavigateController {
                 ],
 
             navSelection: [ levelInHierarchy:'Block', id:blockId, description:theBlock.description,
-                            code:theBlock.code, orderWithinNeighbourhood:theBlock.orderWithinNeighbourhood ],
+                            code:theBlock.code, orderWithinNeighbourhood:theBlock.orderWithinNeighbourhood,
+                            blockConnectors:blockConnectors ],
 
             navChildren:
                 [
