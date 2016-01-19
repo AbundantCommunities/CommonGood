@@ -111,7 +111,7 @@ CREATE TABLE family (
     version bigint NOT NULL,
     address_id bigint NOT NULL,
     date_created timestamp without time zone NOT NULL,
-    interview_date timestamp without time zone NOT NULL,
+    interview_date timestamp without time zone,
     interviewer_id bigint,
     last_updated timestamp without time zone NOT NULL,
     name character varying(255) NOT NULL,
@@ -190,7 +190,8 @@ CREATE TABLE question (
     last_updated timestamp without time zone NOT NULL,
     neighbourhood_id bigint NOT NULL,
     order_within_questionnaire integer NOT NULL,
-    text character varying(255) NOT NULL
+    text character varying(255) NOT NULL,
+    short_text character varying(255) DEFAULT 'Short'::character varying NOT NULL
 );
 
 
@@ -312,6 +313,13 @@ INSERT INTO address VALUES (94, 0, 14, '2015-12-18 00:00:00', '2015-12-18 00:00:
 INSERT INTO address VALUES (95, 0, 14, '2015-12-18 00:00:00', '2015-12-18 00:00:00', 'note', 100, '90 Victoria Dr');
 INSERT INTO address VALUES (96, 0, 14, '2015-12-18 00:00:00', '2015-12-18 00:00:00', 'note', 100, '100 High St');
 INSERT INTO address VALUES (97, 0, 14, '2015-12-18 00:00:00', '2015-12-18 00:00:00', 'note', 100, '87 Beaumont Ave');
+INSERT INTO address VALUES (201, 0, 1, '2016-01-19 00:00:00', '2016-01-19 00:00:00', 'BC!', 555, '77 Victoria Dr');
+INSERT INTO address VALUES (202, 0, 2, '2016-01-19 00:00:00', '2016-01-19 00:00:00', 'BC!', 555, '53 Thierry Ln');
+INSERT INTO address VALUES (203, 0, 3, '2016-01-19 00:00:00', '2016-01-19 00:00:00', 'BC!', 555, '45 Spruce Ave');
+INSERT INTO address VALUES (204, 0, 4, '2016-01-19 00:00:00', '2016-01-19 00:00:00', 'NC!!', 555, '31 Gifford Ln');
+INSERT INTO address VALUES (301, 0, 7, '2016-01-19 00:00:00', '2016-01-19 00:00:00', 'Sans family', 310, '11 Rambling Road');
+INSERT INTO address VALUES (302, 0, 7, '2016-01-19 00:00:00', '2016-01-19 00:00:00', 'Sans family', 320, '18 Rambling Road');
+INSERT INTO address VALUES (303, 0, 7, '2016-01-19 00:00:00', '2016-01-19 00:00:00', 'Sans family', 330, '24 Rambling Road');
 
 
 --
@@ -1420,20 +1428,20 @@ INSERT INTO block VALUES (14, 0, '11', '2015-12-18 00:00:00', 'Beside ravine', '
 --
 
 INSERT INTO domain_authorization VALUES (1, 0, '2015-12-18 00:00:00', 'B', 1, '2015-12-18 00:00:00', 901, false);
-INSERT INTO domain_authorization VALUES (2, 0, '2015-12-18 00:00:00', 'B', 2, '2015-12-18 00:00:00', 901, false);
-INSERT INTO domain_authorization VALUES (3, 0, '2015-12-18 00:00:00', 'B', 3, '2015-12-18 00:00:00', 901, false);
-INSERT INTO domain_authorization VALUES (4, 0, '2015-12-18 00:00:00', 'B', 4, '2015-12-18 00:00:00', 901, false);
-INSERT INTO domain_authorization VALUES (5, 0, '2015-12-18 00:00:00', 'B', 5, '2015-12-18 00:00:00', 901, false);
-INSERT INTO domain_authorization VALUES (6, 0, '2015-12-18 00:00:00', 'B', 6, '2015-12-18 00:00:00', 902, false);
-INSERT INTO domain_authorization VALUES (7, 0, '2015-12-18 00:00:00', 'B', 7, '2015-12-18 00:00:00', 902, false);
-INSERT INTO domain_authorization VALUES (8, 0, '2015-12-18 00:00:00', 'B', 8, '2015-12-18 00:00:00', 902, false);
-INSERT INTO domain_authorization VALUES (9, 0, '2015-12-18 00:00:00', 'B', 9, '2015-12-18 00:00:00', 902, false);
-INSERT INTO domain_authorization VALUES (10, 0, '2015-12-18 00:00:00', 'B', 10, '2015-12-18 00:00:00', 902, false);
-INSERT INTO domain_authorization VALUES (11, 0, '2015-12-18 00:00:00', 'B', 11, '2015-12-18 00:00:00', 903, false);
-INSERT INTO domain_authorization VALUES (12, 0, '2015-12-18 00:00:00', 'B', 12, '2015-12-18 00:00:00', 903, false);
-INSERT INTO domain_authorization VALUES (13, 0, '2015-12-18 00:00:00', 'B', 13, '2015-12-18 00:00:00', 903, false);
-INSERT INTO domain_authorization VALUES (14, 0, '2015-12-18 00:00:00', 'B', 14, '2015-12-18 00:00:00', 903, false);
-INSERT INTO domain_authorization VALUES (15, 0, '2015-12-18 00:00:00', 'B', 101, '2015-12-18 00:00:00', 903, false);
+INSERT INTO domain_authorization VALUES (2, 0, '2015-12-18 00:00:00', 'B', 2, '2015-12-18 00:00:00', 902, false);
+INSERT INTO domain_authorization VALUES (3, 0, '2015-12-18 00:00:00', 'B', 3, '2015-12-18 00:00:00', 903, false);
+INSERT INTO domain_authorization VALUES (4, 0, '2015-12-18 00:00:00', 'B', 4, '2015-12-18 00:00:00', 904, false);
+INSERT INTO domain_authorization VALUES (5, 0, '2015-12-18 00:00:00', 'B', 5, '2015-12-18 00:00:00', 904, false);
+INSERT INTO domain_authorization VALUES (6, 0, '2015-12-18 00:00:00', 'B', 6, '2015-12-18 00:00:00', 904, false);
+INSERT INTO domain_authorization VALUES (7, 0, '2015-12-18 00:00:00', 'B', 7, '2015-12-18 00:00:00', 904, false);
+INSERT INTO domain_authorization VALUES (8, 0, '2015-12-18 00:00:00', 'B', 8, '2015-12-18 00:00:00', 904, false);
+INSERT INTO domain_authorization VALUES (9, 0, '2015-12-18 00:00:00', 'B', 9, '2015-12-18 00:00:00', 904, false);
+INSERT INTO domain_authorization VALUES (10, 0, '2015-12-18 00:00:00', 'B', 10, '2015-12-18 00:00:00', 904, false);
+INSERT INTO domain_authorization VALUES (11, 0, '2015-12-18 00:00:00', 'B', 11, '2015-12-18 00:00:00', 904, false);
+INSERT INTO domain_authorization VALUES (12, 0, '2015-12-18 00:00:00', 'B', 12, '2015-12-18 00:00:00', 904, false);
+INSERT INTO domain_authorization VALUES (13, 0, '2015-12-18 00:00:00', 'B', 13, '2015-12-18 00:00:00', 904, false);
+INSERT INTO domain_authorization VALUES (14, 0, '2015-12-18 00:00:00', 'B', 14, '2015-12-18 00:00:00', 904, false);
+INSERT INTO domain_authorization VALUES (15, 0, '2015-12-18 00:00:00', 'B', 101, '2015-12-18 00:00:00', 904, false);
 INSERT INTO domain_authorization VALUES (999, 0, '2015-12-20 00:00:00', 'N', 1, '2015-12-20 00:00:00', 904, true);
 
 
@@ -1538,6 +1546,10 @@ INSERT INTO family VALUES (95, 0, 95, '2015-12-18 00:00:00', '2015-07-01 00:00:0
 INSERT INTO family VALUES (96, 0, 96, '2015-12-18 00:00:00', '2015-07-01 00:00:00', 903, '2015-12-18 00:00:00', 'Keller', 'Note', 100, true, true);
 INSERT INTO family VALUES (97, 0, 97, '2015-12-18 00:00:00', '2015-07-01 00:00:00', 903, '2015-12-18 00:00:00', 'Cook', 'Note', 100, true, true);
 INSERT INTO family VALUES (2, 0, 2, '2015-12-18 00:00:00', '2015-07-01 00:00:00', 901, '2015-12-18 00:00:00', 'Sexton', 'Note', 100, true, true);
+INSERT INTO family VALUES (151, 0, 201, '2016-01-19 00:00:00', NULL, NULL, '2016-01-19 00:00:00', 'Snufflepuss', 'BC', 100, true, true);
+INSERT INTO family VALUES (152, 0, 202, '2016-01-19 00:00:00', NULL, NULL, '2016-01-19 00:00:00', 'Vautour', 'BC', 100, true, true);
+INSERT INTO family VALUES (153, 0, 203, '2016-01-19 00:00:00', NULL, NULL, '2016-01-19 00:00:00', 'Bodnar', 'BC', 100, true, true);
+INSERT INTO family VALUES (154, 0, 204, '2016-01-19 00:00:00', NULL, NULL, '2016-01-19 00:00:00', 'Muise', 'NC', 100, true, true);
 
 
 --
@@ -1690,7 +1702,6 @@ INSERT INTO person VALUES (54, 0, false, 1988, '2015-12-18 00:00:00', 'Hoffman11
 INSERT INTO person VALUES (55, 0, false, 1984, '2015-12-18 00:00:00', 'Murray648@gmail.com', 23, 'Dawn', 'Murray', '2015-12-18 00:00:00', 200, 0, '519-423-1514', 'Person note');
 INSERT INTO person VALUES (56, 0, false, 2011, '2015-12-18 00:00:00', 'Wilder559@telus.ca', 23, 'Beulah', 'Wilder', '2015-12-18 00:00:00', 200, 0, '519-431-8300', 'Person note');
 INSERT INTO person VALUES (61, 0, false, 1971, '2015-12-18 00:00:00', 'Randolph413@telus.ca', 26, 'Sadie', 'Randolph', '2015-12-18 00:00:00', 100, 0, '519-449-7761', 'Person note');
-INSERT INTO person VALUES (901, 0, false, 0, '2014-01-01 00:00:00', 'fabBC@abundantedmonton.ca', NULL, 'Fabian', 'Snufflepuss', '2015-12-01 00:00:00', 100, 0, '780-432-6543', 'Person note');
 INSERT INTO person VALUES (2, 0, false, 1949, '2015-12-18 00:00:00', 'Spears569@gmail.com', 1, 'Roy', 'Spears', '2015-12-18 00:00:00', 200, 0, '519-447-7456', 'Person note');
 INSERT INTO person VALUES (3, 0, false, 1950, '2015-12-18 00:00:00', 'Ford555@telus.ca', 1, 'Stanley', 'Ford', '2015-12-18 00:00:00', 200, 0, '519-413-5029', 'Person note');
 INSERT INTO person VALUES (4, 0, false, 1979, '2015-12-18 00:00:00', 'Randall702@hotmail.com', 1, 'Marcia', 'Randall', '2015-12-18 00:00:00', 200, 0, '519-420-6854', 'Person note');
@@ -1773,55 +1784,22 @@ INSERT INTO person VALUES (119, 0, false, 0, '2015-12-18 00:00:00', 'Perez272@te
 INSERT INTO person VALUES (120, 0, false, 0, '2015-12-18 00:00:00', 'Houston193@rogers.com', 56, 'Jamie', 'Houston', '2015-12-18 00:00:00', 200, 0, '519-415-9436', 'Person note');
 INSERT INTO person VALUES (121, 0, false, 0, '2015-12-18 00:00:00', 'Rollins290@rogers.com', 56, 'Seth', 'Rollins', '2015-12-18 00:00:00', 200, 0, '519-482-5722', 'Person note');
 INSERT INTO person VALUES (64, 0, false, 0, '2015-12-18 00:00:00', 'Merrill832@yahoo.ca', 28, 'Della', 'Merrill', '2015-12-18 00:00:00', 100, 0, '519-410-2016', 'Person note');
-INSERT INTO person VALUES (902, 0, false, 0, '2014-01-01 00:00:00', 'moniquev@evermore.org', NULL, 'Monique', 'Vautour', '2015-12-01 00:00:00', 0, 0, '587-338-0525', 'Person note');
-INSERT INTO person VALUES (903, 0, false, 0, '2014-01-01 00:00:00', 'abodnar@gmail.com', NULL, 'Anne', 'Bodnar', '2015-12-01 00:00:00', 0, 0, '780-428-7718', 'Person note');
-
-INSERT INTO person
-(
-  id,
-  version,
-  app_user,
-  birth_year,
-  date_created,
-  email_address,
-  family_id,
-  first_names,
-  last_name,
-  last_updated,
-  order_within_family,
-  password_hash,
-  phone_number,
-  note
-)
-VALUES
-(
-  904,
-  0,
-  TRUE,
-  1970,
-  TIMESTAMP '2014-01-01 00:00:00.000',
-  'sue@aci.ca',
-  NULL,
-  'Sue',
-  'Muise',
-  TIMESTAMP '2015-12-01 00:00:00.000',
-  0,
-  113843,
-  '800-lov-eaci',
-  'A real people person & well organized!'
-);
+INSERT INTO person VALUES (901, 0, false, 0, '2014-01-01 00:00:00', 'fabBC@abundantedmonton.ca', 151, 'Fabian', 'Snufflepuss', '2015-12-01 00:00:00', 100, 0, '780-432-6543', 'Person note');
+INSERT INTO person VALUES (902, 0, false, 0, '2014-01-01 00:00:00', 'moniquev@evermore.org', 152, 'Monique', 'Vautour', '2015-12-01 00:00:00', 0, 0, '587-338-0525', 'Person note');
+INSERT INTO person VALUES (903, 0, false, 0, '2014-01-01 00:00:00', 'abodnar@gmail.com', 153, 'Anne', 'Bodnar', '2015-12-01 00:00:00', 0, 0, '780-428-7718', 'Person note');
+INSERT INTO person VALUES (904, 0, true, 1970, '2014-01-01 00:00:00', 'sue@aci.ca', 154, 'Sue', 'Muise', '2015-12-01 00:00:00', 0, 113843, '800-lov-eaci', 'A real people person & well organized!');
 
 
 --
 -- Data for Name: question; Type: TABLE DATA; Schema: public; Owner: myapp
 --
 
-INSERT INTO question VALUES (11, 0, '1', '2015-12-18 00:00:00', '2015-12-18 00:00:00', 1, 100, 'What makes a great neighbourhood?');
-INSERT INTO question VALUES (12, 0, '2', '2015-12-18 00:00:00', '2015-12-18 00:00:00', 1, 200, 'What else can we do to make our neighbourhood a great place to live?');
-INSERT INTO question VALUES (13, 0, '3', '2015-12-18 00:00:00', '2015-12-18 00:00:00', 1, 300, 'What activities would you like to join in with neighbours?');
-INSERT INTO question VALUES (14, 0, '4', '2015-12-18 00:00:00', '2015-12-18 00:00:00', 1, 400, 'Do you have interests that you would value discussing or participating in with neighbours?');
-INSERT INTO question VALUES (15, 0, '5', '2015-12-18 00:00:00', '2015-12-18 00:00:00', 1, 500, 'Do you have a skill, gift or ability that you would be comfortable using to help neighbours or the neighbourhood? ');
-INSERT INTO question VALUES (16, 0, '6', '2015-12-18 00:00:00', '2015-12-18 00:00:00', 1, 600, 'Are there some life experiences that you would consider sharing for the benefit of neighbours?');
+INSERT INTO question VALUES (11, 0, '1', '2015-12-18 00:00:00', '2015-12-18 00:00:00', 1, 100, 'What makes a great neighbourhood?', 'Short');
+INSERT INTO question VALUES (12, 0, '2', '2015-12-18 00:00:00', '2015-12-18 00:00:00', 1, 200, 'What else can we do to make our neighbourhood a great place to live?', 'Short');
+INSERT INTO question VALUES (13, 0, '3', '2015-12-18 00:00:00', '2015-12-18 00:00:00', 1, 300, 'What activities would you like to join in with neighbours?', 'Short');
+INSERT INTO question VALUES (14, 0, '4', '2015-12-18 00:00:00', '2015-12-18 00:00:00', 1, 400, 'Do you have interests that you would value discussing or participating in with neighbours?', 'Short');
+INSERT INTO question VALUES (15, 0, '5', '2015-12-18 00:00:00', '2015-12-18 00:00:00', 1, 500, 'Do you have a skill, gift or ability that you would be comfortable using to help neighbours or the neighbourhood? ', 'Short');
+INSERT INTO question VALUES (16, 0, '6', '2015-12-18 00:00:00', '2015-12-18 00:00:00', 1, 600, 'Are there some life experiences that you would consider sharing for the benefit of neighbours?', 'Short');
 
 
 --
