@@ -1,7 +1,23 @@
 package commongood
 
 class FamilyController {
-    static allowedMethods = [save:'POST']
+    static allowedMethods = [members:'GET', save:'POST']
+
+    def members( ) {
+        def id = Long.valueOf( params.id )
+        def famAddresses = Person.findAll("from Person p join p.family as f where f.id=?", [ id ])
+
+        def result = [ ]
+        famAddresses.each {
+            Person member = it[0]
+            result << [ id:member.id, name:member.fullName ]
+        }
+
+        def bldr = new groovy.json.JsonBuilder( result )
+        def writer = new StringWriter()
+        bldr.writeTo(writer)
+        render writer
+    }
 
     def save() {
         Family family

@@ -4,7 +4,7 @@ class AddressController {
 
     def families( ) {
         def id = Long.valueOf( params.id )
-        def famAddresses = Family.findAll("from Family fam join fam.address as addr where addr.id=?", [ id ])
+        def famAddresses = Family.findAll("from Family fam join fam.address addr where addr.id=?", [ id ])
 
         def result = [ ]
         famAddresses.each {
