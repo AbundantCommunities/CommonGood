@@ -145,6 +145,63 @@
                 document.getElementById('bulk-answers-form').submit();
             }
 
+
+
+            function checkboxClicked(me) {
+                var newState = me.checked;
+                var cellId = me.id.slice(3,me.id.length);
+                var editLinkId = "edit-"+cellId;
+                if (newState) {
+                    // show edit link
+                    document.getElementById(editLinkId).style.display = 'inline';
+
+                    // if any text in textarea, create a div for each line
+                    var textareaValue = document.getElementById('answers-textarea-'+cellId).value;
+
+                    if (textareaValue.length > 0) {
+
+                        // Split textarea value into lines
+                        var lines = textareaValue.split('\n');
+
+                        // construct innerHTML for answer-div
+                        var divInnerHTML = '';
+                        for (i = 0; i < lines.length; i++) {
+                            if (lines[i].length > 0) {
+                                divInnerHTML = divInnerHTML+'<div>'+lines[i]+'</div>\n';
+                            }
+                        }
+
+                        document.getElementById('answers-div-'+cellId).innerHTML = divInnerHTML;
+                        document.getElementById('answers-textarea-'+cellId).style.display = 'none';
+                        document.getElementById('answers-div-'+cellId).style.display = 'block';
+
+                    }
+
+                } else {
+                    // hide edit link
+                    document.getElementById(editLinkId).style.display = 'none';
+
+                    var divs = document.getElementById('answers-div-'+cellId).children;
+                    var textareaValue = '';
+                    if (divs.length > 0) {
+                        for (i = 0; i < divs.length; i++) {
+                            if (i > 0) {
+                                textareaValue = textareaValue + '\n';
+                            }
+                            textareaValue = textareaValue + divs[i].innerHTML;
+                        }
+                    }
+                    document.getElementById('answers-textarea-'+cellId).value = textareaValue;
+                    document.getElementById('answers-textarea-'+cellId).style.display = 'block';
+                    document.getElementById('answers-div-'+cellId).style.display = 'none';
+                }
+            }
+
+
+            function editLO(me) {
+                alert(me.parentNode.id);
+            }
+
             // Initialize array to hold ids for possible interviewers.
             var possibleInterviewerIds = [ ];
 
@@ -316,7 +373,7 @@
                 top:50px;
                 left:${(929/2) - ((290+navChildren.children.size()*180) / 2)}px;
                 width:${290+navChildren.children.size()*180}px;
-                height:${50+(navSelection.questions.size()*80)}px;
+                height:${50+(navSelection.questions.size()*110)}px;
                 padding:20px;
                 padding-top: 10px;
                 box-shadow: 0px 0px 20px #000000;
@@ -330,7 +387,7 @@
             button#bulk-answers-savebutton {
                 position: absolute;
                 left:${((290+navChildren.children.size()*180)/2) + 20}px;
-                top:${36+(navSelection.questions.size()*80)}px;
+                top:${36+(navSelection.questions.size()*110)}px;
                 cursor:pointer; /*forces the cursor to change to a hand when the button is hovered*/
                 padding:5px 25px; /*add some padding to the inside of the button*/
                 background:transparent; /*the colour of the button*/
@@ -342,7 +399,7 @@
             button#bulk-answers-cancelbutton {
                 position: absolute;
                 left:${((290+navChildren.children.size()*180)/2) - 80}px;
-                top:${36+(navSelection.questions.size()*80)}px;
+                top:${36+(navSelection.questions.size()*110)}px;
                 cursor:pointer; /*forces the cursor to change to a hand when the button is hovered*/
                 padding:5px 25px; /*add some padding to the inside of the button*/
                 background:transparent; /*the colour of the button*/
@@ -354,16 +411,58 @@
                 height:25px;
             }
             .answer-row {
-                height:80px;
+                height:110px;
             }
             .question-column {
                 display: inline-block;
                 width: 260px;
                 vertical-align:top;
             }
-            .answer-column {
+            .answer-column-heading {
                 display: inline-block;
                 width: 180px;
+            }
+            .answer-column {
+                border: thin;
+                border-style: solid;
+                border-color: #000000;
+                display: inline-block;
+                width: 180px;
+                height: 91%;
+                margin-bottom: -20px;
+                position: relative;
+            }
+            .lo {
+                font-size: x-small;
+                position: absolute;
+                bottom:0px;
+            }
+            .lo-edit {
+                display: none;
+            }
+            .answer-textarea {
+                border: none;
+                position: absolute;
+                top:0;
+                left:0;
+                width: 97%;
+                height: 77%;
+            }
+            .answer-div {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 97%;
+                height: 80%;
+                overflow:scroll;
+            }
+            .lead {
+                display: inline;
+                font-style: italic;
+            }
+            .organize {
+                display: inline;
+                font-weight: 700;
             }
         </style>
     </head>
@@ -467,15 +566,20 @@
                 <div class="heading-row">
                     <div class="question-column">Question</div>
                     <g:each in="${navChildren.children}" var="child">
-                        <div class="answer-column">${child.name}</div>
+                        <div class="answer-column-heading">${child.name}</div>
                     </g:each>
                 </div>
                 <form id="bulk-answers-form" action=${resource(file:'Answer/saveTable')} method="post">
-                    <g:each in="${navSelection.questions}" var="question">
+                    <g:each in="${navSelection.questions}" var="question" status="curQuestion">
                         <div class="answer-row">
                             <div class="question-column">${question.text}</div>
-                            <g:each in="${navChildren.children}" var="child">
-                                <div class="answer-column"><textarea name="${'answer'+child.id+'_'+question.id}" cols=22 rows=4></textarea></div>
+                            <g:each in="${navChildren.children}" var="child" status="curFamilyMember">
+                                <div class="answer-column">
+                                    <textarea id="answers-textarea-${curQuestion}${curFamilyMember}" class="answer-textarea" name="${'answer'+child.id+'_'+question.id}" style="display:block;"></textarea>
+                                    <div id="answers-div-${curQuestion}${curFamilyMember}" class="answer-div" style="display:none;">
+                                    </div>
+                                    <div class="lo"><input id="cb-${curQuestion}${curFamilyMember}" type="checkbox" onclick="JavaScript:return checkboxClicked(this);"/><div class="lead">lead</div> or <div class="organize">organize</div><div class="lo-edit" id="edit-${curQuestion}${curFamilyMember}"> | <a href="#" onclick="JavaScript:return editLO(this);">edit</a></div></div>
+                                </div>
                             </g:each>
                         </div>
                     </g:each>

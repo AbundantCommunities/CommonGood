@@ -36,6 +36,19 @@
 
         </script>
         <style type="text/css">
+            #hood-name-heading {
+                position: absolute;
+                top:30px;
+                left: 10px;
+            }
+            #hood-name-value {
+                position: absolute;
+                top:30px;
+                left: 60px;
+            }
+
+
+
             #select-question-container {
                 position:absolute;
                 top:100px;
@@ -80,7 +93,8 @@
     <body>
             <div id="content-detail">
                 <div id="content-detail-title">${navSelection.levelInHierarchy}</div>
-                <div>Name: ${navSelection.description}</div>
+                <div id="hood-name-heading">Name: </div>
+                <div id="hood-name-value">${navSelection.description}</div>
 
                 <div id="content-actions-left-side">
                     <div class="content-left-action"><g:link controller="blockSummary" action="index">Block Summary</g:link></div>
