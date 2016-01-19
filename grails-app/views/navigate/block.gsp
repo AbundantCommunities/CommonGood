@@ -337,7 +337,7 @@
                     <div class="bc" style="top:${(navSelection.blockConnectors.size()*20)+35}px;"><a href="#" onclick="presentAddBC();">+ Add another block connector</a></div>
                 </g:if>
                 <g:else>
-                    <div class="bc" style="top:55px;"><a href="#" onclick="addBC();">+ Add block connector</a></div>
+                    <div class="bc" style="top:55px;"><a href="#" onclick="presentAddBC();">+ Add block connector</a></div>
                 </g:else>
 
                 <div id="content-actions-left-side">
