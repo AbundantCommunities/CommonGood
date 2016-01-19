@@ -35,7 +35,7 @@
                     document.getElementById('addresses-select').selectedIndex = 0;
                     document.getElementById('select-family').style.display = 'none';
                     document.getElementById('select-member').style.display = 'none';
-                    document.getElementById('new-family-member').style.display = 'none';
+                    document.getElementById('all-input-div').style.display = 'none';
 
                     var pagecontainerDiv = document.getElementById("pagecontainer");
 
@@ -62,7 +62,7 @@
             function addressSelected() {
 
                 document.getElementById('select-member').style.display = 'none';
-                document.getElementById('new-family-member').style.display = 'none';
+                document.getElementById('all-input-div').style.display = 'none';
 
                 // Check if select still starts with blank item. If yes, remove it so no longer selectable.
                 var addressesSelect = document.getElementById('addresses-select');
@@ -70,43 +70,49 @@
                     addressesSelect.remove(0);
                 }
 
+                if (addressesSelect.value == -2) {
+                    // User chose "address not in list", so put up alert saying address must be added first
+                    var blankAddress = new Option('',0);
+                    blankAddress.disabled = true;
 
-                var xmlhttp = new XMLHttpRequest( );
-                var url = '<g:createLink controller="address" action="families"/>/'+document.getElementById('addresses-select').value;
-                xmlhttp.onreadystatechange = function( ) {
-                    if( xmlhttp.readyState == 4 /* && xmlhttp.status == 200 */ ) {
-                        var families = JSON.parse( xmlhttp.responseText );
-                        buildFamiliesSelect( families );
+                    addressesSelect.insertBefore(blankAddress, addressesSelect.firstChild);
+                    addressesSelect.selectedIndex = 0;
+
+                    document.getElementById('select-family').style.display = 'none';
+                    alert("Before adding a block connector, you must add the block connector's address to the block.");
+
+                } else {
+                    var xmlhttp = new XMLHttpRequest( );
+                    var url = '<g:createLink controller="address" action="families"/>/'+document.getElementById('addresses-select').value;
+                    xmlhttp.onreadystatechange = function( ) {
+                        if( xmlhttp.readyState == 4 /* && xmlhttp.status == 200 */ ) {
+                            var families = JSON.parse( xmlhttp.responseText );
+                            buildFamiliesSelect( families );
+                        }
+                    };
+
+                    xmlhttp.open( "GET", url, true );
+                    xmlhttp.send( );
+
+                    function buildFamiliesSelect( families ) {
+                        var familiesSelect = document.getElementById('families-select')
+                        familiesSelect.options.length = 0;
+
+                        familiesSelect.options[familiesSelect.options.length] = new Option('', 0);
+                        familiesSelect.options[familiesSelect.options.length-1].disabled = true;
+
+                        for (i = 0; i < families.length; i++) {
+                            familiesSelect.options[familiesSelect.options.length] = new Option(families[i].name, families[i].id);
+                        }
+
+                        familiesSelect.options[familiesSelect.options.length] = new Option('', -1);
+                        familiesSelect.options[familiesSelect.options.length-1].disabled = true;
+                        familiesSelect.options[familiesSelect.options.length] = new Option('new ...', -2);
+
+                        document.getElementById('select-family').style.display = 'block';
+
                     }
-                };
-
-                xmlhttp.open( "GET", url, true );
-                xmlhttp.send( );
-
-                function buildFamiliesSelect( families ) {
-                    var familiesSelect = document.getElementById('families-select')
-                    familiesSelect.options.length = 0;
-
-                    familiesSelect.options[familiesSelect.options.length] = new Option('', 0);
-                    familiesSelect.options[familiesSelect.options.length-1].disabled = true;
-
-                    for (i = 0; i < families.length; i++) {
-                        familiesSelect.options[familiesSelect.options.length] = new Option(families[i].name, families[i].id);
-                    }
-
-                    familiesSelect.options[familiesSelect.options.length] = new Option('', -1);
-                    familiesSelect.options[familiesSelect.options.length-1].disabled = true;
-                    familiesSelect.options[familiesSelect.options.length] = new Option('new ...', -2);
-
-                    document.getElementById('select-family').style.display = 'block';
-
                 }
-
-
-
-
-
-
             }
 
             function familySelected() {
@@ -125,7 +131,7 @@
 
                 if (document.getElementById('families-select').value != -2) {
 
-                    document.getElementById('new-family-member').style.display = 'none';
+                    document.getElementById('all-input-div').style.display = 'none';
                     var xmlhttp = new XMLHttpRequest( );
                     var url = '<g:createLink controller="family" action="members"/>/'+document.getElementById('families-select').value;
 
@@ -150,6 +156,11 @@
                             membersSelect.options[membersSelect.options.length] = new Option(members[i].name, members[i].id);
                         }
 
+                        membersSelect.options[membersSelect.options.length] = new Option('', 0);
+                        membersSelect.options[membersSelect.options.length-1].disabled = true;
+
+                        membersSelect.options[membersSelect.options.length] = new Option('Person not listed', -2);
+
                         document.getElementById('select-member').style.display = 'block';
 
                     }
@@ -161,7 +172,7 @@
                     clearNewMemberInputs();
 
                     document.getElementById('select-member').style.display = 'none';
-                    document.getElementById('new-family-member').style.display = 'block';
+                    document.getElementById('all-input-div').style.display = 'block';
                 }
 
 
@@ -172,6 +183,20 @@
                 var membersSelect = document.getElementById('members-select');
                 if (membersSelect.options[0].value == 0) {
                     membersSelect.remove(0);
+                }
+
+
+
+                if (membersSelect.value == -2) {
+                    // User chose "Person not listed", so put up alert saying address must be added first
+                    var blankMember = new Option('',0);
+                    blankMember.disabled = true;
+
+                    membersSelect.insertBefore(blankMember, membersSelect.firstChild);
+                    membersSelect.selectedIndex = 0;
+
+                    alert("Before adding a block connector, you must add the block connector as a family member.");
+
                 }
             }
 
@@ -290,15 +315,31 @@
                 display: none;
             }
 
-            #new-family-member {
+            #all-input-div {
                 position: absolute;
                 display: none;
                 top:105px;
                 left: 20px;
+                width: 90%;
             }
 
             .fm-input {
                 margin-bottom: 5px;
+            }
+
+            .section-div {
+                width:100%;
+                border:none;
+                border-top:solid;
+                border-width: thin;
+                border-color: #CCCCCC;
+                padding-bottom: 5px;
+            }
+
+            .section-heading {
+                font-size: x-small;
+                margin-top: 0px;
+                margin-bottom: 4px;
             }
 
         </style>
@@ -334,10 +375,10 @@
 
 
                 <g:if test="${navSelection.blockConnectors.size() > 0}">
-                    <div class="bc" style="top:${(navSelection.blockConnectors.size()*20)+35}px;"><a href="#" onclick="presentAddBC();">+ Add another block connector</a></div>
+                    <div class="bc" style="top:${(navSelection.blockConnectors.size()*20)+35}px;"><a href="#" onclick="presentAddBC();">+ Add Another Block Connector</a></div>
                 </g:if>
                 <g:else>
-                    <div class="bc" style="top:55px;"><a href="#" onclick="presentAddBC();">+ Add block connector</a></div>
+                    <div class="bc" style="top:55px;"><a href="#" onclick="presentAddBC();">+ Add Block Connector</a></div>
                 </g:else>
 
                 <div id="content-actions-left-side">
@@ -369,6 +410,8 @@
                             <g:each in="${navChildren.children}" var="address">
                                 <option value="${address.id}">${address.name}</option>
                             </g:each>
+                            <option value="-1"></option>
+                            <option value="-2">Address not listed</option>
                         </select>
                         <script type="text/javascript">
                             document.getElementById('addresses-select').options[0].disabled = true;
@@ -385,12 +428,21 @@
                             <option value=""></option>
                         </select>
                     </div>
-                    <div id="new-family-member">
-                        <div class="fm-input">First names: <input id="firstNamesInput" type="text" name="firstNames" value=""/></div>
-                        <div class="fm-input">Last name: <input id="lastNameInput" type="text" name="lastName" value=""/></div>
-                        <div class="fm-input">Birth year: <input id="birthYearInput" type="text" pattern="[12][90][0-9][0-9]" name="birthYear" value="" placeholder="YYYY"/></div>
-                        <div class="fm-input">Email address: <input id="emailAddressInput" type="email" name="emailAddress" value="" size="40"/></div>
-                        <div class="fm-input">Phone number: <input id="phoneNumberInput" type="text" name="phoneNumber" value=""/></div>
+                    <div id="all-input-div">
+                        <div id="new-family" class="section-div">
+                            <div class="section-heading">Add family for Block Connector:</div>
+                            <div class="fm-input">Family name: <input id="familyNameInput" type="text" name="familyName" value=""/></div>
+                        </div>
+                        <div id="new-family-member" class="section-div">
+                            <div class="section-heading">Add family member for Bock Connector:</div>
+                            <div class="fm-input">First names: <input id="firstNamesInput" type="text" name="firstNames" value=""/></div>
+                            <div class="fm-input">Last name: <input id="lastNameInput" type="text" name="lastName" value=""/></div>
+                            <div class="fm-input">Birth year: <input id="birthYearInput" type="text" pattern="[12][90][0-9][0-9]" name="birthYear" value="" placeholder="YYYY"/></div>
+                            <div class="fm-input">Email address: <input id="emailAddressInput" type="email" name="emailAddress" value="" size="35"/></div>
+                            <div class="fm-input">Phone number: <input id="phoneNumberInput" type="text" name="phoneNumber" value=""/></div>
+                        </div>
+                        <div class="section-div">
+                        </div>
                     </div>
                 </form>
                 <button id="new-bc-savebutton" type="button" onclick="JavaScript:addBC();">Add</button>
