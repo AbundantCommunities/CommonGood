@@ -15,4 +15,9 @@ class Family {
     Date lastUpdated
 
     static hasMany = [ members:Person ]
+
+    static constraints = {
+        interviewer nullable: true
+        interviewDate nullable: true
+    }
 }
