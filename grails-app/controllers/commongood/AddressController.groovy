@@ -1,7 +1,7 @@
 package commongood
 
 class AddressController {
-    static allowedMethods = [addBlockController:'GET', families:'GET']
+    static allowedMethods = [families:'GET']
 
     /**
     * Given an address id plus basic info about a person, make a Person plus a family
