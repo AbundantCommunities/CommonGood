@@ -1,22 +1,7 @@
 package commongood
 
 class AnswerController {
-    static allowedMethods = [frequencies:'GET', saveTable:'POST', search:'GET']
-    def searchService
-
-    def search( ) {
-        def questionId = params.id ? Long.parseLong( params.id ) : 0
-        def questionText
-
-        if( questionId > 0 ) {
-            questionText = Question.get( questionId ).text
-        } else {
-            questionText = '<All questions>'
-        }
-
-        def answers = searchService.answers( questionId, params.q )
-        [ questionId:questionId, answers:answers, q:params.q, questionText:questionText ]
-    }
+    static allowedMethods = [frequencies:'GET', saveTable:'POST']
 
     def frequencies( ) {
         def questionId = Long.parseLong( params.id )

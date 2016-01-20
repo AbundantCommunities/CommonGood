@@ -1,12 +1,7 @@
 package commongood
 
 class PersonController {
-    static allowedMethods = [save:'POST', search:'GET']
-    def searchService
-
-    def search( ) {
-        return [ q:params.q, results:searchService.people(params.q) ]
-    }
+    static allowedMethods = [save:'POST']
 
     def save() {
         Person person
