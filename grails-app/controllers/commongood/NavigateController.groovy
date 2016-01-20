@@ -150,7 +150,7 @@ class NavigateController {
                 ],
 
             navSelection:[ levelInHierarchy: 'Family', id:familyId, description: theFamily.name, note:theFamily.note,
-                            interviewDate:theFamily.interviewDate,
+                            interviewDate:theFamily.interviewDate, interviewed:theFamily.interviewed,
                             orderWithinAddress:theFamily.orderWithinAddress,
                             participateInInterview:theFamily.participateInInterview,
                             permissionToContact:theFamily.permissionToContact,

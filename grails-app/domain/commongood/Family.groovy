@@ -20,4 +20,14 @@ class Family {
         interviewer nullable: true
         interviewDate nullable: true
     }
+    
+    static transients = ['interviewed']
+    
+    public getInterviewed( ) {
+        if( interviewDate != null && interviewer != null ) {
+            return Boolean.TRUE
+        } else {
+            return Boolean.FALSE
+        }
+    }
 }
