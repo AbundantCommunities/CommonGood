@@ -201,7 +201,13 @@
             }
 
             function addBC() {
-                alert('not implemented');
+                // Just implement case of adding family/family member.
+                // Just need to set the value of the "addressId" input form element to the selected address,
+                // then submit the form.
+                document.getElementById('new-bc-container').style.visibility = false;
+                document.getElementById('transparent-overlay').style.visibility = false;
+                document.getElementById('addressId').value = document.getElementById('addresses-select').value;
+                document.getElementById('new-bc-form').submit();
             }
 
         </script>
@@ -403,32 +409,33 @@
 
             <div id="new-bc-container">
                 <div style="font-weight:bold;font-size:14px;">Add Block Connector</div>
-                <form id="new-form" action=${resource(file:'Person/save')} method="post">
-                    <div id="select-address">Select address of block connector: 
-                        <select id="addresses-select" onchange="addressSelected();">
-                            <option value="0"></option>
-                            <g:each in="${navChildren.children}" var="address">
-                                <option value="${address.id}">${address.name}</option>
-                            </g:each>
-                            <option value="-1"></option>
-                            <option value="-2">Address not listed</option>
-                        </select>
-                        <script type="text/javascript">
-                            document.getElementById('addresses-select').options[0].disabled = true;
-                        </script>
+                <div id="select-address">Select address of block connector: 
+                    <select id="addresses-select" onchange="addressSelected();">
+                        <option value="0"></option>
+                        <g:each in="${navChildren.children}" var="address">
+                            <option value="${address.id}">${address.name}</option>
+                        </g:each>
+                        <option value="-1"></option>
+                        <option value="-2">Address not listed</option>
+                    </select>
+                    <script type="text/javascript">
+                        document.getElementById('addresses-select').options[0].disabled = true;
+                    </script>
 
-                    </div>
-                    <div id="select-family">Select family of block connector: 
-                        <select id="families-select" onchange="familySelected();">
-                            <option value=""></option>
-                        </select>
-                    </div>
-                    <div id="select-member">Select block connector: 
-                        <select id="members-select" onchange="memberSelected();">
-                            <option value=""></option>
-                        </select>
-                    </div>
-                    <div id="all-input-div">
+                </div>
+                <div id="select-family">Select family of block connector: 
+                    <select id="families-select" onchange="familySelected();">
+                        <option value=""></option>
+                    </select>
+                </div>
+                <div id="select-member">Select block connector: 
+                    <select id="members-select" onchange="memberSelected();">
+                        <option value=""></option>
+                    </select>
+                </div>
+                <div id="all-input-div">
+                    <form id="new-bc-form" action=${resource(file:'address/addBlockController')} method="GET">
+                        <input id="addressId" type="hidden" name="id"/>
                         <div id="new-family" class="section-div">
                             <div class="section-heading">Add family for Block Connector:</div>
                             <div class="fm-input">Family name: <input id="familyNameInput" type="text" name="familyName" value=""/></div>
@@ -443,8 +450,8 @@
                         </div>
                         <div class="section-div">
                         </div>
-                    </div>
-                </form>
+                    </form>
+                </div>
                 <button id="new-bc-savebutton" type="button" onclick="JavaScript:addBC();">Add</button>
                 <button id="new-bc-cancelbutton" type="button" onclick="JavaScript:dismissAddBCModal();">Cancel</button>
             </div>
