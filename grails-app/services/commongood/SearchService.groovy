@@ -6,7 +6,7 @@ import grails.transaction.Transactional
 class SearchService {
 
     def answers( questionId, q ) {
-        def searchTerm = "%${q}%"
+        def searchTerm = "%${q}%".toLowerCase( )
         def questionText
         def answers
 
@@ -14,7 +14,7 @@ class SearchService {
         if( questionId > 0 ) {
             // Select only answers to that particular question
             answers = Answer.executeQuery(
-                'select a.text, p.id, p.firstNames from Answer a join a.person p where a.text like ? and a.question.id = ? \
+                'select a.text, p.id, p.firstNames from Answer a join a.person p where lower(a.text) like ? and a.question.id = ? \
                  order by p.firstNames, p.lastName, p.id',
                 [ searchTerm, questionId ] )
 
@@ -23,7 +23,7 @@ class SearchService {
         } else {
             // Select answers to all questions
             answers = Answer.executeQuery(
-                'select a.text, p.id, p.firstNames from Answer a join a.person p where a.text like ? \
+                'select a.text, p.id, p.firstNames from Answer a join a.person p where lower(a.text) like ? \
                  order by p.firstNames, p.lastName, p.id',
                 [ searchTerm ] )
 
@@ -35,15 +35,15 @@ class SearchService {
     }
 
     def people( q ) {
-        def searchTerm = "%${q}%"
+        def searchTerm = "%${q}%".toLowerCase( )
 
         // FIXME These searches examine answers from EVERY hood!
         // Select only answers to that particular question
         def peeps = Person.executeQuery(
             'select p.id, p.firstNames, p.lastName from Person p join p.family f join f.address a \
-             where a.text like ? or a.note like ? or f.name like ? or f.note like ? \
-             or p.firstNames like ? or p.lastName like ? or p.phoneNumber like ? or p.emailAddress like ? \
-             or p.note like ? order by p.firstNames, p.lastName, p.id',
+             where lower(a.text) like ? or lower(a.note) like ? or lower(f.name) like ? or lower(f.note) like ? \
+             or lower(p.firstNames) like ? or lower(p.lastName) like ? or lower(p.phoneNumber) like ? or lower(p.emailAddress) like ? \
+             or lower(p.note) like ? order by p.firstNames, p.lastName, p.id',
             [ searchTerm ] * 9 )
 
         println "Found ${peeps.size()} people"
