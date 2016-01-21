@@ -1,7 +1,7 @@
 package commongood
 
 class PersonController {
-    static allowedMethods = [save:'POST']
+    static allowedMethods = [save:'POST', setBlockConnector:'POST']
 
     def save() {
         Person person
@@ -27,5 +27,20 @@ class PersonController {
         // TODO Replace failOnError with logic
         person.save( flush:true, failOnError: true )
         forward controller:'navigate', action:'familymember', id:person.id
+    }
+
+    def setBlockConnector( ) {
+        Long id = Long.parseLong( params.id )
+        Person person = Person.get( id )
+        def blockId = person.family.address.block.id
+
+        // The person becomes a BC for his block
+        DomainAuthorization da = new DomainAuthorization( )
+        da.person = person
+        da.primaryPerson = Boolean.FALSE
+        da.domainCode = DomainAuthorization.BLOCK
+        da.domainKey = blockId as Integer
+        da.save( flush:true, failOnError: true )
+        forward controller:'navigate', action:'block', id:blockId
     }
 }
