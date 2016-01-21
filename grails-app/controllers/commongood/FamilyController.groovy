@@ -21,6 +21,7 @@ class FamilyController {
 
     def save() {
         Family family
+        def interviewed = family.getInterviewed( )
         if( 'id' in params ) {
             // The request wants us to change an existing family.
             // We will not change the family's address.
@@ -36,12 +37,14 @@ class FamilyController {
             family.address = Address.get( addressId )
         }
 
-        family.interviewer = Person.get( Long.valueOf( params.interviewerId ) )
+        if( interviewed ) {
+            family.interviewer = Person.get( Long.valueOf( params.interviewerId ) )
+            family.interviewDate = new Date( ).parse( 'yyyy-MM-dd', params.initialInterviewDate )
+        }
         family.name = params.familyName
         family.participateInInterview = ('participateInInterview' in params)
         family.permissionToContact = ('permissionToContact' in params)
         family.note = params.note
-        family.interviewDate = new Date( ).parse( 'yyyy-MM-dd', params.initialInterviewDate )
         family.orderWithinAddress = Integer.valueOf( params.orderWithinAddress )
 
         // TODO Replace failOnError with logic
