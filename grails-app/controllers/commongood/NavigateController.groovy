@@ -123,6 +123,7 @@ class NavigateController {
     }
 
     def family( ) {
+        // TODO Remove no-longer-required question data passed to GSP
         Person interviewer // Block Connector
         Integer familyId = Integer.valueOf( params.id )
         authorizationService.family( familyId, session )
