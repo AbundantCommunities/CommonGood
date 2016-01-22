@@ -122,7 +122,10 @@
             function presentBulkAnswersModal() {
 
                 if (${navChildren.children.size()} > 0) {
+                    document.getElementById('familyId-input').value = "${navSelection.id}";
+                    document.getElementById('present-questions-form').submit();
 
+                    /*
                     var pagecontainerDiv = document.getElementById("pagecontainer");
                     document.getElementById("transparent-overlay").setAttribute("style","height:"+pagecontainerDiv.clientHeight+"px;");
                     
@@ -130,6 +133,7 @@
                     document.getElementById("bulk-answers-container").style.visibility='visible';
                     document.getElementById("familyNameInput").focus();
                     document.getElementById("familyNameInput").select();
+                    */
                 } else {
                     alert('Please add a family member first.');
                 }
@@ -220,75 +224,18 @@
             #content-detail {
                 height:250px;
             }
-            #family-name-heading {
+            #detail-headings {
                 position: absolute;
                 top:30px;
                 left: 10px;
             }
-            #family-name-value {
+            #detail-values {
                 position: absolute;
                 top:30px;
                 left: 260px;
             }
-            #initial-interview-date-heading {
-                position: absolute;
-                top:50px;
-                left: 10px;
-            }
-            #initial-interview-date-value {
-                position: absolute;
-                top:50px;
-                left: 260px;
-            }
-            #initial-interviewer-heading {
-                position: absolute;
-                top:70px;
-                left: 10px;
-            }
-            #initial-interviewer-value {
-                position: absolute;
-                top:70px;
-                left: 260px;
-            }
-            #permission-to-contact-heading {
-                position: absolute;
-                top:90px;
-                left: 10px;
-            }
-            #permission-to-contact-value {
-                position: absolute;
-                top:90px;
-                left: 260px;
-            }
-            #agreed-to-participate-heading {
-                position: absolute;
-                top:110px;
-                left: 10px;
-            }
-            #agreed-to-participate-value {
-                position: absolute;
-                top:110px;
-                left: 260px;
-            }
-            #order-within-address-heading {
-                position: absolute;
-                top:130px;
-                left: 10px;
-            }
-            #order-within-address-value {
-                position: absolute;
-                top:130px;
-                left: 260px;
-            }
-            #note-heading {
-                position: absolute;
-                top:150px;
-                left: 10px;
-            }
-            #note-value {
-                position: absolute;
-                top:150px;
-                left: 260px;
+            .detail-item {
+                height: 20px;
             }
             #edit-container {
                 position:absolute;
@@ -469,40 +416,52 @@
     <body>
             <div id="content-detail">
                 <div id="content-detail-title">${navSelection.levelInHierarchy}</div>
-                <div id="family-name-heading">Name: </div>
-                <div id="family-name-value">${navSelection.description}</div>
-                <div id="initial-interview-date-heading">Initial interview date: </div>
-                <div id="initial-interview-date-value"><g:formatDate format='yyyy-MM-dd' date='${navSelection.interviewDate}'/></div>
-                <div id="initial-interviewer-heading">Initial interviewer: </div>
-                <div id="initial-interviewer-value"></div>
-                <div id="permission-to-contact-heading">Permission to contact: </div>
-                <div id="permission-to-contact-value">
-                    <g:if test="${navSelection.permissionToContact}">
-                        Yes
+                <div id="detail-headings">
+                    <div class="detail-item">Family name: </div>
+                    <g:if test="${navSelection.interviewed}">
+                        <div class="detail-item">Initial interview date: </div>
+                        <div class="detail-item">Initial interviewer: </div>
                     </g:if>
-                    <g:else>
-                        No
-                    </g:else>
+                    <div class="detail-item">Permission to contact: </div>
+                    <div class="detail-item">Agreed to participate in interview: </div>
+                    <div class="detail-item">Order within address: </div>
+                    <div class="detail-item">Note: </div>
                 </div>
-                <div id="agreed-to-participate-heading">Agreed to participate in interview: </div>
-                <div id="agreed-to-participate-value">
-                    <g:if test="${navSelection.participateInInterview}">
-                        Yes
+                <div id="detail-values">
+                    <div class="detail-item">${navSelection.description}</div>
+                    <g:if test="${navSelection.interviewed}">
+                        <div class="detail-item"><g:formatDate format='yyyy-MM-dd' date='${navSelection.interviewDate}'/></div>
+                        <div id="initial-interviewer-value" class="detail-item"></div>
                     </g:if>
-                    <g:else>
-                        No
-                    </g:else>
+                    <div class="detail-item">
+                        <g:if test="${navSelection.permissionToContact}">
+                            Yes
+                        </g:if>
+                        <g:else>
+                            No
+                        </g:else>
+                    </div>
+                    <div class="detail-item">
+                        <g:if test="${navSelection.participateInInterview}">
+                            Yes
+                        </g:if>
+                        <g:else>
+                            No
+                        </g:else>
+                    </div>
+                    <div class="detail-item">${navSelection.orderWithinAddress}</div>
+                    <div class="detail-item"><textarea cols="60" rows="5" style="color: #222222;" disabled>${navSelection.note}</textarea></div>
                 </div>
-                <div id="order-within-address-heading">Order within address: </div>
-                <div id="order-within-address-value">${navSelection.orderWithinAddress}</div>
-                <div id="note-heading">Note: </div>
-                <div id="note-value"><textarea cols="60" rows="5" style="color: #222222;" disabled>${navSelection.note}</textarea></div>
 
-
-
+                <g:if test="${!navSelection.interviewed}">
+                    <div style="position:absolute;bottom:10px;font-size:x-small;">This family has not yet been interviewed.</div>
+                </g:if>
 
                 <div id="content-actions-left-side">
                     <div class="content-left-action"><a href="#" onclick="presentBulkAnswersModal();">Add Interview Answers</a></div>
+                    <form id="present-questions-form" action="<g:createLink controller='question' method='POST'/>">
+                        <input type="hidden" id="familyId-input" name="familyId"/>
+                    </form>
                 </div>
 
                 <div id="content-actions">

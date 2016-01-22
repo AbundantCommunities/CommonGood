@@ -6,14 +6,6 @@
         <title>Abundant Communities - Edmonton</title>
         <script type="text/javascript">
 
-            function clearNewMemberInputs() {
-                document.getElementById("firstNamesInput").value = "";
-                document.getElementById("lastNameInput").value = "";
-                document.getElementById("birthYearInput").value = "";
-                document.getElementById("emailAddressInput").value = "";
-                document.getElementById("phoneNumberInput").value = "";
-            }
-
             function presentAddBC() {
                 if (${navChildren.children.size() > 0}) {
 
@@ -35,12 +27,8 @@
                     document.getElementById('addresses-select').selectedIndex = 0;
                     document.getElementById('select-family').style.display = 'none';
                     document.getElementById('select-member').style.display = 'none';
-                    document.getElementById('all-input-div').style.display = 'none';
 
                     var pagecontainerDiv = document.getElementById("pagecontainer");
-
-                    // clear UI before presenting
-                    clearNewMemberInputs();
 
                     // set height of overlay to match height of pagecontainer height
                     document.getElementById("transparent-overlay").setAttribute("style","height:"+pagecontainerDiv.clientHeight+"px;");
@@ -62,7 +50,6 @@
             function addressSelected() {
 
                 document.getElementById('select-member').style.display = 'none';
-                document.getElementById('all-input-div').style.display = 'none';
 
                 // Check if select still starts with blank item. If yes, remove it so no longer selectable.
                 var addressesSelect = document.getElementById('addresses-select');
@@ -107,7 +94,7 @@
 
                         familiesSelect.options[familiesSelect.options.length] = new Option('', -1);
                         familiesSelect.options[familiesSelect.options.length-1].disabled = true;
-                        familiesSelect.options[familiesSelect.options.length] = new Option('new ...', -2);
+                        familiesSelect.options[familiesSelect.options.length] = new Option('Family not listed ...', -2);
 
                         document.getElementById('select-family').style.display = 'block';
 
@@ -118,9 +105,9 @@
             function familySelected() {
 
                 // Check if select still starts with blank item. If yes, remove it so no longer selectable.
-                var familesSelect = document.getElementById('families-select');
-                if (familesSelect.options[0].value == 0) {
-                    familesSelect.remove(0);
+                var familiesSelect = document.getElementById('families-select');
+                if (familiesSelect.options[0].value == 0) {
+                    familiesSelect.remove(0);
                 }
 
 
@@ -131,7 +118,6 @@
 
                 if (document.getElementById('families-select').value != -2) {
 
-                    document.getElementById('all-input-div').style.display = 'none';
                     var xmlhttp = new XMLHttpRequest( );
                     var url = '<g:createLink controller="family" action="members"/>/'+document.getElementById('families-select').value;
 
@@ -166,13 +152,17 @@
                     }
 
                 } else {
-                    // add new family and member
-                    
-                    // Clear inputs
-                    clearNewMemberInputs();
 
-                    document.getElementById('select-member').style.display = 'none';
-                    document.getElementById('all-input-div').style.display = 'block';
+                    // User chose "Family not listed", so put up alert saying family must be added first
+                    var blankMember = new Option('',0);
+                    blankMember.disabled = true;
+
+                    familiesSelect.insertBefore(blankMember, familiesSelect.firstChild);
+                    familiesSelect.selectedIndex = 0;
+
+                    alert("Before adding a block connector, you must add the block connector's family.");
+
+
                 }
 
 
@@ -204,10 +194,22 @@
                 // Just implement case of adding family/family member.
                 // Just need to set the value of the "addressId" input form element to the selected address,
                 // then submit the form.
-                document.getElementById('new-bc-container').style.visibility = false;
-                document.getElementById('transparent-overlay').style.visibility = false;
-                document.getElementById('addressId').value = document.getElementById('addresses-select').value;
-                document.getElementById('new-bc-form').submit();
+                if (document.getElementById('addresses-select').value > 0) {
+                    if (document.getElementById('families-select').value > 0) {
+                        if (document.getElementById('members-select').value > 0) {
+                            document.getElementById('new-bc-container').style.visibility = false;
+                            document.getElementById('transparent-overlay').style.visibility = false;
+                            document.getElementById('address-id').value = document.getElementById('addresses-select').value;
+                            document.getElementById('new-bc-form').submit();
+                        } else {
+                            alert ('Please select the block connector.');
+                        }
+                    } else {
+                        alert ("Please select the block connector's family.");
+                    }
+                } else {
+                    alert("Please select the block connector's address.");
+                }
             }
 
         </script>
@@ -264,7 +266,7 @@
                 top:140px;
                 left:260px;
                 width:420px;
-                height:385px;
+                height:145px;
                 padding:20px;
                 padding-top: 10px;
                 box-shadow: 0px 0px 20px #000000;
@@ -280,7 +282,7 @@
             button#new-bc-savebutton{
                 position: absolute;
                 left:230px;
-                top:375px;
+                top:135px;
                 cursor:pointer; /*forces the cursor to change to a hand when the button is hovered*/
                 padding:5px 25px; /*add some padding to the inside of the button*/
                 background:transparent; /*the colour of the button*/
@@ -292,7 +294,7 @@
             button#new-bc-cancelbutton{
                 position: absolute;
                 left:130px;
-                top:375px;
+                top:135px;
                 cursor:pointer; /*forces the cursor to change to a hand when the button is hovered*/
                 padding:5px 25px; /*add some padding to the inside of the button*/
                 background:transparent; /*the colour of the button*/
@@ -321,32 +323,7 @@
                 display: none;
             }
 
-            #all-input-div {
-                position: absolute;
-                display: none;
-                top:105px;
-                left: 20px;
-                width: 90%;
-            }
 
-            .fm-input {
-                margin-bottom: 5px;
-            }
-
-            .section-div {
-                width:100%;
-                border:none;
-                border-top:solid;
-                border-width: thin;
-                border-color: #CCCCCC;
-                padding-bottom: 5px;
-            }
-
-            .section-heading {
-                font-size: x-small;
-                margin-top: 0px;
-                margin-bottom: 4px;
-            }
 
         </style>
     </head>
@@ -428,30 +405,14 @@
                         <option value=""></option>
                     </select>
                 </div>
-                <div id="select-member">Select block connector: 
-                    <select id="members-select" onchange="memberSelected();">
-                        <option value=""></option>
-                    </select>
-                </div>
-                <div id="all-input-div">
-                    <form id="new-bc-form" action=${resource(file:'address/addBlockController')} method="GET">
-                        <input id="addressId" type="hidden" name="id"/>
-                        <div id="new-family" class="section-div">
-                            <div class="section-heading">Add family for Block Connector:</div>
-                            <div class="fm-input">Family name: <input id="familyNameInput" type="text" name="familyName" value=""/></div>
-                        </div>
-                        <div id="new-family-member" class="section-div">
-                            <div class="section-heading">Add family member for Bock Connector:</div>
-                            <div class="fm-input">First names: <input id="firstNamesInput" type="text" name="firstNames" value=""/></div>
-                            <div class="fm-input">Last name: <input id="lastNameInput" type="text" name="lastName" value=""/></div>
-                            <div class="fm-input">Birth year: <input id="birthYearInput" type="text" pattern="[12][90][0-9][0-9]" name="birthYear" value="" placeholder="YYYY"/></div>
-                            <div class="fm-input">Email address: <input id="emailAddressInput" type="email" name="emailAddress" value="" size="35"/></div>
-                            <div class="fm-input">Phone number: <input id="phoneNumberInput" type="text" name="phoneNumber" value=""/></div>
-                        </div>
-                        <div class="section-div">
-                        </div>
-                    </form>
-                </div>
+                <form id="new-bc-form" action=${resource(file:'person/setBlockConnector')} method="POST">
+                    <input id="address-id" type="hidden"/>
+                    <div id="select-member">Select block connector: 
+                            <select id="members-select" name="id" onchange="memberSelected();">
+                                <option value=""></option>
+                            </select>
+                    </div>
+                </form>
                 <button id="new-bc-savebutton" type="button" onclick="JavaScript:addBC();">Add</button>
                 <button id="new-bc-cancelbutton" type="button" onclick="JavaScript:dismissAddBCModal();">Cancel</button>
             </div>
