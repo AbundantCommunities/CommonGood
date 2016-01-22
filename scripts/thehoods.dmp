@@ -1794,12 +1794,12 @@ INSERT INTO person VALUES (904, 0, true, 1970, '2014-01-01 00:00:00', 'sue@aci.c
 -- Data for Name: question; Type: TABLE DATA; Schema: public; Owner: myapp
 --
 
-INSERT INTO question VALUES (11, 0, '1', '2015-12-18 00:00:00', '2015-12-18 00:00:00', 1, 100, 'What makes a great neighbourhood?', 'Short');
-INSERT INTO question VALUES (12, 0, '2', '2015-12-18 00:00:00', '2015-12-18 00:00:00', 1, 200, 'What else can we do to make our neighbourhood a great place to live?', 'Short');
-INSERT INTO question VALUES (13, 0, '3', '2015-12-18 00:00:00', '2015-12-18 00:00:00', 1, 300, 'What activities would you like to join in with neighbours?', 'Short');
-INSERT INTO question VALUES (14, 0, '4', '2015-12-18 00:00:00', '2015-12-18 00:00:00', 1, 400, 'Do you have interests that you would value discussing or participating in with neighbours?', 'Short');
-INSERT INTO question VALUES (15, 0, '5', '2015-12-18 00:00:00', '2015-12-18 00:00:00', 1, 500, 'Do you have a skill, gift or ability that you would be comfortable using to help neighbours or the neighbourhood? ', 'Short');
-INSERT INTO question VALUES (16, 0, '6', '2015-12-18 00:00:00', '2015-12-18 00:00:00', 1, 600, 'Are there some life experiences that you would consider sharing for the benefit of neighbours?', 'Short');
+INSERT INTO question VALUES (11, 0, '1', '2015-12-18 00:00:00', '2015-12-18 00:00:00', 1, 100, 'What makes a great neighbourhood?', 'Great NH?');
+INSERT INTO question VALUES (12, 0, '2', '2015-12-18 00:00:00', '2015-12-18 00:00:00', 1, 200, 'What else can we do to make our neighbourhood a great place to live?', 'What else?');
+INSERT INTO question VALUES (13, 0, '3', '2015-12-18 00:00:00', '2015-12-18 00:00:00', 1, 300, 'What activities would you like to join in with neighbours?', 'Activities?');
+INSERT INTO question VALUES (14, 0, '4', '2015-12-18 00:00:00', '2015-12-18 00:00:00', 1, 400, 'Do you have interests that you would value discussing or participating in with neighbours?', 'Interests?');
+INSERT INTO question VALUES (15, 0, '5', '2015-12-18 00:00:00', '2015-12-18 00:00:00', 1, 500, 'Do you have a skill, gift or ability that you would be comfortable using to help neighbours or the neighbourhood? ', 'Help?');
+INSERT INTO question VALUES (16, 0, '6', '2015-12-18 00:00:00', '2015-12-18 00:00:00', 1, 600, 'Are there some life experiences that you would consider sharing for the benefit of neighbours?', 'Share?');
 
 
 --

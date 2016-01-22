@@ -171,20 +171,39 @@ class NavigateController {
         Long memberId = Long.valueOf( params.id )
         authorizationService.familyMember( memberId, session )
 
-        /* The answers look like:
+        /* The result of the following query looks like:
 //        [ [commongood.Answer : 54, commongood.Person : 7, commongood.Question : 12],
-            [commongood.Answer : 55, commongood.Person : 7, commongood.Question : 13],
+            [commongood.Answer : 55, commongood.Person : 7, commongood.Question : 14],
             [commongood.Answer : 56, commongood.Person : 7, commongood.Question : 14] ]
 */
         def answers = Answer.findAll('from Answer a join a.person p join a.question q where p.id=? order by q.orderWithinQuestionnaire, a.id', [memberId])
         Person theMember
         if( answers.size() == 0 ) {
-            theMember = Person.where{ id == memberId }.get( )
+            theMember = Person.get( memberId )
         } else {
             theMember = answers[0][1]
         }
 
-        // FIXME Grouping of answers for a member works only for Standard 6 questions
+        // New Q&A data to pass to member page
+        def qna = [ ]
+        def previousQuestion = null
+        def theseAnswers
+        answers.each {
+            Answer answer = it[0]
+            Question question = it[2]
+            if( question != previousQuestion ) {
+                if( previousQuestion ) {
+                    qna << [ question:previousQuestion.getShortHeader( ), answers:theseAnswers ]
+                }
+                previousQuestion = question
+                theseAnswers = [ ]
+            }
+            theseAnswers << [id:answer.id, text:answer.text]
+        }
+        // Flush the last set of answers:
+        qna << [ question:previousQuestion.getShortHeader( ), answers:theseAnswers ]
+
+        // OLD STYLE Q&A DATA -- DEPRECATED
         def groupedAnswers = [ '1':'1. Great: ', '2':'2. Better: ', '3':'3. Activities: ', '4':'4. Interests: ', '5':'5. Skill: ', '6':'6. Life: ' ]
         answers.each {
             Answer answer = it[0]
@@ -222,11 +241,14 @@ class NavigateController {
                             phoneNumber:theMember.phoneNumber, orderWithinFamily:theMember.orderWithinFamily,
                             note:theMember.note ],
 
+            // navChildren DEPRECATED
             navChildren:
             [
             childType: 'Question',
             children: children
-            ]
+            ],
+            
+            questionsAndAnswers: qna
         ]
         println "Navigate to family member ${memberId}"
         result

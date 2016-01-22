@@ -13,4 +13,8 @@ class Question {
 
     Date dateCreated
     Date lastUpdated
+
+    def String getShortHeader( ) {
+        return code + '. ' + shortText
+    }
 }
