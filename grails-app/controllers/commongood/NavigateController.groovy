@@ -123,11 +123,11 @@ class NavigateController {
     }
 
     def family( ) {
-        // TODO Remove no-longer-required question data passed to GSP
         Person interviewer // Block Connector
         Integer familyId = Integer.valueOf( params.id )
         authorizationService.family( familyId, session )
-        Family theFamily = Family.where{ id == familyId }.get( )
+        Family theFamily = Family.get( familyId )
+
         List members = Person.where{ family.id == familyId }.list( sort:'orderWithinFamily', order:'asc' )
         members = members.collect{
             [ id:it.id, name:it.fullName ]
@@ -138,8 +138,6 @@ class NavigateController {
         Long neighbourhoodId = theFamily.address.block.neighbourhood.id
         Long blockId = theFamily.address.block.id
         def possibleInterviewers = domainAuthorizationService.getPossibleInterviewers( neighbourhoodId, blockId, theFamily.interviewer?.id )
-
-        def questions = Question.findAll('from Question where neighbourhood.id=? order by orderWithinQuestionnaire, id', [theFamily.address.block.neighbourhood.id])
 
         Map result =
             [
@@ -156,7 +154,7 @@ class NavigateController {
                             participateInInterview:theFamily.participateInInterview,
                             permissionToContact:theFamily.permissionToContact,
                             possibleInterviewers:possibleInterviewers,
-                            questions: questions ],
+                         ],
 
             navChildren:
                 [

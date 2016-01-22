@@ -320,7 +320,7 @@
                 top:50px;
                 left:${(929/2) - ((290+navChildren.children.size()*180) / 2)}px;
                 width:${290+navChildren.children.size()*180}px;
-                height:${50+(navSelection.questions.size()*110)}px;
+                height:${160}px; /* WE NO LONGER RECEIVE QUESTIONS FROM THE NAVIGATE CONTROLLER */
                 padding:20px;
                 padding-top: 10px;
                 box-shadow: 0px 0px 20px #000000;
@@ -334,7 +334,7 @@
             button#bulk-answers-savebutton {
                 position: absolute;
                 left:${((290+navChildren.children.size()*180)/2) + 20}px;
-                top:${36+(navSelection.questions.size()*110)}px;
+                top:${146}px; /* WE NO LONGER RECEIVE QUESTIONS FROM THE NAVIGATE CONTROLLER */
                 cursor:pointer; /*forces the cursor to change to a hand when the button is hovered*/
                 padding:5px 25px; /*add some padding to the inside of the button*/
                 background:transparent; /*the colour of the button*/
@@ -346,7 +346,7 @@
             button#bulk-answers-cancelbutton {
                 position: absolute;
                 left:${((290+navChildren.children.size()*180)/2) - 80}px;
-                top:${36+(navSelection.questions.size()*110)}px;
+                top:${146}px; /* WE NO LONGER RECEIVE QUESTIONS FROM THE NAVIGATE CONTROLLER */
                 cursor:pointer; /*forces the cursor to change to a hand when the button is hovered*/
                 padding:5px 25px; /*add some padding to the inside of the button*/
                 background:transparent; /*the colour of the button*/
@@ -529,7 +529,8 @@
                     </g:each>
                 </div>
                 <form id="bulk-answers-form" action=${resource(file:'Answer/saveTable')} method="post">
-                    <g:each in="${navSelection.questions}" var="question" status="curQuestion">
+                    <!-- WE NO LONGER RECEIVE QUESTIONS FROM THE NAVIGATE CONTROLLER -->
+                    <!-- <g:each in="${navSelection.questions}" var="question" status="curQuestion"> -->
                         <div class="answer-row">
                             <div class="question-column">${question.text}</div>
                             <g:each in="${navChildren.children}" var="child" status="curFamilyMember">
@@ -541,7 +542,7 @@
                                 </div>
                             </g:each>
                         </div>
-                    </g:each>
+                    <!-- </g:each> -->
                 </form>
                 <button id="bulk-answers-cancelbutton" type="button" onclick="JavaScript:dismissBulkAnswersModal();">Cancel</button>
                 <button id="bulk-answers-savebutton" type="button" onclick="JavaScript:addBulkAnswers();">Add Answers</button>

@@ -7,27 +7,22 @@ class SearchService {
 
     def answers( questionId, q ) {
         def searchTerm = "%${q}%".toLowerCase( )
-        def questionText
         def answers
 
         // FIXME These searches examine answers from EVERY hood!
         if( questionId > 0 ) {
             // Select only answers to that particular question
             answers = Answer.executeQuery(
-                'select a.text, p.id, p.firstNames from Answer a join a.person p where lower(a.text) like ? and a.question.id = ? \
+                'select a.text, p.id, p.firstNames, p.lastName from Answer a join a.person p where lower(a.text) like ? and a.question.id = ? \
                  order by p.firstNames, p.lastName, p.id',
                 [ searchTerm, questionId ] )
-
-            questionText = Question.get( questionId ).text
 
         } else {
             // Select answers to all questions
             answers = Answer.executeQuery(
-                'select a.text, p.id, p.firstNames from Answer a join a.person p where lower(a.text) like ? \
+                'select a.text, p.id, p.firstNames, p.lastName from Answer a join a.person p where lower(a.text) like ? \
                  order by p.firstNames, p.lastName, p.id',
                 [ searchTerm ] )
-
-            questionText = '<All questions>'
         }
 
         println "Found ${answers.size()} answers"
