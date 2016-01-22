@@ -61,18 +61,23 @@
             }
 
             function doSubmit() {
+
+                var expirationDate = new Date ();
+                expirationDate.setYear (expirationDate.getFullYear () + 1);
+                expirationDate = expirationDate.toGMTString ();
+                
                 if (currentlyHidden) {
                     document.getElementById('submitPassword').value = document.getElementById('pwHidden').value;
-                    document.cookie="showPw=f";
+                    document.cookie="showPw=f;expires="+expirationDate+";";
                 } else {
                     document.getElementById('submitPassword').value = document.getElementById('pwShown').value;
-                    document.cookie="showPw=t";
+                    document.cookie="showPw=t;expires="+expirationDate+";";
                 }
 
                 if (document.getElementById('rememberCheckbox').checked) {
-                    document.cookie="email="+document.getElementById('emailAddressInput').value;
+                    document.cookie="email="+document.getElementById('emailAddressInput').value+";expires="+expirationDate+";";
                 } else {
-                    document.cookie = "email=; expires=Thu, 01 Jan 1970 00:00:00 UTC";
+                    document.cookie = "email=; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
                 }
 
                 document.getElementById('loginForm').submit();
