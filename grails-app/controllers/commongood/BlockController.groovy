@@ -1,7 +1,7 @@
 package commongood
 
 class BlockController {
-    static allowedMethods = [addAddresses:'POST', addConnector:'POST', contactList:'GET']
+    static allowedMethods = [addAddresses:'POST', addConnector:'POST', contactList:'GET', update:'POST']
 
     def domainAuthorizationService
     def authorizationService
@@ -107,5 +107,18 @@ class BlockController {
         }
 
         result
+    }
+
+    def update( ) {
+        def blockId = Long.parseLong( params.id )
+        authorizationService.block( blockId, session )
+        def neighbourhood = Block.get( blockId )
+
+        block.code = params.code
+        block.description = params.description
+        block.orderWithinNeighbourhood = params.orderWithinNeighbourhood
+
+        block.save( flush:true, failOnError: true )
+        forward controller: "navigate", action: "block", id: blockId
     }
 }
