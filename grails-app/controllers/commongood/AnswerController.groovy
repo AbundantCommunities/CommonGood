@@ -22,6 +22,7 @@ class AnswerController {
         }
     }
 
+    // TODO Remove saveTable once saveInterview is working
     def saveTable( ) {
         /* Expecting parameters like this (for person 12 & 444, questions 34 & 36 (primary keys)):
                 answer12_34=making+cookies\ngardening
@@ -73,6 +74,84 @@ class AnswerController {
             }
         }
         
+        switch( personCount ) {
+            case 0:
+                // FIXME Handle zero answers
+                // ...we don't handle zero-length answers so don't know any person or family ids
+                throw new Exception( "No answers!" )
+
+            case 1:
+                forward controller: "navigate", action: "familymember", id: lastPersonId
+
+            default:
+                forward controller: "navigate", action: "family", id: familyId
+        }
+    }
+
+    // Will replace saveTable...
+    def saveInterview( ) {
+        /* Expecting parameters like this (for person 12 & 444, questions 34 & 36 (primary keys)):
+                answer12_34=making+cookies\ngardening
+                answer12_36=more+hootenannies\ntaller+trees\nmanna+from+heaven
+                answer444_34=stamp+collecting
+        where \n represents a single newline character
+        */
+
+        // We want every person to come from the same family
+        Long familyId = Long.parseLong( params.familyId )
+        Family family = Family.get( familyId )
+
+        Long lastPersonId = null
+        def personCount = 0
+
+        params.each{ param, value ->
+            if(  value != null && value.size() > 0 && param.startsWith('answer') ) {
+                def ids = param.substring(6).tokenize('_')
+                Person person = Person.get( Long.parseLong( ids[0] ) )
+
+                if( familyId != person.family.id ) {
+                    println "DATA INTEGRITY ERROR! ${person} does not belong to ${family}"
+                    throw new Exception( 'Bad bulk answers')
+                }
+
+                Question q = Question.get( Long.parseLong( ids[1] ) )
+                
+                // Multiple answers within this "answer" are separated by newline characters:
+                def answers = value.tokenize( '\n' )
+                answers.each {
+                    // TODO test with weird answers (ex: nothing but newlines, padded with spaces)
+                    Answer answer = new Answer( person:person, question:q, text:it,
+                                wouldLead:Boolean.FALSE, wouldOrganize:Boolean.TRUE  )
+                    // TODO Eiminate multiple flushes (would reduce calls to the db?)
+                    // TODO Replace failOnError with logic
+                    answer.save( flush:true, failOnError: true )
+
+                    if( lastPersonId ) {
+                        if( person.id != lastPersonId ) {
+                            personCount++
+                        }
+                    } else {
+                        personCount++
+                    }
+                    lastPersonId = person.id
+                }
+            }
+        }
+
+        // User might've changed properties of family that relate to the interview
+        // TODO remove tests for "parameter in params" once the API is nailed down
+        if( 'interviewerId' in params) {
+            family.interviewer = Person.get( Long.parseLong(params.interviewerId))
+        }
+
+        if( 'interviewDate' in params) {
+            family.interviewDate = new Date().parse( 'yyyy-MM-dd', params.interviewDate )
+        }
+
+        family.participateInInterview = ('participateInInterview' in params)
+        family.permissionToContact = ('permissionToContact' in params)
+        family.save( flush:true, failOnError: true )
+
         switch( personCount ) {
             case 0:
                 // FIXME Handle zero answers
