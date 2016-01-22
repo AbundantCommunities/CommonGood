@@ -4,7 +4,7 @@ class LogoutController {
 
     def index() {
         session.user = null
-        flash.message = 'You have logged out'
+        flash.message = "DON'T USE FLASH TO SAY You have logged out"
         forward controller: "login"
     }
 }
