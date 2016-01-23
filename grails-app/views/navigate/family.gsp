@@ -276,45 +276,72 @@
                 color:#B48B6A;
                 font-size: 14px;
             }
+            .modal-title {
+                margin-top: 10px;
+                font-weight:bold;
+                font-size:14px;
+            }
+
             #new-container {
                 position:absolute;
-                top:140px;
+                top:90px;
                 left:260px;
                 width:420px;
-                height:385px;
                 padding:20px;
                 padding-top: 10px;
-                box-shadow: 0px 0px 20px #000000;
                 background-color: #FFFFFF;
                 border-radius:10px;
-                border-width: 2px;
-                border-color: #B48B6A;
-                border-style: solid;
                 visibility:hidden;
             }
-            button#new-savebutton{
-                position: absolute;
-                left:230px;
-                top:375px;
+            #new-fm-cancelbutton{
+                display: inline-block;
+                height: 22px;
+                width: 80px;
                 cursor:pointer; /*forces the cursor to change to a hand when the button is hovered*/
-                padding:5px 25px; /*add some padding to the inside of the button*/
-                background:transparent; /*the colour of the button*/
-                border:0px;
                 color:#B48B6A;
-                font-size: 14px;
+                padding-top: 4px;
+                text-align: center;
+                border-radius: 5px;
+                border-width:thin;
+                border-style:solid;
+                border-color: #B48B6A;
+                background-color:#FFFFFF;
+            }
+            #new-fm-savebutton{
+                display: inline-block;
+                height: 22px;
+                width: 80px;
+                margin-left: 10px;
+                cursor:pointer; /*forces the cursor to change to a hand when the button is hovered*/
+                color:#B48B6A;
+                padding-top: 4px;
+                text-align: center;
+                border-radius: 5px;
+                border-width:thin;
+                border-style:solid;
+                border-color: #B48B6A;
+                background-color:#FFFFFF;
                 font-weight: bold;
             }
-            button#new-cancelbutton{
-                position: absolute;
-                left:130px;
-                top:375px;
-                cursor:pointer; /*forces the cursor to change to a hand when the button is hovered*/
-                padding:5px 25px; /*add some padding to the inside of the button*/
-                background:transparent; /*the colour of the button*/
-                border:0px;
-                color:#B48B6A;
-                font-size: 14px;
+
+            .button-row {
+                margin-top: 20px;
+                margin-left: 0px;
+                width: 100%;
             }
+            
+            .modal-row {
+                margin-top: 10px;
+            }
+
+            .email-style {
+                width:70%;
+            }
+
+            .note-style {
+                width:95%;
+            }
+
             #bulk-answers-container {
                 position:absolute;
                 top:50px;
@@ -505,47 +532,24 @@
                 <button id="edit-savebutton" type="button" onclick="JavaScript:saveFamily();">Save</button>
                 <button id="edit-cancelbutton" type="button" onclick="JavaScript:dismissEditModal();">Cancel</button>
             </div>
+
             <div id="new-container">
-                <p style="font-weight:bold;font-size:14px;">New Family Member</p>
-                <form id="new-form" action=${resource(file:'Person/save')} method="post">
+                <div class="modal-title">New Family Member</div>
+                <form id="new-form" action=${resource(file:'Person/save')} method="POST">
                     <input type="hidden" name="familyId" value="${navSelection.id}" />
-                    <p>First names: <input id="firstNamesInput" type="text" name="firstNames" value=""/></p>
-                    <p>Last name: <input id="lastNameInput" type="text" name="lastName" value=""/></p>
-                    <p>Birth year: <input id="birthYearInput" type="text" pattern="[12][90][0-9][0-9]" name="birthYear" value="" placeholder="YYYY"/></p>
-                    <p>Email address: <input id="emailAddressInput" type="email" name="emailAddress" value="" size="40"/></p>
-                    <p>Phone number: <input id="phoneNumberInput" type="text" name="phoneNumber" value=""/></p>
-                    <p>Order within family: <input id="orderWithinFamilyInput" type="text" name="orderWithinFamily" value=""/></p>
-                    <p>Note: </p>
-                    <p><textarea id="familyMemberNoteInput" name="note" cols=56 rows=4></textarea></p>
+                    <div class="modal-row">First names: <input id="firstNamesInput" type="text" name="firstNames" value=""/></div>
+                    <div class="modal-row">Last name: <input id="lastNameInput" type="text" name="lastName" value=""/></div>
+                    <div class="modal-row">Birth year: <input id="birthYearInput" type="text" pattern="[12][90][0-9][0-9]" name="birthYear" value="" placeholder="YYYY"/></div>
+                    <div class="modal-row">Email address: <input id="emailAddressInput" class="email-style" type="email" name="emailAddress" value="" size="40"/></div>
+                    <div class="modal-row">Phone number: <input id="phoneNumberInput" type="text" name="phoneNumber" value=""/></div>
+                    <div class="modal-row">Order within family: <input id="orderWithinFamilyInput" type="text" name="orderWithinFamily" value=""/></div>
+                    <div class="modal-row">Note: <br/><textarea id="familyMemberNoteInput" class="note-style" name="note" cols=56 rows=4></textarea></div>
                 </form>
-                <button id="new-savebutton" type="button" onclick="JavaScript:saveFamilyMember();">Save</button>
-                <button id="new-cancelbutton" type="button" onclick="JavaScript:dismissNewModal();">Cancel</button>
-            </div>
-            <div id="bulk-answers-container">
-                <div class="heading-row">
-                    <div class="question-column">Question</div>
-                    <g:each in="${navChildren.children}" var="child">
-                        <div class="answer-column-heading">${child.name}</div>
-                    </g:each>
+                <div class="button-row">
+                    <div id="new-fm-cancelbutton" type="button" onclick="JavaScript:dismissNewModal();">Cancel</div>
+                    <div id="new-fm-savebutton" type="button" onclick="JavaScript:saveFamilyMember();">Save</div>
                 </div>
-                <form id="bulk-answers-form" action=${resource(file:'Answer/saveTable')} method="post">
-                    <!-- WE NO LONGER RECEIVE QUESTIONS FROM THE NAVIGATE CONTROLLER -->
-                    <!-- <g:each in="${navSelection.questions}" var="question" status="curQuestion"> -->
-                        <div class="answer-row">
-                            <div class="question-column">${question.text}</div>
-                            <g:each in="${navChildren.children}" var="child" status="curFamilyMember">
-                                <div class="answer-column">
-                                    <textarea id="answers-textarea-${curQuestion}${curFamilyMember}" class="answer-textarea" name="${'answer'+child.id+'_'+question.id}" style="display:block;"></textarea>
-                                    <div id="answers-div-${curQuestion}${curFamilyMember}" class="answer-div" style="display:none;">
-                                    </div>
-                                    <div class="lo"><input id="cb-${curQuestion}${curFamilyMember}" type="checkbox" onclick="JavaScript:return checkboxClicked(this);"/><div class="lead">lead</div> or <div class="organize">organize</div><div class="lo-edit" id="edit-${curQuestion}${curFamilyMember}"> | <a href="#" onclick="JavaScript:return editLO(this);">edit</a></div></div>
-                                </div>
-                            </g:each>
-                        </div>
-                    <!-- </g:each> -->
-                </form>
-                <button id="bulk-answers-cancelbutton" type="button" onclick="JavaScript:dismissBulkAnswersModal();">Cancel</button>
-                <button id="bulk-answers-savebutton" type="button" onclick="JavaScript:addBulkAnswers();">Add Answers</button>
             </div>
+
     </body>
 </html>
