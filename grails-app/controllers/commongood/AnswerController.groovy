@@ -23,6 +23,13 @@ class AnswerController {
         }
     }
 
+    def delete( ) {
+        def answerId = Long.parseLong( params.id )
+        authorizationService.answer( answerId, session )
+        Answer.get( answerId ).delete(flush: true)
+        forward controller:'navigate', action:'familymember', id:answer.person.id
+    }
+
     def get( ) {
         def answerId = Long.parseLong( params.id )
         authorizationService.answer( answerId, session )
@@ -35,6 +42,17 @@ class AnswerController {
         def writer = new StringWriter()
         bldr.writeTo(writer)
         render writer
+    }
+
+    def save( ) {
+        def answerId = Long.parseLong( params.id )
+        authorizationService.answer( answerId, session )
+        Answer answer = Answer.get( answerId )
+        answer.text = params.text
+        answer.wouldLead = ('wouldLead' in params)
+        answer.wouldOrganize = ('wouldOrganize' in params)
+        answer.save( flush:true, failOnError: true )
+        forward controller:'navigate', action:'familymember', id:answer.person.id
     }
 
     // TODO Remove saveTable once saveInterview is working
