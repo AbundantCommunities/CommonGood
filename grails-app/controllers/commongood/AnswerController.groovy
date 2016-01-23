@@ -1,7 +1,7 @@
 package commongood
 
 class AnswerController {
-    static allowedMethods = [frequencies:'GET', saveTable:'POST']
+    static allowedMethods = [frequencies:'GET', saveInterview:'POST', saveTable:'POST']
 
     def frequencies( ) {
         def questionId = Long.parseLong( params.id )
@@ -96,8 +96,6 @@ class AnswerController {
                 answer444_34=stamp+collecting
         where \n represents a single newline character
         */
-
-        // We want every person to come from the same family
         Long familyId = Long.parseLong( params.familyId )
         Family family = Family.get( familyId )
 
@@ -138,31 +136,17 @@ class AnswerController {
             }
         }
 
-        // User might've changed properties of family that relate to the interview
-        // TODO remove tests for "parameter in params" once the API is nailed down
-        if( 'interviewerId' in params) {
-            family.interviewer = Person.get( Long.parseLong(params.interviewerId))
-        }
-
-        if( 'interviewDate' in params) {
-            family.interviewDate = new Date().parse( 'yyyy-MM-dd', params.interviewDate )
-        }
+        family.interviewer = Person.get( Long.parseLong(params.interviewerId))
+        family.interviewDate = new Date().parse( 'yyyy-MM-dd', params.interviewDate )
 
         family.participateInInterview = ('participateInInterview' in params)
         family.permissionToContact = ('permissionToContact' in params)
         family.save( flush:true, failOnError: true )
 
-        switch( personCount ) {
-            case 0:
-                // FIXME Handle zero answers
-                // ...we don't handle zero-length answers so don't know any person or family ids
-                throw new Exception( "No answers!" )
-
-            case 1:
-                forward controller: "navigate", action: "familymember", id: lastPersonId
-
-            default:
-                forward controller: "navigate", action: "family", id: familyId
+        if( personCount == 1 ) {
+            forward controller: "navigate", action: "familymember", id: lastPersonId
+        } else {
+            forward controller: "navigate", action: "family", id: familyId
         }
     }
 }
