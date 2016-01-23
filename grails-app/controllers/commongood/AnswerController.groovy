@@ -26,8 +26,10 @@ class AnswerController {
     def delete( ) {
         def answerId = Long.parseLong( params.id )
         authorizationService.answer( answerId, session )
-        Answer.get( answerId ).delete(flush: true)
-        forward controller:'navigate', action:'familymember', id:answer.person.id
+        def answer = Answer.get( answerId )
+        def person = answer.person
+        answer.delete(flush: true)
+        forward controller:'navigate', action:'familymember', id:person.id
     }
 
     def get( ) {
