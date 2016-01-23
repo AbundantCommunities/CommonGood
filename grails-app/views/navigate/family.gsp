@@ -125,85 +125,11 @@
                     document.getElementById('familyId-input').value = "${navSelection.id}";
                     document.getElementById('present-questions-form').submit();
 
-                    /*
-                    var pagecontainerDiv = document.getElementById("pagecontainer");
-                    document.getElementById("transparent-overlay").setAttribute("style","height:"+pagecontainerDiv.clientHeight+"px;");
-                    
-                    document.getElementById("transparent-overlay").style.visibility='visible';
-                    document.getElementById("bulk-answers-container").style.visibility='visible';
-                    document.getElementById("familyNameInput").focus();
-                    document.getElementById("familyNameInput").select();
-                    */
                 } else {
                     alert('Please add a family member first.');
                 }
 
 
-            }
-            function dismissBulkAnswersModal() {
-                document.getElementById("bulk-answers-container").style.visibility='hidden';
-                document.getElementById("transparent-overlay").style.visibility='hidden';
-            }
-            function addBulkAnswers() {
-                dismissBulkAnswersModal();
-                document.getElementById('bulk-answers-form').submit();
-            }
-
-
-
-            function checkboxClicked(me) {
-                var newState = me.checked;
-                var cellId = me.id.slice(3,me.id.length);
-                var editLinkId = "edit-"+cellId;
-                if (newState) {
-                    // show edit link
-                    document.getElementById(editLinkId).style.display = 'inline';
-
-                    // if any text in textarea, create a div for each line
-                    var textareaValue = document.getElementById('answers-textarea-'+cellId).value;
-
-                    if (textareaValue.length > 0) {
-
-                        // Split textarea value into lines
-                        var lines = textareaValue.split('\n');
-
-                        // construct innerHTML for answer-div
-                        var divInnerHTML = '';
-                        for (i = 0; i < lines.length; i++) {
-                            if (lines[i].length > 0) {
-                                divInnerHTML = divInnerHTML+'<div>'+lines[i]+'</div>\n';
-                            }
-                        }
-
-                        document.getElementById('answers-div-'+cellId).innerHTML = divInnerHTML;
-                        document.getElementById('answers-textarea-'+cellId).style.display = 'none';
-                        document.getElementById('answers-div-'+cellId).style.display = 'block';
-
-                    }
-
-                } else {
-                    // hide edit link
-                    document.getElementById(editLinkId).style.display = 'none';
-
-                    var divs = document.getElementById('answers-div-'+cellId).children;
-                    var textareaValue = '';
-                    if (divs.length > 0) {
-                        for (i = 0; i < divs.length; i++) {
-                            if (i > 0) {
-                                textareaValue = textareaValue + '\n';
-                            }
-                            textareaValue = textareaValue + divs[i].innerHTML;
-                        }
-                    }
-                    document.getElementById('answers-textarea-'+cellId).value = textareaValue;
-                    document.getElementById('answers-textarea-'+cellId).style.display = 'block';
-                    document.getElementById('answers-div-'+cellId).style.display = 'none';
-                }
-            }
-
-
-            function editLO(me) {
-                alert(me.parentNode.id);
             }
 
             // Initialize array to hold ids for possible interviewers.
@@ -276,84 +202,72 @@
                 color:#B48B6A;
                 font-size: 14px;
             }
+            .modal-title {
+                margin-top: 10px;
+                font-weight:bold;
+                font-size:14px;
+            }
+
             #new-container {
                 position:absolute;
-                top:140px;
+                top:90px;
                 left:260px;
                 width:420px;
-                height:385px;
                 padding:20px;
                 padding-top: 10px;
-                box-shadow: 0px 0px 20px #000000;
                 background-color: #FFFFFF;
                 border-radius:10px;
-                border-width: 2px;
-                border-color: #B48B6A;
-                border-style: solid;
                 visibility:hidden;
             }
-            button#new-savebutton{
-                position: absolute;
-                left:230px;
-                top:375px;
+            #new-fm-cancelbutton{
+                display: inline-block;
+                height: 22px;
+                width: 80px;
                 cursor:pointer; /*forces the cursor to change to a hand when the button is hovered*/
-                padding:5px 25px; /*add some padding to the inside of the button*/
-                background:transparent; /*the colour of the button*/
-                border:0px;
                 color:#B48B6A;
-                font-size: 14px;
-                font-weight: bold;
-            }
-            button#new-cancelbutton{
-                position: absolute;
-                left:130px;
-                top:375px;
-                cursor:pointer; /*forces the cursor to change to a hand when the button is hovered*/
-                padding:5px 25px; /*add some padding to the inside of the button*/
-                background:transparent; /*the colour of the button*/
-                border:0px;
-                color:#B48B6A;
-                font-size: 14px;
-            }
-            #bulk-answers-container {
-                position:absolute;
-                top:50px;
-                left:${(929/2) - ((290+navChildren.children.size()*180) / 2)}px;
-                width:${290+navChildren.children.size()*180}px;
-                height:${160}px; /* WE NO LONGER RECEIVE QUESTIONS FROM THE NAVIGATE CONTROLLER */
-                padding:20px;
-                padding-top: 10px;
-                box-shadow: 0px 0px 20px #000000;
-                background-color: #FFFFFF;
-                border-radius:10px;
-                border-width: 2px;
+                padding-top: 4px;
+                text-align: center;
+                border-radius: 5px;
+                border-width:thin;
+                border-style:solid;
                 border-color: #B48B6A;
-                border-style: solid;
-                visibility:hidden;
+                background-color:#FFFFFF;
             }
-            button#bulk-answers-savebutton {
-                position: absolute;
-                left:${((290+navChildren.children.size()*180)/2) + 20}px;
-                top:${146}px; /* WE NO LONGER RECEIVE QUESTIONS FROM THE NAVIGATE CONTROLLER */
+            #new-fm-savebutton{
+                display: inline-block;
+                height: 22px;
+                width: 80px;
+                margin-left: 10px;
                 cursor:pointer; /*forces the cursor to change to a hand when the button is hovered*/
-                padding:5px 25px; /*add some padding to the inside of the button*/
-                background:transparent; /*the colour of the button*/
-                border:0px;
                 color:#B48B6A;
-                font-size: 14px;
+                padding-top: 4px;
+                text-align: center;
+                border-radius: 5px;
+                border-width:thin;
+                border-style:solid;
+                border-color: #B48B6A;
+                background-color:#FFFFFF;
                 font-weight: bold;
             }
-            button#bulk-answers-cancelbutton {
-                position: absolute;
-                left:${((290+navChildren.children.size()*180)/2) - 80}px;
-                top:${146}px; /* WE NO LONGER RECEIVE QUESTIONS FROM THE NAVIGATE CONTROLLER */
-                cursor:pointer; /*forces the cursor to change to a hand when the button is hovered*/
-                padding:5px 25px; /*add some padding to the inside of the button*/
-                background:transparent; /*the colour of the button*/
-                border:0px;
-                color:#B48B6A;
-                font-size: 14px;
+
+            .button-row {
+                margin-top: 20px;
+                margin-left: 0px;
+                width: 100%;
             }
+            
+            .modal-row {
+                margin-top: 10px;
+            }
+
+            .email-style {
+                width:70%;
+            }
+
+            .note-style {
+                width:95%;
+            }
+
             .heading-row {
                 height:25px;
             }
@@ -505,47 +419,24 @@
                 <button id="edit-savebutton" type="button" onclick="JavaScript:saveFamily();">Save</button>
                 <button id="edit-cancelbutton" type="button" onclick="JavaScript:dismissEditModal();">Cancel</button>
             </div>
+
             <div id="new-container">
-                <p style="font-weight:bold;font-size:14px;">New Family Member</p>
-                <form id="new-form" action=${resource(file:'Person/save')} method="post">
+                <div class="modal-title">New Family Member</div>
+                <form id="new-form" action=${resource(file:'Person/save')} method="POST">
                     <input type="hidden" name="familyId" value="${navSelection.id}" />
-                    <p>First names: <input id="firstNamesInput" type="text" name="firstNames" value=""/></p>
-                    <p>Last name: <input id="lastNameInput" type="text" name="lastName" value=""/></p>
-                    <p>Birth year: <input id="birthYearInput" type="text" pattern="[12][90][0-9][0-9]" name="birthYear" value="" placeholder="YYYY"/></p>
-                    <p>Email address: <input id="emailAddressInput" type="email" name="emailAddress" value="" size="40"/></p>
-                    <p>Phone number: <input id="phoneNumberInput" type="text" name="phoneNumber" value=""/></p>
-                    <p>Order within family: <input id="orderWithinFamilyInput" type="text" name="orderWithinFamily" value=""/></p>
-                    <p>Note: </p>
-                    <p><textarea id="familyMemberNoteInput" name="note" cols=56 rows=4></textarea></p>
+                    <div class="modal-row">First names: <input id="firstNamesInput" type="text" name="firstNames" value=""/></div>
+                    <div class="modal-row">Last name: <input id="lastNameInput" type="text" name="lastName" value=""/></div>
+                    <div class="modal-row">Birth year: <input id="birthYearInput" type="text" pattern="[12][90][0-9][0-9]" name="birthYear" value="" placeholder="YYYY"/></div>
+                    <div class="modal-row">Email address: <input id="emailAddressInput" class="email-style" type="email" name="emailAddress" value="" size="40"/></div>
+                    <div class="modal-row">Phone number: <input id="phoneNumberInput" type="text" name="phoneNumber" value=""/></div>
+                    <div class="modal-row">Order within family: <input id="orderWithinFamilyInput" type="text" name="orderWithinFamily" value=""/></div>
+                    <div class="modal-row">Note: <br/><textarea id="familyMemberNoteInput" class="note-style" name="note" cols=56 rows=4></textarea></div>
                 </form>
-                <button id="new-savebutton" type="button" onclick="JavaScript:saveFamilyMember();">Save</button>
-                <button id="new-cancelbutton" type="button" onclick="JavaScript:dismissNewModal();">Cancel</button>
-            </div>
-            <div id="bulk-answers-container">
-                <div class="heading-row">
-                    <div class="question-column">Question</div>
-                    <g:each in="${navChildren.children}" var="child">
-                        <div class="answer-column-heading">${child.name}</div>
-                    </g:each>
+                <div class="button-row">
+                    <div id="new-fm-cancelbutton" type="button" onclick="JavaScript:dismissNewModal();">Cancel</div>
+                    <div id="new-fm-savebutton" type="button" onclick="JavaScript:saveFamilyMember();">Save</div>
                 </div>
-                <form id="bulk-answers-form" action=${resource(file:'Answer/saveTable')} method="post">
-                    <!-- WE NO LONGER RECEIVE QUESTIONS FROM THE NAVIGATE CONTROLLER -->
-                    <!-- <g:each in="${navSelection.questions}" var="question" status="curQuestion"> -->
-                        <div class="answer-row">
-                            <div class="question-column">${question.text}</div>
-                            <g:each in="${navChildren.children}" var="child" status="curFamilyMember">
-                                <div class="answer-column">
-                                    <textarea id="answers-textarea-${curQuestion}${curFamilyMember}" class="answer-textarea" name="${'answer'+child.id+'_'+question.id}" style="display:block;"></textarea>
-                                    <div id="answers-div-${curQuestion}${curFamilyMember}" class="answer-div" style="display:none;">
-                                    </div>
-                                    <div class="lo"><input id="cb-${curQuestion}${curFamilyMember}" type="checkbox" onclick="JavaScript:return checkboxClicked(this);"/><div class="lead">lead</div> or <div class="organize">organize</div><div class="lo-edit" id="edit-${curQuestion}${curFamilyMember}"> | <a href="#" onclick="JavaScript:return editLO(this);">edit</a></div></div>
-                                </div>
-                            </g:each>
-                        </div>
-                    <!-- </g:each> -->
-                </form>
-                <button id="bulk-answers-cancelbutton" type="button" onclick="JavaScript:dismissBulkAnswersModal();">Cancel</button>
-                <button id="bulk-answers-savebutton" type="button" onclick="JavaScript:addBulkAnswers();">Add Answers</button>
             </div>
+
     </body>
 </html>

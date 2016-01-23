@@ -17,7 +17,7 @@
                 document.getElementById('phoneNumberInput').value = "${navSelection.phoneNumber}";
                 document.getElementById('orderWithinFamilyInput').value = "${navSelection.orderWithinFamily}";
 
-                document.getElementById('noteInput').value = "note not yet hooked up";
+                document.getElementById('noteInput').value = "${navSelection.note}";
             }
 
 
@@ -28,12 +28,12 @@
                 populateEditModal();
 
                 document.getElementById("transparent-overlay").style.visibility='visible';
-                document.getElementById("edit-container").style.visibility='visible';
+                document.getElementById("edit-fm-container").style.visibility='visible';
                 document.getElementById("firstNamesInput").focus();
                 document.getElementById("firstNamesInput").select();
             }
             function dismissEditModal() {
-                document.getElementById("edit-container").style.visibility='hidden';
+                document.getElementById("edit-fm-container").style.visibility='hidden';
                 document.getElementById("transparent-overlay").style.visibility='hidden';
             }
 
@@ -66,8 +66,84 @@
                 var note = document.getElementById("noteInput").value;
                 if (familyMemberIsValid(firstNames, lastName, note)) {
                     dismissEditModal();
-                    document.getElementById("edit-form").submit();
+                    document.getElementById("edit-fm-form").submit();
                 }
+            }
+
+            function editAnswer(element) {
+
+                var answerIdParts = element.id.split('_');
+                if (answerIdParts.length != 2) {
+                    alert('unexpected element id for answer id');
+                    return;
+                }
+
+                var answerId = answerIdParts[1];
+
+                // Get answer row.
+                var xmlhttp = new XMLHttpRequest( );
+                var url = '<g:createLink controller="answer" action="get"/>/'+answerId;
+                xmlhttp.onreadystatechange = function( ) {
+                    if( xmlhttp.readyState == 4 /* && xmlhttp.status == 200 */ ) {
+                        var answerValues = JSON.parse( xmlhttp.responseText );
+                        presentEditAnswerModal( answerValues );
+                    }
+                };
+
+                xmlhttp.open( "GET", url, true );
+                xmlhttp.send( );
+
+                function presentEditAnswerModal( answerValues ) {
+
+
+                    document.getElementById('answer-id-input').value = answerValues.id;
+                    document.getElementById('delete-answer-id-input').value = answerValues.id;
+                    document.getElementById('question-div').innerHTML = answerValues.question;
+                    document.getElementById('answer-text-input').value = answerValues.text;
+                    document.getElementById('would-lead-input').checked = answerValues.wouldLead;
+                    document.getElementById('would-organize-input').checked = answerValues.wouldOrganize;
+
+                    var pagecontainerDiv = document.getElementById("pagecontainer");
+                    document.getElementById("transparent-overlay").setAttribute("style","height:"+pagecontainerDiv.clientHeight+"px;");
+                    document.getElementById("transparent-overlay").style.visibility='visible';
+                    document.getElementById("edit-answer-container").style.visibility='visible';
+                    document.getElementById("answer-text-input").focus();
+                    document.getElementById("answer-text-input").select();
+
+                }
+
+            }
+
+            function dismissEditAnswerModal() {
+                document.getElementById("edit-answer-container").style.visibility='hidden';
+                document.getElementById("transparent-overlay").style.visibility='hidden';
+            }
+
+            function answerIsValid(answerText) {
+                if (answerText != '') {
+                    return true;
+                } else {
+                    alert('Please enter an answer.');
+                    return false;
+                }
+            }
+
+            function saveAnswer() {
+                if (answerIsValid(document.getElementById('answer-text-input').value)) {
+                    dismissEditAnswerModal();
+                    document.getElementById('edit-answer-form').submit();
+                }
+            }
+
+
+            function deleteAnswer() {
+                dismissEditAnswerModal();
+                document.getElementById('delete-answer-form').submit();
+            }
+
+
+            function cancelEditAnswer() {
+                dismissEditAnswerModal();
             }
 
         </script>
@@ -145,45 +221,161 @@
                 top:150px;
                 left: 160px;
             }
-            #edit-container {
+
+
+
+            .modal-title {
+                margin-top: 10px;
+                font-weight:bold;
+                font-size:14px;
+            }
+
+            #edit-fm-container {
+                position:absolute;
+                top:90px;
+                left:260px;
+                width:420px;
+                padding:20px;
+                padding-top: 10px;
+                background-color: #FFFFFF;
+                border-radius:10px;
+                visibility:hidden;
+            }
+            #edit-fm-cancelbutton{
+                display: inline-block;
+                height: 22px;
+                width: 80px;
+                cursor:pointer; /*forces the cursor to change to a hand when the button is hovered*/
+                color:#B48B6A;
+                padding-top: 4px;
+                text-align: center;
+                border-radius: 5px;
+                border-width:thin;
+                border-style:solid;
+                border-color: #B48B6A;
+                background-color:#FFFFFF;
+            }
+            #edit-fm-savebutton{
+                display: inline-block;
+                height: 22px;
+                width: 80px;
+                margin-left: 10px;
+                cursor:pointer; /*forces the cursor to change to a hand when the button is hovered*/
+                color:#B48B6A;
+                padding-top: 4px;
+                text-align: center;
+                border-radius: 5px;
+                border-width:thin;
+                border-style:solid;
+                border-color: #B48B6A;
+                background-color:#FFFFFF;
+                font-weight: bold;
+            }
+
+            .modal-row {
+                margin-top: 10px;
+            }
+
+            .email-style {
+                width:70%;
+            }
+
+            .note-style {
+                width:95%;
+            }
+
+
+            #edit-answer-container {
                 position:absolute;
                 top:140px;
                 left:260px;
                 width:420px;
-                height:385px;
                 padding:20px;
                 padding-top: 10px;
-                box-shadow: 0px 0px 20px #000000;
                 background-color: #FFFFFF;
                 border-radius:10px;
-                border-width: 2px;
-                border-color: #B48B6A;
-                border-style: solid;
                 visibility:hidden;
             }
-            button#edit-savebutton{
-                position: absolute;
-                left:230px;
-                top:375px;
+
+            #question-div {
+                margin-top:15px;
+            }
+
+            #answer-input-div {
+                margin-top: 15px;
+                margin-left: 10px;
+            }
+
+            #would-lead-div {
+                margin-top: 15px;
+                margin-left: 10px;
+            }
+
+            #would-organize-div {
+                margin-top: 5px;
+                margin-left: 10px;
+            }
+
+            .button-row {
+                margin-top: 20px;
+                margin-left: 0px;
+                width: 100%;
+            }
+            #edit-answer-cancelbutton{
+                display: inline-block;
+                height: 22px;
+                width: 80px;
                 cursor:pointer; /*forces the cursor to change to a hand when the button is hovered*/
-                padding:5px 25px; /*add some padding to the inside of the button*/
-                background:transparent; /*the colour of the button*/
-                border:0px;
                 color:#B48B6A;
-                font-size: 14px;
+                padding-top: 4px;
+                text-align: center;
+                border-radius: 5px;
+                border-width:thin;
+                border-style:solid;
+                border-color: #B48B6A;
+                background-color:#FFFFFF;
+            }
+            #edit-answer-savebutton{
+                display: inline-block;
+                height: 22px;
+                width: 80px;
+                margin-left: 10px;
+                cursor:pointer; /*forces the cursor to change to a hand when the button is hovered*/
+                color:#B48B6A;
                 font-weight: bold;
+                padding-top: 4px;
+                text-align: center;
+                border-radius: 5px;
+                border-width:thin;
+                border-style:solid;
+                border-color: #B48B6A;
+                background-color:#FFFFFF;
             }
-            button#edit-cancelbutton{
+            #edit-answer-deletebutton{
+                display: inline-block;
                 position: absolute;
-                left:130px;
-                top:375px;
+                right:20px;
+                height: 22px;
+                width: 130px;
+                margin-left: 10px;
                 cursor:pointer; /*forces the cursor to change to a hand when the button is hovered*/
-                padding:5px 25px; /*add some padding to the inside of the button*/
-                background:transparent; /*the colour of the button*/
-                border:0px;
                 color:#B48B6A;
-                font-size: 14px;
+                padding-top: 4px;
+                text-align: center;
+                border-radius: 5px;
+                border-width:thin;
+                border-style:solid;
+                border-color: #B48B6A;
+                background-color:#FFFFFF;
             }
+
+
+
+
+
+
+
+
 
         </style>
     </head>
@@ -203,7 +395,7 @@
                 <div id="order-within-family-heading">Order within family: </div>
                 <div id="order-within-family-value">${navSelection.orderWithinFamily}</div>
                 <div id="note-heading">Note: </div>
-                <div id="note-value"><textarea cols="60" rows="5" style="color: #222222;" disabled>note not yet hooked up</textarea></div>
+                <div id="note-value"><textarea cols="60" rows="5" style="color: #222222;" disabled>${navSelection.note}</textarea></div>
                 <br/>
 
                 <div id="content-actions">
@@ -213,29 +405,53 @@
                 </div>
             </div>
             <div id="content-children">
-                <div id="content-children-title">Answers for ${navSelection.levelInHierarchy} ${navSelection.description}</div>
-                <g:each in="${navChildren.children}" var="child">
-                    <div class="content-children-row"><a href="${resource(dir:'navigate/'+navChildren.childType.toLowerCase(),file:"${child.id}")}">${child.name}</a></div>
-                </g:each>
+                <div id="content-children-title">Answers for Family Member ${navSelection.description}</div>
+                <g:if test="${questionsAndAnswers.size() > 0}">
+                    <g:each in="${questionsAndAnswers}" var="qa">
+                        <div class="content-children-row">${qa.question}: <g:each in="${qa.answers}" var="answer" status="i"><g:if test="${i>0}">, </g:if><span id="answer_${answer.id}" style="cursor:pointer;color:#B48B6A;" onclick="editAnswer(this);">${answer.text}</span></g:each></div>
+                    </g:each>
+                </g:if>
+                <g:else>
+                    <div class="content-children-row" style="color:#CCCCCC;">none</div>
+                </g:else>
                 <div class="content-children-row"></div>
             </div>
             <div id="transparent-overlay">
             </div>
-            <div id="edit-container">
-                <p style="font-weight:bold;font-size:14px;">Edit Family Member</p>
-                <form id="edit-form" action=${resource(file:'Person/save')} method="post">
+            <div id="edit-fm-container">
+                <div class="modal-title">Edit Family Member</div>
+                <form id="edit-fm-form" action=${resource(file:'Person/save')} method="POST">
                     <input type="hidden" name="id" value="${navSelection.id}" />
-                    <p>First names: <input id="firstNamesInput" type="text" name="firstNames" value=""/></p>
-                    <p>Last name: <input id="lastNameInput" type="text" name="lastName" value=""/></p>
-                    <p>Birth year: <input id="birthYearInput" type="text" pattern="[12][90][0-9][0-9]" name="birthYear" value="" placeholder="YYYY"/></p>
-                    <p>Email address: <input id="emailAddressInput" type="email" name="emailAddress" value="" size="40"/></p>
-                    <p>Phone number: <input id="phoneNumberInput" type="text" name="phoneNumber" value=""/></p>
-                    <p>Order within family: <input id="orderWithinFamilyInput" type="text" name="orderWithinFamily" value=""/></p>
-                    <p>Note: </p>
-                    <p><textarea id="noteInput" name="note" cols=56 rows=4></textarea></p>
+                    <div class="modal-row">First names: <input id="firstNamesInput" type="text" name="firstNames" value=""/></div>
+                    <div class="modal-row">Last name: <input id="lastNameInput" type="text" name="lastName" value=""/></div>
+                    <div class="modal-row">Birth year: <input id="birthYearInput" type="text" pattern="[12][90][0-9][0-9]" name="birthYear" value="" placeholder="YYYY"/></div>
+                    <div class="modal-row">Email address: <input id="emailAddressInput" class="email-style" type="email" name="emailAddress" value="" size="40"/></div>
+                    <div class="modal-row">Phone number: <input id="phoneNumberInput" type="text" name="phoneNumber" value=""/></div>
+                    <div class="modal-row">Order within family: <input id="orderWithinFamilyInput" type="text" name="orderWithinFamily" value=""/></div>
+                    <div class="modal-row">Note: <br/><textarea id="noteInput" class="note-style" name="note" cols=56 rows=4></textarea></div>
                 </form>
-                <button id="edit-savebutton" type="button" onclick="JavaScript:saveFamilyMember();">Save</button>
-                <button id="edit-cancelbutton" type="button" onclick="JavaScript:dismissEditModal();">Cancel</button>
+                <div class="button-row">
+                    <div id="edit-fm-cancelbutton" type="button" onclick="JavaScript:dismissEditModal();">Cancel</div>
+                    <div id="edit-fm-savebutton" type="button" onclick="JavaScript:saveFamilyMember();">Save</div>
+                </div>
+            </div>
+            <div id="edit-answer-container">
+                <div class="modal-title">Edit Answer</div>
+                <form id="edit-answer-form" action=${resource(file:'Answer/save')} method="POST">
+                    <input id="answer-id-input" type="hidden" name="id" value="" />
+                    <div id="question-div"></div>
+                    <div id="answer-input-div"><input id="answer-text-input" name="text" type="text" size="50"/></div>
+                    <div id="would-lead-div"><input id="would-lead-input" name="wouldLead" type="checkbox" /> Would lead</div>
+                    <div id="would-organize-div"><input id="would-organize-input" name="wouldOrganize" type="checkbox" /> Would organize</div>
+                </form>
+                <div class="button-row">
+                    <div id="edit-answer-cancelbutton" type="button" onclick="JavaScript:cancelEditAnswer();">Cancel</div>
+                    <div id="edit-answer-savebutton" type="button" onclick="JavaScript:saveAnswer();">Save</div>
+                    <div id="edit-answer-deletebutton" type="button" onclick="JavaScript:deleteAnswer();">Delete Answer</div>
+                </div>
+                <form id="delete-answer-form" action=${resource(file:'Answer/delete')} method="POST">
+                    <input id="delete-answer-id-input" type="hidden" name="id" value="" />
+                </form>
             </div>
     </body>
 </html>
