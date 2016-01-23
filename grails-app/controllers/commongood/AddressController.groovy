@@ -2,9 +2,12 @@ package commongood
 
 class AddressController {
     static allowedMethods = [families:'GET']
+    def authorizationService
 
     def families( ) {
         def id = Long.valueOf( params.id )
+        authorizationService.address( id, session )
+
         def famAddresses = Family.findAll("from Family fam join fam.address addr where addr.id=?", [ id ])
 
         def result = [ ]

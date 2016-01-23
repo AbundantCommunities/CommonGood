@@ -188,7 +188,7 @@ class NavigateController {
         def qna = [ ]
         if( theMember.family.getInterviewed() ) {
             def previousQuestion = null
-            def theseAnswers
+            def theseAnswers = [ ]
             answers.each {
                 Answer answer = it[0]
                 Question question = it[2]
@@ -201,8 +201,10 @@ class NavigateController {
                 }
                 theseAnswers << [id:answer.id, text:answer.text]
             }
-            // Flush the last set of answers:
-            qna << [ question:previousQuestion.getShortHeader( ), answers:theseAnswers ]
+            if( theseAnswers ) {
+                // Flush the last set of answers:
+                qna << [ question:previousQuestion.getShortHeader( ), answers:theseAnswers ]
+            }
         }
 
         // OLD STYLE Q&A DATA -- DEPRECATED
