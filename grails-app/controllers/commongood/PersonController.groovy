@@ -22,7 +22,8 @@ class PersonController {
         person.birthYear = Integer.valueOf( params.birthYear )
         person.emailAddress = params.emailAddress
         person.phoneNumber = params.phoneNumber
-        person.orderWithinFamily = Integer.valueOf( params.orderWithinFamily )
+        person.note = params.note
+        person.orderWithinFamily = Integer.valueOf( params.orderWithinFamily ?: '100' )
 
         // TODO Replace failOnError with logic
         person.save( flush:true, failOnError: true )

@@ -186,22 +186,24 @@ class NavigateController {
 
         // New Q&A data to pass to member page
         def qna = [ ]
-        def previousQuestion = null
-        def theseAnswers
-        answers.each {
-            Answer answer = it[0]
-            Question question = it[2]
-            if( question != previousQuestion ) {
-                if( previousQuestion ) {
-                    qna << [ question:previousQuestion.getShortHeader( ), answers:theseAnswers ]
+        if( theMember.family.getInterviewed() ) {
+            def previousQuestion = null
+            def theseAnswers
+            answers.each {
+                Answer answer = it[0]
+                Question question = it[2]
+                if( question != previousQuestion ) {
+                    if( previousQuestion ) {
+                        qna << [ question:previousQuestion.getShortHeader( ), answers:theseAnswers ]
+                    }
+                    previousQuestion = question
+                    theseAnswers = [ ]
                 }
-                previousQuestion = question
-                theseAnswers = [ ]
+                theseAnswers << [id:answer.id, text:answer.text]
             }
-            theseAnswers << [id:answer.id, text:answer.text]
+            // Flush the last set of answers:
+            qna << [ question:previousQuestion.getShortHeader( ), answers:theseAnswers ]
         }
-        // Flush the last set of answers:
-        qna << [ question:previousQuestion.getShortHeader( ), answers:theseAnswers ]
 
         // OLD STYLE Q&A DATA -- DEPRECATED
         def groupedAnswers = [ '1':'1. Great: ', '2':'2. Better: ', '3':'3. Activities: ', '4':'4. Interests: ', '5':'5. Skill: ', '6':'6. Life: ' ]
