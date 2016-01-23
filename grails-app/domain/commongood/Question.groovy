@@ -17,4 +17,8 @@ class Question {
     def String getShortHeader( ) {
         return code + '. ' + shortText
     }
+
+    def String getLongHeader( ) {
+        return code + '. ' + text
+    }
 }

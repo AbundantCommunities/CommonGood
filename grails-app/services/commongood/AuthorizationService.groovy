@@ -49,4 +49,12 @@ class AuthorizationService {
             prevent( 'FamilyMember', id, session )
         }
     }
+
+    // Quietly exits if user is authorized to view the answer whose PK is id,
+    // else throws an exception.
+    def answer( id, session ) {
+        if( Answer.get(id).person.family.address.block.neighbourhood.id != session.neighbourhood.id ) {
+            prevent( 'Answer', id, session )
+        }
+    }
 }

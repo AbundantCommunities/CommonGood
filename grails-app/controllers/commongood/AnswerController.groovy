@@ -2,6 +2,7 @@ package commongood
 
 class AnswerController {
     static allowedMethods = [frequencies:'GET', saveInterview:'POST', saveTable:'POST']
+    def authorizationService
 
     def frequencies( ) {
         def questionId = Long.parseLong( params.id )
@@ -20,6 +21,20 @@ class AnswerController {
         } else {
             [ questionId:questionId, frequencies:freqs ]
         }
+    }
+
+    def get( ) {
+        def answerId = Long.parseLong( params.id )
+        authorizationService.answer( answerId, session )
+        Answer answer = Answer.get( answerId )
+        def result = [ id:answer.id, text:answer.text,
+                wouldLead:answer.wouldLead, wouldOrganize:answer.wouldOrganize,
+                question:answer.question.getLongHeader() ]
+
+        def bldr = new groovy.json.JsonBuilder( result )
+        def writer = new StringWriter()
+        bldr.writeTo(writer)
+        render writer
     }
 
     // TODO Remove saveTable once saveInterview is working
