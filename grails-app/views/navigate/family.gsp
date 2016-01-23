@@ -125,85 +125,11 @@
                     document.getElementById('familyId-input').value = "${navSelection.id}";
                     document.getElementById('present-questions-form').submit();
 
-                    /*
-                    var pagecontainerDiv = document.getElementById("pagecontainer");
-                    document.getElementById("transparent-overlay").setAttribute("style","height:"+pagecontainerDiv.clientHeight+"px;");
-                    
-                    document.getElementById("transparent-overlay").style.visibility='visible';
-                    document.getElementById("bulk-answers-container").style.visibility='visible';
-                    document.getElementById("familyNameInput").focus();
-                    document.getElementById("familyNameInput").select();
-                    */
                 } else {
                     alert('Please add a family member first.');
                 }
 
 
-            }
-            function dismissBulkAnswersModal() {
-                document.getElementById("bulk-answers-container").style.visibility='hidden';
-                document.getElementById("transparent-overlay").style.visibility='hidden';
-            }
-            function addBulkAnswers() {
-                dismissBulkAnswersModal();
-                document.getElementById('bulk-answers-form').submit();
-            }
-
-
-
-            function checkboxClicked(me) {
-                var newState = me.checked;
-                var cellId = me.id.slice(3,me.id.length);
-                var editLinkId = "edit-"+cellId;
-                if (newState) {
-                    // show edit link
-                    document.getElementById(editLinkId).style.display = 'inline';
-
-                    // if any text in textarea, create a div for each line
-                    var textareaValue = document.getElementById('answers-textarea-'+cellId).value;
-
-                    if (textareaValue.length > 0) {
-
-                        // Split textarea value into lines
-                        var lines = textareaValue.split('\n');
-
-                        // construct innerHTML for answer-div
-                        var divInnerHTML = '';
-                        for (i = 0; i < lines.length; i++) {
-                            if (lines[i].length > 0) {
-                                divInnerHTML = divInnerHTML+'<div>'+lines[i]+'</div>\n';
-                            }
-                        }
-
-                        document.getElementById('answers-div-'+cellId).innerHTML = divInnerHTML;
-                        document.getElementById('answers-textarea-'+cellId).style.display = 'none';
-                        document.getElementById('answers-div-'+cellId).style.display = 'block';
-
-                    }
-
-                } else {
-                    // hide edit link
-                    document.getElementById(editLinkId).style.display = 'none';
-
-                    var divs = document.getElementById('answers-div-'+cellId).children;
-                    var textareaValue = '';
-                    if (divs.length > 0) {
-                        for (i = 0; i < divs.length; i++) {
-                            if (i > 0) {
-                                textareaValue = textareaValue + '\n';
-                            }
-                            textareaValue = textareaValue + divs[i].innerHTML;
-                        }
-                    }
-                    document.getElementById('answers-textarea-'+cellId).value = textareaValue;
-                    document.getElementById('answers-textarea-'+cellId).style.display = 'block';
-                    document.getElementById('answers-div-'+cellId).style.display = 'none';
-                }
-            }
-
-
-            function editLO(me) {
-                alert(me.parentNode.id);
             }
 
             // Initialize array to hold ids for possible interviewers.
@@ -342,45 +268,6 @@
                 width:95%;
             }
 
-            #bulk-answers-container {
-                position:absolute;
-                top:50px;
-                left:${(929/2) - ((290+navChildren.children.size()*180) / 2)}px;
-                width:${290+navChildren.children.size()*180}px;
-                height:${160}px; /* WE NO LONGER RECEIVE QUESTIONS FROM THE NAVIGATE CONTROLLER */
-                padding:20px;
-                padding-top: 10px;
-                box-shadow: 0px 0px 20px #000000;
-                background-color: #FFFFFF;
-                border-radius:10px;
-                border-width: 2px;
-                border-color: #B48B6A;
-                border-style: solid;
-                visibility:hidden;
-            }
-            button#bulk-answers-savebutton {
-                position: absolute;
-                left:${((290+navChildren.children.size()*180)/2) + 20}px;
-                top:${146}px; /* WE NO LONGER RECEIVE QUESTIONS FROM THE NAVIGATE CONTROLLER */
-                cursor:pointer; /*forces the cursor to change to a hand when the button is hovered*/
-                padding:5px 25px; /*add some padding to the inside of the button*/
-                background:transparent; /*the colour of the button*/
-                border:0px;
-                color:#B48B6A;
-                font-size: 14px;
-                font-weight: bold;
-            }
-            button#bulk-answers-cancelbutton {
-                position: absolute;
-                left:${((290+navChildren.children.size()*180)/2) - 80}px;
-                top:${146}px; /* WE NO LONGER RECEIVE QUESTIONS FROM THE NAVIGATE CONTROLLER */
-                cursor:pointer; /*forces the cursor to change to a hand when the button is hovered*/
-                padding:5px 25px; /*add some padding to the inside of the button*/
-                background:transparent; /*the colour of the button*/
-                border:0px;
-                color:#B48B6A;
-                font-size: 14px;
-            }
             .heading-row {
                 height:25px;
             }
