@@ -255,30 +255,4 @@ class NavigateController {
         println "Navigate to family member ${memberId}"
         result
     }
-
-    def question( ) {
-        Integer questionId = Integer.valueOf( params.id )
-        render "You asked to navigate to question id ${questionId} but that feature is not implemented!"
-/*
-        Question theQuestion = Question.where{ id == questionId }.get( )
-        List answers = Answer.where{ neighbourhood.id == hoodId }.list( sort:'orderWithinNeighbourhood', order:'asc' )
-        blocks = blocks.collect{
-            [ id:it.id, name:it.displayName]
-        }
-        Map result =
-            [
-            navContext: [ ],
-
-            navSelection: [ levelInHierarchy:'Neighbourhood', id:hoodId, description:theHood.name ],
-
-            navChildren:
-                [
-                childType: 'Block',
-                children: blocks
-                ]
-            ]
-        println "Navigate to neighbourhood ${hoodId} ${theHood.name}"
-        result
-*/
-    }
 }
