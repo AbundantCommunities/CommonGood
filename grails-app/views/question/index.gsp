@@ -67,7 +67,7 @@
 
             #content-main {
                 width:925px;
-                height: 830px;
+                height: 845px;
                 margin-left:14px;
                 margin-bottom: 10px;
                 padding-left:10px;
@@ -147,7 +147,7 @@
             }
             #interviewer-div {
                 position: absolute;
-                top:40px;
+                top:42px;
                 left:320px;
             }
 
@@ -219,7 +219,10 @@
                 width: 97%;
                 height: 97%;
             }
-        
+            .footnote {
+                font-size: x-small;
+                margin-top: 5px;
+            }
         </style>
 
 
@@ -250,31 +253,34 @@
                             </select>
                         </div>
                     </div>
-                    <div class="heading-row">Add new interview answers</div>
-                    <div id="matrix-container">
-                        <div id="question-column">
-                            <div class="question-heading">Question</div>
-                            <g:each in="${questions}" var="question">
-                                <div class="question-cell">${question.text}</div>
-                            </g:each>
-                        </div>
-                        <div id="answer-matrix">
-                            <div class="answer-heading-row">
-                                <g:each in="${members}" var="member">
-                                    <div class="answer-heading">${member.name}</div>
+                    <g:if test="${members.size() > 0}">
+                        <div class="heading-row">Add new interview answers*</div>
+                        <div class="footnote">* To set lead or organize, or to edit or delete answers you add here, browse to the family member afterwards and click the answer.</div>
+                        <div id="matrix-container">
+                            <div id="question-column">
+                                <div class="question-heading">Question</div>
+                                <g:each in="${questions}" var="question">
+                                    <div class="question-cell">${question.text}</div>
                                 </g:each>
                             </div>
-                            <g:each in="${questions}" var="question" status="curQuestion">
-                                <div class="answer-row">
-                                    <g:each in="${members}" var="member" status="curFamilyMember">
-                                        <div class="answer-cell">
-                                            <textarea id="answers-textarea-${curQuestion}${curFamilyMember}" class="answer-textarea" name="${'answer'+member.id+'_'+question.id}"></textarea>
-                                        </div>
+                            <div id="answer-matrix">
+                                <div class="answer-heading-row">
+                                    <g:each in="${members}" var="member">
+                                        <div class="answer-heading">${member.name}</div>
                                     </g:each>
                                 </div>
-                            </g:each>
+                                <g:each in="${questions}" var="question" status="curQuestion">
+                                    <div class="answer-row">
+                                        <g:each in="${members}" var="member" status="curFamilyMember">
+                                            <div class="answer-cell">
+                                                <textarea id="answers-textarea-${curQuestion}${curFamilyMember}" class="answer-textarea" name="${'answer'+member.id+'_'+question.id}"></textarea>
+                                            </div>
+                                        </g:each>
+                                    </div>
+                                </g:each>
+                            </div>
                         </div>
-                    </div>
+                    </g:if>
                 </form>
             </div>
     </body>

@@ -110,9 +110,14 @@
             </div>
             <div id="content-children">
                 <div id="content-children-title">${navChildren.childType+'s'} for ${navSelection.levelInHierarchy} ${navSelection.description}&nbsp;&nbsp;<a href="#">+ Add New ${navChildren.childType}</a></div>
-                <g:each in="${navChildren.children}" var="child">
-                    <div class="content-children-row"><a href="${resource(dir:'navigate/'+navChildren.childType.toLowerCase(),file:"${child.id}")}">${child.name}</a></div>
-                </g:each>
+                <g:if test="${navChildren.children.size() > 0}">
+                    <g:each in="${navChildren.children}" var="child">
+                        <div class="content-children-row"><a href="${resource(dir:'navigate/'+navChildren.childType.toLowerCase(),file:"${child.id}")}">${child.name}</a></div>
+                    </g:each>
+                </g:if>
+                <g:else>
+                    <div class="content-children-row" style="color:#CCCCCC;">no blocks</div>
+                </g:else>
                 <div class="content-children-row"></div>
             </div>
             <div id="transparent-overlay">

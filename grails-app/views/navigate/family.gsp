@@ -231,7 +231,9 @@
                 font-weight:bold;
                 font-size:14px;
             }
-
+            #familyNoteInput {
+                width: 95%;
+            }
             #new-container {
                 position:absolute;
                 top:90px;
@@ -292,63 +294,6 @@
                 width:95%;
             }
 
-            .heading-row {
-                height:25px;
-            }
-            .answer-row {
-                height:110px;
-            }
-            .question-column {
-                display: inline-block;
-                width: 260px;
-                vertical-align:top;
-            }
-            .answer-column-heading {
-                display: inline-block;
-                width: 180px;
-            }
-            .answer-column {
-                border: thin;
-                border-style: solid;
-                border-color: #000000;
-                display: inline-block;
-                width: 180px;
-                height: 91%;
-                margin-bottom: -20px;
-                position: relative;
-            }
-            .lo {
-                font-size: x-small;
-                position: absolute;
-                bottom:0px;
-            }
-            .lo-edit {
-                display: none;
-            }
-            .answer-textarea {
-                border: none;
-                position: absolute;
-                top:0;
-                left:0;
-                width: 97%;
-                height: 77%;
-            }
-            .answer-div {
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 97%;
-                height: 80%;
-                overflow:scroll;
-            }
-            .lead {
-                display: inline;
-                font-style: italic;
-            }
-            .organize {
-                display: inline;
-                font-weight: 700;
-            }
         </style>
     </head>
     <body>

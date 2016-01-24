@@ -6,6 +6,37 @@
         <title>Abundant Communities - Edmonton</title>
         <script type="text/javascript">
 
+            function presentNewModal() {
+                var pagecontainerDiv = document.getElementById("pagecontainer");
+
+                // clear UI before presenting
+                document.getElementById("addressesInput").value = "";
+
+                // set height of overlay to match height of pagecontainer height
+                document.getElementById("transparent-overlay").setAttribute("style","height:"+pagecontainerDiv.clientHeight+"px;");
+                
+                // show overlay and new-container divs and focus to family name
+                document.getElementById("transparent-overlay").style.visibility='visible';
+                document.getElementById("new-container").style.visibility='visible';
+                document.getElementById("addressesInput").focus();
+            }
+
+            function dismissNewModal() {
+                document.getElementById("new-container").style.visibility='hidden';
+                document.getElementById("transparent-overlay").style.visibility='hidden';
+            }
+
+
+            function addAddresses() {
+                // Validate addresses
+                if (document.getElementById('addressesInput').value.length > 0) {
+                    document.getElementById("new-form").submit();
+                } else {
+                    alert('Please enter at least one address.');
+                }
+            }
+
+
             function presentAddBC() {
                 if (${navChildren.children.size() > 0}) {
 
@@ -266,41 +297,65 @@
                 top:140px;
                 left:260px;
                 width:420px;
-                height:145px;
+                height:165px;
                 padding:20px;
                 padding-top: 10px;
-                box-shadow: 0px 0px 20px #000000;
                 background-color: #FFFFFF;
                 border-radius:10px;
-                border-width: 2px;
-                border-color: #B48B6A;
-                border-style: solid;
                 visibility:hidden;
             }
 
-
-            button#new-bc-savebutton{
-                position: absolute;
-                left:230px;
-                top:135px;
+            #new-bc-cancelbutton{
+                display: inline-block;
+                height: 22px;
+                width: 80px;
                 cursor:pointer; /*forces the cursor to change to a hand when the button is hovered*/
-                padding:5px 25px; /*add some padding to the inside of the button*/
-                background:transparent; /*the colour of the button*/
-                border:0px;
                 color:#B48B6A;
-                font-size: 14px;
+                padding-top: 4px;
+                text-align: center;
+                border-radius: 5px;
+                border-width:thin;
+                border-style:solid;
+                border-color: #B48B6A;
+                background-color:#FFFFFF;
+            }
+            #new-bc-savebutton{
+                display: inline-block;
+                height: 22px;
+                width: 80px;
+                margin-left: 10px;
+                cursor:pointer; /*forces the cursor to change to a hand when the button is hovered*/
+                color:#B48B6A;
+                padding-top: 4px;
+                text-align: center;
+                border-radius: 5px;
+                border-width:thin;
+                border-style:solid;
+                border-color: #B48B6A;
+                background-color:#FFFFFF;
                 font-weight: bold;
             }
-            button#new-bc-cancelbutton{
+
+            .modal-title {
+                margin-top: 10px;
+                font-weight:bold;
+                font-size:14px;
+            }
+
+            .modal-row {
+                margin-top: 10px;
+            }
+
+            .button-row {
+                margin-top: 20px;
+                margin-left: 0px;
+                width: 100%;
+            }
+            
+            #button-row-div {
                 position: absolute;
-                left:130px;
-                top:135px;
-                cursor:pointer; /*forces the cursor to change to a hand when the button is hovered*/
-                padding:5px 25px; /*add some padding to the inside of the button*/
-                background:transparent; /*the colour of the button*/
-                border:0px;
-                color:#B48B6A;
-                font-size: 14px;
+                top:130px;
+                left:20px;
             }
 
             #select-address {
@@ -323,6 +378,52 @@
                 display: none;
             }
 
+            #new-container {
+                position:absolute;
+                top:90px;
+                left:260px;
+                width:420px;
+                padding:20px;
+                padding-top: 10px;
+                background-color: #FFFFFF;
+                border-radius:10px;
+                visibility:hidden;
+            }
+            #new-cancelbutton{
+                display: inline-block;
+                height: 22px;
+                width: 80px;
+                cursor:pointer; /*forces the cursor to change to a hand when the button is hovered*/
+                color:#B48B6A;
+                padding-top: 4px;
+                text-align: center;
+                border-radius: 5px;
+                border-width:thin;
+                border-style:solid;
+                border-color: #B48B6A;
+                background-color:#FFFFFF;
+            }
+            #new-savebutton{
+                display: inline-block;
+                height: 22px;
+                width: 80px;
+                margin-left: 10px;
+                cursor:pointer; /*forces the cursor to change to a hand when the button is hovered*/
+                color:#B48B6A;
+                padding-top: 4px;
+                text-align: center;
+                border-radius: 5px;
+                border-width:thin;
+                border-style:solid;
+                border-color: #B48B6A;
+                background-color:#FFFFFF;
+                font-weight: bold;
+            }
+
+            .note-style {
+                width:95%;
+            }
+
 
 
         </style>
@@ -335,7 +436,7 @@
                 <div id="block-code-value">${navSelection.code}</div>
                 <div id="block-description-heading">Description: </div>
                 <div id="block-description-value">${navSelection.description}</div>
-                <div id="order-within-neighbourhood-heading">Order within block: </div>
+                <div id="order-within-neighbourhood-heading">Order within hood: </div>
                 <div id="order-within-neighbourhood-value">${navSelection.orderWithinNeighbourhood}</div>
 
                 <g:if test="${navSelection.blockConnectors.size() > 1}">
@@ -375,18 +476,23 @@
                 </div>
             </div>
             <div id="content-children">
-                <div id="content-children-title">Addresses for ${navSelection.levelInHierarchy} ${navSelection.description}&nbsp;&nbsp;<a href="#">+ Add New ${navChildren.childType}</a></div>
-                <g:each in="${navChildren.children}" var="child">
-                    <div class="content-children-row"><a href="${resource(dir:'navigate/'+navChildren.childType.toLowerCase(),file:"${child.id}")}">${child.name}</a></div>
-                </g:each>
+                <div id="content-children-title">Addresses for ${navSelection.levelInHierarchy} ${navSelection.description}&nbsp;&nbsp;<a href="#" onclick="presentNewModal();">+ Add New Addresses</a></div>
+                <g:if test="${navChildren.children.size() > 0}">
+                    <g:each in="${navChildren.children}" var="child">
+                        <div class="content-children-row"><a href="${resource(dir:'navigate/'+navChildren.childType.toLowerCase(),file:"${child.id}")}">${child.name}</a></div>
+                    </g:each>
+                </g:if>
+                <g:else>
+                    <div class="content-children-row" style="color:#CCCCCC;">no addresses</div>
+                </g:else>
                 <div class="content-children-row"></div>
             </div>
             <div id="transparent-overlay">
             </div>
 
             <div id="new-bc-container">
-                <div style="font-weight:bold;font-size:14px;">Add Block Connector</div>
-                <div id="select-address">Select address of block connector: 
+                <div class="modal-title">Add Block Connector</div>
+                <div class="modal-row">Select address of block connector: 
                     <select id="addresses-select" onchange="addressSelected();">
                         <option value="0"></option>
                         <g:each in="${navChildren.children}" var="address">
@@ -400,24 +506,39 @@
                     </script>
 
                 </div>
-                <div id="select-family">Select family of block connector: 
+                <div id="select-family" class="modal-row">Select family of block connector: 
                     <select id="families-select" onchange="familySelected();">
                         <option value=""></option>
                     </select>
                 </div>
                 <form id="new-bc-form" action=${resource(file:'person/setBlockConnector')} method="POST">
                     <input id="address-id" type="hidden"/>
-                    <div id="select-member">Select block connector: 
+                    <div id="select-member" class="modal-row">Select block connector: 
                             <select id="members-select" name="id" onchange="memberSelected();">
                                 <option value=""></option>
                             </select>
                     </div>
                 </form>
-                <button id="new-bc-savebutton" type="button" onclick="JavaScript:addBC();">Add</button>
-                <button id="new-bc-cancelbutton" type="button" onclick="JavaScript:dismissAddBCModal();">Cancel</button>
+                <div id="button-row-div">
+                    <div class="button-row">
+                        <div id="new-bc-cancelbutton" type="button" onclick="JavaScript:dismissAddBCModal();">Cancel</div>
+                        <div id="new-bc-savebutton" type="button" onclick="JavaScript:addBC();">Add</div>
+                    </div>
+                </div>
             </div>
 
-
+            <div id="new-container">
+                <div class="modal-title">New Addresses</div>
+                <div>Add multiple addresses by pressing Return after each.</div>
+                <form id="new-form" action=${resource(file:'Block/addAddresses')} method="POST">
+                    <input type="hidden" name="id" value="${navSelection.id}" />
+                    <div class="modal-row">Addresses: <br/><textarea id="addressesInput" class="note-style" name="addresses" cols=56 rows=4></textarea></div>
+                </form>
+                <div class="button-row">
+                    <div id="new-cancelbutton" type="button" onclick="JavaScript:dismissNewModal();">Cancel</div>
+                    <div id="new-savebutton" type="button" onclick="JavaScript:addAddresses();">Save</div>
+                </div>
+            </div>
 
 
     </body>
