@@ -31,9 +31,6 @@
 
                 // clear UI before presenting
                 document.getElementById("familyNameInput").value = "";
-                document.getElementById("initialInterviewDateInput").value = currentDate();
-                document.getElementById("permissionToContactCheckbox").checked = false;
-                document.getElementById("participateInInterviewCheckbox").checked = false;
                 document.getElementById("orderWithinAddressInput").value = "";
                 document.getElementById("noteTextarea").value = "";
 
@@ -52,7 +49,7 @@
                 document.getElementById("transparent-overlay").style.visibility='hidden';
             }
 
-            function newFamilyIsValid (familyName, initialInterviewDate, note) {
+            function newFamilyIsValid (familyName, note) {
                 if (familyName == "") {
                     alert("Please enter a family name for the new family.");
                     return false;
@@ -62,7 +59,6 @@
                     alert("A note cannot contain the '|' character. Please use a different character.");
                     return false;
                 }
-                // If initial interview date is non-blank, validate date.
 
                 return true;
             }
@@ -70,20 +66,14 @@
             function saveFamily() {
                 // Validate new family
                 var familyName = document.getElementById("familyNameInput").value;
-                var initialInterviewDate = document.getElementById("initialInterviewDateInput").value;
                 var note = document.getElementById("noteTextarea").value;
-                if (newFamilyIsValid(familyName, initialInterviewDateInput, note)) {
+                if (newFamilyIsValid(familyName, note)) {
                     dismissNewModal();
                     var newForm = document.getElementById('new-form');
-                    var possibleInterviewerSelect = document.getElementById( "possibleInterviewerSelect" );
-                    var interviewerId = possibleInterviewerIds[possibleInterviewerSelect.selectedIndex];
-                    document.getElementById('interviewerId').value = interviewerId;
                     newForm.submit();
                 }
             }
             
-            // Initialize array to hold ids for possible interviewers.
-            var possibleInterviewerIds = [ ];
             
         </script>
         <style type="text/css">
@@ -121,43 +111,60 @@
                 left: 155px;
             }
             #new-container {
-                position:absolute;;
-                top:100px;
+                position:absolute;
+                top:90px;
                 left:300px;
                 width:330px;
-                height:360px;
                 padding:20px;
                 padding-top: 10px;
-                box-shadow: 0px 0px 20px #000000;
                 background-color: #FFFFFF;
                 border-radius:10px;
-                border-width: 2px;
-                border-color: #B48B6A;
-                border-style: solid;
                 visibility:hidden;
+
             }
-            button#new-savebutton{
-                position: absolute;
-                left:180px;
-                top:350px;
+            #new-cancelbutton{
+                display: inline-block;
+                height: 22px;
+                width: 80px;
                 cursor:pointer; /*forces the cursor to change to a hand when the button is hovered*/
-                padding:5px 25px; /*add some padding to the inside of the button*/
-                background:transparent; /*the colour of the button*/
-                border:0px;
                 color:#B48B6A;
-                font-size: 14px;
+                padding-top: 4px;
+                text-align: center;
+                border-radius: 5px;
+                border-width:thin;
+                border-style:solid;
+                border-color: #B48B6A;
+                background-color:#FFFFFF;
+            }
+            #new-savebutton{
+                display: inline-block;
+                height: 22px;
+                width: 80px;
+                margin-left: 10px;
+                cursor:pointer; /*forces the cursor to change to a hand when the button is hovered*/
+                color:#B48B6A;
+                padding-top: 4px;
+                text-align: center;
+                border-radius: 5px;
+                border-width:thin;
+                border-style:solid;
+                border-color: #B48B6A;
+                background-color:#FFFFFF;
                 font-weight: bold;
             }
-            button#new-cancelbutton{
-                position: absolute;
-                left:80px;
-                top:350px;
-                cursor:pointer; /*forces the cursor to change to a hand when the button is hovered*/
-                padding:5px 25px; /*add some padding to the inside of the button*/
-                background:transparent; /*the colour of the button*/
-                border:0px;
-                color:#B48B6A;
-                font-size: 14px;
+            .modal-title {
+                margin-top: 10px;
+                font-weight:bold;
+                font-size:14px;
+            }
+            .button-row {
+                margin-top: 20px;
+                margin-left: 0px;
+                width: 100%;
+            }
+            
+            .modal-row {
+                margin-top: 10px;
             }
         </style>
     </head>
@@ -194,30 +201,17 @@
             <div id="transparent-overlay">
             </div>
             <div id="new-container">
-                <p style="font-weight:bold;font-size:14px;">New Family</p>
-                <form id="new-form" action=${resource(file:'Family/save')} method="post">
+                <div class="modal-title">New Family</div>
+                <form id="new-form" action=${resource(file:'Family/save')} method="POST">
                     <input type="hidden" name="addressId" value="${navSelection.id}" />
-                    <p>Family name: <input id="familyNameInput" type="text" name="familyName" value=""/></p>
-                    <p>Initial interview date: <input id="initialInterviewDateInput" type="date" name="initialInterviewDate" placeholder="yyyy-MM-dd" value=""/></p>
-                    <p>Initial interviewer: 
-                        <select id="possibleInterviewerSelect">
-                            <g:each in="${navSelection.possibleInterviewers}" var="possibleInterviewer">
-                                <option value="${possibleInterviewer.fullName}">${possibleInterviewer.fullName}</option>
-                                <script type="text/javascript">
-                                    possibleInterviewerIds.push(${possibleInterviewer.id});
-                                </script>
-                            </g:each>
-                        </select>
-                    </p>
-                    <input id="interviewerId" type="hidden" name="interviewerId" value="" />
-                    <p><input id="permissionToContactCheckbox" type="checkbox" name="permissionToContact" /> Permission to contact</p>
-                    <p><input id="participateInInterviewCheckbox" type="checkbox" name="participateInInterview" /> Agreed to participate in interview</p>
-                    <p>Order within address: <input id="orderWithinAddressInput" type="text" name="orderWithinAddress" value="" /></p>
-                    <p>Note:</p>
-                    <p><textarea id="noteTextarea" name="note" cols=44 rows=4></textarea></p>
+                    <div class="modal-row">Family name: <input id="familyNameInput" type="text" name="familyName" value=""/></div>
+                    <div class="modal-row">Order within address: <input id="orderWithinAddressInput" type="text" name="orderWithinAddress" value="" /></div>
+                    <div class="modal-row">Note: <br/><textarea id="noteTextarea" name="note" cols=44 rows=4></textarea></div>
                 </form>
-                <button id="new-savebutton" type="button" onclick="JavaScript:saveFamily();">Save</button>
-                <button id="new-cancelbutton" type="button" onclick="JavaScript:dismissNewModal();">Cancel</button>
+                <div class="button-row">
+                    <div id="new-cancelbutton" type="button" onclick="JavaScript:dismissNewModal();">Cancel</div>
+                    <div id="new-savebutton" type="button" onclick="JavaScript:saveFamily();">Save</div>
+                </div>
             </div>
     </body>
 </html>

@@ -27,27 +27,31 @@
 
             }
 
-            function addAnswers() {
-                document.getElementById('bulk-answers-form').submit();
+            function saveInterviewData() {
+
+                var selectedInterviewerIndex = document.getElementById('interviewer-select').selectedIndex;
+                var interviewerId = possibleInterviewers[selectedInterviewerIndex][0];
+                document.getElementById('interviewer-id-input').value = interviewerId;
+                document.getElementById('interview-data-form').submit();
             }
 
                         // Initialize array to hold ids for possible interviewers.
-            var possibleInterviewerIds = [ ];
+            var possibleInterviewers = [ ];
 
             window.onload = function onWindowLoad() {
-                for (i = 0; i < possibleInterviewerIds.length; i++) {
-                    if (possibleInterviewerIds[i][1]) {
-                        var interviewerSelect = document.getElementById( "interviewer-select" );
-                        interviewerSelect.selectedIndex = i;
-                        document.getElementById('initial-interviewer-value').innerHTML = interviewerSelect.value;
+
+                document.getElementById('permission-checkbox-input').checked = ${permissionToContact};
+                document.getElementById('participate-checkbox-input').checked = ${participateInInterview};
+
+                if (${interviewed}) {
+                    for (i = 0; i < possibleInterviewers.length; i++) {
+                        if (possibleInterviewers[i][1]) {
+                            document.getElementById( "interviewer-select" ).selectedIndex = i;
+                        }
                     }
-                }
-
-                document.getElementById('interview-date-input').value = currentDate();
-
-                if (${!interviewed}) {
-                    document.getElementById('question-column').style.top = "125px";
-                    document.getElementById('answer-matrix').style.top = "125px";
+                    document.getElementById('interview-date-input').value = "${interviewDate.format('yyyy-MM-dd')}";
+                } else {
+                    document.getElementById('interview-date-input').value = currentDate();
                 }
 
                 var pagecontainerDiv = document.getElementById('pagecontainer');
@@ -63,7 +67,7 @@
 
             #content-main {
                 width:925px;
-                height: 820px;
+                height: 830px;
                 margin-left:14px;
                 margin-bottom: 10px;
                 padding-left:10px;
@@ -76,12 +80,12 @@
                 background-color:#FFFFFF;
             }
 
-            #add-answers-button {
+            #save-button {
                 position: absolute;
                 top:10px;
-                left:800px;
+                left:840px;
                 height: 22px;
-                width: 120px;
+                width: 80px;
                 font-weight: bold;
                 color: #B48B6A;
                 padding-top: 4px;
@@ -96,10 +100,10 @@
             }
 
 
-            #cancel-add-answers-button {
+            #cancel-button {
                 position: absolute;
                 top:10px;
-                left:710px;
+                left:750px;
                 height: 22px;
                 width: 80px;
                 color: #B48B6A;
@@ -113,32 +117,55 @@
                 background-color:#FFFFFF;
             }
 
+            .heading-row {
+                font-size: 110%;
+                font-weight: bold;
+            }
 
+            #interview-data-div {
+                position: relative;
+                height: 90px;
+                width: 700px;
+            }
 
+            #permission-div {
+                position: absolute;
+                top:15px;
+                left:10px;
+            }
 
-            #top-line {
+            #participate-div {
+                position: absolute;
+                top:42px;
+                left:10px;
+            }
+
+            #interview-date-div {
                 position: absolute;
                 top:10px;
-                left:10px;
+                left:320px;
             }
-            #first-time-notice {
+            #interviewer-div {
                 position: absolute;
-                top:35px;
-                left:10px;
+                top:40px;
+                left:320px;
             }
-            #interview-date {
-                position: absolute;
-                top:60px;
-                left:20px;
+
+            .interview-data-item {
+                margin-top: 10px;
+                margin-left: 10px;
+                height: 20px;
             }
-            #interviewer {
-                position: absolute;
-                top:90px;
-                left:20px;
+
+            #matrix-container {
+                position: relative;
+                margin-top: 10px;
             }
+
+
             #question-column {
                 position: absolute;
-                top:60px;
+                top:0px;
                 left:10px;
                 width: 260px;
             }
@@ -152,7 +179,7 @@
 
             #answer-matrix {
                 position: absolute;
-                top:60px;
+                top:0px;
                 left:280px;
                 width:640px;
                 white-space: nowrap;
@@ -202,48 +229,53 @@
     <body>
             <div id="transparent-overlay"></div>
             <div id="content-main">
-                <div id="add-answers-button" onclick="addAnswers();">Add Answers</div>
-                <g:link controller="navigate" action="family" id="${familyId}"><div id="cancel-add-answers-button">Cancel</div></g:link>
-                <div>Enter new answers for family: ${familyName}</div>
-                <div <g:if test="${interviewed}">style="display:none;"</g:if>>
-                    <div id="first-time-notice">You are entering answers for this family for the first time. Please enter:</div>
-                    <div id="interview-date">Initial interview date: <input id="interview-date-input" type="date" name="interviewDate" placeholder="yyyy-MM-dd" value=""/></div>
-                    <div id="interviewer">Initial interviewer: 
-                        <select id="interviewer-select">
-                            <g:each in="${possibleInterviewers}" var="possibleInterviewer">
-                                <option value="${possibleInterviewer.fullName}">${possibleInterviewer.fullName}</option>
-                                <script type="text/javascript">
-                                    possibleInterviewerIds.push(${possibleInterviewer.id});
-                                </script>
+                <div id="save-button" onclick="saveInterviewData();">Save</div>
+                <g:link controller="navigate" action="family" id="${familyId}"><div id="cancel-button">Cancel</div></g:link>
+                <form id="interview-data-form" action=${resource(file:'Answer/saveInterview')} method="POST">
+                    <input id="family-id-input" type="hidden" name="familyId" value="${familyId}"/>
+                    <input id="interviewer-id-input" type="hidden" name="interviewerId"/>
+                    <div class="heading-row">Enter interview data for family: ${familyName}</div>
+                    <div id="interview-data-div">
+                        <div id="permission-div"><input id="permission-checkbox-input" name="permissionToContact" type="checkbox"/> Permission to contact</div>
+                        <div id="participate-div"><input id="participate-checkbox-input" name="participateInInterview" type="checkbox"/> Agreed to participate in interview</div>
+                        <div id="interview-date-div">Initial interview date: <input id="interview-date-input" type="date" name="interviewDate" placeholder="yyyy-MM-dd" value=""/></div>
+                        <div id="interviewer-div">Initial interviewer: 
+                            <select id="interviewer-select">
+                                <g:each in="${possibleInterviewers}" var="possibleInterviewer">
+                                    <option value="${possibleInterviewer.fullName}">${possibleInterviewer.fullName}</option>
+                                    <script type="text/javascript">
+                                        possibleInterviewers.push([${possibleInterviewer.id}, ${possibleInterviewer.default}]);
+                                    </script>
+                                </g:each>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="heading-row">Add new interview answers</div>
+                    <div id="matrix-container">
+                        <div id="question-column">
+                            <div class="question-heading">Question</div>
+                            <g:each in="${questions}" var="question">
+                                <div class="question-cell">${question.text}</div>
                             </g:each>
-                        </select>
-                    </div>
-                </div>
-                <div id="question-column">
-                    <div class="question-heading">Question</div>
-                    <g:each in="${questions}" var="question">
-                        <div class="question-cell">${question.text}</div>
-                    </g:each>
-                </div>
-                <div id="answer-matrix">
-                    <div class="answer-heading-row">
-                        <g:each in="${members}" var="member">
-                            <div class="answer-heading">${member.name}</div>
-                        </g:each>
-                    </div>
-                    <form id="bulk-answers-form" action=${resource(file:'Answer/saveTable')} method="POST">
-                        <g:each in="${questions}" var="question" status="curQuestion">
-                            <div class="answer-row">
-                                <g:each in="${members}" var="member" status="curFamilyMember">
-                                    <div class="answer-cell">
-                                        <textarea id="answers-textarea-${curQuestion}${curFamilyMember}" class="answer-textarea" name="${'answer'+member.id+'_'+question.id}"></textarea>
-                                    </div>
+                        </div>
+                        <div id="answer-matrix">
+                            <div class="answer-heading-row">
+                                <g:each in="${members}" var="member">
+                                    <div class="answer-heading">${member.name}</div>
                                 </g:each>
                             </div>
-                        </g:each>
-
-                    </form>
-                </div>
+                            <g:each in="${questions}" var="question" status="curQuestion">
+                                <div class="answer-row">
+                                    <g:each in="${members}" var="member" status="curFamilyMember">
+                                        <div class="answer-cell">
+                                            <textarea id="answers-textarea-${curQuestion}${curFamilyMember}" class="answer-textarea" name="${'answer'+member.id+'_'+question.id}"></textarea>
+                                        </div>
+                                    </g:each>
+                                </div>
+                            </g:each>
+                        </div>
+                    </div>
+                </form>
             </div>
     </body>
 </html>

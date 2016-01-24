@@ -8,17 +8,6 @@
             function populateEditModal() {
 
                 document.getElementById('familyNameInput').value = "${navSelection.description}";
-                document.getElementById('initialInterviewDateInput').value = "<g:formatDate format='yyyy-MM-dd' date='${navSelection.interviewDate}'/>";
-
-                for (i = 0; i < possibleInterviewerIds.length; i++) {
-                    if (possibleInterviewerIds[i][1]) {
-                        var possibleInterviewerSelect = document.getElementById( "possibleInterviewerSelect" );
-                        possibleInterviewerSelect.selectedIndex = i;
-                    }
-                }
-
-                document.getElementById('permissionToContactInput').checked = ${navSelection.permissionToContact};
-                document.getElementById('participateInInterviewInput').checked = ${navSelection.participateInInterview};
                 document.getElementById('orderWithinAddressInput').value = "${navSelection.orderWithinAddress}";
 
                 var encodedNote = "${navSelection.note.split('\r\n').join('|')}";
@@ -53,9 +42,6 @@
                 if (familyIsValid(document.getElementById('familyNoteInput').value)) {
                     dismissEditModal();
                     var editForm = document.getElementById('edit-form');
-                    var possibleInterviewerSelect = document.getElementById( "possibleInterviewerSelect" );
-                    var interviewerId = possibleInterviewerIds[possibleInterviewerSelect.selectedIndex][0];
-                    document.getElementById('interviewerId').value = interviewerId;
                     editForm.submit();
                 }
             }
@@ -119,11 +105,11 @@
                 }
             }
 
-            function presentBulkAnswersModal() {
+            function presentInterviewForm() {
 
                 if (${navChildren.children.size()} > 0) {
                     document.getElementById('familyId-input').value = "${navSelection.id}";
-                    document.getElementById('present-questions-form').submit();
+                    document.getElementById('present-interview-form').submit();
 
                 } else {
                     alert('Please add a family member first.');
@@ -132,23 +118,32 @@
 
             }
 
-            // Initialize array to hold ids for possible interviewers.
-            var possibleInterviewerIds = [ ];
-
             window.onload = function onWindowLoad() {
-                for (i = 0; i < possibleInterviewerIds.length; i++) {
-                    if (possibleInterviewerIds[i][1]) {
-                        var possibleInterviewerSelect = document.getElementById( "possibleInterviewerSelect" );
-                        possibleInterviewerSelect.selectedIndex = i;
-                        document.getElementById('initial-interviewer-value').innerHTML = possibleInterviewerSelect.value;
-                    }
-                }
+                <g:each in="${navSelection.possibleInterviewers}" var="possibleInterviewer">
+                    <g:if test="${possibleInterviewer.default}">
+                        document.getElementById('initial-interviewer-value').innerHTML = "${possibleInterviewer.fullName}";
+                    </g:if>
+                </g:each>
             }
 
         </script>
         <style type="text/css">
+            #content-interview {
+                width:925px;
+                height:80px;
+                margin-left:14px;
+                margin-bottom: 7px;
+                padding-left:10px;
+                padding-top:7px;
+                position:relative;
+                border-radius: 5px;
+                border-width:thin;
+                border-style:solid;
+                border-color: #B48B6A;
+                background-color:#FFFFFF;
+            }
             #content-detail {
-                height:250px;
+                height:170px;
             }
             #detail-headings {
                 position: absolute;
@@ -158,49 +153,78 @@
             #detail-values {
                 position: absolute;
                 top:30px;
-                left: 260px;
+                left: 170px;
             }
             .detail-item {
                 height: 20px;
             }
+            #content-interview-actions {
+                position:absolute;
+                left:775px;
+                top:10px;
+            }
+            #interview-headings-left {
+                position: absolute;
+                top:30px;
+                left: 10px;
+            }
+            #interview-values-left {
+                position: absolute;
+                top:30px;
+                left: 260px;
+            }
+            #interview-headings-right {
+                position: absolute;
+                top:30px;
+                left: 320px;
+            }
+            #interview-values-right {
+                position: absolute;
+                top:30px;
+                left: 477px;
+            }
+
             #edit-container {
                 position:absolute;
-                top:100px;
+                top:90px;
                 left:300px;
                 width:330px;
-                height:360px;
                 padding:20px;
                 padding-top: 10px;
-                box-shadow: 0px 0px 20px #000000;
                 background-color: #FFFFFF;
                 border-radius:10px;
-                border-width: 2px;
-                border-color: #B48B6A;
-                border-style: solid;
                 visibility:hidden;
+
             }
-            button#edit-savebutton{
-                position: absolute;
-                left:180px;
-                top:350px;
+            #edit-cancelbutton{
+                display: inline-block;
+                height: 22px;
+                width: 80px;
                 cursor:pointer; /*forces the cursor to change to a hand when the button is hovered*/
-                padding:5px 25px; /*add some padding to the inside of the button*/
-                background:transparent; /*the colour of the button*/
-                border:0px;
                 color:#B48B6A;
-                font-size: 14px;
+                padding-top: 4px;
+                text-align: center;
+                border-radius: 5px;
+                border-width:thin;
+                border-style:solid;
+                border-color: #B48B6A;
+                background-color:#FFFFFF;
+            }
+            #edit-savebutton{
+                display: inline-block;
+                height: 22px;
+                width: 80px;
+                margin-left: 10px;
+                cursor:pointer; /*forces the cursor to change to a hand when the button is hovered*/
+                color:#B48B6A;
+                padding-top: 4px;
+                text-align: center;
+                border-radius: 5px;
+                border-width:thin;
+                border-style:solid;
+                border-color: #B48B6A;
+                background-color:#FFFFFF;
                 font-weight: bold;
-            }
-            button#edit-cancelbutton{
-                position: absolute;
-                left:80px;
-                top:350px;
-                cursor:pointer; /*forces the cursor to change to a hand when the button is hovered*/
-                padding:5px 25px; /*add some padding to the inside of the button*/
-                background:transparent; /*the colour of the button*/
-                border:0px;
-                color:#B48B6A;
-                font-size: 14px;
             }
             .modal-title {
                 margin-top: 10px;
@@ -332,21 +356,35 @@
                 <div id="content-detail-title">${navSelection.levelInHierarchy}</div>
                 <div id="detail-headings">
                     <div class="detail-item">Family name: </div>
-                    <g:if test="${navSelection.interviewed}">
-                        <div class="detail-item">Initial interview date: </div>
-                        <div class="detail-item">Initial interviewer: </div>
-                    </g:if>
-                    <div class="detail-item">Permission to contact: </div>
-                    <div class="detail-item">Agreed to participate in interview: </div>
                     <div class="detail-item">Order within address: </div>
                     <div class="detail-item">Note: </div>
                 </div>
                 <div id="detail-values">
                     <div class="detail-item">${navSelection.description}</div>
-                    <g:if test="${navSelection.interviewed}">
-                        <div class="detail-item"><g:formatDate format='yyyy-MM-dd' date='${navSelection.interviewDate}'/></div>
-                        <div id="initial-interviewer-value" class="detail-item"></div>
-                    </g:if>
+                    <div class="detail-item">${navSelection.orderWithinAddress}</div>
+                    <div class="detail-item"><textarea cols="60" rows="5" style="color: #222222;" disabled>${navSelection.note}</textarea></div>
+                </div>
+
+                <g:if test="${!navSelection.interviewed}">
+                    <div style="position:absolute;bottom:10px;font-size:x-small;">This family has not yet been interviewed.</div>
+                </g:if>
+
+                <div id="content-actions">
+                    <div class="content-action"><a href="#" onclick="presentEditModal()">Edit</a></div>
+                    <div class="content-action"><a href="#">Delete</a></div>
+                    <div class="content-action"><a href="#">Print</a> (<a href="#">preferences</a>)</div>
+                </div>
+            </div>
+            <div id="content-interview">
+                <div class="content-heading">Interview&nbsp;&nbsp;<a href="#" onclick="presentInterviewForm()" style="font-weight:normal;">+ Enter Interview Data</a></div>
+                <form id="present-interview-form" action="<g:createLink controller='question' method='POST'/>">
+                    <input type="hidden" id="familyId-input" name="familyId"/>
+                </form>
+                <div id="interview-headings-left">
+                    <div class="detail-item">Permission to contact: </div>
+                    <div class="detail-item">Agreed to participate in interview: </div>
+                </div>
+                <div id="interview-values-left">
                     <div class="detail-item">
                         <g:if test="${navSelection.permissionToContact}">
                             Yes
@@ -363,29 +401,20 @@
                             No
                         </g:else>
                     </div>
-                    <div class="detail-item">${navSelection.orderWithinAddress}</div>
-                    <div class="detail-item"><textarea cols="60" rows="5" style="color: #222222;" disabled>${navSelection.note}</textarea></div>
                 </div>
-
-                <g:if test="${!navSelection.interviewed}">
-                    <div style="position:absolute;bottom:10px;font-size:x-small;">This family has not yet been interviewed.</div>
+                <g:if test="${navSelection.interviewed}">
+                    <div id="interview-headings-right">
+                        <div class="detail-item">Initial interview date: </div>
+                        <div class="detail-item">Initial interviewer: </div>
+                    </div>
+                    <div id="interview-values-right">
+                        <div class="detail-item"><g:formatDate format='yyyy-MM-dd' date='${navSelection.interviewDate}'/></div>
+                        <div id="initial-interviewer-value" class="detail-item"></div>
+                    </div>
                 </g:if>
-
-                <div id="content-actions-left-side">
-                    <div class="content-left-action"><a href="#" onclick="presentBulkAnswersModal();">Add Interview Answers</a></div>
-                    <form id="present-questions-form" action="<g:createLink controller='question' method='POST'/>">
-                        <input type="hidden" id="familyId-input" name="familyId"/>
-                    </form>
-                </div>
-
-                <div id="content-actions">
-                    <div class="content-action"><a href="#" onclick="presentEditModal()">Edit</a></div>
-                    <div class="content-action"><a href="#">Delete</a></div>
-                    <div class="content-action"><a href="#">Print</a> (<a href="#">preferences</a>)</div>
-                </div>
             </div>
             <div id="content-children">
-                <div id="content-children-title">Family members for ${navSelection.levelInHierarchy} ${navSelection.description}&nbsp;&nbsp;<a href="#" onclick="presentNewModal()">+ Add New Family Member</a></div>
+                <div class="content-heading">Family members for ${navSelection.levelInHierarchy} ${navSelection.description}&nbsp;&nbsp;<a href="#" onclick="presentNewModal()" style="font-weight:normal;">+ Add New Family Member</a></div>
                 <g:each in="${navChildren.children}" var="child">
                     <div class="content-children-row"><a href="${resource(dir:'navigate/'+navChildren.childType.toLowerCase(),file:"${child.id}")}">${child.name}</a></div>
                 </g:each>
@@ -394,30 +423,17 @@
             <div id="transparent-overlay">
             </div>
             <div id="edit-container">
-                <p style="font-weight:bold;font-size:14px;">Edit Family</p>
+                <div class="modal-title">Edit Family</div>
                 <form id="edit-form" action=${resource(file:'Family/save')} method="post">
                     <input type="hidden" name="id" value="${navSelection.id}" />
-                    <p>Family name: <input id="familyNameInput" type="text" name="familyName" value=""/></p>
-                    <p>Initial interview date: <input id="initialInterviewDateInput" type="date" name="initialInterviewDate" placeholder="yyyy-MM-dd" value=""/></p>
-                    <p>Initial interviewer: 
-                        <select id="possibleInterviewerSelect">
-                            <g:each in="${navSelection.possibleInterviewers}" var="possibleInterviewer">
-                                <option value="${possibleInterviewer.fullName}">${possibleInterviewer.fullName}</option>
-                                <script type="text/javascript">
-                                    possibleInterviewerIds.push([${possibleInterviewer.id}, ${possibleInterviewer.default}]);
-                                </script>
-                            </g:each>
-                        </select>
-                    </p>
-                    <input id="interviewerId" type="hidden" name="interviewerId" value="" />
-                    <p><input id="permissionToContactInput" type="checkbox" name="permissionToContact" value="false" /> Permission to contact</p>
-                    <p><input id="participateInInterviewInput" type="checkbox" name="participateInInterview" value="false" /> Agreed to participate in interview</p>
-                    <p>Order within address: <input id="orderWithinAddressInput" type="text" name="orderWithinAddress" value="" /></p>
-                    <p>Note:</p>
-                    <p><textarea id="familyNoteInput" name="note" cols=44 rows=4></textarea></p>
+                    <div class="modal-row">Family name: <input id="familyNameInput" type="text" name="familyName" value=""/></div>
+                    <div class="modal-row">Order within address: <input id="orderWithinAddressInput" type="text" name="orderWithinAddress" value="" /></div>
+                    <div class="modal-row">Note: <br/><textarea id="familyNoteInput" name="note" cols=44 rows=4></textarea></div>
                 </form>
-                <button id="edit-savebutton" type="button" onclick="JavaScript:saveFamily();">Save</button>
-                <button id="edit-cancelbutton" type="button" onclick="JavaScript:dismissEditModal();">Cancel</button>
+                <div class="button-row">
+                    <div id="edit-cancelbutton" type="button" onclick="JavaScript:dismissEditModal();">Cancel</div>
+                    <div id="edit-savebutton" type="button" onclick="JavaScript:saveFamily();">Save</div>
+                </div>
             </div>
 
             <div id="new-container">

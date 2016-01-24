@@ -412,7 +412,7 @@
                     </g:each>
                 </g:if>
                 <g:else>
-                    <div class="content-children-row" style="color:#CCCCCC;">none</div>
+                    <div class="content-children-row" style="color:#CCCCCC;">no answers</div>
                 </g:else>
                 <div class="content-children-row"></div>
             </div>
