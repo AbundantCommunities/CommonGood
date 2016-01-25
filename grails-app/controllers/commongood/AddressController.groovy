@@ -1,7 +1,7 @@
 package commongood
 
 class AddressController {
-    static allowedMethods = [families:'GET']
+    static allowedMethods = [families:'GET', save:'POST']
     def authorizationService
 
     def families( ) {
@@ -20,5 +20,18 @@ class AddressController {
         def writer = new StringWriter()
         bldr.writeTo(writer)
         render writer
+    }
+    
+    def save( ) {
+        def addressId = Long.parseLong( params.id )
+        authorizationService.address( addressId, session )
+        def address = Address.get( addressId )
+
+        address.text = params.text
+        address.note = params.note
+        address.orderWithinBlock = Integer.parseInt( params.orderWithinBlock )
+        address.save( flush:true, failOnError: true )
+
+        forward controller:'navigate', action:'address', id:addressId
     }
 }
