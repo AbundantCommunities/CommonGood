@@ -1,7 +1,7 @@
 package commongood
 
 class BlockController {
-    static allowedMethods = [addAddresses:'POST', addConnector:'POST', contactList:'GET', update:'POST']
+    static allowedMethods = [addAddresses:'POST', addConnector:'POST', contactList:'GET', save:'POST']
 
     def domainAuthorizationService
     def authorizationService
@@ -109,7 +109,7 @@ class BlockController {
         result
     }
 
-    def update( ) {
+    def save( ) {
         def blockId = Long.parseLong( params.id )
         authorizationService.block( blockId, session )
         def neighbourhood = Block.get( blockId )
