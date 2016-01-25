@@ -111,8 +111,6 @@ class AnswerController {
         
         switch( personCount ) {
             case 0:
-                // FIXME Handle zero answers
-                // ...we don't handle zero-length answers so don't know any person or family ids
                 throw new Exception( "No answers!" )
 
             case 1:

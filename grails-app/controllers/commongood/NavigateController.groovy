@@ -28,7 +28,7 @@ class NavigateController {
                 children: hoods
                 ]
             ]
-        println 'Navigate to application'
+        log.info 'Navigate to application'
         render "This installation of CommonGood is: ${thisInstallation.name}"
     }
 
@@ -52,7 +52,7 @@ class NavigateController {
                 children: blocks
                 ]
             ]
-        println "Navigate to neighbourhood ${hoodId} ${theHood.name}"
+        log.info "Navigate to neighbourhood ${hoodId} ${theHood.name}"
         result
     }
 
@@ -82,7 +82,7 @@ class NavigateController {
                 children: addresses
                 ]
             ]
-        println "Navigate to block ${blockId}"
+        log.info "Navigate to block ${blockId}"
         result
     }
 
@@ -118,7 +118,7 @@ class NavigateController {
                 children: families
                 ]
             ]
-        println "Navigate to address ${addressId}"
+        log.info "Navigate to address ${addressId}"
         result
     }
 
@@ -162,7 +162,7 @@ class NavigateController {
                 children: members
                 ]
             ]
-        println "Navigate to family ${familyId}"
+        log.info "Navigate to family ${familyId}"
         result
     }
 
@@ -254,7 +254,7 @@ class NavigateController {
             
             questionsAndAnswers: qna
         ]
-        println "Navigate to family member ${memberId}"
+        log.info "Navigate to family member ${memberId}"
         result
     }
 }

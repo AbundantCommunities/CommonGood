@@ -34,6 +34,8 @@ class FamilyController {
             def addressId = Long.valueOf( params.addressId )
             println "Request to add a family to address ${addressId}"
             family.address = Address.get( addressId )
+            family.participateInInterview = Boolean.FALSE
+            family.permissionToContact = Boolean.FALSE
         }
         family.name = params.familyName
         family.note = params.note
