@@ -1,7 +1,7 @@
 package commongood
 
 class AnswerController {
-    static allowedMethods = [frequencies:'GET', saveInterview:'POST', saveTable:'POST']
+    static allowedMethods = [frequencies:'GET', get:'GET', save:'POST', saveInterview:'POST']
     def authorizationService
 
     def frequencies( ) {
@@ -47,7 +47,7 @@ class AnswerController {
     }
 
     def save( ) {
-        def answerId = Long.parseLong( params.id )
+        def answerId =  params.long('id')
         authorizationService.answer( answerId, session )
         Answer answer = Answer.get( answerId )
         answer.text = params.text
@@ -57,71 +57,6 @@ class AnswerController {
         forward controller:'navigate', action:'familymember', id:answer.person.id
     }
 
-    // TODO Remove saveTable once saveInterview is working
-    def saveTable( ) {
-        /* Expecting parameters like this (for person 12 & 444, questions 34 & 36 (primary keys)):
-                answer12_34=making+cookies\ngardening
-                answer12_36=more+hootenannies\ntaller+trees\nmanna+from+heaven
-                answer444_34=stamp+collecting
-        where \n represents a single newline character
-        */
-
-        // We want every person to come from the same family
-        Long familyId = null
-        Long lastPersonId = null
-        def personCount = 0
-
-        params.each{ param, value ->
-            if(  value != null && value.size() > 0 && param.startsWith('answer') ) {
-                def ids = param.substring(6).tokenize('_')
-                Person p = Person.get( Long.parseLong( ids[0] ) )
-                if( familyId ) {
-                    // This is not the first answer we have processed
-                    if( familyId != p.family.id ) {
-                        println "DATA INTEGRITY ERROR? Was family ${familyId} but saw person ${p.id}"
-                        throw new Exception( 'Bad bulk answers')
-                    }
-                } else {
-                    familyId = p.family.id
-                }
-
-                Question q = Question.get( Long.parseLong( ids[1] ) )
-                
-                // Multiple answers within this "answer" are separated by newline characters:
-                def answers = value.tokenize( '\n' )
-                answers.each {
-                    // TODO test with weird answers (ex: nothing but newlines, padded with spaces)
-                    Answer answer = new Answer( person:p, question:q, text:it,
-                                wouldLead:Boolean.FALSE, wouldOrganize:Boolean.TRUE  )
-                    // TODO Eiminate multiple flushes (would reduce calls to the db?)
-                    // TODO Replace failOnError with logic
-                    answer.save( flush:true, failOnError: true )
-
-                    if( lastPersonId ) {
-                        if( p.id != lastPersonId ) {
-                            personCount++
-                        }
-                    } else {
-                        personCount++
-                    }
-                    lastPersonId = p.id
-                }
-            }
-        }
-        
-        switch( personCount ) {
-            case 0:
-                throw new Exception( "No answers!" )
-
-            case 1:
-                forward controller: "navigate", action: "familymember", id: lastPersonId
-
-            default:
-                forward controller: "navigate", action: "family", id: familyId
-        }
-    }
-
-    // Will replace saveTable...
     def saveInterview( ) {
         /* Expecting parameters like this (for person 12 & 444, questions 34 & 36 (primary keys)):
                 answer12_34=making+cookies\ngardening
@@ -152,7 +87,7 @@ class AnswerController {
                 answers.each {
                     // TODO test with weird answers (ex: nothing but newlines, padded with spaces)
                     Answer answer = new Answer( person:person, question:q, text:it,
-                                wouldLead:Boolean.FALSE, wouldOrganize:Boolean.TRUE  )
+                                wouldLead:Boolean.FALSE, wouldOrganize:Boolean.FALSE  )
                     // TODO Eiminate multiple flushes (would reduce calls to the db?)
                     // TODO Replace failOnError with logic
                     answer.save( flush:true, failOnError: true )
@@ -176,10 +111,6 @@ class AnswerController {
         family.permissionToContact = ('permissionToContact' in params)
         family.save( flush:true, failOnError: true )
 
-        if( personCount == 1 ) {
-            forward controller: "navigate", action: "familymember", id: lastPersonId
-        } else {
-            forward controller: "navigate", action: "family", id: familyId
-        }
+        forward controller: "navigate", action: "family", id: familyId
     }
 }

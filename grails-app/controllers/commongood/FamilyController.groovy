@@ -43,6 +43,6 @@ class FamilyController {
 
         // TODO Replace failOnError with logic
         family.save( flush:true, failOnError: true )
-        forward controller:'navigate', action:'family', id:family.id
+        forward controller:'navigate', action:'address', id:family.address.id
     }
 }

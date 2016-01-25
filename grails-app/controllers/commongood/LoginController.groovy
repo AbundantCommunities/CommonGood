@@ -24,7 +24,6 @@ class LoginController {
                 // If the following "get" fails we do not want user in session:
                 session.neighbourhood = Neighbourhood.get( neighbourhoodId )
                 session.user = user
-                flash.message = "DON'T USE FLASH TO SAY You logged in successfully with access to ${session.neighbourhood.name}."
             } else {
                 println "NO NH authorization to store in session"
                 flash.message = "DON'T USE FLASH TO SAY You authenticated okay but WITHOUT access to a neighbourhood."
@@ -33,7 +32,6 @@ class LoginController {
 
         } else {
             println 'LoginController.authenticate( ) FAILED to authenticate (back to login form)'
-            flash.message = "DON'T USE FLASH TO SAY Login failure!"
             forward action: "index"
         }
     }

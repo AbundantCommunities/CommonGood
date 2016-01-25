@@ -27,7 +27,7 @@ class PersonController {
 
         // TODO Replace failOnError with logic
         person.save( flush:true, failOnError: true )
-        forward controller:'navigate', action:'familymember', id:person.id
+        forward controller:'navigate', action:'family', id:person.family.id
     }
 
     def setBlockConnector( ) {

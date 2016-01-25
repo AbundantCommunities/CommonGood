@@ -7,7 +7,6 @@ class LameSecurityFilters {
     def filters = {
         all(controller:'*', action:'*') {
             before = {
-                println "Before controller ${controllerName} action ${actionName} session ${session}"
                 if( controllerName != 'answer' && controllerName != 'login' ) {
                     println "In Sensitive context"
                     if( session.user ) {
