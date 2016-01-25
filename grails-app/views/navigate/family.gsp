@@ -107,20 +107,14 @@
 
             function presentInterviewForm() {
 
-                if (${navChildren.children.size()} > 0) {
-                    document.getElementById('familyId-input').value = "${navSelection.id}";
-                    document.getElementById('present-interview-form').submit();
-
-                } else {
-                    alert('Please add a family member first.');
-                }
-
+                document.getElementById('familyId-input').value = "${navSelection.id}";
+                document.getElementById('present-interview-form').submit();
 
             }
 
             window.onload = function onWindowLoad() {
                 <g:each in="${navSelection.possibleInterviewers}" var="possibleInterviewer">
-                    <g:if test="${possibleInterviewer.default}">
+                    <g:if test="${possibleInterviewer.default=='true'}">
                         document.getElementById('initial-interviewer-value').innerHTML = "${possibleInterviewer.fullName}";
                     </g:if>
                 </g:each>
@@ -310,10 +304,6 @@
                     <div class="detail-item"><textarea cols="60" rows="5" style="color: #222222;" disabled>${navSelection.note}</textarea></div>
                 </div>
 
-                <g:if test="${!navSelection.interviewed}">
-                    <div style="position:absolute;bottom:10px;font-size:x-small;">This family has not yet been interviewed.</div>
-                </g:if>
-
                 <div id="content-actions">
                     <div class="content-action"><a href="#" onclick="presentEditModal()">Edit</a></div>
                     <div class="content-action"><a href="#">Delete</a></div>
@@ -360,9 +350,14 @@
             </div>
             <div id="content-children">
                 <div class="content-heading">Family members for ${navSelection.levelInHierarchy} ${navSelection.description}&nbsp;&nbsp;<a href="#" onclick="presentNewModal()" style="font-weight:normal;">+ Add New Family Member</a></div>
-                <g:each in="${navChildren.children}" var="child">
-                    <div class="content-children-row"><a href="${resource(dir:'navigate/'+navChildren.childType.toLowerCase(),file:"${child.id}")}">${child.name}</a></div>
-                </g:each>
+                <g:if test="${navChildren.children.size() > 0}">
+                    <g:each in="${navChildren.children}" var="child">
+                        <div class="content-children-row"><a href="${resource(dir:'navigate/'+navChildren.childType.toLowerCase(),file:"${child.id}")}">${child.name}</a></div>
+                    </g:each>
+                </g:if>
+                <g:else>
+                    <div class="content-children-row" style="color:#CCCCCC;">no family members</div>
+                </g:else>
                 <div class="content-children-row"></div>
             </div>
             <div id="transparent-overlay">

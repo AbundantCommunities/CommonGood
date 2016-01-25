@@ -43,13 +43,19 @@
                 document.getElementById('permission-checkbox-input').checked = ${permissionToContact};
                 document.getElementById('participate-checkbox-input').checked = ${participateInInterview};
 
+                var interviewDate;
+
+                <g:if test="${interviewed}">
+                    interviewDate = "${interviewDate.format('yyyy-MM-dd')}";
+                </g:if>
+
                 if (${interviewed}) {
                     for (i = 0; i < possibleInterviewers.length; i++) {
                         if (possibleInterviewers[i][1]) {
                             document.getElementById( "interviewer-select" ).selectedIndex = i;
                         }
                     }
-                    document.getElementById('interview-date-input').value = "${interviewDate.format('yyyy-MM-dd')}";
+                    document.getElementById('interview-date-input').value = interviewDate;
                 } else {
                     document.getElementById('interview-date-input').value = currentDate();
                 }
