@@ -26,7 +26,20 @@ class PersonController {
         person.emailAddress = params.emailAddress
         person.phoneNumber = params.phoneNumber
         person.note = params.note
-        person.orderWithinFamily = Integer.valueOf( params.orderWithinFamily ?: '100' )
+
+        if( params.orderWithinFamily ) {
+            person.orderWithinFamily = params.int('orderWithinFamily')
+        } else {
+            // Find the largest value of orderWithinFamily and go from there...
+            def query = Person.where {
+                family.id == person.family.id
+            }.projections {
+                max('orderWithinFamily')
+            }
+            def lastOrder = query.find() as Integer
+            lastOrder = lastOrder ?: 0
+            person.orderWithinFamily = lastOrder + 100
+        }
 
         // TODO Replace failOnError with logic
         person.save( flush:true, failOnError: true )

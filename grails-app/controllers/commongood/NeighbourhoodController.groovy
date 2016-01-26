@@ -14,7 +14,20 @@ class NeighbourhoodController {
         block.neighbourhood = neighbourhood
         block.code = params.code.trim( )
         block.description = params.description.trim( )
-        block.orderWithinNeighbourhood = Integer.valueOf( params.orderWithinNeighbourhood ?: '100' )
+
+        if( params.orderWithinNeighbourhood ) {
+            block.orderWithinNeighbourhood = params.int('orderWithinNeighbourhood')
+        } else {
+            // Find the largest value of orderWithinNeighbourhood and go from there...
+            def query = Block.where {
+                neighbourhood.id == block.neighbourhood.id
+            }.projections {
+                max('orderWithinNeighbourhood')
+            }
+            def lastOrder = query.find() as Integer
+            lastOrder = lastOrder ?: 0
+            block.orderWithinNeighbourhood = lastOrder + 100
+        }
 
         if( block.code && block.description ) {
             block.save( flush:true, failOnError: true )

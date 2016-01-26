@@ -42,7 +42,19 @@ class FamilyController {
         }
         family.name = params.familyName
         family.note = params.note
-        family.orderWithinAddress = Integer.valueOf( params.orderWithinAddress ?: '100' )
+        if( params.orderWithinAddress ) {
+            family.orderWithinAddress = params.int('orderWithinAddress')
+        } else {
+            // Find the largest value of orderWithinAddress and go from there...
+            def query = Family.where {
+                address.id == family.address.id
+            }.projections {
+                max('orderWithinAddress')
+            }
+            def lastOrder = query.find() as Integer
+            lastOrder = lastOrder ?: 0
+            family.orderWithinAddress = lastOrder + 100
+        }
 
         // TODO Replace failOnError with logic
         family.save( flush:true, failOnError: true )
