@@ -6,16 +6,21 @@ class NeighbourhoodController {
     def authorizationService
 
     def addBlock( ) {
-        def neighbourhoodId = Long.parseLong( params.id )
+        def neighbourhoodId = params.long('id')
         authorizationService.neighbourhood( neighbourhoodId, session )
         def neighbourhood = Neighbourhood.get( neighbourhoodId )
 
         def block = new Block( )
         block.neighbourhood = neighbourhood
-        block.code = params.code
-        block.description = params.description
+        block.code = params.code.trim( )
+        block.description = params.description.trim( )
         block.orderWithinNeighbourhood = 100
-        block.save( flush:true, failOnError: true )
-        forward controller: "navigate", action: "neighbourhood", id: neighbourhoodId
+
+        if( block.code && block.description ) {
+            block.save( flush:true, failOnError: true )
+            forward controller: "navigate", action: "neighbourhood", id: neighbourhoodId
+        } else {
+            throw new RuntimeException("Bad code and/or description?")
+        }
     }
 }

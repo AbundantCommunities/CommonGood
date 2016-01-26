@@ -22,20 +22,23 @@ class BlockController {
             max('orderWithinBlock')
         }
         def lastOrder = query.find() as Integer
+        lastOrder = lastOrder ?: 0
 
         def addresses = params.addresses.tokenize( '\n' )
         addresses.each {
             // Use Java regular expression to remove "control" characters
             // (We are getting a \r char at end of each address except last 2016.1)
-            def cleanAddress = it.replaceAll('\\p{Cntrl}', '');
-            println "Adding address: ${cleanAddress} to ${thisBlock}"
-            Address addr = new Address( )
-            addr.block = thisBlock
-            addr.text = cleanAddress
-            addr.note = ''
-            lastOrder += 100
-            addr.orderWithinBlock = lastOrder
-            addr.save( flush:true, failOnError: true )
+            def cleanAddress = it.replaceAll('\\p{Cntrl}', '').trim( )
+            if( cleanAddress ) {
+                println "Adding address: ${cleanAddress} to ${thisBlock}"
+                Address addr = new Address( )
+                addr.block = thisBlock
+                addr.text = cleanAddress
+                addr.note = ''
+                lastOrder += 100
+                addr.orderWithinBlock = lastOrder
+                addr.save( flush:true, failOnError: true )
+            }
         }
 
         forward controller:'navigate', action:'block', id:blockId
@@ -114,15 +117,19 @@ class BlockController {
     }
 
     def save( ) {
-        def blockId = Long.parseLong( params.id )
+        def blockId = params.long('id')
         authorizationService.block( blockId, session )
-        def neighbourhood = Block.get( blockId )
+        def block = Block.get( blockId )
 
-        block.code = params.code
-        block.description = params.description
-        block.orderWithinNeighbourhood = params.orderWithinNeighbourhood
+        block.code = params.code.trim( )
+        block.description = params.description.trim( )
 
-        block.save( flush:true, failOnError: true )
-        forward controller: "navigate", action: "block", id: blockId
+        if( block.code && block.description ) {
+            block.orderWithinNeighbourhood = Integer.valueOf( params.orderWithinNeighbourhood ?: '100' )
+            block.save( flush:true, failOnError: true )
+            forward controller: "navigate", action: "block", id: blockId
+        } else {
+            throw new RuntimeException( "Empty code and/or description?" )
+        }
     }
 }

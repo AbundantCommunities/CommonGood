@@ -67,11 +67,8 @@ class AnswerController {
         Long familyId = Long.parseLong( params.familyId )
         Family family = Family.get( familyId )
 
-        Long lastPersonId = null
-        def personCount = 0
-
         params.each{ param, value ->
-            if(  value != null && value.size() > 0 && param.startsWith('answer') ) {
+            if( param.startsWith('answer') && value ) {
                 def ids = param.substring(6).tokenize('_')
                 Person person = Person.get( Long.parseLong( ids[0] ) )
 
@@ -80,6 +77,7 @@ class AnswerController {
                     throw new Exception( 'Bad bulk answers')
                 }
 
+                // TODO How to treat question id does not belong to this NH
                 Question q = Question.get( Long.parseLong( ids[1] ) )
                 
                 // Multiple answers within this "answer" are separated by newline characters:
@@ -87,21 +85,14 @@ class AnswerController {
                 answers.each {
                     // TODO test with weird answers (ex: nothing but newlines, padded with spaces)
                     // Use Java regular expression to remove "control" characters
-                    def cleanAnswer = it.replaceAll("\\p{Cntrl}", "");
-                    Answer answer = new Answer( person:person, question:q, text:cleanAnswer,
-                                wouldLead:Boolean.FALSE, wouldOrganize:Boolean.FALSE  )
-                    // TODO Eiminate multiple flushes (would reduce calls to the db?)
-                    // TODO Replace failOnError with logic
-                    answer.save( flush:true, failOnError: true )
-
-                    if( lastPersonId ) {
-                        if( person.id != lastPersonId ) {
-                            personCount++
-                        }
-                    } else {
-                        personCount++
+                    def cleanAnswer = it.replaceAll("\\p{Cntrl}", "").trim( )
+                    if( cleanAnswer ) {
+                        Answer answer = new Answer( person:person, question:q, text:cleanAnswer,
+                                    wouldLead:Boolean.FALSE, wouldOrganize:Boolean.FALSE  )
+                        // TODO Eiminate multiple flushes (would reduce calls to the db?)
+                        // TODO Replace failOnError with logic
+                        answer.save( flush:true, failOnError: true )
                     }
-                    lastPersonId = person.id
                 }
             }
         }

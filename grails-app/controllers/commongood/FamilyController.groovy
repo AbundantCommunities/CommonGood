@@ -21,12 +21,14 @@ class FamilyController {
 
     def save() {
         Family family
+        def newFamily
         if( 'id' in params ) {
             // The request wants us to change an existing family.
             // We will not change the family's address.
             def familyId = Long.valueOf( params.id )
             println "Request to CHANGE family ${familyId}"
             family = Family.get( familyId )
+            newFamily = false
         } else {
             // The request is to create a new family.
             // We need to get the family's address from the request.
@@ -36,6 +38,7 @@ class FamilyController {
             family.address = Address.get( addressId )
             family.participateInInterview = Boolean.FALSE
             family.permissionToContact = Boolean.FALSE
+            newFamily = true
         }
         family.name = params.familyName
         family.note = params.note
@@ -43,6 +46,10 @@ class FamilyController {
 
         // TODO Replace failOnError with logic
         family.save( flush:true, failOnError: true )
-        forward controller:'navigate', action:'address', id:family.address.id
+        if( newFamily ) {
+            forward controller:'navigate', action:'address', id:family.address.id
+        } else {
+            forward controller:'navigate', action:'family', id:family.id
+        }
     }
 }
