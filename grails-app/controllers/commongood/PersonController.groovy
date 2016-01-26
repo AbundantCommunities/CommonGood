@@ -5,21 +5,24 @@ class PersonController {
 
     def save() {
         Person person
+        def newPerson
         if( 'id' in params ) {
             def personId = Long.valueOf( params.id )
             println "Request to CHANGE person ${personId}"
             person = Person.get( personId )
+            newPerson = false
         } else {
             // The request is to create a new person
             def familyId = Long.valueOf( params.familyId )
             println "Request to ADD a person to family ${familyId}"
             person = new Person( )
             person.family = Family.get( familyId )
+            newPerson = true
         }
 
         person.firstNames = params.firstNames
         person.lastName = params.lastName
-        person.birthYear = Integer.valueOf( params.birthYear )
+        person.birthYear = Integer.valueOf( params.birthYear?:'0' )
         person.emailAddress = params.emailAddress
         person.phoneNumber = params.phoneNumber
         person.note = params.note
@@ -27,7 +30,11 @@ class PersonController {
 
         // TODO Replace failOnError with logic
         person.save( flush:true, failOnError: true )
-        forward controller:'navigate', action:'family', id:person.family.id
+        if( newPerson ) {
+            forward controller:'navigate', action:'family', id:person.family.id
+        } else {
+            forward controller:'navigate', action:'familymember', id:person.id
+        }
     }
 
     def setBlockConnector( ) {

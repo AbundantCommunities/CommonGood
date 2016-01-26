@@ -47,6 +47,7 @@ class BlockController {
     * a family of the address. Finally, make a new DomainAuthorization so that the new
     * person is a Block Connector for the block the address is within.
     */
+   /** NO LONGER USED?!?!
     def addConnector( ) {
         // FIXME make all the database work in this controller occur in a single transaction
         def addressId = Long.valueOf( params.addressId )
@@ -67,7 +68,7 @@ class BlockController {
         person.family = family
         person.firstNames = params.firstNames
         person.lastName = params.lastName
-        person.birthYear = Integer.valueOf( params.birthYear )
+        person.birthYear = Integer.valueOf( params.birthYear?:'0' )
         person.emailAddress = params.emailAddress
         person.phoneNumber = params.phoneNumber
         person.orderWithinFamily = 100
@@ -81,7 +82,7 @@ class BlockController {
         dauth.save( flush:true, failOnError: true )
 
         forward controller:'navigate', action:'block', id:blockId
-    }
+    } */
 
     def contactList() {
         def blockId = Long.parseLong( params.id )

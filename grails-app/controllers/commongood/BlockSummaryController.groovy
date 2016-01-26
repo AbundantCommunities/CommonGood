@@ -34,7 +34,7 @@ class BlockSummaryController {
 
     def getBlockConnector( Long blockId ) {
         // There can be multiple DomainAuthorization rows for a given block id
-        // but we just want one (thus the call to find).
+        // but we just want one.
         def rights = DomainAuthorization.createCriteria().list {
                 and {
                     eq 'domainCode', DomainAuthorization.BLOCK
@@ -42,7 +42,8 @@ class BlockSummaryController {
                     eq 'domainKey', blockId.toInteger( )
                 }
         }
-        // FIXME Should we handle no-such-blockId??
+        // FIXME andle no-such-blockId
+        // 2016.1.25: on a much tested upon DB, rights[0] was null
         return rights[0].person
     }
 }
