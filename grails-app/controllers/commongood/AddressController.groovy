@@ -23,13 +23,16 @@ class AddressController {
     }
     
     def save( ) {
-        def addressId = Long.parseLong( params.id )
+        def addressId = params.long('id')
         authorizationService.address( addressId, session )
         def address = Address.get( addressId )
 
+        if( !params.text ) {
+            throw new RuntimeException( "address.text is empty [${session.user}]" )
+        }
         address.text = params.text
         address.note = params.note
-        address.orderWithinBlock = Integer.parseInt( params.orderWithinBlock )
+        address.orderWithinBlock = params.int('orderWithinBlock')
         address.save( flush:true, failOnError: true )
 
         forward controller:'navigate', action:'address', id:addressId

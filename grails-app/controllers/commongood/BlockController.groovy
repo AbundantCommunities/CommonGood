@@ -25,10 +25,13 @@ class BlockController {
 
         def addresses = params.addresses.tokenize( '\n' )
         addresses.each {
-            println "Adding address: ${it} to ${thisBlock}"
+            // Use Java regular expression to remove "control" characters
+            // (We are getting a \r char at end of each address except last 2016.1)
+            def cleanAddress = it.replaceAll('\\p{Cntrl}', '');
+            println "Adding address: ${cleanAddress} to ${thisBlock}"
             Address addr = new Address( )
             addr.block = thisBlock
-            addr.text = it
+            addr.text = cleanAddress
             addr.note = ''
             lastOrder += 100
             addr.orderWithinBlock = lastOrder

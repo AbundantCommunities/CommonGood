@@ -86,7 +86,9 @@ class AnswerController {
                 def answers = value.tokenize( '\n' )
                 answers.each {
                     // TODO test with weird answers (ex: nothing but newlines, padded with spaces)
-                    Answer answer = new Answer( person:person, question:q, text:it,
+                    // Use Java regular expression to remove "control" characters
+                    def cleanAnswer = it.replaceAll("\\p{Cntrl}", "");
+                    Answer answer = new Answer( person:person, question:q, text:cleanAnswer,
                                 wouldLead:Boolean.FALSE, wouldOrganize:Boolean.FALSE  )
                     // TODO Eiminate multiple flushes (would reduce calls to the db?)
                     // TODO Replace failOnError with logic
