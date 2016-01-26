@@ -31,7 +31,7 @@
                     <g:each in="${answers}" var="answer">
                         <div class="content-children-row">
                             <div class="cell400">${answer[0]}</div>
-                            <g:link controller="navigate" action="familymember" id="${answer[1]}"><div class="cell100">${answer[2]}</div></g:link>
+                            <g:link controller="navigate" action="familymember" id="${answer[1]}"><div class="cell300">${answer[2]} ${answer[3]}</div></g:link>
                         </div>
                     </g:each>
                     <div class="content-children-row" style="height:5px;"></div>

@@ -6,6 +6,86 @@
         <title>Abundant Communities - Edmonton</title>
         <script type="text/javascript">
 
+            function populateEditModal() {
+                document.getElementById('blockCodeInput').value = "${navSelection.code}";
+                document.getElementById('blockDescriptionInput').value = "${navSelection.description}";
+                document.getElementById('orderWithinNeighbourhoodInput').value = "${navSelection.orderWithinNeighbourhood}";
+            }
+
+            function presentEditModal() {
+                var pagecontainerDiv = document.getElementById("pagecontainer");
+
+                // set height of overlay to match height of pagecontainer height
+                document.getElementById("transparent-overlay").setAttribute("style","height:"+pagecontainerDiv.clientHeight+"px;");
+
+                populateEditModal();
+                
+                // show overlay and new-container divs and focus to family name
+                document.getElementById("transparent-overlay").style.visibility='visible';
+                document.getElementById("edit-container").style.visibility='visible';
+                document.getElementById("blockCodeInput").focus();
+                document.getElementById("blockCodeInput").select();
+            }
+
+            function dismissEditModal() {
+                document.getElementById("edit-container").style.visibility='hidden';
+                document.getElementById("transparent-overlay").style.visibility='hidden';
+            }
+
+            
+
+            function orderOk(order) {
+                if (order.length == 0) {
+                    return false;
+                } else {
+                    for (i=0; i<order.length; i++) {
+                        if ('0123456789'.indexOf(order.substr(i,1)) < 0) {
+                            return false;
+                        }
+                    }
+                }
+                return true;
+            }
+
+            function blockIsValid(code,description,order) {
+                if (code == "") {
+                    alert("Please enter a block code.");
+                    return false;
+                } else {
+                    if (description == "") {
+                        alert("Please enter a block description.");
+                        return false;
+                    } else {
+                        if (!orderOk(order)) {
+                            alert("Please enter a valid order. Must be a number.");
+                            return false;
+                        }
+                    }
+                }
+                return true;
+            }
+
+            function saveBlock() {
+                var blockCode = document.getElementById('blockCodeInput').value.trim();
+                var blockDescription = document.getElementById('blockDescriptionInput').value.trim();
+                var order = document.getElementById('orderWithinNeighbourhoodInput').value.trim();
+                if (blockIsValid(blockCode,blockDescription,order)) {
+                    dismissEditModal();
+
+                    document.getElementById("blockCodeInput").value = blockCode;
+                    document.getElementById("blockDescriptionInput").value = blockDescription;
+                    document.getElementById("orderWithinNeighbourhoodInput").value = order;
+                    document.getElementById('edit-form').submit();
+                }
+            }
+
+
+
+
+
+
+
+
             function presentNewModal() {
                 var pagecontainerDiv = document.getElementById("pagecontainer");
 
@@ -27,9 +107,31 @@
             }
 
 
+            function trimTrailingReturns(addresses) {
+                var trimedAddresses = addresses;
+                if (trimedAddresses.length > 0) {
+                    if (trimedAddresses.charCodeAt(trimedAddresses.length-1) == 10) {
+                        var done = false;
+                        var i = trimedAddresses.length-1;
+                        while (!done) {
+                            trimedAddresses = trimedAddresses.substr(0,trimedAddresses.length-1);
+                            if (trimedAddresses.length == 0 || trimedAddresses.charCodeAt(trimedAddresses.length-1) != 10) {
+                                done = true;
+                            }
+                        }
+                    }
+                }
+                return trimedAddresses;
+            }
+
+
             function addAddresses() {
-                // Validate addresses
-                if (document.getElementById('addressesInput').value.length > 0) {
+                // trim trailing returns.
+                var addresses = trimTrailingReturns(document.getElementById('addressesInput').value);
+
+                // make sure at least one line (address).
+                if (addresses.length > 0) {
+                    document.getElementById('addressesInput').value = addresses;
                     document.getElementById("new-form").submit();
                 } else {
                     alert('Please enter at least one address.');
@@ -39,8 +141,6 @@
 
             function presentAddBC() {
                 if (${navChildren.children.size() > 0}) {
-
-
 
                     var addressesSelect = document.getElementById('addresses-select');
 
@@ -243,6 +343,8 @@
                 }
             }
 
+
+
         </script>
         <style type="text/css">
             #content-detail {
@@ -378,6 +480,52 @@
                 display: none;
             }
 
+
+            #edit-container {
+                position:absolute;
+                top:90px;
+                left:280px;
+                width:370px;
+                padding:20px;
+                padding-top: 10px;
+                background-color: #FFFFFF;
+                border-radius:10px;
+                visibility:hidden;
+
+            }
+            #edit-cancelbutton{
+                display: inline-block;
+                height: 22px;
+                width: 80px;
+                cursor:pointer; /*forces the cursor to change to a hand when the button is hovered*/
+                color:#B48B6A;
+                padding-top: 4px;
+                text-align: center;
+                border-radius: 5px;
+                border-width:thin;
+                border-style:solid;
+                border-color: #B48B6A;
+                background-color:#FFFFFF;
+            }
+            #edit-savebutton{
+                display: inline-block;
+                height: 22px;
+                width: 80px;
+                margin-left: 10px;
+                cursor:pointer; /*forces the cursor to change to a hand when the button is hovered*/
+                color:#B48B6A;
+                padding-top: 4px;
+                text-align: center;
+                border-radius: 5px;
+                border-width:thin;
+                border-style:solid;
+                border-color: #B48B6A;
+                background-color:#FFFFFF;
+                font-weight: bold;
+            }
+
+
+
             #new-container {
                 position:absolute;
                 top:90px;
@@ -470,7 +618,7 @@
                 </div>
 
                 <div id="content-actions">
-                    <div class="content-action"><a href="#">Edit</a></div>
+                    <div class="content-action"><a href="#" onclick="presentEditModal();">Edit</a></div>
                     <div class="content-action"><a href="#">Delete</a></div>
                     <div class="content-action"><a href="#">Print</a> (<a href="#">preferences</a>)</div>
                 </div>
@@ -527,9 +675,26 @@
                 </div>
             </div>
 
+            <div id="edit-container">
+                <div class="modal-title">Edit Block</div>
+                <form id="edit-form" action=${resource(file:'Block/save')} method="POST">
+                    <input type="hidden" name="id" value="${navSelection.id}" />
+                    <div class="modal-row">Block code: <input id="blockCodeInput" type="text" name="code" value=""/></div>
+                    <div class="modal-row">Block description: <input id="blockDescriptionInput" type="text" name="description" value=""/></div>
+                    <div class="modal-row">Order within neighbourhood: <input id="orderWithinNeighbourhoodInput" type="text" name="orderWithinNeighbourhood" value="" /></div>
+                </form>
+                <div class="button-row">
+                    <div id="edit-cancelbutton" type="button" onclick="JavaScript:dismissEditModal();">Cancel</div>
+                    <div id="edit-savebutton" type="button" onclick="JavaScript:saveBlock();">Save</div>
+                </div>
+            </div>
+
+
+
+
             <div id="new-container">
                 <div class="modal-title">New Addresses</div>
-                <div>Add multiple addresses by pressing Return after each.</div>
+                <div class="footnote">Add multiple addresses by pressing Return after each.</div>
                 <form id="new-form" action=${resource(file:'Block/addAddresses')} method="POST">
                     <input type="hidden" name="id" value="${navSelection.id}" />
                     <div class="modal-row">Addresses: <br/><textarea id="addressesInput" class="note-style" name="addresses" cols=56 rows=4></textarea></div>

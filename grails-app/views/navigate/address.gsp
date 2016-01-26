@@ -53,20 +53,41 @@
                 document.getElementById("transparent-overlay").style.visibility='hidden';
             }
 
-            function addressIsValid(note) {
-                if (note.indexOf('|') > -1) {
-                    alert("Notes cannot contain the '|' character. Please use a different character");
+
+            function addressIsValid(addressText,order,note) {
+                if (addressText == "") {
+                    alert("Please enter an address.");
                     return false;
+                } else {
+                    if (!orderOk(order)) {
+                        alert("Please enter a valid order. Must be a number.");
+                        return false;
+                    } else {
+                        if (note.indexOf('|') > -1) {
+                            alert("Notes cannot contain the '|' character. Please use a different character");
+                            return false;
+                        }
+                    }
                 }
                 return true;
             }
+
             function saveAddress() {
-                if (addressIsValid(document.getElementById('addressNoteTextarea').value)) {
+                var addressText = document.getElementById('addressTextInput').value.trim();
+                var order = document.getElementById('orderWithinBlockInput').value.trim();
+                var note = document.getElementById('addressNoteTextarea').value.trim();
+                if (addressIsValid(addressText,order,note)) {
                     dismissEditModal();
-                    var editForm = document.getElementById('edit-form');
-                    editForm.submit();
+
+                    document.getElementById("addressTextInput").value = document.getElementById("addressTextInput").value.trim();
+                    document.getElementById("orderWithinBlockInput").value = document.getElementById("orderWithinBlockInput").value.trim();
+                    document.getElementById("addressNoteTextarea").value = document.getElementById("addressNoteTextarea").value.trim();
+
+                    document.getElementById('edit-form').submit();
                 }
             }
+
+
 
 
 
@@ -93,31 +114,56 @@
                 document.getElementById("transparent-overlay").style.visibility='hidden';
             }
 
-            function newFamilyIsValid (familyName, note) {
+            
+
+            function orderOk(order) {
+                if (order.length == 0) {
+                    return false;
+                } else {
+                    for (i=0; i<order.length; i++) {
+                        if ('0123456789'.indexOf(order.substr(i,1)) < 0) {
+                            return false;
+                        }
+                    }
+                }
+                return true;
+            }
+
+            function familyIsValid(familyName,order,note) {
                 if (familyName == "") {
                     alert("Please enter a family name for the new family.");
                     return false;
+                } else {
+                    if (!orderOk(order)) {
+                        alert("Please enter a valid order. Must be a number.");
+                        return false;
+                    } else {
+                        if (note.indexOf('|') > -1) {
+                            alert("Notes cannot contain the '|' character. Please use a different character");
+                            return false;
+                        }
+                    }
                 }
-
-                if (note.indexOf('|') > -1) {
-                    alert("A note cannot contain the '|' character. Please use a different character.");
-                    return false;
-                }
-
                 return true;
             }
 
             function saveFamily() {
-                // Validate new family
-                var familyName = document.getElementById("familyNameInput").value;
-                var note = document.getElementById("familyNoteTextarea").value;
-                if (newFamilyIsValid(familyName, note)) {
-                    dismissNewModal();
-                    var newForm = document.getElementById('new-form');
-                    newForm.submit();
+                var familyName = document.getElementById('familyNameInput').value.trim();
+                var order = document.getElementById('orderWithinAddressInput').value.trim();
+                var note = document.getElementById('familyNoteTextarea').value.trim();
+                if (familyIsValid(familyName,order,note)) {
+                    dismissEditModal();
+
+                    document.getElementById("familyNameInput").value = document.getElementById("familyNameInput").value.trim();
+                    document.getElementById("orderWithinAddressInput").value = document.getElementById("orderWithinAddressInput").value.trim();
+                    document.getElementById("familyNoteTextarea").value = document.getElementById("familyNoteTextarea").value.trim();
+
+                    document.getElementById('new-form').submit();
                 }
             }
-            
+
+
+
             
         </script>
         <style type="text/css">

@@ -9,7 +9,12 @@
 
                 document.getElementById('firstNamesInput').value = "${navSelection.firstNames}";
                 document.getElementById('lastNameInput').value = "${navSelection.lastName}";
-                document.getElementById('birthYearInput').value = "${navSelection.birthYear}";
+                <g:if test="${navSelection.birthYear == 0}">
+                    document.getElementById('birthYearInput').value = "";
+                </g:if>
+                <g:else>
+                    document.getElementById('birthYearInput').value = "${navSelection.birthYear}";
+                </g:else>
                 var emailToEncode = "${navSelection.emailAddress}";
                 var email = emailToEncode.split('&#64;').join('@');
                 document.getElementById('emailAddressInput').value = email;
@@ -37,35 +42,103 @@
                 document.getElementById("transparent-overlay").style.visibility='hidden';
             }
 
+            function emailOk(email) {
+                if (email.length > 0) {
+                    var re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+                    return re.test(email);
+                }
+                return true;
+            }
 
-            function familyMemberIsValid (firstNames, lastName, note) {
+            function yearOk(year) {
+
+                if (year.length != 4 && year.length != 0) {
+                    return false;
+                } else {
+                    if (year.length == 4) {
+                        if (year.substr(0,2) != '19' && year.substr(0,2) != '20') {
+                            return false;
+                        } else {
+                            if ('0123456789'.indexOf(year.substr(2,1)) < 0) {
+                                return false;
+                            } else {
+                                if ('0123456789'.indexOf(year.substr(3,1)) < 0) {
+                                    return false;
+                                }
+                            }
+                        }
+                    }
+                }
+                return true;
+            }
+
+            function orderOk(order) {
+                if (order.length == 0) {
+                    return false;
+                } else {
+                    for (i=0; i<order.length; i++) {
+                        if ('0123456789'.indexOf(order.substr(i,1)) < 0) {
+                            return false;
+                        }
+                    }
+                }
+                return true;
+            }
+
+            function familyMemberIsValid (firstNames, lastName, birthYear, email, note, order) {
                 if (firstNames == "") {
                     alert("Please enter a first name for the new family member.");
                     return false;
+                } else {
+                    if (lastName == "") {
+                        alert("Please enter a last name for the new family member.");
+                        return false;
+                    } else {
+                        if (!yearOk(birthYear)) {
+                            alert("Please enter a valid birth year (YYYY) or leave it blank.");
+                            return false;
+                        } else {
+                            if (!emailOk(email)) {
+                                alert("Please enter a valid email address or leave it blank.");
+                                return false;
+                            } else {
+                                if (note.indexOf('|') > -1) {
+                                    alert("Notes cannot contain the '|' character. Please use a different character.");
+                                    return false;
+                                } else {
+                                    if (!orderOk(order)) {
+                                        alert("Please enter a valid order. Must be a number.");
+                                        return false;
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
-
-                if (lastName == "") {
-                    alert("Please enter a last name for the new family member.");
-                    return false;
-                }
-
-                if (note.indexOf('|') > -1) {
-                    alert("Notes cannot contain the '|' character. Please use a different character");
-                    return false;
-                }
-
-                // If initial interview date is non-blank, validate date.
-
                 return true;
             }
 
             function saveFamilyMember() {
                 // Validate new family
-                var firstNames = document.getElementById("firstNamesInput").value;
-                var lastName = document.getElementById("lastNameInput").value;
-                var note = document.getElementById("noteInput").value;
-                if (familyMemberIsValid(firstNames, lastName, note)) {
+                var firstNames = document.getElementById("firstNamesInput").value.trim();
+                var lastName = document.getElementById("lastNameInput").value.trim();
+                var birthYear = document.getElementById("birthYearInput").value.trim();
+                var email = document.getElementById("emailAddressInput").value.trim();
+                var note = document.getElementById("noteInput").value.trim();
+                var order = document.getElementById("orderWithinFamilyInput").value.trim();
+                if (familyMemberIsValid(firstNames, lastName, birthYear, email, note, order)) {
                     dismissEditModal();
+                    // trim all values
+                    document.getElementById("firstNamesInput").value = document.getElementById("firstNamesInput").value.trim();
+                    document.getElementById("lastNameInput").value = document.getElementById("lastNameInput").value.trim();
+                    document.getElementById('birthYearInput').value = document.getElementById('birthYearInput').value.trim();
+                    document.getElementById("emailAddressInput").value = document.getElementById("emailAddressInput").value.trim();
+                    document.getElementById("noteInput").value = document.getElementById("noteInput").value.trim();
+                    document.getElementById("orderWithinFamilyInput").value = document.getElementById("orderWithinFamilyInput").value.trim();
+                    // check if birth year blank. if yes, set it to '0'.
+                    if (document.getElementById('birthYearInput').value.length == 0) {
+                        document.getElementById('birthYearInput').value = '0';
+                    }
                     document.getElementById("edit-fm-form").submit();
                 }
             }
@@ -145,6 +218,13 @@
             function cancelEditAnswer() {
                 dismissEditAnswerModal();
             }
+
+            <g:if test="${navSelection.birthYear == 0}">
+                window.onload = function onWindowLoad() {
+                    document.getElementById('birth-year-value').innerHTML = '';
+                }
+            </g:if>
+
 
         </script>
         <style type="text/css">
@@ -405,7 +485,7 @@
                 </div>
             </div>
             <div id="content-children">
-                <div id="content-children-title">Answers for Family Member ${navSelection.description}</div>
+                <div id="content-children-title">Answers for ${navSelection.description}</div>
                 <g:if test="${questionsAndAnswers.size() > 0}">
                     <g:each in="${questionsAndAnswers}" var="qa">
                         <div class="content-children-row">${qa.question}: <g:each in="${qa.answers}" var="answer" status="i"><g:if test="${i>0}">, </g:if><span id="answer_${answer.id}" style="cursor:pointer;color:#B48B6A;" onclick="editAnswer(this);">${answer.text}</span></g:each></div>
@@ -424,7 +504,7 @@
                     <input type="hidden" name="id" value="${navSelection.id}" />
                     <div class="modal-row">First names: <input id="firstNamesInput" type="text" name="firstNames" value=""/></div>
                     <div class="modal-row">Last name: <input id="lastNameInput" type="text" name="lastName" value=""/></div>
-                    <div class="modal-row">Birth year: <input id="birthYearInput" type="text" pattern="[12][90][0-9][0-9]" name="birthYear" value="" placeholder="YYYY"/></div>
+                    <div class="modal-row">Birth year: <input id="birthYearInput" type="text" name="birthYear" value="" placeholder="YYYY"/></div>
                     <div class="modal-row">Email address: <input id="emailAddressInput" class="email-style" type="email" name="emailAddress" value="" size="40"/></div>
                     <div class="modal-row">Phone number: <input id="phoneNumberInput" type="text" name="phoneNumber" value=""/></div>
                     <div class="modal-row">Order within family: <input id="orderWithinFamilyInput" type="text" name="orderWithinFamily" value=""/></div>
@@ -445,9 +525,9 @@
                     <div id="would-organize-div"><input id="would-organize-input" name="wouldOrganize" type="checkbox" /> Would organize</div>
                 </form>
                 <div class="button-row">
-                    <div id="edit-answer-cancelbutton" type="button" onclick="JavaScript:cancelEditAnswer();">Cancel</div>
-                    <div id="edit-answer-savebutton" type="button" onclick="JavaScript:saveAnswer();">Save</div>
-                    <div id="edit-answer-deletebutton" type="button" onclick="JavaScript:deleteAnswer();">Delete Answer</div>
+                    <div id="edit-answer-cancelbutton" onclick="JavaScript:cancelEditAnswer();">Cancel</div>
+                    <div id="edit-answer-savebutton" onclick="JavaScript:saveAnswer();">Save</div>
+                    <div id="edit-answer-deletebutton" onclick="JavaScript:deleteAnswer();">Delete Answer</div>
                 </div>
                 <form id="delete-answer-form" action=${resource(file:'Answer/delete')} method="POST">
                     <input id="delete-answer-id-input" type="hidden" name="id" value="" />

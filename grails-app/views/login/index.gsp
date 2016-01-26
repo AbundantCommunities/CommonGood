@@ -121,12 +121,6 @@
                 <p style="margin-top:-4px"><input id="rememberCheckbox" type="checkbox" name="remember" value="remember email address" /> remember email address</p>
                 <br/>
                 <a href="#" onclick="doSubmit();">Login</a>
-                <br/>
-                <g:if test="${flash.message}">
-                    <div class="flash">
-                        ${flash.message}
-                    </div>
-                </g:if>
             </div>
     </body>
 </html>

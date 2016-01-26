@@ -6,6 +6,80 @@
         <title>Abundant Communities - Edmonton</title>
         <script type="text/javascript">
 
+            function presentNewModal() {
+                var pagecontainerDiv = document.getElementById("pagecontainer");
+
+                // clear UI before presenting
+                document.getElementById("blockCodeInput").value = "";
+                document.getElementById("blockDescriptionInput").value = "";
+                document.getElementById("orderWithinNeighbourhoodInput").value = "";
+
+
+                // set height of overlay to match height of pagecontainer height
+                document.getElementById("transparent-overlay").setAttribute("style","height:"+pagecontainerDiv.clientHeight+"px;");
+                
+                // show overlay and new-container divs and focus to family name
+                document.getElementById("transparent-overlay").style.visibility='visible';
+                document.getElementById("new-container").style.visibility='visible';
+                document.getElementById("blockCodeInput").focus();
+            }
+
+            function dismissNewModal() {
+                document.getElementById("new-container").style.visibility='hidden';
+                document.getElementById("transparent-overlay").style.visibility='hidden';
+            }
+
+            
+
+            function orderOk(order) {
+                if (order.length == 0) {
+                    return false;
+                } else {
+                    for (i=0; i<order.length; i++) {
+                        if ('0123456789'.indexOf(order.substr(i,1)) < 0) {
+                            return false;
+                        }
+                    }
+                }
+                return true;
+            }
+
+            function blockIsValid(code,description,order) {
+                if (code == "") {
+                    alert("Please enter a code for the new block.");
+                    return false;
+                } else {
+                    if (description == "") {
+                        alert("Please enter a block description.");
+                        return false;
+                    } else {
+                        if (!orderOk(order)) {
+                            alert("Please enter a valid order. Must be a number.");
+                            return false;
+                        }
+                    }
+                }
+                return true;
+            }
+
+            function saveBlock() {
+                var blockCode = document.getElementById('blockCodeInput').value.trim();
+                var blockDescription = document.getElementById('blockDescriptionInput').value.trim();
+                var order = document.getElementById('orderWithinNeighbourhoodInput').value.trim();
+                if (blockIsValid(blockCode,blockDescription,order)) {
+                    dismissNewModal();
+
+                    document.getElementById("blockCodeInput").value = blockCode;
+                    document.getElementById("blockDescriptionInput").value = blockDescription;
+                    document.getElementById("orderWithinNeighbourhoodInput").value = order;
+
+                    document.getElementById('new-form').submit();
+                }
+            }
+
+
+
+
             function presentSelectQuestionModal() {
                 var pagecontainerDiv = document.getElementById("pagecontainer");
 
@@ -46,6 +120,66 @@
                 top:30px;
                 left: 60px;
             }
+
+
+
+            #new-container {
+                position:absolute;
+                top:90px;
+                left:280px;
+                width:370px;
+                padding:20px;
+                padding-top: 10px;
+                background-color: #FFFFFF;
+                border-radius:10px;
+                visibility:hidden;
+
+            }
+            #new-cancelbutton{
+                display: inline-block;
+                height: 22px;
+                width: 80px;
+                cursor:pointer; /*forces the cursor to change to a hand when the button is hovered*/
+                color:#B48B6A;
+                padding-top: 4px;
+                text-align: center;
+                border-radius: 5px;
+                border-width:thin;
+                border-style:solid;
+                border-color: #B48B6A;
+                background-color:#FFFFFF;
+            }
+            #new-savebutton{
+                display: inline-block;
+                height: 22px;
+                width: 80px;
+                margin-left: 10px;
+                cursor:pointer; /*forces the cursor to change to a hand when the button is hovered*/
+                color:#B48B6A;
+                padding-top: 4px;
+                text-align: center;
+                border-radius: 5px;
+                border-width:thin;
+                border-style:solid;
+                border-color: #B48B6A;
+                background-color:#FFFFFF;
+                font-weight: bold;
+            }
+            .modal-title {
+                margin-top: 10px;
+                font-weight:bold;
+                font-size:14px;
+            }
+            .button-row {
+                margin-top: 20px;
+                margin-left: 0px;
+                width: 100%;
+            }
+            
+            .modal-row {
+                margin-top: 10px;
+            }
+
 
 
 
@@ -109,7 +243,7 @@
                 </div>
             </div>
             <div id="content-children">
-                <div id="content-children-title">${navChildren.childType+'s'} for ${navSelection.levelInHierarchy} ${navSelection.description}&nbsp;&nbsp;<a href="#">+ Add New ${navChildren.childType}</a></div>
+                <div id="content-children-title">${navChildren.childType+'s'} for ${navSelection.levelInHierarchy} ${navSelection.description}&nbsp;&nbsp;<a href="#" onclick="presentNewModal();">+ Add New Block</a></div>
                 <g:if test="${navChildren.children.size() > 0}">
                     <g:each in="${navChildren.children}" var="child">
                         <div class="content-children-row"><a href="${resource(dir:'navigate/'+navChildren.childType.toLowerCase(),file:"${child.id}")}">${child.name}</a></div>
@@ -122,6 +256,29 @@
             </div>
             <div id="transparent-overlay">
             </div>
+
+
+            <div id="new-container">
+                <div class="modal-title">New Block</div>
+                <form id="new-form" action=${resource(file:'Neighbourhood/addBlock')} method="POST">
+                    <input type="hidden" name="id" value="${navSelection.id}" />
+                    <div class="modal-row">Block code: <input id="blockCodeInput" type="text" name="code" value=""/></div>
+                    <div class="modal-row">Block description: <input id="blockDescriptionInput" type="text" name="description" value=""/></div>
+                    <div class="modal-row">Order within neighbourhood: <input id="orderWithinNeighbourhoodInput" type="text" name="orderWithinNeighbourhood" value="" /></div>
+                </form>
+                <div class="button-row">
+                    <div id="new-cancelbutton" type="button" onclick="JavaScript:dismissNewModal();">Cancel</div>
+                    <div id="new-savebutton" type="button" onclick="JavaScript:saveBlock();">Save</div>
+                </div>
+            </div>
+
+
+
+
+
+
+
+
             <div id="select-question-container">
                 <p style="font-weight:bold;font-size:14px;">Select Question for Answer Ranking</p>
                 <form id="select-question-form" action="<g:createLink controller='answer' action='frequencies'/>" method="get">

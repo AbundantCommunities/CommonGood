@@ -31,18 +31,36 @@
                 document.getElementById("transparent-overlay").style.visibility='hidden';
             }
 
-            function familyIsValid(note) {
-                if (note.indexOf('|') > -1) {
-                    alert("Notes cannot contain the '|' character. Please use a different character");
+            function familyIsValid(familyName,order,note) {
+                if (familyName == "") {
+                    alert("Please enter a family name for the new family.");
                     return false;
+                } else {
+                    if (!orderOk(order)) {
+                        alert("Please enter a valid order. Must be a number.");
+                        return false;
+                    } else {
+                        if (note.indexOf('|') > -1) {
+                            alert("Notes cannot contain the '|' character. Please use a different character");
+                            return false;
+                        }
+                    }
                 }
                 return true;
             }
+
             function saveFamily() {
-                if (familyIsValid(document.getElementById('familyNoteInput').value)) {
+                var familyName = document.getElementById('familyNameInput').value.trim();
+                var order = document.getElementById('orderWithinAddressInput').value.trim();
+                var note = document.getElementById('familyNoteInput').value.trim();
+                if (familyIsValid(familyName,order,note)) {
                     dismissEditModal();
-                    var editForm = document.getElementById('edit-form');
-                    editForm.submit();
+
+                    document.getElementById("familyNameInput").value = document.getElementById("familyNameInput").value.trim();
+                    document.getElementById("orderWithinAddressInput").value = document.getElementById("orderWithinAddressInput").value.trim();
+                    document.getElementById("familyNoteInput").value = document.getElementById("familyNoteInput").value.trim();
+
+                    document.getElementById('edit-form').submit();
                 }
             }
 
@@ -73,37 +91,107 @@
                 document.getElementById("transparent-overlay").style.visibility='hidden';
             }
 
-            function newFamilyMemberIsValid (firstNames, lastName, note) {
+            function emailOk(email) {
+                if (email.length > 0) {
+                    var re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+                    return re.test(email);
+                }
+                return true;
+            }
+
+            function yearOk(year) {
+
+                if (year.length != 4 && year.length != 0) {
+                    return false;
+                } else {
+                    if (year.length == 4) {
+                        if (year.substr(0,2) != '19' && year.substr(0,2) != '20') {
+                            return false;
+                        } else {
+                            if ('0123456789'.indexOf(year.substr(2,1)) < 0) {
+                                return false;
+                            } else {
+                                if ('0123456789'.indexOf(year.substr(3,1)) < 0) {
+                                    return false;
+                                }
+                            }
+                        }
+                    }
+                }
+                return true;
+            }
+
+            function orderOk(order) {
+                if (order.length == 0) {
+                    return false;
+                } else {
+                    for (i=0; i<order.length; i++) {
+                        if ('0123456789'.indexOf(order.substr(i,1)) < 0) {
+                            return false;
+                        }
+                    }
+                }
+                return true;
+            }
+
+            function familyMemberIsValid (firstNames, lastName, birthYear, email, note, order) {
                 if (firstNames == "") {
                     alert("Please enter a first name for the new family member.");
                     return false;
+                } else {
+                    if (lastName == "") {
+                        alert("Please enter a last name for the new family member.");
+                        return false;
+                    } else {
+                        if (!yearOk(birthYear)) {
+                            alert("Please enter a valid birth year (YYYY) or leave it blank.");
+                            return false;
+                        } else {
+                            if (!emailOk(email)) {
+                                alert("Please enter a valid email address or leave it blank.");
+                                return false;
+                            } else {
+                                if (note.indexOf('|') > -1) {
+                                    alert("Notes cannot contain the '|' character. Please use a different character.");
+                                    return false;
+                                } else {
+                                    if (!orderOk(order)) {
+                                        alert("Please enter a valid order. Must be a number.");
+                                        return false;
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
-
-                if (lastName == "") {
-                    alert("Please enter a last name for the new family member.");
-                    return false;
-                }
-
-                if (note.indexOf('|') > -1) {
-                    alert("Notes cannot contain the '|' character. Please use a different character");
-                    return false;
-                }
-
-                // If initial interview date is non-blank, validate date.
-
                 return true;
             }
 
             function saveFamilyMember() {
                 // Validate new family
-                var firstNames = document.getElementById("firstNamesInput").value;
-                var lastName = document.getElementById("lastNameInput").value;
-                var note = document.getElementById("familyMemberNoteInput").value;
-                if (newFamilyMemberIsValid(firstNames, lastName, note)) {
+                var firstNames = document.getElementById("firstNamesInput").value.trim();
+                var lastName = document.getElementById("lastNameInput").value.trim();
+                var birthYear = document.getElementById("birthYearInput").value.trim();
+                var email = document.getElementById("emailAddressInput").value.trim();
+                var note = document.getElementById("familyMemberNoteInput").value.trim();
+                var order = document.getElementById("orderWithinFamilyInput").value.trim();
+                if (familyMemberIsValid(firstNames, lastName, birthYear, email, note, order)) {
                     dismissNewModal();
+                    // trim all values
+                    document.getElementById("firstNamesInput").value = document.getElementById("firstNamesInput").value.trim();
+                    document.getElementById("lastNameInput").value = document.getElementById("lastNameInput").value.trim();
+                    document.getElementById('birthYearInput').value = document.getElementById('birthYearInput').value.trim();
+                    document.getElementById("emailAddressInput").value = document.getElementById("emailAddressInput").value.trim();
+                    document.getElementById("familyMemberNoteInput").value = document.getElementById("familyMemberNoteInput").value.trim();
+                    document.getElementById("orderWithinFamilyInput").value = document.getElementById("orderWithinFamilyInput").value.trim();
+                    // check if birth year blank. if yes, set it to '0'.
+                    if (document.getElementById('birthYearInput').value.length == 0) {
+                        document.getElementById('birthYearInput').value = '0';
+                    }
                     document.getElementById("new-form").submit();
                 }
             }
+
 
             function presentInterviewForm() {
 
@@ -382,7 +470,7 @@
                     <input type="hidden" name="familyId" value="${navSelection.id}" />
                     <div class="modal-row">First names: <input id="firstNamesInput" type="text" name="firstNames" value=""/></div>
                     <div class="modal-row">Last name: <input id="lastNameInput" type="text" name="lastName" value=""/></div>
-                    <div class="modal-row">Birth year: <input id="birthYearInput" type="text" pattern="[12][90][0-9][0-9]" name="birthYear" value="" placeholder="YYYY"/></div>
+                    <div class="modal-row">Birth year: <input id="birthYearInput" type="text" name="birthYear" value="" placeholder="YYYY"/></div>
                     <div class="modal-row">Email address: <input id="emailAddressInput" class="email-style" type="email" name="emailAddress" value="" size="40"/></div>
                     <div class="modal-row">Phone number: <input id="phoneNumberInput" type="text" name="phoneNumber" value=""/></div>
                     <div class="modal-row">Order within family: <input id="orderWithinFamilyInput" type="text" name="orderWithinFamily" value=""/></div>
