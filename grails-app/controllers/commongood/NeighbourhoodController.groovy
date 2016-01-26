@@ -14,7 +14,7 @@ class NeighbourhoodController {
         block.neighbourhood = neighbourhood
         block.code = params.code.trim( )
         block.description = params.description.trim( )
-        block.orderWithinNeighbourhood = 100
+        block.orderWithinNeighbourhood = Integer.valueOf( params.orderWithinNeighbourhood ?: '100' )
 
         if( block.code && block.description ) {
             block.save( flush:true, failOnError: true )

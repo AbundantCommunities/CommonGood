@@ -8,7 +8,13 @@ class NavigateController {
     // Automagically become instances of the respective service:
     def domainAuthorizationService
     def authorizationService
-    
+
+    def remember( lastNavigationLevel, lastNavigationId ) {
+        log.info "Navigate to ${lastNavigationLevel}/${lastNavigationId}"
+        session.lastNavigationLevel = lastNavigationLevel
+        session.lastNavigationId = lastNavigationId
+    }
+
     def installation( ) {
         ThisInstallation thisInstallation = ThisInstallation.get( )
         List hoods = Neighbourhood.list( sort:'name', order:'asc')
@@ -28,7 +34,7 @@ class NavigateController {
                 children: hoods
                 ]
             ]
-        log.info 'Navigate to application'
+        remember( 'installation', null )
         render "This installation of CommonGood is: ${thisInstallation.name}"
     }
 
@@ -52,7 +58,7 @@ class NavigateController {
                 children: blocks
                 ]
             ]
-        log.info "Navigate to neighbourhood ${hoodId} ${theHood.name}"
+        remember( 'neighbourhood', hoodId )
         result
     }
 
@@ -82,7 +88,7 @@ class NavigateController {
                 children: addresses
                 ]
             ]
-        log.info "Navigate to block ${blockId}"
+        remember( 'block', blockId )
         result
     }
 
@@ -118,7 +124,7 @@ class NavigateController {
                 children: families
                 ]
             ]
-        log.info "Navigate to address ${addressId}"
+        remember( 'address', addressId )
         result
     }
 
@@ -162,7 +168,7 @@ class NavigateController {
                 children: members
                 ]
             ]
-        log.info "Navigate to family ${familyId}"
+        remember( 'family', familyId )
         result
     }
 
@@ -254,7 +260,7 @@ class NavigateController {
             
             questionsAndAnswers: qna
         ]
-        log.info "Navigate to family member ${memberId}"
+        remember( 'familymember', memberId )
         result
     }
 }
