@@ -96,7 +96,6 @@
 
                 // clear UI before presenting
                 document.getElementById("familyNameInput").value = "";
-                document.getElementById("orderWithinAddressInput").value = "";
                 document.getElementById("familyNoteTextarea").value = "";
 
 
@@ -129,19 +128,14 @@
                 return true;
             }
 
-            function familyIsValid(familyName,order,note) {
+            function familyIsValid(familyName,note) {
                 if (familyName == "") {
                     alert("Please enter a family name for the new family.");
                     return false;
                 } else {
-                    if (!orderOk(order)) {
-                        alert("Please enter a valid order. Must be a number.");
+                    if (note.indexOf('|') > -1) {
+                        alert("Notes cannot contain the '|' character. Please use a different character");
                         return false;
-                    } else {
-                        if (note.indexOf('|') > -1) {
-                            alert("Notes cannot contain the '|' character. Please use a different character");
-                            return false;
-                        }
                     }
                 }
                 return true;
@@ -149,14 +143,12 @@
 
             function saveFamily() {
                 var familyName = document.getElementById('familyNameInput').value.trim();
-                var order = document.getElementById('orderWithinAddressInput').value.trim();
                 var note = document.getElementById('familyNoteTextarea').value.trim();
-                if (familyIsValid(familyName,order,note)) {
+                if (familyIsValid(familyName,note)) {
                     dismissEditModal();
 
-                    document.getElementById("familyNameInput").value = document.getElementById("familyNameInput").value.trim();
-                    document.getElementById("orderWithinAddressInput").value = document.getElementById("orderWithinAddressInput").value.trim();
-                    document.getElementById("familyNoteTextarea").value = document.getElementById("familyNoteTextarea").value.trim();
+                    document.getElementById("familyNameInput").value = familyName;
+                    document.getElementById("familyNoteTextarea").value = note;
 
                     document.getElementById('new-form').submit();
                 }
@@ -329,7 +321,7 @@
                 </div>
             </div>
             <div id="content-children">
-                <div id="content-children-title">Families for ${navSelection.levelInHierarchy} ${navSelection.description}&nbsp;&nbsp;<a onclick="presentNewModal();" href="#">+ Add New ${navChildren.childType}</a></div>
+                <div class="content-heading">Families for ${navSelection.levelInHierarchy} ${navSelection.description}&nbsp;&nbsp;<a onclick="presentNewModal();" href="#" style="font-weight:normal;">+ Add New ${navChildren.childType}</a></div>
                 <g:if test="${navChildren.children.size() > 0}">
                     <g:each in="${navChildren.children}" var="child">
                         <div class="content-children-row"><a href="${resource(dir:'navigate/'+navChildren.childType.toLowerCase(),file:"${child.id}")}">${child.name}</a></div>
@@ -347,7 +339,7 @@
                 <form id="edit-form" action=${resource(file:'Address/save')} method="POST">
                     <input type="hidden" name="id" value="${navSelection.id}" />
                     <div class="modal-row">Address: <input id="addressTextInput" type="text" name="text" value="" style="width:70%;"/></div>
-                    <div class="modal-row">Order within block: <input id="orderWithinBlockInput" type="text" name="orderWithinBlock" value="" /></div>
+                    <div class="modal-row">Order within block: <input id="orderWithinBlockInput" type="text" name="orderWithinBlock" value="" size="12"/></div>
                     <div class="modal-row">Note: <br/><textarea id="addressNoteTextarea" class="noteTextarea" name="note" cols=44 rows=4></textarea></div>
                 </form>
                 <div class="button-row">
@@ -360,7 +352,6 @@
                 <form id="new-form" action=${resource(file:'Family/save')} method="POST">
                     <input type="hidden" name="addressId" value="${navSelection.id}" />
                     <div class="modal-row">Family name: <input id="familyNameInput" type="text" name="familyName" value=""/></div>
-                    <div class="modal-row">Order within address: <input id="orderWithinAddressInput" type="text" name="orderWithinAddress" value="" /></div>
                     <div class="modal-row">Note: <br/><textarea id="familyNoteTextarea" class="noteTextarea" name="note" cols=44 rows=4></textarea></div>
                 </form>
                 <div class="button-row">

@@ -169,7 +169,7 @@
                     document.getElementById("transparent-overlay").style.visibility='visible';
                     document.getElementById("new-bc-container").style.visibility='visible';
                 } else {
-                    alert('Please add the address of the block connector first.');
+                    alert('Please add the address, family and family member of the block connector first.');
                 }
             }
 
@@ -198,7 +198,7 @@
                     addressesSelect.selectedIndex = 0;
 
                     document.getElementById('select-family').style.display = 'none';
-                    alert("Before adding a block connector, you must add the block connector's address to the block.");
+                    alert("Before adding a block connector, you must add the block connector's address, family and family member to the block.");
 
                 } else {
                     var xmlhttp = new XMLHttpRequest( );
@@ -224,10 +224,6 @@
                             familiesSelect.options[familiesSelect.options.length] = new Option(families[i].name, families[i].id);
                         }
 
-                        familiesSelect.options[familiesSelect.options.length] = new Option('', -1);
-                        familiesSelect.options[familiesSelect.options.length-1].disabled = true;
-                        familiesSelect.options[familiesSelect.options.length] = new Option('Family not listed ...', -2);
-
                         document.getElementById('select-family').style.display = 'block';
 
                     }
@@ -242,61 +238,33 @@
                     familiesSelect.remove(0);
                 }
 
+                var xmlhttp = new XMLHttpRequest( );
+                var url = '<g:createLink controller="family" action="members"/>/'+document.getElementById('families-select').value;
 
+                xmlhttp.onreadystatechange = function( ) {
+                    if( xmlhttp.readyState == 4 /* && xmlhttp.status == 200 */ ) {
+                        var members = JSON.parse( xmlhttp.responseText );
+                        buildMembersSelect( members );
+                    }
+                };
 
+                xmlhttp.open( "GET", url, true );
+                xmlhttp.send( );
 
+                function buildMembersSelect( members ) {
+                    var membersSelect = document.getElementById('members-select')
+                    membersSelect.options.length = 0;
 
-                // Check if 'new ...' selected
+                    membersSelect.options[membersSelect.options.length] = new Option('', 0);
+                    membersSelect.options[membersSelect.options.length-1].disabled = true;
 
-                if (document.getElementById('families-select').value != -2) {
-
-                    var xmlhttp = new XMLHttpRequest( );
-                    var url = '<g:createLink controller="family" action="members"/>/'+document.getElementById('families-select').value;
-
-                    xmlhttp.onreadystatechange = function( ) {
-                        if( xmlhttp.readyState == 4 /* && xmlhttp.status == 200 */ ) {
-                            var members = JSON.parse( xmlhttp.responseText );
-                            buildMembersSelect( members );
-                        }
-                    };
-
-                    xmlhttp.open( "GET", url, true );
-                    xmlhttp.send( );
-
-                    function buildMembersSelect( members ) {
-                        var membersSelect = document.getElementById('members-select')
-                        membersSelect.options.length = 0;
-
-                        membersSelect.options[membersSelect.options.length] = new Option('', 0);
-                        membersSelect.options[membersSelect.options.length-1].disabled = true;
-
-                        for (i = 0; i < members.length; i++) {
-                            membersSelect.options[membersSelect.options.length] = new Option(members[i].name, members[i].id);
-                        }
-
-                        membersSelect.options[membersSelect.options.length] = new Option('', 0);
-                        membersSelect.options[membersSelect.options.length-1].disabled = true;
-
-                        membersSelect.options[membersSelect.options.length] = new Option('Person not listed', -2);
-
-                        document.getElementById('select-member').style.display = 'block';
-
+                    for (i = 0; i < members.length; i++) {
+                        membersSelect.options[membersSelect.options.length] = new Option(members[i].name, members[i].id);
                     }
 
-                } else {
-
-                    // User chose "Family not listed", so put up alert saying family must be added first
-                    var blankMember = new Option('',0);
-                    blankMember.disabled = true;
-
-                    familiesSelect.insertBefore(blankMember, familiesSelect.firstChild);
-                    familiesSelect.selectedIndex = 0;
-
-                    alert("Before adding a block connector, you must add the block connector's family.");
-
+                    document.getElementById('select-member').style.display = 'block';
 
                 }
-
 
             }
 
@@ -305,20 +273,6 @@
                 var membersSelect = document.getElementById('members-select');
                 if (membersSelect.options[0].value == 0) {
                     membersSelect.remove(0);
-                }
-
-
-
-                if (membersSelect.value == -2) {
-                    // User chose "Person not listed", so put up alert saying address must be added first
-                    var blankMember = new Option('',0);
-                    blankMember.disabled = true;
-
-                    membersSelect.insertBefore(blankMember, membersSelect.firstChild);
-                    membersSelect.selectedIndex = 0;
-
-                    alert("Before adding a block connector, you must add the block connector as a family member.");
-
                 }
             }
 
@@ -625,7 +579,7 @@
                 </div>
             </div>
             <div id="content-children">
-                <div id="content-children-title">Addresses for ${navSelection.levelInHierarchy} ${navSelection.description}&nbsp;&nbsp;<a href="#" onclick="presentNewModal();">+ Add New Addresses</a></div>
+                <div class="content-heading">Addresses for ${navSelection.levelInHierarchy} ${navSelection.description}&nbsp;&nbsp;<a href="#" onclick="presentNewModal();" style="font-weight:normal;">+ Add New Addresses</a></div>
                 <g:if test="${navChildren.children.size() > 0}">
                     <g:each in="${navChildren.children}" var="child">
                         <div class="content-children-row"><a href="${resource(dir:'navigate/'+navChildren.childType.toLowerCase(),file:"${child.id}")}">${child.name}</a></div>
@@ -682,7 +636,7 @@
                     <input type="hidden" name="id" value="${navSelection.id}" />
                     <div class="modal-row">Block code: <input id="blockCodeInput" type="text" name="code" value=""/></div>
                     <div class="modal-row">Block description: <input id="blockDescriptionInput" type="text" name="description" value=""/></div>
-                    <div class="modal-row">Order within neighbourhood: <input id="orderWithinNeighbourhoodInput" type="text" name="orderWithinNeighbourhood" value="" /></div>
+                    <div class="modal-row">Order within neighbourhood: <input id="orderWithinNeighbourhoodInput" type="text" name="orderWithinNeighbourhood" value="" size="12"/></div>
                 </form>
                 <div class="button-row">
                     <div id="edit-cancelbutton" type="button" onclick="JavaScript:dismissEditModal();">Cancel</div>
@@ -698,7 +652,7 @@
                 <div class="footnote">Add multiple addresses by pressing Return after each.</div>
                 <form id="new-form" action=${resource(file:'Block/addAddresses')} method="POST">
                     <input type="hidden" name="id" value="${navSelection.id}" />
-                    <div class="modal-row">Addresses: <br/><textarea id="addressesInput" class="note-style" name="addresses" cols=56 rows=4></textarea></div>
+                    <div class="modal-row">Addresses: <br/><textarea id="addressesInput" class="note-style" name="addresses" cols=56 rows=8></textarea></div>
                 </form>
                 <div class="button-row">
                     <div id="new-cancelbutton" type="button" onclick="JavaScript:dismissNewModal();">Cancel</div>

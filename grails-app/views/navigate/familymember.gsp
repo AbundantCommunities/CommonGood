@@ -473,7 +473,7 @@
                 </div>
             </div>
             <div id="content-children">
-                <div id="content-children-title">Answers for ${navSelection.description}</div>
+                <div class="content-heading">Answers for ${navSelection.description}</div>
                 <g:if test="${questionsAndAnswers.size() > 0}">
                     <g:each in="${questionsAndAnswers}" var="qa">
                         <div class="content-children-row">${qa.question}: <g:each in="${qa.answers}" var="answer" status="i"><g:if test="${i>0}">, </g:if><span id="answer_${answer.id}" style="cursor:pointer;color:#B48B6A;" onclick="editAnswer(this);">${answer.text}</span></g:each></div>
@@ -495,7 +495,7 @@
                     <div class="modal-row">Birth year: <input id="birthYearInput" type="text" name="birthYear" value="" placeholder="YYYY"/></div>
                     <div class="modal-row">Email address: <input id="emailAddressInput" class="email-style" type="email" name="emailAddress" value="" size="40"/></div>
                     <div class="modal-row">Phone number: <input id="phoneNumberInput" type="text" name="phoneNumber" value=""/></div>
-                    <div class="modal-row">Order within family: <input id="orderWithinFamilyInput" type="text" name="orderWithinFamily" value=""/></div>
+                    <div class="modal-row">Order within family: <input id="orderWithinFamilyInput" type="text" name="orderWithinFamily" value="" size="12"/></div>
                     <div class="modal-row">Note: <br/><textarea id="noteInput" class="note-style" name="note" cols=56 rows=4></textarea></div>
                 </form>
                 <div class="button-row">
