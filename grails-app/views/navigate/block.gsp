@@ -298,7 +298,13 @@
                 }
             }
 
-
+            function revokeBC(which) {
+                var bcId = which.id.split('|')[1];
+                var blockId = which.id.split('|')[2];
+                document.getElementById('revoke-bc-id').value = bcId;
+                document.getElementById('revoke-bc-block-id').value = blockId;
+                document.getElementById('revoke-form').submit();
+            }
 
         </script>
         <style type="text/css">
@@ -551,9 +557,12 @@
 
                 <g:if test="${navSelection.blockConnectors.size() > 0}">
                     <g:each in="${navSelection.blockConnectors}" var="bc" status="i">
-                        <div class="bc" style="top:${(i*20)+30}px;"><a href="${resource(dir:'navigate/familymember',file:"${bc.id}")}">${bc.fullName}</a> <span style="font-size:smaller;">(<a href="${resource(dir:'authorization',file:'deauthorizeBlockConnector')}/${bc.id}?blockId=${navSelection.id}">revoke</a>)</span></div>
+                        <div class="bc" style="top:${(i*20)+30}px;"><a href="${resource(dir:'navigate/familymember',file:"${bc.id}")}">${bc.fullName}</a> <span style="font-size:smaller;">(<a id="revoke|${bc.id}|${navSelection.id}" href="#" onclick="revokeBC(this);">revoke</a>)</span></div>
                     </g:each>
-
+                    <form id="revoke-form" action="<g:createLink controller='authorization' action='deauthorizeBlockConnector'/>" method="DELETE">
+                        <input id="revoke-bc-id" type="hidden" name="id"/>
+                        <input id="revoke-bc-block-id" type="hidden" name="blockId"/>
+                    </form>
                 </g:if>
                 <g:else>
                     <div class="bc" style="top:30px;">no assigned block connector</div>
@@ -644,9 +653,6 @@
                 </div>
             </div>
 
-
-
-
             <div id="new-container">
                 <div class="modal-title">New Addresses</div>
                 <div class="footnote">Add multiple addresses by pressing Return after each.</div>
@@ -659,7 +665,6 @@
                     <div id="new-savebutton" type="button" onclick="JavaScript:addAddresses();">Save</div>
                 </div>
             </div>
-
 
     </body>
 </html>
