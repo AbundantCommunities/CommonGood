@@ -33,7 +33,6 @@ class BlockSummaryController {
         def lastInterview = null
 
         fams.each{
-            println "${it}"
             def block = it.blockId
             if( block != lastBlock ) {
                 if( lastBlock ) {
