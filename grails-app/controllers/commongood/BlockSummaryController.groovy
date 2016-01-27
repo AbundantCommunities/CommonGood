@@ -3,12 +3,11 @@ package commongood
 import groovy.sql.Sql
 
 class BlockSummaryController {
-    // Grails inkects the default DataSource
+    // Grails injects the default DataSource
     def dataSource
 
     def index() {
         // Eschew GORM; let's kick it ol' school...
-        def id = 1L
         def query = '''SELECT blk.id AS blockId,
                         blk.code AS blockCode,
                         addr.id as addressId,
@@ -16,13 +15,14 @@ class BlockSummaryController {
                         fam.interview_date,
                         fam.participate_in_interview
                     FROM (Block AS blk
-                      inner JOIN address AS addr ON blk.id = addr.block_id)
+                      inner JOIN address AS addr ON blk.id = addr.block_id
+                                AND blk.neighbourhood_id = :neighbourhoodId)
                       LEFT OUTER JOIN family AS fam ON addr.id = fam.address_id
                     ORDER BY blk.order_within_neighbourhood,
                              addr.order_within_block'''
 
         final Sql sql = new Sql(dataSource)
-        def fams = sql.rows( query )
+        def fams = sql.rows( query, [neighbourhoodId: session.neighbourhood.id] )
 
         def blocks = [ ]
         def lastBlockCode = null
@@ -34,11 +34,8 @@ class BlockSummaryController {
         def lastInterview = null
 
         fams.each{
-            println "lastBlockId is ${lastBlockId}. ${it}"
             if( it.blockId != lastBlockId ) {
-                println "blockId != lastBlockId"
                 if( lastBlockId ) {
-                    println "flush a block (inner)"
                     def bc = getBlockConnector( lastBlockId )
                     blocks << [
                         id: lastBlockId,
@@ -62,20 +59,16 @@ class BlockSummaryController {
             }
             countFamilies++
             if( it.interview_date ) {
-                println "Count an interview"
                 countInterviews++
                 if( !it.participate_in_interview ) {
-                    println "Count a pooper"
                     countPartyPoopers++
                 }
 
                 if( !firstInterview || it.interview_date.before(firstInterview) ) {
-                    println "update firstInterview"
                     firstInterview = it.interview_date
                 }
 
                 if( !lastInterview || it.interview_date.after(lastInterview) ) {
-                    println "update lastInterview"
                     lastInterview = it.interview_date
                 }
             }
