@@ -380,29 +380,29 @@
                 <form id="present-interview-form" action="<g:createLink controller='question' method='POST'/>">
                     <input type="hidden" id="familyId-input" name="familyId"/>
                 </form>
-                <div id="interview-headings-left">
-                    <div class="detail-item">Permission to contact: </div>
-                    <div class="detail-item">Agreed to participate in interview: </div>
-                </div>
-                <div id="interview-values-left">
-                    <div class="detail-item">
-                        <g:if test="${navSelection.permissionToContact}">
-                            Yes
-                        </g:if>
-                        <g:else>
-                            No
-                        </g:else>
-                    </div>
-                    <div class="detail-item">
-                        <g:if test="${navSelection.participateInInterview}">
-                            Yes
-                        </g:if>
-                        <g:else>
-                            No
-                        </g:else>
-                    </div>
-                </div>
                 <g:if test="${navSelection.interviewed}">
+                    <div id="interview-headings-left">
+                        <div class="detail-item">Permission to contact: </div>
+                        <div class="detail-item">Agreed to participate in interview: </div>
+                    </div>
+                    <div id="interview-values-left">
+                        <div class="detail-item">
+                            <g:if test="${navSelection.permissionToContact}">
+                                Yes
+                            </g:if>
+                            <g:else>
+                                No
+                            </g:else>
+                        </div>
+                        <div class="detail-item">
+                            <g:if test="${navSelection.participateInInterview}">
+                                Yes
+                            </g:if>
+                            <g:else>
+                                No
+                            </g:else>
+                        </div>
+                    </div>
                     <div id="interview-headings-right">
                         <div class="detail-item">Initial interview date: </div>
                         <div class="detail-item">Initial interviewer: </div>
@@ -412,16 +412,19 @@
                         <div id="initial-interviewer-value" class="detail-item"></div>
                     </div>
                 </g:if>
+                <g:else>
+                    <div style="color:#BBBBBB;">no interiview data for family</div>
+                </g:else>
             </div>
             <div id="content-children">
-                <div class="content-heading">Family members for ${navSelection.levelInHierarchy} ${navSelection.description}&nbsp;&nbsp;<a href="#" onclick="presentNewModal()" style="font-weight:normal;">+ Add New Family Member</a></div>
+                <div class="content-heading">Family Members for ${navSelection.levelInHierarchy} ${navSelection.description}&nbsp;&nbsp;<a href="#" onclick="presentNewModal()" style="font-weight:normal;">+ Add New Family Member</a></div>
                 <g:if test="${navChildren.children.size() > 0}">
                     <g:each in="${navChildren.children}" var="child">
                         <div class="content-children-row"><a href="${resource(dir:'navigate/'+navChildren.childType.toLowerCase(),file:"${child.id}")}">${child.name}</a></div>
                     </g:each>
                 </g:if>
                 <g:else>
-                    <div class="content-children-row" style="color:#CCCCCC;">no family members</div>
+                    <div class="content-children-row" style="color:#BBBBBB;">no family members</div>
                 </g:else>
                 <div class="content-children-row"></div>
             </div>
