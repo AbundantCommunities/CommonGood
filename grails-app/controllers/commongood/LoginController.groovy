@@ -26,7 +26,7 @@ class LoginController {
                 session.user = user
             } else {
                 println "NO NH authorization to store in session"
-                flash.message = "DON'T USE FLASH TO SAY You authenticated okay but WITHOUT access to a neighbourhood."
+                println "DON'T USE FLASH TO SAY You authenticated okay but WITHOUT access to a neighbourhood."
             }
             forward controller:'navigate', action:'neighbourhood', id:neighbourhoodId
 

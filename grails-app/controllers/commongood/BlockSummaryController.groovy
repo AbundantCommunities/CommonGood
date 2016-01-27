@@ -10,6 +10,7 @@ class BlockSummaryController {
         // Eschew GORM; let's kick it ol' school...
         def query = '''SELECT blk.id AS blockId,
                         blk.code AS blockCode,
+                        blk.description AS blockDescription,
                         addr.id as addressId,
                         fam.id AS familyId,
                         fam.interview_date,
@@ -40,6 +41,7 @@ class BlockSummaryController {
                     blocks << [
                         id: lastBlockId,
                         code: lastBlockCode,
+                        description: blockDescription,
                         bcName: bc.fullName,
                         bcPhone: bc.phoneNumber,
                         bcEmail: bc.emailAddress,
