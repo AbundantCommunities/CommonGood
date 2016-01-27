@@ -28,14 +28,14 @@
             
 
             function populateEditModal() {
-
-                document.getElementById('addressTextInput').value = "${navSelection.description}";
+                Encoder.EncodeType = "entity";
+                document.getElementById('addressTextInput').value = Encoder.htmlDecode("${navSelection.description}");
                 document.getElementById('orderWithinBlockInput').value = "${navSelection.orderWithinBlock}";
 
                 var encodedNote = "${navSelection.note.split('\r\n').join('|')}";
                 var decodedNote = encodedNote.split('|').join('\n');
 
-                document.getElementById('addressNoteTextarea').value = decodedNote;
+                document.getElementById('addressNoteTextarea').value = Encoder.htmlDecode(decodedNote);
             }
             function presentEditModal() {
                 var pagecontainerDiv = document.getElementById("pagecontainer");
@@ -324,8 +324,8 @@
 
                 <div id="content-actions">
                     <div class="content-action"><a href="#" onclick="presentEditModal();">Edit</a></div>
-                    <div class="content-action"><a href="#">Delete</a></div>
-                    <div class="content-action"><a href="#">Print</a> (<a href="#">preferences</a>)</div>
+                    <div class="content-action"><a href="#" onclick="alert('not yet implemented');">Delete</a></div>
+                    <div class="content-action"><a href="#" onclick="alert('not yet implemented');">Print</a></div>
                 </div>
             </div>
             <div id="content-children">

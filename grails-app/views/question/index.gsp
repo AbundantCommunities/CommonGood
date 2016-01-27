@@ -27,12 +27,51 @@
 
             }
 
-            function saveInterviewData() {
 
-                var selectedInterviewerIndex = document.getElementById('interviewer-select').selectedIndex;
-                var interviewerId = possibleInterviewers[selectedInterviewerIndex][0];
-                document.getElementById('interviewer-id-input').value = interviewerId;
-                document.getElementById('interview-data-form').submit();
+            function yearOk(year) {
+
+
+                if (year.length != 4 && year.length != 0) {
+                    return false;
+                } else {
+                    if (year.length == 4) {
+                        if (year.substr(0,2) != '19' && year.substr(0,2) != '20') {
+                            return false;
+                        } else {
+                            if ('0123456789'.indexOf(year.substr(2,1)) < 0) {
+                                return false;
+                            } else {
+                                if ('0123456789'.indexOf(year.substr(3,1)) < 0) {
+                                    return false;
+                                }
+                            }
+                        }
+                    }
+                }
+                return true;
+            }
+
+            function dateOk(date) {
+                var pattern = /^$|^(19|20)\d{2}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/;
+                return pattern.test(date);
+            }
+
+            function interviewDataOkay(initialInterviewDate) {
+                if (!dateOk(initialInterviewDate)) {
+                    alert('Please enter a value initial interview date in the format YYYY-MM-DD.');
+                    return false;
+                }
+                return true;
+            }
+
+
+            function saveInterviewData() {
+                if (interviewDataOkay(document.getElementById('interview-date-input').value)) {
+                    var selectedInterviewerIndex = document.getElementById('interviewer-select').selectedIndex;
+                    var interviewerId = possibleInterviewers[selectedInterviewerIndex][0];
+                    document.getElementById('interviewer-id-input').value = interviewerId;
+                    document.getElementById('interview-data-form').submit();
+                }
             }
 
                         // Initialize array to hold ids for possible interviewers.
@@ -243,7 +282,7 @@
                     <div id="interview-data-div">
                         <div id="permission-div"><input id="permission-checkbox-input" name="permissionToContact" type="checkbox"/> Permission to contact</div>
                         <div id="participate-div"><input id="participate-checkbox-input" name="participateInInterview" type="checkbox"/> Agreed to participate in interview</div>
-                        <div id="interview-date-div">Initial interview date: <input id="interview-date-input" type="date" name="interviewDate" placeholder="yyyy-MM-dd" value=""/></div>
+                        <div id="interview-date-div">Initial interview date: <input id="interview-date-input" type="date" name="interviewDate" placeholder="YYYY-MM-DD" value=""/></div>
                         <div id="interviewer-div">Initial interviewer: 
                             <select id="interviewer-select">
                                 <g:each in="${possibleInterviewers}" var="possibleInterviewer">

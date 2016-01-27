@@ -6,23 +6,28 @@
         <title>Abundant Communities - Edmonton</title>
         <script type="text/javascript">
             function populateEditModal() {
-
-                document.getElementById('firstNamesInput').value = "${navSelection.firstNames}";
-                document.getElementById('lastNameInput').value = "${navSelection.lastName}";
+                Encoder.EncodeType = "entity";
+                document.getElementById('firstNamesInput').value = Encoder.htmlDecode("${navSelection.firstNames}");
+                document.getElementById('lastNameInput').value = Encoder.htmlDecode("${navSelection.lastName}");
                 <g:if test="${navSelection.birthYear == 0}">
                     document.getElementById('birthYearInput').value = "";
                 </g:if>
                 <g:else>
                     document.getElementById('birthYearInput').value = "${navSelection.birthYear}";
                 </g:else>
-                var emailToEncode = "${navSelection.emailAddress}";
-                var email = emailToEncode.split('&#64;').join('@');
-                document.getElementById('emailAddressInput').value = email;
 
-                document.getElementById('phoneNumberInput').value = "${navSelection.phoneNumber}";
+                //next 2 lines necessary if Encoder not used
+                //var emailToEncode = Encoder.htmlDecode("${navSelection.emailAddress}");
+                //var email = emailToEncode.split('&#64;').join('@');
+                
+                document.getElementById('emailAddressInput').value = Encoder.htmlDecode("${navSelection.emailAddress}");
+
+                document.getElementById('phoneNumberInput').value = Encoder.htmlDecode("${navSelection.phoneNumber}");
                 document.getElementById('orderWithinFamilyInput').value = "${navSelection.orderWithinFamily}";
 
-                document.getElementById('noteInput').value = "${navSelection.note}";
+                var encodedNote = "${navSelection.note.split('\r\n').join('|')}";
+                var decodedNote = encodedNote.split('|').join('\n');
+                document.getElementById('noteInput').value = Encoder.htmlDecode(decodedNote);
             }
 
 
@@ -51,25 +56,8 @@
             }
 
             function yearOk(year) {
-
-                if (year.length != 4 && year.length != 0) {
-                    return false;
-                } else {
-                    if (year.length == 4) {
-                        if (year.substr(0,2) != '19' && year.substr(0,2) != '20') {
-                            return false;
-                        } else {
-                            if ('0123456789'.indexOf(year.substr(2,1)) < 0) {
-                                return false;
-                            } else {
-                                if ('0123456789'.indexOf(year.substr(3,1)) < 0) {
-                                    return false;
-                                }
-                            }
-                        }
-                    }
-                }
-                return true;
+                var pattern = /^$|^(19|20)\d{2}$/;
+                return pattern.test(year);
             }
 
             function orderOk(order) {
@@ -480,8 +468,8 @@
 
                 <div id="content-actions">
                     <div class="content-action"><a href="#" onclick="presentEditModal()">Edit</a></div>
-                    <div class="content-action"><a href="#">Delete</a></div>
-                    <div class="content-action"><a href="#">Print</a> (<a href="#">preferences</a>)</div>
+                    <div class="content-action"><a href="#" onclick="alert('not yet implemented');">Delete</a></div>
+                    <div class="content-action"><a href="#" onclick="alert('not yet implemented');">Print</a></div>
                 </div>
             </div>
             <div id="content-children">

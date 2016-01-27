@@ -6,14 +6,14 @@
         <title>Abundant Communities - Edmonton</title>
         <script type="text/javascript">
             function populateEditModal() {
-
-                document.getElementById('familyNameInput').value = "${navSelection.description}";
+                Encoder.EncodeType = "entity";
+                document.getElementById('familyNameInput').value = Encoder.htmlDecode("${navSelection.description}");
                 document.getElementById('orderWithinAddressInput').value = "${navSelection.orderWithinAddress}";
 
                 var encodedNote = "${navSelection.note.split('\r\n').join('|')}";
                 var decodedNote = encodedNote.split('|').join('\n');
 
-                document.getElementById('familyNoteInput').value = decodedNote;
+                document.getElementById('familyNoteInput').value = Encoder.htmlDecode(decodedNote);
             }
             function presentEditModal() {
                 var pagecontainerDiv = document.getElementById("pagecontainer");
@@ -100,25 +100,8 @@
             }
 
             function yearOk(year) {
-
-                if (year.length != 4 && year.length != 0) {
-                    return false;
-                } else {
-                    if (year.length == 4) {
-                        if (year.substr(0,2) != '19' && year.substr(0,2) != '20') {
-                            return false;
-                        } else {
-                            if ('0123456789'.indexOf(year.substr(2,1)) < 0) {
-                                return false;
-                            } else {
-                                if ('0123456789'.indexOf(year.substr(3,1)) < 0) {
-                                    return false;
-                                }
-                            }
-                        }
-                    }
-                }
-                return true;
+                var pattern = /^$|^(19|20)\d{2}$/;
+                return pattern.test(year);
             }
 
             function orderOk(order) {
@@ -193,7 +176,7 @@
             }
 
 
-            function presentInterviewForm() {
+            function presentInterviewForm   () {
 
                 document.getElementById('familyId-input').value = "${navSelection.id}";
                 document.getElementById('present-interview-form').submit();
@@ -202,10 +185,12 @@
 
             window.onload = function onWindowLoad() {
                 <g:each in="${navSelection.possibleInterviewers}" var="possibleInterviewer">
-                    <g:if test="${possibleInterviewer.default=='true'}">
+                    <g:if test="${possibleInterviewer.default}">
                         document.getElementById('initial-interviewer-value').innerHTML = "${possibleInterviewer.fullName}";
                     </g:if>
                 </g:each>
+
+
             }
 
         </script>
@@ -394,8 +379,8 @@
 
                 <div id="content-actions">
                     <div class="content-action"><a href="#" onclick="presentEditModal()">Edit</a></div>
-                    <div class="content-action"><a href="#">Delete</a></div>
-                    <div class="content-action"><a href="#">Print</a> (<a href="#">preferences</a>)</div>
+                    <div class="content-action"><a href="#" onclick="alert('not yet implemented');">Delete</a></div>
+                    <div class="content-action"><a href="#" onclick="alert('not yet implemented');">Print</a></div>
                 </div>
             </div>
             <div id="content-interview">

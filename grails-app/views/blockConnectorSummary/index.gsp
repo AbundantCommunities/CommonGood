@@ -4,11 +4,25 @@
     <head>
         <meta name="layout" content="report">
         <title>Abundant Communities - Edmonton</title>
+        <script type="text/javascript">
+            function emailAll() {
+                alert('not yet implemented');
+                var emails = '';
+                <g:if test="${result.connectors.size() > 0}">
+                    <g:each in="${result.connectors}" var="bc" status="i">
+                        <g:if test="${bc.bcEmail.size() > 0}">
+                        </g:if>
+                    </g:each>
+                </g:if>
+
+                //document.location.href = "mailto:xyz@something.com";
+            }
+        </script>
     </head>
     <body>
             <div id="content-children" style="padding-bottom:10px;">
                 <div style="margin-top:-15px;"><h3>Block Connector Summary for ${session.neighbourhood.name}</h3></div>
-                <div style="margin-top:-10px;"><h4>Number of block connectors in neighbourhood: ${result.connectors.size()}</h4></div>
+                <div style="margin-top:-10px;"><h4>Number of block connectors in neighbourhood: ${result.connectors.size()} (<a href="#" onclick="emailAll();">email all</a>)</h4></div>
                 <div id="content-children-heading">
                     <div class="cell150">Block Connector</div>
                     <div class="cell230">Email</div>

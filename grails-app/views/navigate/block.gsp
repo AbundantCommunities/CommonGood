@@ -7,8 +7,9 @@
         <script type="text/javascript">
 
             function populateEditModal() {
-                document.getElementById('blockCodeInput').value = "${navSelection.code}";
-                document.getElementById('blockDescriptionInput').value = "${navSelection.description}";
+                Encoder.EncodeType = "entity";
+                document.getElementById('blockCodeInput').value = Encoder.htmlDecode("${navSelection.code}");
+                document.getElementById('blockDescriptionInput').value = Encoder.htmlDecode("${navSelection.description}");
                 document.getElementById('orderWithinNeighbourhoodInput').value = "${navSelection.orderWithinNeighbourhood}";
             }
 
@@ -619,8 +620,8 @@
 
                 <div id="content-actions">
                     <div class="content-action"><a href="#" onclick="presentEditModal();">Edit</a></div>
-                    <div class="content-action"><a href="#">Delete</a></div>
-                    <div class="content-action"><a href="#">Print</a> (<a href="#">preferences</a>)</div>
+                    <div class="content-action"><a href="#" onclick="alert('not yet implemented');">Delete</a></div>
+                    <div class="content-action"><a href="#" onclick="alert('not yet implemented');">Print</a></div>
                 </div>
             </div>
             <div id="content-children">

@@ -181,8 +181,6 @@
             }
 
 
-
-
             #select-question-container {
                 position:absolute;
                 top:100px;
@@ -191,37 +189,42 @@
                 height:100px;
                 padding:20px;
                 padding-top: 10px;
-                box-shadow: 0px 0px 20px #000000;
                 background-color: #FFFFFF;
                 border-radius:10px;
-                border-width: 2px;
-                border-color: #B48B6A;
-                border-style: solid;
                 visibility:hidden;
             }
-            button#select-question-generatebutton{
-                position: absolute;
-                left:130px;
-                top:90px;
+            #select-question-cancelbutton {
+                display: inline-block;
+                height: 22px;
+                width: 80px;
                 cursor:pointer; /*forces the cursor to change to a hand when the button is hovered*/
-                padding:5px 25px; /*add some padding to the inside of the button*/
-                background:transparent; /*the colour of the button*/
-                border:0px;
                 color:#B48B6A;
-                font-size: 14px;
+                padding-top: 4px;
+                text-align: center;
+                border-radius: 5px;
+                border-width:thin;
+                border-style:solid;
+                border-color: #B48B6A;
+                background-color:#FFFFFF;
+            }
+            #select-question-generatebutton {
+                display: inline-block;
+                height: 22px;
+                width: 160px;
+                margin-left: 10px;
+                cursor:pointer; /*forces the cursor to change to a hand when the button is hovered*/
+                color:#B48B6A;
+                padding-top: 4px;
+                text-align: center;
+                border-radius: 5px;
+                border-width:thin;
+                border-style:solid;
+                border-color: #B48B6A;
+                background-color:#FFFFFF;
                 font-weight: bold;
             }
-            button#select-question-cancelbutton{
-                position: absolute;
-                left:60px;
-                top:90px;
-                cursor:pointer; /*forces the cursor to change to a hand when the button is hovered*/
-                padding:5px 25px; /*add some padding to the inside of the button*/
-                background:transparent; /*the colour of the button*/
-                border:0px;
-                color:#B48B6A;
-                font-size: 14px;
-            }
+
+
         </style>
     </head>
     <body>
@@ -237,9 +240,9 @@
                 </div>
 
                 <div id="content-actions">
-                    <div class="content-action"><a href="#">Edit</a></div>
-                    <div class="content-action"><a href="#">Delete</a></div>
-                    <div class="content-action"><a href="#">Print</a> (<a href="#">preferences</a>)</div>
+                    <div class="content-action"><a href="#" onclick="alert('not yet implemented');">Edit</a></div>
+                    <div class="content-action"><a href="#" onclick="alert('not yet implemented');">Delete</a></div>
+                    <div class="content-action"><a href="#" onclick="alert('not yet implemented');">Print</a></div>
                 </div>
             </div>
             <div id="content-children">
@@ -273,17 +276,11 @@
             </div>
 
 
-
-
-
-
-
-
             <div id="select-question-container">
-                <p style="font-weight:bold;font-size:14px;">Select Question for Answer Ranking</p>
+                <div class="modal-title">Select Question for Answer Ranking</div>
                 <form id="select-question-form" action="<g:createLink controller='answer' action='frequencies'/>" method="get">
                     <input id="inputId" type="hidden" name="id" value="14" />
-                    <p>Question: 
+                    <div class="modal-row">Question: 
                         <select id="questionsSelect">
                             <option value="11">1: Value in neighbourhood</option>
                             <option value="12">2: Make neighbourhood better</option>
@@ -292,10 +289,12 @@
                             <option value="15">5: Skills, gifts, abilities</option>
                             <option value="16">6: Life experiences</option>
                         </select>
-                    </p>
+                    </div>
                 </form>
-                <button id="select-question-generatebutton" type="button" onclick="JavaScript:generateAnswerRankingReport();">Generate Report</button>
-                <button id="select-question-cancelbutton" type="button" onclick="JavaScript:dismissSelectQuestionModal();">Cancel</button>
+                <div class="button-row">
+                    <div id="select-question-cancelbutton" onclick="JavaScript:dismissSelectQuestionModal();">Cancel</div>
+                    <div id="select-question-generatebutton" onclick="JavaScript:generateAnswerRankingReport();">Generate Report</div>
+                </div>
             </div>
     </body>
 </html>
