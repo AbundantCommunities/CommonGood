@@ -1,33 +1,85 @@
 package commongood
 
+import groovy.sql.Sql
+
 class BlockSummaryController {
+    // Grails inkects the default DataSource
+    def dataSource
 
     def index() {
-        String query = "\
-            select blk.code, blk.id, count(loc.id), count(fam.id), min(fam.interviewDate), max(fam.interviewDate),\
-            SUM(CASE WHEN fam.participateInInterview = FALSE THEN 1 ELSE 0 END) AS Declined \
-            from Block as blk left outer join blk.addresses as loc left outer join loc.families as fam group by blk.code, blk.id"
-        List blox = Block.executeQuery( query ).collect {
-            [
-                code: it[0],
-                // TODO Replace 'collect' with 'each' so we won't hit Block table 3 times
-                bcName: getBlockConnector(it[1]).fullName,
-                bcPhone: getBlockConnector(it[1]).phoneNumber,
-                bcEmail: getBlockConnector(it[1]).emailAddress,
-                firstInterview: it[4],
-                lastInterview: it[5],
-                numFamilies: it[2],
-                numInterviews: it[3].longValue() - it[6].longValue(),
-                numDeclined: it[6],
-                numRemaining: it[2].longValue() - it[3].longValue()
-            ]
+        // Eschew GORM; let's kick it ol' school...
+        def id = 1L
+        def query = '''SELECT blk.id AS blockId,
+                        blk.code,
+                        addr.id as addressId,
+                        fam.id AS familyId,
+                        fam.interview_date,
+                        fam.participate_in_interview
+                    FROM (Block AS blk
+                      inner JOIN address AS addr ON blk.id = addr.block_id)
+                      LEFT OUTER JOIN family AS fam ON addr.id = fam.address_id
+                    ORDER BY blk.order_within_neighbourhood,
+                             addr.order_within_block'''
+
+        final Sql sql = new Sql(dataSource)
+        def fams = sql.rows( query )
+
+        def blocks = [ ]
+        def lastBlock = null
+        def countFamilies = 0
+        def countInterviews = 0
+        def countPartyPoopers = 0
+        def firstInterview = null
+        def lastInterview = null
+
+        fams.each{
+            println "${it}"
+            def block = it.blockId
+            if( block != lastBlock ) {
+                if( lastBlock ) {
+                    def bc = getBlockConnector( lastBlock )
+                    blocks << [
+                        code: it.code,
+                        bcName: bc.fullName,
+                        bcPhone: bc.phoneNumber,
+                        bcEmail: bc.emailAddress,
+                        firstInterview: firstInterview,
+                        lastInterview: lastInterview,
+                        numFamilies: countFamilies,
+                        numInterviews: countInterviews,
+                        numDeclined: countPartyPoopers,
+                        numRemaining: countFamilies - countInterviews
+                    ]
+                    countFamilies = 0
+                    countInterviews = 0
+                    countPartyPoopers = 0
+                    firstInterview = null
+                    lastInterview = null
+                }
+            }
+            if( it.addressId ) {
+                countFamilies++
+            }
+            if( it.interview_date ) {
+                countInterviews++
+                if( !it.participate_in_interview ) {
+                    countPartyPoopers++
+                }
+
+                if( !firstInterview || it.interview_date.before(firstInterview) ) {
+                    firstInterview = it.interview_date
+                }
+
+                if( !lastInterview || it.interview_date.after(lastInterview) ) {
+                    lastInterview = it.interview_date
+                }
+            }
+            lastBlock = block
         }
-        // a comment
+
         [result:
             [
-                ncName: 'Marie-Danielle',
-                nhName: 'Bonnie Doon',
-                blocks: blox
+                blocks: blocks
             ]
         ]
     }
@@ -36,14 +88,18 @@ class BlockSummaryController {
         // There can be multiple DomainAuthorization rows for a given block id
         // but we just want one.
         def rights = DomainAuthorization.createCriteria().list {
-                and {
-                    eq 'domainCode', DomainAuthorization.BLOCK
-                    // FIXME Allow Long blockId (converting to Integer not good!)
-                    eq 'domainKey', blockId.toInteger( )
-                }
+            and {
+                eq 'domainCode', DomainAuthorization.BLOCK
+                // FIXME Allow Long blockId (converting to Integer not good!)
+                eq 'domainKey', blockId.toInteger( )
+            }
         }
-        // FIXME andle no-such-blockId
-        // 2016.1.25: on a much tested upon DB, rights[0] was null
-        return rights[0].person
+
+        if( rights[0] ) {
+            return rights[0].person
+        } else {
+            // No BC for this block; use the signed-in NC
+            return session.user
+        }
     }
 }
