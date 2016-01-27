@@ -28,29 +28,6 @@
             }
 
 
-            function yearOk(year) {
-
-
-                if (year.length != 4 && year.length != 0) {
-                    return false;
-                } else {
-                    if (year.length == 4) {
-                        if (year.substr(0,2) != '19' && year.substr(0,2) != '20') {
-                            return false;
-                        } else {
-                            if ('0123456789'.indexOf(year.substr(2,1)) < 0) {
-                                return false;
-                            } else {
-                                if ('0123456789'.indexOf(year.substr(3,1)) < 0) {
-                                    return false;
-                                }
-                            }
-                        }
-                    }
-                }
-                return true;
-            }
-
             function dateOk(date) {
                 var pattern = /^$|^(19|20)\d{2}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/;
                 return pattern.test(date);

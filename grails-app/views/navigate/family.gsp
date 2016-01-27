@@ -73,7 +73,6 @@
                 document.getElementById("birthYearInput").value = "";
                 document.getElementById("emailAddressInput").value = "";
                 document.getElementById("phoneNumberInput").value = "";
-                document.getElementById("orderWithinFamilyInput").value = "";
                 document.getElementById("familyMemberNoteInput").value = "";
 
 
@@ -117,7 +116,7 @@
                 return true;
             }
 
-            function familyMemberIsValid (firstNames, lastName, birthYear, email, note, order) {
+            function familyMemberIsValid (firstNames, lastName, birthYear, email, note) {
                 if (firstNames == "") {
                     alert("Please enter a first name for the new family member.");
                     return false;
@@ -137,11 +136,6 @@
                                 if (note.indexOf('|') > -1) {
                                     alert("Notes cannot contain the '|' character. Please use a different character.");
                                     return false;
-                                } else {
-                                    if (!orderOk(order)) {
-                                        alert("Please enter a valid order. Must be a number.");
-                                        return false;
-                                    }
                                 }
                             }
                         }
@@ -157,16 +151,14 @@
                 var birthYear = document.getElementById("birthYearInput").value.trim();
                 var email = document.getElementById("emailAddressInput").value.trim();
                 var note = document.getElementById("familyMemberNoteInput").value.trim();
-                var order = document.getElementById("orderWithinFamilyInput").value.trim();
-                if (familyMemberIsValid(firstNames, lastName, birthYear, email, note, order)) {
+                if (familyMemberIsValid(firstNames, lastName, birthYear, email, note)) {
                     dismissNewModal();
                     // trim all values
-                    document.getElementById("firstNamesInput").value = document.getElementById("firstNamesInput").value.trim();
-                    document.getElementById("lastNameInput").value = document.getElementById("lastNameInput").value.trim();
-                    document.getElementById('birthYearInput').value = document.getElementById('birthYearInput').value.trim();
-                    document.getElementById("emailAddressInput").value = document.getElementById("emailAddressInput").value.trim();
-                    document.getElementById("familyMemberNoteInput").value = document.getElementById("familyMemberNoteInput").value.trim();
-                    document.getElementById("orderWithinFamilyInput").value = document.getElementById("orderWithinFamilyInput").value.trim();
+                    document.getElementById("firstNamesInput").value = firstNames;
+                    document.getElementById("lastNameInput").value = lastName;
+                    document.getElementById('birthYearInput').value = birthYear;
+                    document.getElementById("emailAddressInput").value = email;
+                    document.getElementById("familyMemberNoteInput").value = note;
                     // check if birth year blank. if yes, set it to '0'.
                     if (document.getElementById('birthYearInput').value.length == 0) {
                         document.getElementById('birthYearInput').value = '0';
@@ -440,7 +432,7 @@
                 <form id="edit-form" action=${resource(file:'Family/save')} method="post">
                     <input type="hidden" name="id" value="${navSelection.id}" />
                     <div class="modal-row">Family name: <input id="familyNameInput" type="text" name="familyName" value=""/></div>
-                    <div class="modal-row">Order within address: <input id="orderWithinAddressInput" type="text" name="orderWithinAddress" value="" /></div>
+                    <div class="modal-row">Order within address: <input id="orderWithinAddressInput" type="text" name="orderWithinAddress" value="" size="12"/></div>
                     <div class="modal-row">Note: <br/><textarea id="familyNoteInput" name="note" cols=44 rows=4></textarea></div>
                 </form>
                 <div class="button-row">
@@ -458,7 +450,6 @@
                     <div class="modal-row">Birth year: <input id="birthYearInput" type="text" name="birthYear" value="" placeholder="YYYY"/></div>
                     <div class="modal-row">Email address: <input id="emailAddressInput" class="email-style" type="email" name="emailAddress" value="" size="40"/></div>
                     <div class="modal-row">Phone number: <input id="phoneNumberInput" type="text" name="phoneNumber" value=""/></div>
-                    <div class="modal-row">Order within family: <input id="orderWithinFamilyInput" type="text" name="orderWithinFamily" value=""/></div>
                     <div class="modal-row">Note: <br/><textarea id="familyMemberNoteInput" class="note-style" name="note" cols=56 rows=4></textarea></div>
                 </form>
                 <div class="button-row">

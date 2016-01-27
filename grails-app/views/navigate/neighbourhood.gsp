@@ -12,7 +12,6 @@
                 // clear UI before presenting
                 document.getElementById("blockCodeInput").value = "";
                 document.getElementById("blockDescriptionInput").value = "";
-                document.getElementById("orderWithinNeighbourhoodInput").value = "";
 
 
                 // set height of overlay to match height of pagecontainer height
@@ -44,7 +43,7 @@
                 return true;
             }
 
-            function blockIsValid(code,description,order) {
+            function blockIsValid(code,description) {
                 if (code == "") {
                     alert("Please enter a code for the new block.");
                     return false;
@@ -52,11 +51,6 @@
                     if (description == "") {
                         alert("Please enter a block description.");
                         return false;
-                    } else {
-                        if (!orderOk(order)) {
-                            alert("Please enter a valid order. Must be a number.");
-                            return false;
-                        }
                     }
                 }
                 return true;
@@ -65,13 +59,11 @@
             function saveBlock() {
                 var blockCode = document.getElementById('blockCodeInput').value.trim();
                 var blockDescription = document.getElementById('blockDescriptionInput').value.trim();
-                var order = document.getElementById('orderWithinNeighbourhoodInput').value.trim();
-                if (blockIsValid(blockCode,blockDescription,order)) {
+                if (blockIsValid(blockCode,blockDescription)) {
                     dismissNewModal();
 
                     document.getElementById("blockCodeInput").value = blockCode;
                     document.getElementById("blockDescriptionInput").value = blockDescription;
-                    document.getElementById("orderWithinNeighbourhoodInput").value = order;
 
                     document.getElementById('new-form').submit();
                 }
@@ -246,7 +238,7 @@
                 </div>
             </div>
             <div id="content-children">
-                <div id="content-children-title">${navChildren.childType+'s'} for ${navSelection.levelInHierarchy} ${navSelection.description}&nbsp;&nbsp;<a href="#" onclick="presentNewModal();">+ Add New Block</a></div>
+                <div class="content-heading">${navChildren.childType+'s'} for ${navSelection.levelInHierarchy} ${navSelection.description}&nbsp;&nbsp;<a href="#" onclick="presentNewModal();" style="font-weight:normal;">+ Add New Block</a></div>
                 <g:if test="${navChildren.children.size() > 0}">
                     <g:each in="${navChildren.children}" var="child">
                         <div class="content-children-row"><a href="${resource(dir:'navigate/'+navChildren.childType.toLowerCase(),file:"${child.id}")}">${child.name}</a></div>
@@ -267,7 +259,6 @@
                     <input type="hidden" name="id" value="${navSelection.id}" />
                     <div class="modal-row">Block code: <input id="blockCodeInput" type="text" name="code" value=""/></div>
                     <div class="modal-row">Block description: <input id="blockDescriptionInput" type="text" name="description" value=""/></div>
-                    <div class="modal-row">Order within neighbourhood: <input id="orderWithinNeighbourhoodInput" type="text" name="orderWithinNeighbourhood" value="" /></div>
                 </form>
                 <div class="button-row">
                     <div id="new-cancelbutton" type="button" onclick="JavaScript:dismissNewModal();">Cancel</div>

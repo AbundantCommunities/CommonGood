@@ -4,18 +4,25 @@
     <head>
         <meta name="layout" content="report">
         <title>Abundant Communities - Edmonton</title>
+        <script src="${resource(dir:'js',file:'encoder.js')}"></script>
         <script type="text/javascript">
             function emailAll() {
-                alert('not yet implemented');
-                var emails = '';
+                var emails = 'mailto:';
+                Encoder.EncodeType = "entity";
                 <g:if test="${result.connectors.size() > 0}">
                     <g:each in="${result.connectors}" var="bc" status="i">
                         <g:if test="${bc.bcEmail.size() > 0}">
+                            <g:if test="${i>0}">
+                                emails = emails.concat(",");
+                            </g:if>
+                            emails = emails.concat(Encoder.htmlDecode("${bc.bcEmail}"));
                         </g:if>
                     </g:each>
                 </g:if>
-
-                //document.location.href = "mailto:xyz@something.com";
+                <g:else>
+                    alert('No Block Connectors to email to.');
+                </g:else>
+                document.location.href = emails;
             }
         </script>
     </head>
@@ -35,7 +42,7 @@
                 <g:each in="${result.connectors}" var="bc">
                     <div class="content-children-row">
                         <div class="cell150">${bc.bcName}</div>
-                        <div class="cell230">${bc.bcEmail}</div>
+                        <div class="cell230"><a href="mailto:${bc.bcEmail}">${bc.bcEmail}</a></div>
                         <div class="cell110">${bc.bcPhone}</div>
                         <div class="cell100"><g:formatDate format="yyyy-MM-dd" date="${bc.firstInterview}"/></div>
                         <div class="cell100"><g:formatDate format="yyyy-MM-dd" date="${bc.lastInterview}"/></div>
