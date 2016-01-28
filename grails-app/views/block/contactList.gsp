@@ -22,7 +22,12 @@
                             <g:link controller="navigate" action="familymember" id="${person.id}"><div class="cell150">${person.fullName}</div></g:link>
                             <div class="cell120">${person.phoneNumber}</div>
                             <a href="mailto:${person.emailAddress}" target="_top"><div class="cell300">${person.emailAddress}</div></a>
-                            <div class="cell80">${person.birthYear}</div>
+                            <g:if test="${person.birthYear!=0}">
+                                <div class="cell80">${person.birthYear}</div>
+                            </g:if>
+                            <g:else>
+                                <div class="cell80"></div>
+                            </g:else>
                         </div>
                     </g:each>
                     <div class="content-children-row" style="height:10px;"></div>

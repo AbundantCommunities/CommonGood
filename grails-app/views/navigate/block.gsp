@@ -276,17 +276,28 @@
                 }
             }
 
+            function personIsNotExistingBC(personId) {
+                if (existingBCs.length > 0) {
+                    for (i=0;i<existingBCs.length;i++) {
+                        if (personId == existingBCs[i]) {
+                            return false;
+                        }
+                    }
+                }
+                return true;
+            }
+
             function addBC() {
-                // Just implement case of adding family/family member.
-                // Just need to set the value of the "addressId" input form element to the selected address,
-                // then submit the form.
                 if (document.getElementById('addresses-select').value > 0) {
                     if (document.getElementById('families-select').value > 0) {
                         if (document.getElementById('members-select').value > 0) {
-                            document.getElementById('new-bc-container').style.visibility = false;
-                            document.getElementById('transparent-overlay').style.visibility = false;
-                            document.getElementById('address-id').value = document.getElementById('addresses-select').value;
-                            document.getElementById('new-bc-form').submit();
+                            if (personIsNotExistingBC(document.getElementById('members-select').value)) {
+                                document.getElementById('new-bc-container').style.visibility = false;
+                                document.getElementById('transparent-overlay').style.visibility = false;
+                                document.getElementById('new-bc-form').submit();
+                            } else {
+                                alert ('The person you selected is already a Block Connector for the block.');
+                            }
                         } else {
                             alert ('Please select the block connector.');
                         }
@@ -305,6 +316,8 @@
                 document.getElementById('revoke-bc-block-id').value = blockId;
                 document.getElementById('revoke-form').submit();
             }
+
+
 
         </script>
         <style type="text/css">
@@ -554,10 +567,11 @@
                 <g:else>
                     <div id="bc-title">Block Connector</div>
                 </g:else>
-
+                <script type="text/javascript">var existingBCs = [];</script>
                 <g:if test="${navSelection.blockConnectors.size() > 0}">
                     <g:each in="${navSelection.blockConnectors}" var="bc" status="i">
                         <div class="bc" style="top:${(i*20)+30}px;"><a href="${resource(dir:'navigate/familymember',file:"${bc.id}")}">${bc.fullName}</a> <span style="font-size:smaller;">(<a id="revoke|${bc.id}|${navSelection.id}" href="#" onclick="revokeBC(this);">revoke</a>)</span></div>
+                        <script type="text/javascript">existingBCs.push(${bc.id});</script>
                     </g:each>
                     <form id="revoke-form" action="<g:createLink controller='authorization' action='deauthorizeBlockConnector'/>" method="DELETE">
                         <input id="revoke-bc-id" type="hidden" name="id"/>
@@ -624,7 +638,6 @@
                     </select>
                 </div>
                 <form id="new-bc-form" action=${resource(file:'person/setBlockConnector')} method="POST">
-                    <input id="address-id" type="hidden"/>
                     <div id="select-member" class="modal-row">Select block connector: 
                             <select id="members-select" name="id" onchange="memberSelected();">
                                 <option value=""></option>
