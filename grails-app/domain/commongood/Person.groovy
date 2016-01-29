@@ -11,15 +11,16 @@ class Person {
     Integer orderWithinFamily // first in order is our primary contact
     /*
     If appUser then
-        if passwordHash nonzero then
+        if hashedPassword nonempty then
             this person has chosen a password
         else
             this person has not replied to email invitation
     else
-        passwordHash should be zero
+        hashedPassword should be empty or null
     */
     Boolean appUser
     Integer passwordHash
+    String hashedPassword
 
     Date dateCreated
     Date lastUpdated
@@ -39,5 +40,6 @@ class Person {
     static constraints = {
         // We can create a neighbourhood or block connector without identifying a family:
         family nullable: true
+        hashedPassword nullable: true, size: 1..900
     }
 }

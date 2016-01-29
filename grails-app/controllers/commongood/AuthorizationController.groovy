@@ -1,6 +1,8 @@
 package commongood
 
 class AuthorizationController {
+    // TODO Why did nav/block's DELETE request not satisfy allowedMethods?
+    // static allowedMethods = [deauthorizeBlockConnector:'DELETE']
     def domainAuthorizationService;
 
     def deauthorizeBlockConnector( ) {

@@ -106,4 +106,8 @@ class AnswerController {
 
         forward controller: "navigate", action: "family", id: familyId
     }
+    
+    def search( ) {
+        // TODO call the search service (so that a GSP can search just answers!)
+    }
 }
