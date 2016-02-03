@@ -28,6 +28,7 @@ class BlockSummaryController {
         def blocks = [ ]
         def lastBlockCode = null
         def lastBlockId = null
+        def lastBlockDescription = null
         def countFamilies = 0
         def countInterviews = 0
         def countPartyPoopers = 0
@@ -41,7 +42,7 @@ class BlockSummaryController {
                     blocks << [
                         id: lastBlockId,
                         code: lastBlockCode,
-                        description: blockDescription,
+                        description: lastBlockDescription,
                         bcName: bc.fullName,
                         bcPhone: bc.phoneNumber,
                         bcEmail: bc.emailAddress,
@@ -76,6 +77,7 @@ class BlockSummaryController {
             }
             lastBlockCode = it.blockCode
             lastBlockId = it.blockId
+            lastBlockDescription = it.blockDescription
         }
 
         def bc = getBlockConnector( lastBlockId )
