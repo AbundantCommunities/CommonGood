@@ -28,12 +28,14 @@ class LoginController {
             } else {
                 println "NO neighbourhood authorization to store in session for ${params.emailAddress}"
                 flash.message = 'Please contact the system administrator'
+                // TODO Count login failures; lock account
+                forward action: "index"
             }
         } else {
             flash.message = 'Invalid login; please try again'
             println "FAILED to authenticate ${params.emailAddress}"
+            // TODO Count login failures; lock account
+            forward action: "index"
         }
-        // TODO Count login failures; lock account
-        forward action: "index"
     }
 }
