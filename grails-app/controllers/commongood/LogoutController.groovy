@@ -3,8 +3,9 @@ package commongood
 class LogoutController {
 
     def index() {
+        println "Logging out ${session.user}"
         session.user = null
-        flash.message = "DON'T USE FLASH TO SAY You have logged out"
+        session.neighbourhood = null
         forward controller: "login"
     }
 }

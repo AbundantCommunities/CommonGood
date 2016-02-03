@@ -24,15 +24,16 @@ class LoginController {
                 // If the following "get" fails we do not want user in session:
                 session.neighbourhood = Neighbourhood.get( neighbourhoodId )
                 session.user = user
+                forward controller:'navigate', action:'neighbourhood', id:neighbourhoodId
             } else {
-                println "NO NH authorization to store in session"
-                println "DON'T USE FLASH TO SAY You authenticated okay but WITHOUT access to a neighbourhood."
+                println "NO neighbourhood authorization to store in session for ${params.emailAddress}"
+                flash.message = 'Please contact the system administrator'
             }
-            forward controller:'navigate', action:'neighbourhood', id:neighbourhoodId
-
         } else {
-            println 'LoginController.authenticate( ) FAILED to authenticate (back to login form)'
-            forward action: "index"
+            flash.message = 'Invalid login; please try again'
+            println "FAILED to authenticate ${params.emailAddress}"
         }
+        // TODO Count login failures; lock account
+        forward action: "index"
     }
 }
