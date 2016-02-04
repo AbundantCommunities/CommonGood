@@ -49,7 +49,7 @@
             </div>
             <g:layoutBody/>
             <div id="footer">
-                &copy;2016 Common Good, A Society for Connected Neighbourhoods. All rights reserved.
+                &copy;<script type="text/javascript">document.write(new Date().getFullYear());</script> Abundant Community Initiative. All rights reserved.
             </div>
         </div>
     </body>

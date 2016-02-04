@@ -111,9 +111,6 @@
     </head>
     <body>
             <div id="content-detail">
-                <g:if test="${flash.message}">
-                    <h3>${flash.message}</h3>
-                </g:if>
                 <p>Login to CommonGood:</p>
                 <form id="loginForm" action="<g:createLink action='authenticate'/>" method="post">
                     <p>Email address <input id="emailAddressInput" type="text" name="emailAddress" value="" onKeyPress="checkEnter(event);"/></p>
@@ -124,6 +121,9 @@
                 <p style="margin-top:-4px"><input id="rememberCheckbox" type="checkbox" name="remember" value="remember email address" /> remember email address</p>
                 <br/>
                 <a href="#" onclick="doSubmit();">Login</a>
+                <g:if test="${flash.message}">
+                    <div class="red-text">${flash.message}</div>
+                </g:if>
             </div>
     </body>
 </html>
