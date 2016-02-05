@@ -39,10 +39,10 @@ class SearchService {
 
         def peeps = Person.executeQuery(
             'select p.id, p.firstNames, p.lastName from Person p join p.family f join f.address a \
-             where lower(a.text) like ? or lower(a.note) like ? or lower(f.name) like ? or lower(f.note) like ? \
+             where (lower(a.text) like ? or lower(a.note) like ? or lower(f.name) like ? or lower(f.note) like ? \
              or lower(p.firstNames) like ? or lower(p.lastName) like ? or lower(p.phoneNumber) like ? or lower(p.emailAddress) like ? \
-             or lower(p.note) like ? order by p.firstNames, p.lastName, p.id',
-            [ searchTerm ] * 9 )
+             or lower(p.note) like ?) and a.block.neighbourhood.id = ? order by p.firstNames, p.lastName, p.id',
+            ([ searchTerm ] * 9) << neighbourhoodId )
 
         println "Found ${peeps.size()} people"
         return peeps
