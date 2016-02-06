@@ -102,7 +102,7 @@ def getBlockId( String code ) {
         def orderWithinBlock = Integer.valueOf( code )
         blocks[ code ] = new Block( id:nextBlockId, code:code )
         println "INSERT INTO block( id, version, code, description, neighbourhood_id, order_within_neighbourhood, date_created, last_updated ) \
-                        VALUES( ${nextBlockId}, 0, '${code}', 'description', 1, ${orderWithinBlock}, CURRENT_DATE, CURRENT_DATE );"
+                        VALUES( ${nextBlockId}, 0, '${code}', 'description', 7, ${orderWithinBlock}, CURRENT_DATE, CURRENT_DATE );"
         return nextBlockId++
     } else {
         return block.id
@@ -112,23 +112,23 @@ def getBlockId( String code ) {
 // This singleton record describes the installation of CommonGood on this server:
 println "INSERT INTO this_installation( id, version, name, logo, configured ) VALUES( 1, 0, 'Abundant Edmonton Online', NULL, TRUE );"
 
-println "INSERT INTO neighbourhood( id, version, name ) VALUES( 1, 0, 'Bonnie Doon' );"
+println "INSERT INTO neighbourhood( id, version, name, date_created, last_updated ) VALUES( 7, 0, 'Bonnie Doon', CURRENT_DATE, CURRENT_DATE );"
 
 println "INSERT INTO person ( id, version, app_user, birth_year, date_created, email_address, family_id, first_names, last_name, last_updated, order_within_family, password_hash, phone_number ) \
-VALUES ( 901, 0, FALSE, 0, TIMESTAMP '2014-01-01 00:00:00.000', 'fabBC@abundantedmonton.ca', NULL, 'Fabian', 'Snufflepuss', TIMESTAMP '2015-12-01 00:00:00.000', 100, 0, '780-432-6543' );"
+VALUES ( 901, 0, FALSE, 0, CURRENT_DATE, 'fabBC@abundantedmonton.ca', NULL, 'Fabian', 'Snufflepuss', CURRENT_DATE, 100, 0, '780-432-6543' );"
 
 println "INSERT INTO question( id, version, code, neighbourhood_id, text, order_within_questionnaire, date_created, last_updated ) \
-         VALUES( 1, 0, '1', 1, 'What makes a great neighbourhood?', 100, CURRENT_DATE, CURRENT_DATE );"
+         VALUES( 1, 0, '1', 7, 'What makes a great neighbourhood?', 100, CURRENT_DATE, CURRENT_DATE );"
 println "INSERT INTO question( id, version, code, neighbourhood_id, text, order_within_questionnaire, date_created, last_updated ) \
-        VALUES( 2, 0, '2', 1, 'What else can we do to make our neighbourhood a great place to live?', 100, CURRENT_DATE, CURRENT_DATE );"
+        VALUES( 2, 0, '2', 7, 'What else can we do to make our neighbourhood a great place to live?', 100, CURRENT_DATE, CURRENT_DATE );"
 println "INSERT INTO question( id, version, code, neighbourhood_id, text, order_within_questionnaire, date_created, last_updated ) \
-        VALUES( 3, 0, '3', 1, 'What activities would you like to join in with neighbours?', 100, CURRENT_DATE, CURRENT_DATE );"
+        VALUES( 3, 0, '3', 7, 'What activities would you like to join in with neighbours?', 100, CURRENT_DATE, CURRENT_DATE );"
 println "INSERT INTO question( id, version, code, neighbourhood_id, text, order_within_questionnaire, date_created, last_updated ) \
-        VALUES( 4, 0, '4', 1, 'Do you have interests that you would value discussing or participating in with neighbours?', 100, CURRENT_DATE, CURRENT_DATE );"
+        VALUES( 4, 0, '4', 7, 'Do you have interests that you would value discussing or participating in with neighbours?', 100, CURRENT_DATE, CURRENT_DATE );"
 println "INSERT INTO question( id, version, code, neighbourhood_id, text, order_within_questionnaire, date_created, last_updated ) \
-        VALUES( 5, 0, '5', 1, 'Do you have a skill, gift or ability that you would be comfortable using to help neighbours or the neighbourhood? ', 100, CURRENT_DATE, CURRENT_DATE );"
+        VALUES( 5, 0, '5', 7, 'Do you have a skill, gift or ability that you would be comfortable using to help neighbours or the neighbourhood? ', 100, CURRENT_DATE, CURRENT_DATE );"
 println "INSERT INTO question( id, version, code, neighbourhood_id, text, order_within_questionnaire, date_created, last_updated ) \
-        VALUES( 6, 0, '6', 1, 'Are there some life experiences that you would consider sharing for the benefit of neighbours?', 100, CURRENT_DATE, CURRENT_DATE );"
+        VALUES( 6, 0, '6', 7, 'Are there some life experiences that you would consider sharing for the benefit of neighbours?', 100, CURRENT_DATE, CURRENT_DATE );"
 
 nextPersonId = 1
 nextAnswerId = 1
@@ -203,42 +203,42 @@ new File('./pureNewLines.txt').eachLine {
         }
 
         println "INSERT INTO person( id, version, app_user, birth_year, email_address, family_id, first_names, last_name, password_hash, phone_number, order_within_family, date_created, last_updated ) \
-                    VALUES( ${nextPersonId}, 0, FALSE, ${p.birthYear}, '${p.emailAddress}', ${p.addressId}, '${p.firstNames}', '${p.lastName}', 0, '${p.phone}', ${orderWithinFamily}, CURRENT_DATE, CURRENT_DATE );"
+                    VALUES( ${nextPersonId}, 0, FALSE, ${p.birthYear}, '${p.emailAddress}', ${p.addressId}, \$\$${p.firstNames}\$\$, \$\$${p.lastName}\$\$, 0, '${p.phone}', ${orderWithinFamily}, CURRENT_DATE, CURRENT_DATE );"
 
         texts = breakDown( fields, VALUES )
         texts.each {
             println "INSERT INTO answer( id, version, person_id, question_id, text, would_lead, would_organize, date_created, last_updated ) \
-                VALUES( ${nextAnswerId++}, 0, ${nextPersonId}, 1, '${it}', false, false, CURRENT_DATE, CURRENT_DATE );"
+                VALUES( ${nextAnswerId++}, 0, ${nextPersonId}, 1, \$\$${it}\$\$, false, false, CURRENT_DATE, CURRENT_DATE );"
         }
 
         texts = breakDown( fields, IDEALS )
         texts.each {
             println "INSERT INTO answer( id, version, person_id, question_id, text, would_lead, would_organize, date_created, last_updated ) \
-                VALUES( ${nextAnswerId++}, 0, ${nextPersonId}, 2, '${it}', false, false, CURRENT_DATE, CURRENT_DATE );"
+                VALUES( ${nextAnswerId++}, 0, ${nextPersonId}, 2, \$\$${it}\$\$, false, false, CURRENT_DATE, CURRENT_DATE );"
         }
 
         texts = breakDown( fields, ACTIVITIES )
         texts.each {
             println "INSERT INTO answer( id, version, person_id, question_id, text, would_lead, would_organize, date_created, last_updated ) \
-                VALUES( ${nextAnswerId++}, 0, ${nextPersonId}, 3, '${it}', false, false, CURRENT_DATE, CURRENT_DATE );"
+                VALUES( ${nextAnswerId++}, 0, ${nextPersonId}, 3, \$\$${it}\$\$, false, false, CURRENT_DATE, CURRENT_DATE );"
         }
 
         texts = breakDown( fields, INTERESTS )
         texts.each {
             println "INSERT INTO answer( id, version, person_id, question_id, text, would_lead, would_organize, date_created, last_updated ) \
-                VALUES( ${nextAnswerId++}, 0, ${nextPersonId}, 4, '${it}', false, false, CURRENT_DATE, CURRENT_DATE );"
+                VALUES( ${nextAnswerId++}, 0, ${nextPersonId}, 4, \$\$${it}\$\$, false, false, CURRENT_DATE, CURRENT_DATE );"
         }
 
         texts = breakDown( fields, HELP )
         texts.each {
             println "INSERT INTO answer( id, version, person_id, question_id, text, would_lead, would_organize, date_created, last_updated ) \
-                VALUES( ${nextAnswerId++}, 0, ${nextPersonId}, 5, '${it}', false, false, CURRENT_DATE, CURRENT_DATE );"
+                VALUES( ${nextAnswerId++}, 0, ${nextPersonId}, 5, \$\$${it}\$\$, false, false, CURRENT_DATE, CURRENT_DATE );"
         }
 
         texts = breakDown( fields, SHARE )
         texts.each {
             println "INSERT INTO answer( id, version, person_id, question_id, text, would_lead, would_organize, date_created, last_updated ) \
-                VALUES( ${nextAnswerId++}, 0, ${nextPersonId}, 6, '${it}', false, false, CURRENT_DATE, CURRENT_DATE );"
+                VALUES( ${nextAnswerId++}, 0, ${nextPersonId}, 6, \$\$${it}\$\$, false, false, CURRENT_DATE, CURRENT_DATE );"
         }
 
         nextPersonId++
