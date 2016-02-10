@@ -172,7 +172,8 @@ CREATE TABLE person (
     order_within_family integer NOT NULL,
     password_hash integer NOT NULL,
     phone_number character varying(255) NOT NULL,
-    note character varying(255) DEFAULT 'Note'::character varying NOT NULL
+    note character varying(255) DEFAULT 'Note'::character varying NOT NULL,
+    hashed_password character varying(900)
 );
 
 
@@ -1441,8 +1442,7 @@ INSERT INTO domain_authorization VALUES (11, 0, '2015-12-18 00:00:00', 'B', 11, 
 INSERT INTO domain_authorization VALUES (12, 0, '2015-12-18 00:00:00', 'B', 12, '2015-12-18 00:00:00', 904, false);
 INSERT INTO domain_authorization VALUES (13, 0, '2015-12-18 00:00:00', 'B', 13, '2015-12-18 00:00:00', 904, false);
 INSERT INTO domain_authorization VALUES (14, 0, '2015-12-18 00:00:00', 'B', 14, '2015-12-18 00:00:00', 904, false);
-INSERT INTO domain_authorization VALUES (15, 0, '2015-12-18 00:00:00', 'B', 101, '2015-12-18 00:00:00', 904, false);
-INSERT INTO domain_authorization VALUES (999, 0, '2015-12-20 00:00:00', 'N', 1, '2015-12-20 00:00:00', 904, true);
+INSERT INTO domain_authorization VALUES (15, 0, '2015-12-20 00:00:00', 'N', 1, '2015-12-20 00:00:00', 904, true);
 
 
 --
@@ -1788,6 +1788,8 @@ INSERT INTO person VALUES (901, 0, false, 0, '2014-01-01 00:00:00', 'fabBC@abund
 INSERT INTO person VALUES (902, 0, false, 0, '2014-01-01 00:00:00', 'moniquev@evermore.org', 152, 'Monique', 'Vautour', '2015-12-01 00:00:00', 0, 0, '587-338-0525', 'Person note');
 INSERT INTO person VALUES (903, 0, false, 0, '2014-01-01 00:00:00', 'abodnar@gmail.com', 153, 'Anne', 'Bodnar', '2015-12-01 00:00:00', 0, 0, '780-428-7718', 'Person note');
 INSERT INTO person VALUES (904, 0, true, 1970, '2014-01-01 00:00:00', 'sue@aci.ca', 154, 'Sue', 'Muise', '2015-12-01 00:00:00', 0, 113843, '800-lov-eaci', 'A real people person & well organized!');
+
+update person set hashed_password = 'PBKDF2WithHmacSHA512|75000|64|256|KeDbHN7fq5PlL4rdl6GPs9glrtcQ2fjzDjA2Npfum4mmLiSz8n+vUGoLS2dUSJP881Ag4urZKz3Q5lLbEJZBTg==|E6eVSpDqby9dqMRh0qX1hSCtbBg6mptunJV0S+jDPjs=' where id = 904;
 
 
 --

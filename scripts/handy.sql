@@ -27,9 +27,12 @@ SELECT COUNT(*) FROM person;
 SELECT COUNT(*) FROM question;
 SELECT COUNT(*) FROM this_installation;
 
-/* Ignoring case, see all unique answer strings */
-SELECT DISTINCT lower(text) AS ltext
-FROM answer
-WHERE question_code = 1
-ORDER BY ltext;
-
+SELECT MAX(id) FROM address;
+SELECT MAX(id) FROM answer;
+SELECT MAX(id) FROM block;
+SELECT MAX(id) FROM domain_authorization;
+SELECT MAX(id) FROM family;
+SELECT MAX(id) FROM neighbourhood;
+SELECT MAX(id) FROM person;
+SELECT MAX(id) FROM question;
+SELECT MAX(id) FROM this_installation;

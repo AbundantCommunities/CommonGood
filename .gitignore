@@ -2,7 +2,7 @@
 *Db.properties
 *Db.script
 .settings
-target/stacktrace.log
+target
 /*.zip
 /plugin.xml
 /*.log
