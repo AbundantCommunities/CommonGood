@@ -23,8 +23,6 @@ class BlockConnectorSummaryController {
         }
         [result:
             [
-                ncName: 'Marie-Danielle',
-                nhName: 'Bonnie Doon',
                 connectors: conex
             ]
         ]

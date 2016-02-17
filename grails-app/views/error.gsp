@@ -11,7 +11,8 @@
         </g:if>
         <g:else>
             <p>
-                We apologize. A programming error has occurred.
+                A programming error has occurred.
+                We're dazed and confused - and very sorry.
                 We've recorded the error for later analysis.
             </p>
             <p>

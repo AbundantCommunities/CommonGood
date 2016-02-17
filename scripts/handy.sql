@@ -15,6 +15,8 @@ DELETE FROM block;
 DELETE FROM question;
 DELETE FROM neighbourhood;
 DELETE FROM this_installation;
+
+ALTER SEQUENCE hibernate_sequence RESTART WITH 7000;
 */
 
 SELECT COUNT(*) FROM address;
