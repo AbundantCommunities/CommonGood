@@ -57,7 +57,7 @@
                 </g:each>
             </div>
             <div id="footer">
-                &copy;2015 Common Good, A Society for Connected Neighbourhoods. All rights reserved.
+                &copy;2016 The Abundant Community Initiative Canada.
             </div>
             <g:if test="${navChildren.childType.toLowerCase() == 'family'}">
                 <div id="add-edit-family-container">

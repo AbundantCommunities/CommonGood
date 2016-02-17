@@ -56,7 +56,7 @@
             </g:if>
             <g:layoutBody/>
             <div id="footer">
-                &copy;<script type="text/javascript">document.write(new Date().getFullYear());</script> Abundant Community Initiative. All rights reserved.
+                &copy;<script type="text/javascript">document.write(new Date().getFullYear());</script> The Abundant Community Initiative Canada.
             </div>
         </div>
     </body>
