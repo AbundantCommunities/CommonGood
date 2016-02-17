@@ -58,6 +58,7 @@
             </div>
             <div id="footer">
                 &copy;2016 The Abundant Community Initiative Canada.
+                CommonGood Version <g:meta name="app.version"/>
             </div>
             <g:if test="${navChildren.childType.toLowerCase() == 'family'}">
                 <div id="add-edit-family-container">

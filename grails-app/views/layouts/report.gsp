@@ -50,6 +50,7 @@
             <g:layoutBody/>
             <div id="footer">
                 &copy;<script type="text/javascript">document.write(new Date().getFullYear());</script> The Abundant Community Initiative Canada.
+                CommonGood Version <g:meta name="app.version"/>
             </div>
         </div>
     </body>
