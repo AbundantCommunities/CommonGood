@@ -42,6 +42,7 @@ class NavigateController {
         Integer hoodId = Integer.valueOf( params.id )
         authorizationService.neighbourhood( hoodId, session )
         Neighbourhood theHood = Neighbourhood.where{ id == hoodId }.get( )
+        List questions = Question.where{ neighbourhood.id == hoodId }.list( sort:'orderWithinQuestionnaire', order:'asc' )
         List blocks = Block.where{ neighbourhood.id == hoodId }.list( sort:'orderWithinNeighbourhood', order:'asc' )
         blocks = blocks.collect{
             [ id:it.id, name:it.displayName ]
@@ -50,7 +51,8 @@ class NavigateController {
             [
             navContext: [ ],
 
-            navSelection: [ levelInHierarchy:'Neighbourhood', id:hoodId, description:theHood.name ],
+            navSelection: [ levelInHierarchy:'Neighbourhood', id:hoodId,
+                                description:theHood.name, questions: questions ],
 
             navChildren:
                 [

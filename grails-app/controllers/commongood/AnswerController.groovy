@@ -6,6 +6,8 @@ class AnswerController {
 
     def frequencies( ) {
         def questionId = Long.parseLong( params.id )
+        println "Request to get frequencies for question ${questionId}"
+        def question = Question.get( questionId )
 
         // Result is like [[biking,17],[dancing,4], ...]
         def freqs = Answer.executeQuery(
@@ -19,7 +21,7 @@ class AnswerController {
             bldr.writeTo(writer)
             render writer
         } else {
-            [ questionId:questionId, frequencies:freqs ]
+            [ question:question, frequencies:freqs ]
         }
     }
 

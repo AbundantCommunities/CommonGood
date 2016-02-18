@@ -270,15 +270,12 @@
             <div id="select-question-container">
                 <div class="modal-title">Select Question for Answer Ranking</div>
                 <form id="select-question-form" action="<g:createLink controller='answer' action='frequencies'/>" method="get">
-                    <input id="inputId" type="hidden" name="id" value="14" />
+                    <input id="inputId" type="hidden" name="id" value="${navSelection.questions[0].id}" />
                     <div class="modal-row">Question: 
                         <select id="questionsSelect">
-                            <option value="11">1: Value in neighbourhood</option>
-                            <option value="12">2: Make neighbourhood better</option>
-                            <option value="13">3: Activities</option>
-                            <option value="14">4: Interests</option>
-                            <option value="15">5: Skills, gifts, abilities</option>
-                            <option value="16">6: Life experiences</option>
+                            <g:each in="${navSelection.questions}" var="question">
+                                <option value="${question.id}">${question.code}: ${question.shortText}</option>
+                            </g:each>
                         </select>
                     </div>
                 </form>

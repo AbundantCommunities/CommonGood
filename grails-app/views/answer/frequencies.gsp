@@ -13,10 +13,10 @@
     </head>
     <body>
             <div id="content-children" style="padding-bottom:10px;">
-                <div style="margin-top:-10px;"><h3>Answer Ranking for Question id ${questionId}</h2></div>
+                <div style="margin-top:-10px;"><h3>Answer Ranking for Question ${question.code}: ${question.text}</h2></div>
                 <div id="content-children-heading">
                     <div class="cell450">Answer</div>
-                    <div class="cell150"># Occurences</div>
+                    <div class="cell150"># Occurrences</div>
                 </div>
                 <g:each in="${frequencies}" var="answer">
                     <div class="content-children-row">
