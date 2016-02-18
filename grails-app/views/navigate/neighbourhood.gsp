@@ -93,7 +93,7 @@
 
                 var selectQuestionSelect = document.getElementById('questionsSelect');
                 var selectedQuestion = selectQuestionSelect.selectedIndex;
-                var questionId = selectedQuestion + 11;
+                var questionId = selectQuestionSelect.options[selectedQuestion].value;
                 var idInputTag = document.getElementById('inputId');
                 idInputTag.value = questionId;
                 var selectQuestionForm = document.getElementById('select-question-form');
