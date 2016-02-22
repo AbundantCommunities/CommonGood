@@ -6,7 +6,7 @@ import grails.transaction.Transactional
 class AuthorizationService {
 
     def prevent( layer, id, session ) {
-        println "Authorization failure: attempt to access ${layer}:${id} by ${session.user}"
+        log.warn "Authorization failure: attempt to access ${layer}:${id} by ${session.user}"
         throw new Exception( 'Not allowed' )
     }
 

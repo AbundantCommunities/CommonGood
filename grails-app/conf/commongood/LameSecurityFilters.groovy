@@ -8,17 +8,16 @@ class LameSecurityFilters {
         all(controller:'*', action:'*') {
             before = {
                 if( controllerName != 'answer' && controllerName != 'login' ) {
-                    println "In Sensitive context"
                     if( session.user ) {
-                        println "Request from user ${session.user.fullName} is authorized"
+                        log.debug "In Sensitive context; ${session.user.fullName} is authorized"
                         return true
                     } else {
-                        println "UNAUTHENTICATED USER!"
+                        log.warn "In Sensitive context; unauthenticated user"
                         redirect( controller: 'login' )
                         return false
                     }
                 } else {
-                    println "Non sensitive context"
+                    log.debug "Non sensitive context"
                     return true
                 }
             }

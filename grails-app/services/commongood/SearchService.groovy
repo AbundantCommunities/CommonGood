@@ -7,7 +7,7 @@ class SearchService {
 
     def answers( session, questionId, q ) {
         def neighbourhoodId = session.neighbourhood.id
-        println "Searching NH ${neighbourhoodId} answers for ${q}"
+        log.debug "Searching NH ${neighbourhoodId} answers for ${q}"
         def searchTerm = "%${q}%".toLowerCase( )
         def answers
 
@@ -28,13 +28,13 @@ class SearchService {
                 [ searchTerm, neighbourhoodId ] )
         }
 
-        println "Found ${answers.size()} answers"
+        log.debug "Found ${answers.size()} answers"
         return answers
     }
 
     def people( session, q ) {
         def neighbourhoodId = session.neighbourhood.id
-        println "Searching NH ${neighbourhoodId} people for ${q}"
+        log.debug "Searching NH ${neighbourhoodId} people for ${q}"
         def searchTerm = "%${q}%".toLowerCase( )
 
         def peeps = Person.executeQuery(
@@ -44,7 +44,7 @@ class SearchService {
              or lower(p.note) like ?) and a.block.neighbourhood.id = ? order by p.firstNames, p.lastName, p.id',
             ([ searchTerm ] * 9) << neighbourhoodId )
 
-        println "Found ${peeps.size()} people"
+        log.debug "Found ${peeps.size()} people"
         return peeps
     }
 }

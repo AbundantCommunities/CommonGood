@@ -19,22 +19,22 @@ class DomainAuthorizationService {
     }
 
     def getNeighbourhoodAuthorization( person ) {
-        println "Request to getNeighbourhoodAuthorization for ${person.fullName}"
+        log.debug "Request to getNeighbourhoodAuthorization for ${person.fullName}"
 
         def da = DomainAuthorization.findAll( "from DomainAuthorization da where da.domainCode=? and da.person.id=?",
                     [ DomainAuthorization.NEIGHBOURHOOD, person.id ] )
 
         if( da.size() ) {
-            println "Got ${da.size()} Neighbourhood authorization(s)"
+            log.debug "Got ${da.size()} Neighbourhood authorization(s)"
             if( da.size() > 1 ) {
                 // TODO Improve authorization scheme to handle multiple privs
-                println "WARNING: too many DomainAuthorization entries for ${person}"
+                log.warn "WARNING: too many DomainAuthorization entries for ${person}"
             }
 
             // TODO domainKey should be a Long
             return da[0].domainKey as Long
         } else {
-            println "Found no NH authorizations"
+            log.info "Found no NH authorizations"
             return null
         }
     }
@@ -96,16 +96,16 @@ class DomainAuthorizationService {
         if( currentInterviewerId ) {
             // It is possible that result does not contain currentInterviewerId
             def findResult = result.find{ it.id == currentInterviewerId }
-            println "currentInterviewerId is non null; find result is ${findResult}"
+            log.debug "currentInterviewerId is non null; find result is ${findResult}"
             if( !findResult ) {
                 def interviewer = Person.get( currentInterviewerId )
                 result << [ id:currentInterviewerId, fullName:interviewer.fullName, 'default':true ]
             }
         } else {
-            println "currentInterviewerId is null"
+            log.debug "currentInterviewerId is null"
         }
 
-        println "Possible Interviewers are ${result}"
+        log.debug "Possible Interviewers are ${result}"
         return result
     }
     
