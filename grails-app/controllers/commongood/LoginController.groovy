@@ -7,7 +7,7 @@ class LoginController {
     def domainAuthorizationService
 
     def index( ) {
-         println 'Prepare login form'
+         log.debug 'Prepare login form'
     }
 
     def authenticate( ) {
@@ -19,21 +19,21 @@ class LoginController {
         if( user ) {
             def neighbourhoodId = domainAuthorizationService.getNeighbourhoodAuthorization( user )
             if( neighbourhoodId ) {
-                println "Will store info in session for NH with id=${neighbourhoodId}"
+                log.debug "Will store info in session for NH with id=${neighbourhoodId}"
                 
                 // If the following "get" fails we do not want user in session:
                 session.neighbourhood = Neighbourhood.get( neighbourhoodId )
                 session.user = user
                 forward controller:'navigate', action:'neighbourhood', id:neighbourhoodId
             } else {
-                println "NO neighbourhood authorization to store in session for ${params.emailAddress}"
+                log.warn "NO neighbourhood authorization to store in session for ${params.emailAddress}"
                 flash.message = 'Please contact the system administrator'
                 // TODO Count login failures; lock account
                 forward action: "index"
             }
         } else {
             flash.message = 'Invalid login; please try again'
-            println "FAILED to authenticate ${params.emailAddress}"
+            log.warn "FAILED to authenticate ${params.emailAddress}"
             // TODO Count login failures; lock account
             forward action: "index"
         }

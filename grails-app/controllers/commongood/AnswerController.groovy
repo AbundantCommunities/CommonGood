@@ -11,7 +11,7 @@ class AnswerController {
 
         // Result is like [[biking,17],[dancing,4], ...]
         def freqs = Answer.executeQuery(
-                'select a.text, count(a) as ca from Answer as a where a.question.id=? group by a.text order by ca desc',
+                'select lower(a.text), count(a) as ca from Answer as a where a.question.id=? group by lower(a.text) order by ca desc',
                 [questionId] )
 
         if( params.json ) {
@@ -27,6 +27,7 @@ class AnswerController {
 
     def delete( ) {
         def answerId = Long.parseLong( params.id )
+        log.info "${session.user.getFullName()} requests delete answer/${answerId}"
         authorizationService.answer( answerId, session )
         def answer = Answer.get( answerId )
         def person = answer.person
@@ -34,8 +35,10 @@ class AnswerController {
         forward controller:'navigate', action:'familymember', id:person.id
     }
 
+    // Get one answer as JSON
     def get( ) {
         def answerId = Long.parseLong( params.id )
+        log.info "${session.user.getFullName()} requests get answer/${answerId}"
         authorizationService.answer( answerId, session )
         Answer answer = Answer.get( answerId )
         def result = [ id:answer.id, text:answer.text,
@@ -48,8 +51,10 @@ class AnswerController {
         render writer
     }
 
+    // Save a user's changes to an answer
     def save( ) {
         def answerId =  params.long('id')
+        log.info "${session.user.getFullName()} requests save answer/${answerId}"
         authorizationService.answer( answerId, session )
         Answer answer = Answer.get( answerId )
         answer.text = params.text
@@ -67,6 +72,8 @@ class AnswerController {
         where \n represents a single newline character
         */
         Long familyId = Long.parseLong( params.familyId )
+        log.info "${session.user.getFullName()} requests save interview for  family/${familyId}"
+        authorizationService.family( answerId, session )
         Family family = Family.get( familyId )
 
         params.each{ param, value ->
@@ -107,9 +114,5 @@ class AnswerController {
         family.save( flush:true, failOnError: true )
 
         forward controller: "navigate", action: "family", id: familyId
-    }
-    
-    def search( ) {
-        // TODO call the search service (so that a GSP can search just answers!)
     }
 }
