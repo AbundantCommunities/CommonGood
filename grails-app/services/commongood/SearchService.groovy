@@ -14,7 +14,8 @@ class SearchService {
         if( questionId > 0 ) {
             // Select only answers to that particular question
             answers = Answer.executeQuery(
-                'select a.text, p.id, p.firstNames, p.lastName from Answer a join a.person p \
+                'select a.text, a.wouldLead, a.wouldOrganize, p.id, p.firstNames, p.lastName \
+                 from Answer a join a.person p \
                  where lower(a.text) like ? and a.question.id = ? and p.family.address.block.neighbourhood.id = ? \
                  order by p.firstNames, p.lastName, p.id',
                 [ searchTerm, questionId, neighbourhoodId ] )
@@ -22,7 +23,8 @@ class SearchService {
         } else {
             // Select answers to all questions
             answers = Answer.executeQuery(
-                'select a.text, p.id, p.firstNames, p.lastName from Answer a join a.person p \
+                'select a.text, a.wouldLead, a.wouldOrganize, p.id, p.firstNames, p.lastName \
+                 from Answer a join a.person p \
                  where lower(a.text) like ? and p.family.address.block.neighbourhood.id = ? \
                  order by p.firstNames, p.lastName, p.id',
                 [ searchTerm, neighbourhoodId ] )
