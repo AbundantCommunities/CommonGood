@@ -241,11 +241,22 @@
                 <div class="content-heading">${navChildren.childType+'s'} for ${navSelection.levelInHierarchy} ${navSelection.description}&nbsp;&nbsp;<a href="#" onclick="presentNewModal();" style="font-weight:normal;">+ Add New Block</a></div>
                 <g:if test="${navChildren.children.size() > 0}">
                     <g:each in="${navChildren.children}" var="child">
-                        <div class="content-children-row"><a href="${resource(dir:'navigate/'+navChildren.childType.toLowerCase(),file:"${child.id}")}">(${child.code}) ${child.description}</a></div>
-<!--                        <g:each in="${child.connectors}" var="bc">
-                                ${bc.id} ${bc.firstNames} ${bc.lastName}
-                        </g:each>
--->
+                        <div class="content-children-row">
+                            <a href="${resource(dir:'navigate/'+navChildren.childType.toLowerCase(),file:"${child.id}")}">
+                                (${child.code}) ${child.description}
+                            </a>:
+                            <g:if test="${child.connectors.size()>0}">
+                                <g:each in="${child.connectors}" var="bc" status="i">
+                                    <g:if test="${i>0}">, </g:if>
+                                     <g:link controller="Navigate" action="familymember" id="${bc.id}">${bc.firstNames} ${bc.lastName}</g:link>
+                                </g:each>
+                            </g:if>
+                            <g:else>
+                                 <span style="color:#CCCCCC;">no block connector</span>
+                            </g:else>
+
+
+                        </div>
                     </g:each>
                 </g:if>
                 <g:else>
