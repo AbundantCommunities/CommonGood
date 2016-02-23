@@ -30,7 +30,7 @@
                     <div style="margin-top:-5px;margin-bottom:-15px;"><h4>${answers.size()} Answer(s) found: <span style="font-weight:normal;">(<span style="font-weight:bold;">bold</span> = would lead, <span style="font-style:italic;">italic</span> = would organize)</span></h4></div>
                     <g:each in="${answers}" var="answer">
                         <div class="content-children-row">
-                            <div class="cell400 <g:if test="${answer[1]}">cg-bold </g:if><g:if test="${answer[2]}">cg-italic </g:if>">${answer[0]}</div>
+                            <div class="cell400 <g:if test="${answer[1]}">cg-bold </g:if><g:if test="${answer[2]}">cg-italic </g:if>">${answer[0]} ${answer[6]}</div>
                             <g:link controller="navigate" action="familymember" id="${answer[3]}"><div class="cell300">${answer[4]} ${answer[5]}</div></g:link>
                         </div>
                     </g:each>

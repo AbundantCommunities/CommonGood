@@ -25,7 +25,6 @@ class BlockService {
         def connectors = [ ]
 
         bloxWithConnectors.each{
-            println "${it}"
             if( it.id != currentBlockId ) {
                 connectors = [ ]
                 blox << [ id:it.id, code:it.code, description:it.description, connectors:connectors ]
@@ -35,7 +34,6 @@ class BlockService {
                 connectors << [ id:it.person_id, firstNames:it.first_names, lastName:it.last_name ]
             }
         }
-        println "${blox}"
         return blox
     }
 }

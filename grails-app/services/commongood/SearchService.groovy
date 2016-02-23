@@ -14,20 +14,27 @@ class SearchService {
         if( questionId > 0 ) {
             // Select only answers to that particular question
             answers = Answer.executeQuery(
-                'select a.text, a.wouldLead, a.wouldOrganize, p.id, p.firstNames, p.lastName \
-                 from Answer a join a.person p \
-                 where lower(a.text) like ? and a.question.id = ? and p.family.address.block.neighbourhood.id = ? \
-                 order by p.firstNames, p.lastName, p.id',
+                'select a.text, a.wouldLead, a.wouldOrganize, p.id, p.firstNames, p.lastName, q.shortText \
+                 from Answer a, Person p, Question q \
+                 where lower(a.text) like ? \
+                 AND a.person.id = p.id \
+                 AND a.question.id = q.id \
+                 AND q.id = ? \
+                 AND q.neighbourhood.id = ? \
+                 ORDER BY p.firstNames, p.lastName, p.id',
                 [ searchTerm, questionId, neighbourhoodId ] )
 
         } else {
             // Select answers to all questions
             answers = Answer.executeQuery(
-                'select a.text, a.wouldLead, a.wouldOrganize, p.id, p.firstNames, p.lastName \
-                 from Answer a join a.person p \
-                 where lower(a.text) like ? and p.family.address.block.neighbourhood.id = ? \
-                 order by p.firstNames, p.lastName, p.id',
-                [ searchTerm, neighbourhoodId ] )
+                'select a.text, a.wouldLead, a.wouldOrganize, p.id, p.firstNames, p.lastName, q.shortText \
+                 from Answer a, Person p, Question q \
+                 where lower(a.text) like ? \
+                 AND a.person.id = p.id \
+                 AND a.question.id = q.id \
+                 AND q.neighbourhood.id = ? \
+                 ORDER BY p.firstNames, p.lastName, p.id',
+                [ searchTerm, neighbourhoodId ])
         }
 
         log.debug "Found ${answers.size()} answers"
