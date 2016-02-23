@@ -241,7 +241,11 @@
                 <div class="content-heading">${navChildren.childType+'s'} for ${navSelection.levelInHierarchy} ${navSelection.description}&nbsp;&nbsp;<a href="#" onclick="presentNewModal();" style="font-weight:normal;">+ Add New Block</a></div>
                 <g:if test="${navChildren.children.size() > 0}">
                     <g:each in="${navChildren.children}" var="child">
-                        <div class="content-children-row"><a href="${resource(dir:'navigate/'+navChildren.childType.toLowerCase(),file:"${child.id}")}">${child.name}</a></div>
+                        <div class="content-children-row"><a href="${resource(dir:'navigate/'+navChildren.childType.toLowerCase(),file:"${child.id}")}">(${child.code}) ${child.description}</a></div>
+<!--                        <g:each in="${child.connectors}" var="bc">
+                                ${bc.id} ${bc.firstNames} ${bc.lastName}
+                        </g:each>
+-->
                     </g:each>
                 </g:if>
                 <g:else>

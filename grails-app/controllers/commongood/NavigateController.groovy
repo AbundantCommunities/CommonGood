@@ -8,6 +8,7 @@ class NavigateController {
     // Automagically become instances of the respective service:
     def domainAuthorizationService
     def authorizationService
+    def blockService
 
     def remember( lastNavigationLevel, lastNavigationId ) {
         session.lastNavigationLevel = lastNavigationLevel
@@ -43,10 +44,7 @@ class NavigateController {
         log.info "${session.user.getFullName()} to neighbourhood/${hoodId}"
         Neighbourhood theHood = Neighbourhood.where{ id == hoodId }.get( )
         List questions = Question.where{ neighbourhood.id == hoodId }.list( sort:'orderWithinQuestionnaire', order:'asc' )
-        List blocks = Block.where{ neighbourhood.id == hoodId }.list( sort:'orderWithinNeighbourhood', order:'asc' )
-        blocks = blocks.collect{
-            [ id:it.id, name:it.displayName ]
-        }
+        List blocks = blockService.getForNeighbourhood( hoodId )
         Map result =
             [
             navContext: [ ],
