@@ -6,7 +6,6 @@
         <title><g:layoutTitle default="Grails"/></title>
         <meta name="description" content="Abundant Communities - Edmonton" />
         <link rel="stylesheet" href="${resource(dir:'css',file:'common.css')}" />
-        <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Quicksand">
         <script type="text/javascript">
             function doSearch() {
                 document.getElementById('search-form').submit();

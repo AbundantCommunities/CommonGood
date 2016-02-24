@@ -6,7 +6,6 @@
         <title><g:layoutTitle default="Grails"/></title>
         <meta name="description" content="Abundant Communities - Edmonton" />
         <link rel="stylesheet" href="${resource(dir:'css',file:'session.css')}" />
-        <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Quicksand">
         <g:layoutHead/>
     </head>
     <body>

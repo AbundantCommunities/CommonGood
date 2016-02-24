@@ -254,8 +254,6 @@
                             <g:else>
                                  <span style="color:#CCCCCC;">no block connector</span>
                             </g:else>
-
-
                         </div>
                     </g:each>
                 </g:if>
