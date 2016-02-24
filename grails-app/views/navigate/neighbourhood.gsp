@@ -283,7 +283,7 @@
             <div id="select-question-container">
                 <div class="modal-title">Select Question for Answer Ranking</div>
                 <form id="select-question-form" action="<g:createLink controller='answer' action='frequencies'/>" method="get">
-                    <input id="inputId" type="hidden" name="id" value="${navSelection.questions[0].id}" />
+                    <input id="inputId" type="hidden" name="id" value="${navSelection.questions?navSelection.questions[0].id:''}" />
                     <div class="modal-row">Question: 
                         <select id="questionsSelect">
                             <g:each in="${navSelection.questions}" var="question">

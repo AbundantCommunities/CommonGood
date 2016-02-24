@@ -38,3 +38,25 @@ SELECT MAX(id) FROM neighbourhood;
 SELECT MAX(id) FROM person;
 SELECT MAX(id) FROM question;
 SELECT MAX(id) FROM this_installation;
+
+
+/* Useful for setting up a new neighbourhood
+
+INSERT INTO neighbourhood( id, version, date_created, last_updated, logo, name )
+VALUES( AAAAA, 0, CURRENT_DATE, CURRENT_DATE, NULL, '* NAME OF NEIGHBOURHOOD *' );
+
+INSERT INTO block( id, version, code, date_created, description, last_updated, neighbourhood_id, order_within_neighbourhood )
+VALUES( KKKKK, 0, '1', CURRENT_DATE, 'Describe the block', CURRENT_DATE, AAAAA, 100 );
+
+INSERT INTO address( id, version, block_id, date_created, last_updated, note, order_within_block, text )
+VALUES( WWWWW, 0, KKKKK, CURRENT_DATE, CURRENT_DATE, '(note)', 100, '* ADDRESS OF NC *');
+
+INSERT INTO family( id, version, address_id, date_created, interview_date, interviewer_id, last_updated, name, note, order_within_address, participate_in_interview, permission_to_contact )
+VALUES( XXXXX, 0, WWWWW, CURRENT_DATE, CURRENT_DATE, NULL, CURRENT_DATE, '* NC SURNAME *', '(note)', 100, TRUE, TRUE);
+
+INSERT INTO person( id, version, app_user, birth_year, date_created, email_address, family_id, first_names, last_name, last_updated, order_within_family, password_hash, phone_number, note, hashed_password )
+VALUES( YYYYY, 0, TRUE, 0, CURRENT_DATE, 'stewcarson@shaw.ca', XXXXX, '* GIVEN NAMES *', '* SURNAME *', CURRENT_DATE, 100, 0, '999-999-9999', '(note)', '* BAD HASH *' );
+
+INSERT INTO domain_authorization( id, version, date_created, domain_code, domain_key, last_updated, person_id, primary_person )
+VALUES( ZZZZZ, 0, CURRENT_DATE, 'N', AAAAA, CURRENT_DATE, YYYYY, false );
+*/
