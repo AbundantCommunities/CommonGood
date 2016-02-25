@@ -73,7 +73,7 @@ class AnswerController {
         */
         Long familyId = Long.parseLong( params.familyId )
         log.info "${session.user.getFullName()} requests save interview for  family/${familyId}"
-        authorizationService.family( answerId, session )
+        authorizationService.family( familyId, session )
         Family family = Family.get( familyId )
 
         params.each{ param, value ->
