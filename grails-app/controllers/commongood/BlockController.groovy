@@ -44,49 +44,6 @@ class BlockController {
         forward controller:'navigate', action:'block', id:blockId
     }
 
-    /**
-    * Given an address id plus basic info about a person, make a Person plus a family
-    * for that person. Make the new person a member of the family. Make the new family
-    * a family of the address. Finally, make a new DomainAuthorization so that the new
-    * person is a Block Connector for the block the address is within.
-    */
-   /** NO LONGER USED?!?!
-    def addConnector( ) {
-        // FIXME make all the database work in this controller occur in a single transaction
-        def addressId = Long.valueOf( params.addressId )
-        Address address = Address.get( addressId )
-        def blockId = address.block.id
-        
-        Family family = new Family( )
-        family.address = address
-        family.name = params.lastName
-        family.participateInInterview = true
-        family.permissionToContact = true
-        family.note = ''
-        family.interviewDate = null
-        family.orderWithinAddress = 100
-        family.save( flush:true, failOnError: true )
-
-        Person person = new Person( )
-        person.family = family
-        person.firstNames = params.firstNames
-        person.lastName = params.lastName
-        person.birthYear = Integer.valueOf( params.birthYear?:'0' )
-        person.emailAddress = params.emailAddress
-        person.phoneNumber = params.phoneNumber
-        person.orderWithinFamily = 100
-        person.save( flush:true, failOnError: true )
-
-        DomainAuthorization dauth = new DomainAuthorization( )
-        dauth.domainCode = DomainAuthorization.BLOCK
-        dauth.person = person
-        dauth.primaryPerson = Boolean.TRUE
-        dauth.domainKey = blockId
-        dauth.save( flush:true, failOnError: true )
-
-        forward controller:'navigate', action:'block', id:blockId
-    } */
-
     def contactList() {
         def blockId = Long.parseLong( params.id )
         def block = Block.get( blockId )

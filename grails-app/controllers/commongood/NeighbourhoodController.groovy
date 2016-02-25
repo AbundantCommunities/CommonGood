@@ -5,6 +5,44 @@ class NeighbourhoodController {
 
     def authorizationService
 
+    def blockConnectors( ) {
+        String query = '''SELECT blk.id,
+                                blk.code,
+                                blk.description,
+                                bc.id,
+                                bc.firstNames,
+                                bc.lastName,
+                                bc.phoneNumber,
+                                bc.emailAddress,
+                                a.text
+                          FROM DomainAuthorization AS da,
+                               Block AS blk,
+                               Person AS bc,
+                               Family as f,
+                               Address as a
+                          WHERE da.domainCode = 'B'
+                          AND   da.domainKey = blk.id
+                          AND   blk.neighbourhood.id = :neighbourhoodId
+                          AND   da.person.id = bc.id
+                          AND   bc.family.id = f.id
+                          AND   f.address.id = a.id
+                          ORDER BY bc.firstNames, bc.lastName, bc.id'''
+        List connectors = Block.executeQuery( query, [neighbourhoodId: session.neighbourhood.id] ).collect {
+            [
+                blockId: it[0],
+                blockCode: it[1],
+                blockDescription: it[2],
+                id: it[3],
+                firstNames: it[4],
+                lastName: it[5],
+                phone: it[6],
+                emailAddress: it[7],
+                address: it[8]
+            ]
+        }
+        [ connectors: connectors ]
+    }
+
     def addBlock( ) {
         def neighbourhoodId = params.long('id')
         authorizationService.neighbourhood( neighbourhoodId, session )
