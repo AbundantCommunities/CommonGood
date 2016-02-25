@@ -24,7 +24,8 @@ class Family {
     static transients = ['interviewed']
     
     public getInterviewed( ) {
-        if( interviewDate != null && interviewer != null ) {
+        // We dropped the requirement that interviewer.Person be non null
+        if( interviewDate != null ) {
             return Boolean.TRUE
         } else {
             return Boolean.FALSE

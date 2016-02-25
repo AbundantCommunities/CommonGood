@@ -5,6 +5,7 @@ class NeighbourhoodController {
 
     def authorizationService
 
+    // TODO BC can cover > 1 block; make easier for GSP
     def blockConnectors( ) {
         String query = '''SELECT blk.id,
                                 blk.code,

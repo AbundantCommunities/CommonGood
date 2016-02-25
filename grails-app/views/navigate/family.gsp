@@ -458,6 +458,5 @@
                     <div id="new-fm-savebutton" type="button" onclick="JavaScript:saveFamilyMember();">Save</div>
                 </div>
             </div>
-
     </body>
 </html>
