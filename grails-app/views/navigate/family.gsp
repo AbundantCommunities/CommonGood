@@ -177,13 +177,10 @@
 
             window.onload = function onWindowLoad() {
                 <g:each in="${navSelection.possibleInterviewers}" var="possibleInterviewer">
-                    alert("${possibleInterviewer.default} is ${possibleInterviewer.default.class.name}");
-                    <g:if test="${possibleInterviewer.default}">
+                    <g:if test="${possibleInterviewer.default=='true'}">
                         document.getElementById('initial-interviewer-value').innerHTML = "${possibleInterviewer.fullName}";
                     </g:if>
                 </g:each>
-
-
             }
 
         </script>
