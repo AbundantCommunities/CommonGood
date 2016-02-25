@@ -99,7 +99,7 @@ class DomainAuthorizationService {
             log.debug "currentInterviewerId is non null; find result is ${findResult}"
             if( !findResult ) {
                 def interviewer = Person.get( currentInterviewerId )
-                result << [ id:currentInterviewerId, fullName:interviewer.fullName, 'default':true ]
+                result << [ id:currentInterviewerId, fullName:interviewer.fullName, 'default':'true' ]
             }
         } else {
             log.debug "currentInterviewerId is null"
