@@ -59,4 +59,7 @@ VALUES( YYYYY, 0, TRUE, 0, CURRENT_DATE, 'stewcarson@shaw.ca', XXXXX, '* GIVEN N
 
 INSERT INTO domain_authorization( id, version, date_created, domain_code, domain_key, last_updated, person_id, primary_person )
 VALUES( ZZZZZ, 0, CURRENT_DATE, 'N', AAAAA, CURRENT_DATE, YYYYY, false );
+
+INSERT INTO question( id, version, code, date_created, last_updated, neighbourhood_id, order_within_questionnaire, text, short_text )
+VALUES( QQQQQ, 0, '1', CURRENT_DATE, CURRENT_DATE, AAAAA, 100, 'What makes a great neighbourhood?', 'Great NH?');
 */
