@@ -19,6 +19,12 @@ class QuestionController {
         Person interviewer // Block Connector
         authorizationService.family( familyId, session )
 
+        if( !family.interviewed ) {
+            // Having problems forcing default values for new family rows :-(
+            family.participateInInterview = Boolean.TRUE
+            family.permissionToContact = Boolean.TRUE
+        }
+
         List members = Person.where{ family.id == familyId }.list( sort:'orderWithinFamily', order:'asc' )
         members = members.collect{
             [ id:it.id, name:it.fullName ]

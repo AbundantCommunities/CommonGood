@@ -20,9 +20,9 @@ class Family {
         interviewer nullable: true
         interviewDate nullable: true
     }
-    
+
     static transients = ['interviewed']
-    
+
     public getInterviewed( ) {
         // We dropped the requirement that interviewer.Person be non null
         if( interviewDate != null ) {
