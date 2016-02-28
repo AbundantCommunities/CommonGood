@@ -10,11 +10,184 @@
                 document.getElementById('show-results-form').submit();
             }
 
+            function constructLine(fNames,lName,phone,email,address) {
+                var lineIsClean = true;
+                var constructedLine = '';
+
+                if (fNames.length>0) {
+                    constructedLine = constructedLine+fNames;
+                    lineIsClean = false;
+                }
+                if (lName.length>0) {
+                    if (!lineIsClean) {
+                        constructedLine = constructedLine+' ';
+                    }
+                    constructedLine = constructedLine+lName;
+                    lineIsClean = false;
+                }
+                if (phone.length>0) {
+                    if (!lineIsClean) {
+                        constructedLine = constructedLine+', ';
+                    }
+                    constructedLine = constructedLine+phone;
+                    lineIsClean = false;
+                }
+                if (email.length>0) {
+                    if (!lineIsClean) {
+                        constructedLine = constructedLine+', ';
+                    }
+                    constructedLine = constructedLine+email;
+                    lineIsClean = false;
+                }
+                if (address.length>0) {
+                    if (!lineIsClean) {
+                        constructedLine = constructedLine+', ';
+                    }
+                    constructedLine = constructedLine+address;
+                }
+                constructedLine = constructedLine+'\n';
+
+                return constructedLine;
+            }
+
             function emailList() {
-                alert('not yet implemented');
-                var body = 'mybody is there \nk second line\nthird line';
-                var email = 'mailto:?body='+encodeURIComponent(body);
-                //document.location.href = email;
+
+
+                var pFNames = [];
+                var pLName = [];
+                var pPhone = [];
+                var pEmail = [];
+                var pAddress = [];
+
+                var aQuestion = [];
+                var aAnswer = [];
+                var aFNames = []
+                var aLName = [];
+                var aPhone = []
+                var aEmail = [];
+                var aAddress = [];
+
+                var aLeadQuestion = [];
+                var aLeadAnswer = [];
+                var aLeadFNames = [];
+                var aLeadLName = [];
+                var aLeadPhone = [];
+                var aLeadEmail = [];
+                var aLeadAddress = [];
+
+                var aOrgQuestion = [];
+                var aOrgAnswer = [];
+                var aOrgFNames = [];
+                var aOrgLName = [];
+                var aOrgPhone = [];
+                var aOrgEmail = [];
+                var aOrgAddress = [];
+
+                Encoder.EncodeType = "entity";
+
+                <g:if test="${people.size() > 0}">
+                    <g:each in="${people}" var="person">
+                        pFNames.push(Encoder.htmlDecode('${person[1]}'));
+                        pLName.push(Encoder.htmlDecode('${person[2]}'));
+                        pPhone.push(Encoder.htmlDecode('${person[3]}'));
+                        pEmail.push(Encoder.htmlDecode('${person[4]}'));
+                        pAddress.push(Encoder.htmlDecode('${person[5]}'));
+                    </g:each>
+                </g:if>
+
+                <g:if test="${answers.size() > 0}">
+                    <g:each in="${answers}" var="answer">
+                        <g:if test="${answer[1]}">
+                            aLeadQuestion.push(Encoder.htmlDecode('${answer[6]}'));
+                            aLeadAnswer.push(Encoder.htmlDecode('${answer[0]}'));
+                            aLeadFNames.push(Encoder.htmlDecode('${answer[4]}'));
+                            aLeadLName.push(Encoder.htmlDecode('${answer[5]}'));
+                            aLeadPhone.push(Encoder.htmlDecode('${answer[7]}'));
+                            aLeadEmail.push(Encoder.htmlDecode('${answer[8]}'));
+                            aLeadAddress.push(Encoder.htmlDecode('${answer[9]}'));
+                        </g:if>
+                        <g:if test="${answer[2]}">
+                            aOrgQuestion.push(Encoder.htmlDecode('${answer[6]}'));
+                            aOrgAnswer.push(Encoder.htmlDecode('${answer[0]}'));
+                            aOrgFNames.push(Encoder.htmlDecode('${answer[4]}'));
+                            aOrgLName.push(Encoder.htmlDecode('${answer[5]}'));
+                            aOrgPhone.push(Encoder.htmlDecode('${answer[7]}'));
+                            aOrgEmail.push(Encoder.htmlDecode('${answer[8]}'));
+                            aOrgAddress.push(Encoder.htmlDecode('${answer[9]}'));
+                        </g:if>
+                        <g:if test="${!answer[1]&&!answer[2]}">
+                            aQuestion.push(Encoder.htmlDecode('${answer[6]}'));
+                            aAnswer.push(Encoder.htmlDecode('${answer[0]}'));
+                            aFNames.push(Encoder.htmlDecode('${answer[4]}'));
+                            aLName.push(Encoder.htmlDecode('${answer[5]}'));
+                            aPhone.push(Encoder.htmlDecode('${answer[7]}'));
+                            aEmail.push(Encoder.htmlDecode('${answer[8]}'));
+                            aAddress.push(Encoder.htmlDecode('${answer[9]}'));
+                        </g:if>
+                    </g:each>
+                </g:if>
+
+                var lineIsClean;
+                var body = '\n\n\n\n-----------------------------------------------------------\nSearch results for "${q}":\n\n';
+
+                if (pLName.length>0) {
+                    body = body+'Found in ${people.size()} family member';
+                    if (pLName.length>1) {
+                        body = body+'s';
+                    }
+                    body = body+':\n\n';
+                    for (i=0; i<pLName.length;i++) {
+                        body = body+constructLine(pFNames[i],pLName[i],pPhone[i],pEmail[i],pAddress[i]);
+                    }
+                    body = body+'\n';
+                }
+
+                if (${answers.size()}>0) {
+                    if (pLName.length>0) {
+                        body = body+'\n';
+                    }
+                    body = body+'Found in ${answers.size()} answer';
+                    if (${answers.size()}>1) {
+                        body = body+'s';
+                    }
+                    body = body+':\n\n';
+                }
+
+                if (aLName.length>0) {
+                    for (i=0;i<aLName.length;i++) {
+                        body = body+'Answer: '+aAnswer[i]+' (Question: '+aQuestion[i]+')\n';
+                        body = body+constructLine(aFNames[i],aLName[i],aPhone[i],aEmail[i],aAddress[i]);
+                        body = body+'\n';
+                    }
+                }
+
+                if (aLeadLName.length>0) {
+                    body = body+'Those who would lead:\n\n';
+                    for (i=0;i<aLeadLName.length;i++) {
+                        body = body+'Answer: '+aLeadAnswer[i]+' (Question: '+aLeadQuestion[i]+')\n';
+                        body = body+constructLine(aLeadFNames[i],aLeadLName[i],aLeadPhone[i],aLeadEmail[i],aLeadAddress[i]);
+                        body = body+'\n';
+                    }
+                }
+
+                if (aOrgLName.length>0) {
+                    body = body+'Those who would organize:\n\n';
+                    for (i=0;i<aOrgLName.length;i++) {
+                        body = body+'Answer: '+aOrgAnswer[i]+' (Question: '+aOrgQuestion[i]+')\n';
+                        body = body+constructLine(aOrgFNames[i],aOrgLName[i],aOrgPhone[i],aOrgEmail[i],aOrgAddress[i]);
+                        body = body+'\n';
+                    }
+                }
+
+                if (aLName.length>0&&aLeadLName.length==0&&aOrgLName.length==0) {
+                    body = body+'No one has offered to lead or organize.';
+                }
+
+                body = encodeURIComponent(body);
+
+                var email = 'mailto:?body='+body;
+
+                document.location.href = email;
             }
         </script>
 
