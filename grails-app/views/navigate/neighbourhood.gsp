@@ -227,7 +227,7 @@
 
                 <div id="content-actions-left-side">
                     <div class="content-left-action"><g:link controller="blockSummary" action="index">Block Summary</g:link></div>
-                    <div class="content-left-action"><g:link controller="neighbourhood" action="blockConnectors">Block Connector Summary</g:link></div>
+                    <div class="content-left-action"><g:link controller="neighbourhood" action="blockConnectors">Block Connector Contact List</g:link></div>
                     <div class="content-left-action"><a href="#" onclick="presentSelectQuestionModal();">Answer Ranking</a></div>
                 </div>
 

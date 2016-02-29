@@ -39,8 +39,8 @@
         </g:if>
 
             <div id="content-children" style="padding-bottom:10px;">
-                <div style="margin-top:-15px;"><h3>Block Connector Summary for ${session.neighbourhood.name}</h3></div>
-                <div style="margin-top:-10px;"><h4>Number of block connectors in neighbourhood: ${BCCount}<g:if test="${BCCount>0}"> (<a href="#" onclick="emailAll();">email all</a>)</g:if></h4></div>
+                <div style="margin-top:-15px;"><h3>Block Connector Contact List for ${session.neighbourhood.name}</h3></div>
+                <div style="margin-top:-10px;"><h4>Number of Block Connectors in neighbourhood: ${BCCount}<g:if test="${BCCount>0}"> (<a href="#" onclick="emailAll();">email all</a>)</g:if></h4></div>
                 <g:if test="${connectors.size()>0}">
                     <div id="content-children-heading">
                         <div class="cell170">Block Connector</div>

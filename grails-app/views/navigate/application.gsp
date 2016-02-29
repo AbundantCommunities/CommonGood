@@ -39,7 +39,7 @@
                 <g:if test="${navSelection.levelInHierarchy.toLowerCase() == 'neighbourhood'}">
                     <div id="content-actions-left-side">
                         <div class="content-left-action"><a href="${resource(dir:'blockSummary',file:"index")}" target="_blank">Block Summary</a></div>
-                        <div class="content-left-action"><a href="${resource(dir:'blockConnectorSummary',file:"index")}" target="_blank">Block Connector Summary</a></div>
+                        <div class="content-left-action"><a href="${resource(dir:'blockConnectorSummary',file:"index")}" target="_blank">Block Connector Contact List</a></div>
                     </div>
                 </g:if>
 
