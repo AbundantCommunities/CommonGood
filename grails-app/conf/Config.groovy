@@ -97,5 +97,6 @@ environments {
 // log4j configuration
 log4j = { root {
         info 'grails.app.controllers.commongood'
+        info 'grails.app.controllers.org.abundantcommunityinitiative'
         }
 }

@@ -7,6 +7,7 @@ class BlockSummaryController {
     def dataSource
 
     def index() {
+        log.info "${session.user.getFullName()} requests Block Summary for neighbourhood/${session.neighbourhood.id}"
         // Eschew GORM; let's kick it ol' school...
         def query = '''SELECT blk.id AS blockId,
                             blk.code,

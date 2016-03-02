@@ -7,6 +7,7 @@ class NeighbourhoodController {
 
     // TODO BC can cover > 1 block; make easier for GSP
     def blockConnectors( ) {
+        log.info "${session.user.getFullName()} requests Block Connector Contact List for neighbourhood/${session.neighbourhood.id}"
         String query = '''SELECT blk.id,
                                 blk.code,
                                 blk.description,
@@ -46,6 +47,7 @@ class NeighbourhoodController {
 
     def addBlock( ) {
         def neighbourhoodId = params.long('id')
+        log.info "${session.user.getFullName()} requests addBlock for neighbourhood/${neighbourhoodId}"
         authorizationService.neighbourhood( neighbourhoodId, session )
         def neighbourhood = Neighbourhood.get( neighbourhoodId )
 

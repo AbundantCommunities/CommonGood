@@ -6,7 +6,7 @@ class AnswerController {
 
     def frequencies( ) {
         def questionId = Long.parseLong( params.id )
-        println "Request to get frequencies for question ${questionId}"
+        log.info "${session.user.getFullName()} requests Answer Ranking neighbourhood/${session.neighbourhood.id} question/${questionId}"
         def question = Question.get( questionId )
 
         // Result is like [[biking,17],[dancing,4], ...]
@@ -72,7 +72,7 @@ class AnswerController {
         where \n represents a single newline character
         */
         Long familyId = Long.parseLong( params.familyId )
-        log.info "${session.user.getFullName()} requests save interview for  family/${familyId}"
+        log.info "${session.user.getFullName()} requests save interview for family/${familyId}"
         authorizationService.family( familyId, session )
         Family family = Family.get( familyId )
 

@@ -47,6 +47,7 @@ class BlockController {
     def contactList() {
         def blockId = Long.parseLong( params.id )
         def block = Block.get( blockId )
+        log.info "${session.user.getFullName()} requests Contact List for block/${blockId}"
         def connectors = domainAuthorizationService.getBlockConnectors( blockId )
 
         def blockPeople = Person.findAll(

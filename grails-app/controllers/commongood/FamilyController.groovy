@@ -26,7 +26,7 @@ class FamilyController {
             // The request wants us to change an existing family.
             // We will not change the family's address.
             def familyId = Long.valueOf( params.id )
-            println "Request to CHANGE family ${familyId}"
+            log.info "${session.user.getFullName()} requests save changes for family/${familyId}"
             family = Family.get( familyId )
             newFamily = false
         } else {
@@ -34,7 +34,7 @@ class FamilyController {
             // We need to get the family's address from the request.
             family = new Family( )
             def addressId = Long.valueOf( params.addressId )
-            println "Request to add a family to address ${addressId}"
+            log.info "${session.user.getFullName()} requests add a family to address/${addressId}"
             family.address = Address.get( addressId )
             family.participateInInterview = Boolean.FALSE
             family.permissionToContact = Boolean.FALSE

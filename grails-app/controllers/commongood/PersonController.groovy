@@ -8,13 +8,13 @@ class PersonController {
         def newPerson
         if( 'id' in params ) {
             def personId = Long.valueOf( params.id )
-            println "Request to CHANGE person ${personId}"
+            log.info "${session.user.getFullName()} requests save changes to person/${personId}"
             person = Person.get( personId )
             newPerson = false
         } else {
             // The request is to create a new person
             def familyId = Long.valueOf( params.familyId )
-            println "Request to ADD a person to family ${familyId}"
+            log.info "${session.user.getFullName()} requests add person to family/${familyId}"
             person = new Person( )
             person.family = Family.get( familyId )
             newPerson = true
