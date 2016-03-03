@@ -13,9 +13,9 @@ class LoginController {
     def authenticate( ) {
         session.user = null
         session.neighbourhood = null
+        log.info("Request to authenticate, using ${params.emailAddress}")
 
         def user = authenticateService.check( params.emailAddress, params.password )
-
         if( user ) {
             def neighbourhoodId = domainAuthorizationService.getNeighbourhoodAuthorization( user )
             if( neighbourhoodId ) {

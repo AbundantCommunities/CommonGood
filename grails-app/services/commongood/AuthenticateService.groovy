@@ -13,18 +13,13 @@ class AuthenticateService {
     public Person check( emailAddress, password ) {
         log.debug "Request to check password of ${emailAddress}"
 
-        HashSpec spec = new HashSpec("PBKDF2WithHmacSHA512", 75000, 64, 256)
-        Hasher hasher = new Hasher(spec)
-        String res = hasher.create(password.toCharArray())
-        log.info("HASH RESULT: ${res}")
-
         def peeps = Person.findAll( 'from Person where emailAddress=? and appUser=true', [emailAddress] )
 
         if( peeps.size() > 1 ) {
-            log.warn "NASTY data integrity problem; ${peeps.size()} people with matching passwords for ${emailAddress}"
+            log.error "Authentication failure: ${peeps.size()} people with appUser=true and address=${emailAddress}"
 
         } else if ( peeps.size() == 0 ) {
-            log.info "No password match for ${emailAddress}"
+            log.warn "No Person where emailAddress='${emailAddress}' and appUser=true"
 
         } else {
             def peep = peeps[0]
@@ -32,10 +27,10 @@ class AuthenticateService {
                 log.info "${peep.fullName} authenticated successfully"
                 return peep
             } else {
-                log.info "${peep.fullName} FAILED to authenticat"
+                log.warn "${peep.fullName} FAILED to authenticat"
             }
         }
 
-        return null
+        return null // this signals FAILURE
     }
 }

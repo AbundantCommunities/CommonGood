@@ -3,7 +3,7 @@ package commongood
 class LogoutController {
 
     def index() {
-        println "Logging out ${session.user}"
+        log.info "${session.user.getFullName()} logging out"
         session.user = null
         session.neighbourhood = null
         forward controller: "login"

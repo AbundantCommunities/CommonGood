@@ -12,6 +12,7 @@ class BlockController {
      */
     def addAddresses( ) {
         def blockId = Long.parseLong( params.id )
+        log.info "${session.user.getFullName()} requests add address(es) block/${blockId}"
         authorizationService.block( blockId, session )
         def thisBlock = Block.get( blockId )
 
@@ -76,6 +77,7 @@ class BlockController {
 
     def save( ) {
         def blockId = params.long('id')
+        log.info "${session.user.getFullName()} requests save change to block/${blockId}"
         authorizationService.block( blockId, session )
         def block = Block.get( blockId )
 
