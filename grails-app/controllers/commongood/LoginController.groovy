@@ -7,13 +7,13 @@ class LoginController {
     def domainAuthorizationService
 
     def index( ) {
-         log.debug 'Prepare login form'
+         log.info 'Prepare login form'
     }
 
     def authenticate( ) {
         session.user = null
         session.neighbourhood = null
-        log.info("Request to authenticate, using ${params.emailAddress}")
+        log.info("Request to authenticate, using ${params.emailAddress}; pwd len is ${params.password.size()}")
 
         def user = authenticateService.check( params.emailAddress, params.password )
         if( user ) {
