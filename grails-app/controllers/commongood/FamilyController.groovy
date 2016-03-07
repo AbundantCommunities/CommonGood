@@ -1,8 +1,13 @@
 package commongood
 
+import org.abundantcommunityinitiative.commongood.handy.JsonWriter
+
 class FamilyController {
     static allowedMethods = [members:'GET', save:'POST']
+    def authorizationService
 
+    // Returns members of a given family
+    // JSON call -- used by Add Block Connector
     def members( ) {
         def id = Long.valueOf( params.id )
         authorizationService.family( id, session )
@@ -14,10 +19,7 @@ class FamilyController {
             result << [ id:member.id, name:member.fullName ]
         }
 
-        def bldr = new groovy.json.JsonBuilder( result )
-        def writer = new StringWriter()
-        bldr.writeTo(writer)
-        render writer
+        render JsonWriter.write( result )
     }
 
     def save() {

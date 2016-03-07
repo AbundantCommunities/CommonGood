@@ -178,7 +178,7 @@ class NavigateController {
     // Lower case M because of the way our GSP constructs navigation URLs
     def familymember( ) {
         Long memberId = Long.valueOf( params.id )
-        authorizationService.familyMember( memberId, session )
+        authorizationService.person( memberId, session )
         log.info "${session.user.getFullName()} to familyMember/${memberId}"
 
         /* The result of the following query looks like:

@@ -1,5 +1,7 @@
 package commongood
 
+import org.abundantcommunityinitiative.commongood.handy.JsonWriter
+
 class AddressController {
     static allowedMethods = [families:'GET', save:'POST']
     def authorizationService
@@ -16,10 +18,7 @@ class AddressController {
             result << [ id:fam.id, name:fam.name ]
         }
 
-        def bldr = new groovy.json.JsonBuilder( result )
-        def writer = new StringWriter()
-        bldr.writeTo(writer)
-        render writer
+        render JsonWriter.write( result )
     }
     
     def save( ) {

@@ -45,9 +45,9 @@ class AuthorizationService {
         }
     }
 
-    // Quietly exits if user is authorized to view family member whose PK is id,
+    // Quietly exits if user is authorized to view the person whose PK is id,
     // else throws an exception
-    def familyMember( id, session ) {
+    def person( id, session ) {
         if( Person.get(id).family.address.block.neighbourhood.id != session.neighbourhood.id ) {
             prevent( 'Person', id, session )
         }

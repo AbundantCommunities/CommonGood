@@ -1,5 +1,7 @@
 package commongood
 
+import org.abundantcommunityinitiative.commongood.handy.JsonWriter
+
 class AnswerController {
     static allowedMethods = [frequencies:'GET', get:'GET', save:'POST', saveInterview:'POST']
     def authorizationService
@@ -19,10 +21,7 @@ class AnswerController {
                 [qId:questionId] )
 
         if( params.json ) {
-            def bldr = new groovy.json.JsonBuilder( freqs )
-            def writer = new StringWriter()
-            bldr.writeTo(writer)
-            render writer
+            render JsonWriter.write( freqs )
         } else {
             [ question:question, frequencies:freqs ]
         }
@@ -48,10 +47,7 @@ class AnswerController {
                 wouldLead:answer.wouldLead, wouldOrganize:answer.wouldOrganize,
                 question:answer.question.getLongHeader() ]
 
-        def bldr = new groovy.json.JsonBuilder( result )
-        def writer = new StringWriter()
-        bldr.writeTo(writer)
-        render writer
+        render JsonWriter.write( result )
     }
 
     // Save a user's changes to an answer
