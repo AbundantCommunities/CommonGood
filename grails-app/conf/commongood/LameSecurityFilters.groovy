@@ -13,7 +13,7 @@ class LameSecurityFilters {
                         return true
                     } else {
                         log.warn "In Sensitive context; unauthenticated user"
-                        redirect( controller: 'login' )
+                        redirect controller: 'login'
                         return false
                     }
                 } else {

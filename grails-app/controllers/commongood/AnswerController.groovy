@@ -6,16 +6,19 @@ class AnswerController {
 
     def frequencies( ) {
         def questionId = Long.parseLong( params.id )
-        log.info "${session.user.getFullName()} requests Answer Ranking neighbourhood/${session.neighbourhood.id} question/${questionId}"
+        if( params.json ) {
+            log.info "Anon requests Answer Ranking question/${questionId}"
+        } else {
+            log.info "${session.user.getFullName()} requests Answer Ranking question/${questionId}"
+        }
         def question = Question.get( questionId )
 
         // Result is like [[biking,17],[dancing,4], ...]
         def freqs = Answer.executeQuery(
-                'select lower(a.text), count(a) as ca from Answer as a where a.question.id=? group by lower(a.text) order by ca desc',
-                [questionId] )
+                'select lower(a.text), count(a) as ca from Answer as a where a.question.id=:qId group by lower(a.text) order by ca desc',
+                [qId:questionId] )
 
         if( params.json ) {
-            log.debug 'Request for json freqs'
             def bldr = new groovy.json.JsonBuilder( freqs )
             def writer = new StringWriter()
             bldr.writeTo(writer)

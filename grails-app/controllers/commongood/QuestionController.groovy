@@ -16,7 +16,6 @@ class QuestionController {
         Family family = Family.get( familyId )
 
         Person interviewer // Block Connector
-        authorizationService.family( familyId, session )
 
         if( !family.interviewed ) {
             // Having problems forcing default values for new family rows :-(

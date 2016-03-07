@@ -7,7 +7,12 @@ class LoginController {
     def domainAuthorizationService
 
     def index( ) {
-         log.info 'Prepare login form'
+        if( session.user && session.neighbourhood ) {
+            log.info( "LoginController found ${session.user} still logged in" )
+            redirect controller: 'navigate', action:'neighbourhood', id:session.neighbourhood.id
+        } else {
+            log.info 'Unauthenticated user needs to log in'
+        }
     }
 
     def authenticate( ) {

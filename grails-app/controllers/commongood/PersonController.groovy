@@ -2,18 +2,21 @@ package commongood
 
 class PersonController {
     static allowedMethods = [save:'POST', setBlockConnector:'POST']
+    def authorizationService
 
     def save() {
         Person person
         def newPerson
         if( 'id' in params ) {
             def personId = Long.valueOf( params.id )
+            authorizationService.person( personId, session )
             log.info "${session.user.getFullName()} requests save changes to person/${personId}"
             person = Person.get( personId )
             newPerson = false
         } else {
             // The request is to create a new person
             def familyId = Long.valueOf( params.familyId )
+            authorizationService.family( familyId, session )
             log.info "${session.user.getFullName()} requests add person to family/${familyId}"
             person = new Person( )
             person.family = Family.get( familyId )
@@ -54,6 +57,7 @@ class PersonController {
         Long id = Long.parseLong( params.id )
         Person person = Person.get( id )
         def blockId = person.family.address.block.id
+        authorizationService.block( blockId, session )
 
         // The person becomes a BC for his block
         DomainAuthorization da = new DomainAuthorization( )

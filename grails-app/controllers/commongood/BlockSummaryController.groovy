@@ -5,9 +5,15 @@ import groovy.sql.Sql
 class BlockSummaryController {
     // Grails injects the default DataSource
     def dataSource
+    def authorizationService
 
     def index() {
-        log.info "${session.user.getFullName()} requests Block Summary for neighbourhood/${session.neighbourhood.id}"
+        // This def and call to our authorizationService accomplishes very little
+        // but without it, the code appears to lack authorization enforcement...
+        def hoodId = session.neighbourhood.id
+        authorizationService.neighbourhood( hoodId, session )
+
+        log.info "${session.user.getFullName()} requests Block Summary for neighbourhood/${hoodId}"
         // Eschew GORM; let's kick it ol' school...
         def query = '''SELECT blk.id AS blockId,
                             blk.code,
@@ -25,7 +31,7 @@ class BlockSummaryController {
                              addr.id'''
 
         final Sql sql = new Sql(dataSource)
-        def fams = sql.rows( query, [neighbourhoodId: session.neighbourhood.id] )
+        def fams = sql.rows( query, [neighbourhoodId:hoodId] )
 
         def blocks = [ ]
         def lastCode = null

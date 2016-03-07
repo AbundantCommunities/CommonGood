@@ -7,7 +7,12 @@ class NeighbourhoodController {
 
     // TODO BC can cover > 1 block; make easier for GSP
     def blockConnectors( ) {
-        log.info "${session.user.getFullName()} requests Block Connector Contact List for neighbourhood/${session.neighbourhood.id}"
+        // This def and call to our authorizationService accomplishes very little
+        // but without it, the code appears to lack authorization enforcement...
+        def neighbourhoodId = session.neighbourhood.id
+        authorizationService.neighbourhood( neighbourhoodId, session )
+        log.info "${session.user.getFullName()} requests Block Connector Contact List for neighbourhood/${neighbourhoodId}"
+
         String query = '''SELECT blk.id,
                                 blk.code,
                                 blk.description,
@@ -29,7 +34,7 @@ class NeighbourhoodController {
                           AND   bc.family.id = f.id
                           AND   f.address.id = a.id
                           ORDER BY bc.firstNames, bc.lastName, bc.id'''
-        List connectors = Block.executeQuery( query, [neighbourhoodId: session.neighbourhood.id] ).collect {
+        List connectors = Block.executeQuery( query, [neighbourhoodId:neighbourhoodId] ).collect {
             [
                 blockId: it[0],
                 blockCode: it[1],

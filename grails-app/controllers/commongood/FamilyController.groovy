@@ -5,6 +5,7 @@ class FamilyController {
 
     def members( ) {
         def id = Long.valueOf( params.id )
+        authorizationService.family( id, session )
         def famAddresses = Person.findAll("from Person p join p.family as f where f.id=?", [ id ])
 
         def result = [ ]
@@ -26,6 +27,7 @@ class FamilyController {
             // The request wants us to change an existing family.
             // We will not change the family's address.
             def familyId = Long.valueOf( params.id )
+            authorizationService.family( familyId, session )
             log.info "${session.user.getFullName()} requests save changes for family/${familyId}"
             family = Family.get( familyId )
             newFamily = false
@@ -34,6 +36,7 @@ class FamilyController {
             // We need to get the family's address from the request.
             family = new Family( )
             def addressId = Long.valueOf( params.addressId )
+            authorizationService.address( addressId, session )
             log.info "${session.user.getFullName()} requests add a family to address/${addressId}"
             family.address = Address.get( addressId )
             family.participateInInterview = Boolean.FALSE

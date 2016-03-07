@@ -3,6 +3,11 @@ package commongood
 class BlockConnectorSummaryController {
 
     def index() {
+        // This def and call to our authorizationService accomplishes very little
+        // but without it, the code appears to lack authorization enforcement...
+        def hoodId = session.neighbourhood.id
+        authorizationService.neighbourhood( hoodId, session )
+
         String query = "\
             select fam.interviewer.firstNames, fam.interviewer.lastName, fam.interviewer.emailAddress, fam.interviewer.phoneNumber, \
                 count(fam.interviewDate), min(fam.interviewDate), max(fam.interviewDate), \
@@ -10,7 +15,7 @@ class BlockConnectorSummaryController {
                 from Block as blk left outer join blk.addresses as loc left outer join loc.families as fam \
                 where blk.neighbourhood.id = :neighbourhoodId \
                 group by fam.interviewer.firstNames, fam.interviewer.lastName, fam.interviewer.emailAddress, fam.interviewer.phoneNumber"
-        List conex = Block.executeQuery( query, [neighbourhoodId: session.neighbourhood.id] ).collect {
+        List conex = Block.executeQuery( query, [neighbourhoodId:hoodId] ).collect {
             [
                 bcName: it[0]+' '+it[1],
                 bcEmail: it[2],

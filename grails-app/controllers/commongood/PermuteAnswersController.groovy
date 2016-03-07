@@ -10,6 +10,7 @@ package commongood
  * The logic knows to ignore words like 'to', 'and', 'a', etc.
 */
 class PermuteAnswersController {
+    def authorizationService
 
     def tooCommon = ['a', 'and', 'as', 'at', 'by', 'fewer', 'for', 'in', 'is',\
             'less', 'like', 'more', 'no', 'of', 'on', 'or', 'out', 'the', 'to', 'with']
@@ -41,6 +42,9 @@ class PermuteAnswersController {
     
     def questionCode() {
         def questionId =  Long.valueOf( params.id )
+        def neighbourhood = Question.get( questionId ).neighbourhood
+        authorizationService.neighbourhood( neighbourhood.id, session )
+
         def permutations = [ ]
         List answers = Answer.executeQuery( "select text from Answer a where a.question.id = ?", [questionId] ).each {
             permute( it ).each {

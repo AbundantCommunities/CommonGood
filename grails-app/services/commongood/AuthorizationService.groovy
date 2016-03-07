@@ -5,6 +5,9 @@ import grails.transaction.Transactional
 @Transactional
 class AuthorizationService {
 
+    // We rely on our our Grails Filters to ensure that requests come from
+    // authenticated users.
+
     def prevent( layer, id, session ) {
         log.warn "Authorization failure: attempt to access ${layer}:${id} by ${session.user}"
         throw new Exception( 'Not allowed' )
@@ -46,7 +49,7 @@ class AuthorizationService {
     // else throws an exception
     def familyMember( id, session ) {
         if( Person.get(id).family.address.block.neighbourhood.id != session.neighbourhood.id ) {
-            prevent( 'FamilyMember', id, session )
+            prevent( 'Person', id, session )
         }
     }
 
