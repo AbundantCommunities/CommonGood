@@ -31,7 +31,7 @@ class BlockController {
             // (We are getting a \r char at end of each address except last 2016.1)
             def cleanAddress = it.replaceAll('\\p{Cntrl}', '').trim( )
             if( cleanAddress ) {
-                println "Adding address: ${cleanAddress} to ${thisBlock}"
+                log.debug "Adding address: ${cleanAddress} to ${thisBlock}"
                 Address addr = new Address( )
                 addr.block = thisBlock
                 addr.text = cleanAddress

@@ -15,6 +15,14 @@ class AddressControllerSpec extends Specification {
     def cleanup() {
     }
 
-    void "test something"() {
+    void "test something"( ) {
+        given: "Some stuff we create now"
+        def thing = 'whatzit'
+        
+        when: "We act on that stuff"
+        def tLen = thing.size( )
+        
+        then: "The size method counted characters in our stuff"
+        tLen == 7
     }
 }

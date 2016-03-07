@@ -15,7 +15,7 @@ class AnswerController {
                 [questionId] )
 
         if( params.json ) {
-            println 'Request for json freqs'
+            log.debug 'Request for json freqs'
             def bldr = new groovy.json.JsonBuilder( freqs )
             def writer = new StringWriter()
             bldr.writeTo(writer)
@@ -82,7 +82,7 @@ class AnswerController {
                 Person person = Person.get( Long.parseLong( ids[0] ) )
 
                 if( familyId != person.family.id ) {
-                    println "DATA INTEGRITY ERROR! ${person} does not belong to ${family}"
+                    log.warn "DATA INTEGRITY ERROR! ${person} does not belong to ${family}"
                     throw new Exception( 'Bad bulk answers')
                 }
 
