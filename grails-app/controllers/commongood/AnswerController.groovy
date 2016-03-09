@@ -95,8 +95,9 @@ class AnswerController {
                     // Use Java regular expression to remove "control" characters
                     def cleanAnswer = it.replaceAll("\\p{Cntrl}", "").trim( )
                     if( cleanAnswer ) {
-                        Answer answer = new Answer( person:person, question:q, text:cleanAnswer,
-                                    wouldLead:Boolean.FALSE, wouldOrganize:Boolean.FALSE  )
+                        Answer answer = new Answer( person:person, question:q, text:cleanAnswer, note:'?',
+                                    wouldLead:Boolean.FALSE, wouldOrganize:Boolean.FALSE,
+                                    wouldAssist:Boolean.FALSE)
                         // TODO Eiminate multiple flushes (would reduce calls to the db?)
                         // TODO Replace failOnError with logic
                         answer.save( flush:true, failOnError: true )

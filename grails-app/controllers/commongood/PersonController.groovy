@@ -62,9 +62,9 @@ class PersonController {
         // The person becomes a BC for his block
         DomainAuthorization da = new DomainAuthorization( )
         da.person = person
-        da.primaryPerson = Boolean.FALSE
         da.domainCode = DomainAuthorization.BLOCK
         da.domainKey = blockId as Integer
+        da.orderWithinDomain = 100
         da.save( flush:true, failOnError: true )
         forward controller:'navigate', action:'block', id:blockId
     }

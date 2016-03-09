@@ -6,10 +6,8 @@ import grails.transaction.Transactional
 class DomainAuthorizationService {
 
     def deauthorizeBlockConnector( personId, blockId ) {
-        Integer iBlockId = blockId
-
         def das = DomainAuthorization.findAll("from DomainAuthorization da join da.person where da.domainCode=? and da.domainKey=? and da.person.id=?",
-                    [ DomainAuthorization.BLOCK, iBlockId, personId ])
+                    [ DomainAuthorization.BLOCK, blockId, personId ])
 
         if( das.size() == 1 ) {
             das[0][0].delete( flush:true )
@@ -43,12 +41,10 @@ class DomainAuthorizationService {
      * Result is a list of People.
     */
     def getBlockConnectors( blockId ) {
-        Integer iBlockId = blockId
-
         def result = [ ]
 
         def das = DomainAuthorization.findAll("from DomainAuthorization da join da.person where da.domainCode=? and da.domainKey=?",
-                    [ DomainAuthorization.BLOCK, iBlockId ])
+                    [ DomainAuthorization.BLOCK, blockId ])
 
         das.each {
             result << it[1]
@@ -69,14 +65,11 @@ class DomainAuthorizationService {
     */
     def getPossibleInterviewers( neighbourhoodId, blockId, currentInterviewerId ) {
         // TODO Would code be cleaner if caller passed in Block instead of nh & blk ids?
-        Integer iNeighbourhoodId = neighbourhoodId
-        Integer iBlockId = blockId
-
         def result = [ ]
 
         // Who are the neighbourhood connectors?
         def das = DomainAuthorization.findAll("from DomainAuthorization da join da.person where da.domainCode=? and da.domainKey=?",
-                    [ DomainAuthorization.NEIGHBOURHOOD, iNeighbourhoodId ])
+                    [ DomainAuthorization.NEIGHBOURHOOD, neighbourhoodId ])
 
         das.each {
             // each result row found above has a list like [ DomainAuthorization, Person ]
@@ -86,7 +79,7 @@ class DomainAuthorizationService {
 
         // Who are the block connectors?
         das = DomainAuthorization.findAll("from DomainAuthorization da join da.person where da.domainCode=? and da.domainKey=?",
-                    [ DomainAuthorization.BLOCK, iBlockId ])
+                    [ DomainAuthorization.BLOCK, blockId ])
 
         das.each {
             def thisOne = (it[1].id == currentInterviewerId) ? 'true' : 'false'

@@ -7,9 +7,11 @@ class Answer {
     Boolean wouldLead
     Boolean wouldOrganize
     Boolean wouldAssist
+    String note
 
     static mapping = {
         wouldAssist defaultValue: "FALSE"
+        note defaultValue: "''"
     }
 
     Date dateCreated

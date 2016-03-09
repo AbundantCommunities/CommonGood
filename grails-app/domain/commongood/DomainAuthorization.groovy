@@ -11,22 +11,16 @@ class DomainAuthorization {
     final static String BLOCK = "B"
 
     Person person
-    Boolean primaryPerson // Within a given 'hood or block, she is the primary contact person
     String domainCode // A, N, B → Application Administrator, NeighbourHood Connector, Block Connector
+    Integer orderWithinDomain
 
     // FIXME domainKey must be a Long, not an Integer
-    Integer domainKey // domainCode: A means domainKey is null, N means key is neighbourhood.id, B means block.id
+    Long domainKey // domainCode: A means domainKey is null, N means key is neighbourhood.id, B means block.id
+
     Date dateCreated
     Date lastUpdated
-    
-    // TODO Can we remove mapping and constraints from DomainAuthorization?
-    static mapping = {
-        primaryPerson defaultValue: "FALSE"
-    }
 
-    static constraints = {
-        person nullable: true
-        dateCreated nullable: true
-        lastUpdated nullable: true
+    static mapping = {
+        orderWithinDomain defaultValue: "100"
     }
 }

@@ -63,7 +63,7 @@ class NavigateController {
     }
 
     def block( ) {
-        Integer blockId = Integer.valueOf( params.id )
+        def blockId = Long.valueOf( params.id )
         authorizationService.block( blockId, session )
         log.info "${session.user.getFullName()} to block/${blockId}"
         Block theBlock = Block.where{ id == blockId }.get( )
