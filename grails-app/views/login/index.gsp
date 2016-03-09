@@ -66,6 +66,9 @@
                 expirationDate.setYear (expirationDate.getFullYear () + 1);
                 expirationDate = expirationDate.toGMTString ();
                 
+                document.cookie = "email=; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+                document.cookie = "showPw=; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+
                 if (currentlyHidden) {
                     document.getElementById('submitPassword').value = document.getElementById('pwHidden').value;
                     document.cookie="showPw=f;expires="+expirationDate+";";
@@ -76,8 +79,6 @@
 
                 if (document.getElementById('rememberCheckbox').checked) {
                     document.cookie="email="+document.getElementById('emailAddressInput').value+";expires="+expirationDate+";";
-                } else {
-                    document.cookie = "email=; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
                 }
 
                 document.getElementById('loginForm').submit();
@@ -111,19 +112,17 @@
     </head>
     <body>
             <div id="content-detail">
-                <p>Login to CommonGood:</p>
+                <div>Login to CommonGood:</div>
                 <form id="loginForm" action="<g:createLink action='authenticate'/>" method="post">
-                    <p>Email address <input id="emailAddressInput" type="text" name="emailAddress" value="" onKeyPress="checkEnter(event);"/></p>
-                    <p>Password <input id="pwHidden" type="password" name="hiddenPassword" value="" onKeyPress="checkEnter(event);"/><input id="pwShown" type="text" name="shownPassword" value="" style="display:none;" onKeyPress="checkEnter(event);"/>&nbsp;<a id="showHideButton" href="#" onclick="showHidePw();">show</a></p>
+                    <div>Email address <input id="emailAddressInput" type="text" name="emailAddress" value="" onKeyPress="checkEnter(event);"/></div>
+                    <div>Password <input id="pwHidden" type="password" name="hiddenPassword" value="" onKeyPress="checkEnter(event);"/><input id="pwShown" type="text" name="shownPassword" value="" style="display:none;" onKeyPress="checkEnter(event);"/>&nbsp;<a id="showHideButton" href="#" onclick="showHidePw();">show</a></div>
                     <input id="submitPassword" type="hidden" name="password" value=""/>
                 </form>
-                <br/>
-                <p style="margin-top:-4px"><input id="rememberCheckbox" type="checkbox" name="remember" value="remember email address" /> remember email address</p>
-                <br/>
-                <a href="#" onclick="doSubmit();">Login</a>
-                <g:if test="${flash.message}">
-                    <div class="red-text">${flash.message}</div>
-                </g:if>
+                <div><input id="rememberCheckbox" type="checkbox" name="remember" value="remember email address" /> remember email address</div>
+                <div class="no-bottom-space"><a href="#" onclick="doSubmit();">Login</a></div>
+                
+                <div class="red-text no-top-space"><g:if test="${flash.message}">${flash.message}</g:if><g:else>&nbsp;</g:else></div>
+                
             </div>
     </body>
 </html>

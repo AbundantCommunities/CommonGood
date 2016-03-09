@@ -359,11 +359,11 @@
                 font-weight:bold;
                 position: absolute;
                 top:7px;
-                left: 330px;
+                left: 400px;
             }
             .bc {
                 position: absolute;
-                left: 330px;
+                left: 400px;
             }
 
 
@@ -598,7 +598,6 @@
                 <div id="content-actions">
                     <div class="content-action"><a href="#" onclick="presentEditModal();">Edit</a></div>
                     <div class="content-action"><a href="#" onclick="alert('not yet implemented');">Delete</a></div>
-                    <div class="content-action"><a href="#" onclick="alert('not yet implemented');">Print</a></div>
                 </div>
             </div>
             <div id="content-children">

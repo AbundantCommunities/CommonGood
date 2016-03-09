@@ -44,7 +44,7 @@
                 <div id="role-line">Neighbourhood Connector for ${session.neighbourhood.name}</div>
                 <g:link controller="navigate" action="${session.lastNavigationLevel}" id="${session.lastNavigationId}"><div id="browse-deselected">Browse</div></g:link>
                 <form id="search-form" action="<g:createLink controller='search' />" method="get">
-                    <div id="search"><img id="search-image" src="${resource(dir:'images',file:'search.png')}" width="18" height="18"/><input id="search-criteria" type="text" placeholder="search" name="q" value="" style="display:inline;" onKeyPress="checkEnter(event);"/></div>
+                    <div id="search"><img id="search-image" src="${resource(dir:'images',file:'search.png')}" width="18" height="18"/><input id="search-criteria" type="text" placeholder="search" name="q" value="" onKeyPress="checkEnter(event);"/></div>
                 </form>
             </div>
             <g:layoutBody/>

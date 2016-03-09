@@ -217,7 +217,7 @@
         </script>
         <style type="text/css">
             #content-detail {
-                height:250px;
+                height:270px;
             }
             #first-names-heading {
                 position: absolute;
@@ -469,7 +469,6 @@
                 <div id="content-actions">
                     <div class="content-action"><a href="#" onclick="presentEditModal()">Edit</a></div>
                     <div class="content-action"><a href="#" onclick="alert('not yet implemented');">Delete</a></div>
-                    <div class="content-action"><a href="#" onclick="alert('not yet implemented');">Print</a></div>
                 </div>
             </div>
             <div id="content-children">
@@ -508,7 +507,7 @@
                 <form id="edit-answer-form" action=${resource(file:'Answer/save')} method="POST">
                     <input id="answer-id-input" type="hidden" name="id" value="" />
                     <div id="question-div"></div>
-                    <div id="answer-input-div"><input id="answer-text-input" name="text" type="text" size="50"/></div>
+                    <div id="answer-input-div"><input id="answer-text-input" name="text" type="text" size="45"/></div>
                     <div id="would-lead-div"><input id="would-lead-input" name="wouldLead" type="checkbox" /> Would lead</div>
                     <div id="would-organize-div"><input id="would-organize-input" name="wouldOrganize" type="checkbox" /> Would organize</div>
                 </form>

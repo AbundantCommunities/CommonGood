@@ -11,12 +11,12 @@
     <body>
         <div id="pagecontainer">
             <div id="aci-logo-line">
-                <img src="${resource(dir:'images',file:'aci-logo.png')}" width="160" height="156"/>
+                    <img src="${resource(dir:'images',file:'aci-logo.png')}" width="160" height="156" />
             </div>
             <g:layoutBody/>
             <div id="footer">
-                &copy;<script type="text/javascript">document.write(new Date().getFullYear());</script> The Abundant Community Initiative Canada.
-                CommonGood Version <g:meta name="app.version"/>
+                <div class="no-bottom-space">&copy;<script type="text/javascript">document.write(new Date().getFullYear());</script> The Abundant Community Initiative Canada.</div>
+                <div class="no-top-space" style="height:20px;">CommonGood Version <g:meta name="app.version"/></div>
             </div>
         </div>
     </body>

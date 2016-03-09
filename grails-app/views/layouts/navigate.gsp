@@ -43,7 +43,7 @@
                 <div id="welcome-line">Welcome ${session.user.firstNames} ${session.user.lastName} <span id="sign-out"><g:link controller="logout">log out</g:link></span></div>
                 <div id="role-line">Neighbourhood Connector for ${session.neighbourhood.name}</div>
                 <form id="search-form" action="<g:createLink controller='search' />" method="get">
-                    <div id="search"><img id="search-image" src="${resource(dir:'images',file:'search.png')}" width="18" height="18"/><input id="search-criteria" type="text" placeholder="search" name="q" value="" style="display:inline;" onKeyPress="checkEnter(event);"/></div>
+                    <div id="search"><img id="search-image" src="${resource(dir:'images',file:'search.png')}" width="18" height="18"/><input id="search-criteria" type="text" placeholder="search" name="q" value="" onKeyPress="checkEnter(event);"/></div>
                 </form>
             </div>
             <g:if test="${navContext.size() > 0}">

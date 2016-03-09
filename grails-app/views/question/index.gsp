@@ -76,10 +76,18 @@
                     document.getElementById('interview-date-input').value = currentDate();
                 }
 
+
+                var numQuestions = ${questions.size()};
+                var contentHeight = 230 + numQuestions * 110;
+
+                document.getElementById('content-main').setAttribute("style","height:"+contentHeight+"px;");
+
+
                 var pagecontainerDiv = document.getElementById('pagecontainer');
 
                 document.getElementById("transparent-overlay").setAttribute("style","height:"+pagecontainerDiv.clientHeight+"px;");
                 document.getElementById('transparent-overlay').style.visibility = 'visible';
+
             }
 
 
@@ -89,7 +97,7 @@
 
             #content-main {
                 width:925px;
-                height: 845px;
+                height: 885px;
                 margin-left:14px;
                 margin-bottom: 10px;
                 padding-left:10px;

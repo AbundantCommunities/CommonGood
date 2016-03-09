@@ -200,7 +200,7 @@
                 background-color:#FFFFFF;
             }
             #content-detail {
-                height:170px;
+                height:190px;
             }
             #detail-headings {
                 position: absolute;
@@ -370,7 +370,6 @@
                 <div id="content-actions">
                     <div class="content-action"><a href="#" onclick="presentEditModal()">Edit</a></div>
                     <div class="content-action"><a href="#" onclick="alert('not yet implemented');">Delete</a></div>
-                    <div class="content-action"><a href="#" onclick="alert('not yet implemented');">Print</a></div>
                 </div>
             </div>
             <div id="content-interview">
