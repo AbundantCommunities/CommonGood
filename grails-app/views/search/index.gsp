@@ -15,7 +15,6 @@
             <div id="content-children" style="padding-bottom:10px;">
 
                 <div style="width:910px;">
-                    <div class="content-heading" style="display:inline-block;">Searched for "${q}"</div>
                     <g:if test="${people.size()>0 || answers.size()>0}">
                         <div style="display:inline-block;float:right;"><span style="font-weight:bold;">Show:</span>  Search Results | <a href="#" onclick="showContactInfo();">Contact Info</a></div>
                     </g:if>
@@ -26,11 +25,13 @@
 
 
                 <g:if test="${people.size() == 0 && answers.size() == 0}">
-                    <h4>"${q}" not found.</h4>
+                    <h4>Failed to find the exact word/phrase: "${q}"</h4>
                 </g:if>
 
                 <g:if test="${people.size() > 0}">
-                    <div style="margin-top:-5px;margin-bottom:-15px;"><h4>Found in ${people.size()} family member<g:if test="${people.size()>1}">s</g:if>:</h4></div>
+                    <div style="margin-top:-5px;margin-bottom:-15px;">
+                        <h4>Found "${q}" in ${people.size()} <g:if test="${people.size()>1}">people</g:if><g:else>person</g:else>:</h4>
+                    </div>
                     <g:each in="${people}" var="person">
                         <div class="content-children-row">
                             <g:link controller="navigate" action="familymember" id="${person[0]}">${person[1]} ${person[2]}</g:link>
@@ -41,7 +42,7 @@
 
                 <g:if test="${answers.size() > 0}">
                     <div style="margin-top:-5px;margin-bottom:-15px;">
-                        <h4>Found in ${answers.size()} answer<g:if test="${answers.size()>1}">s</g:if>: <span style="font-weight:normal;">(<span style="font-weight:bold;">bold</span> = would lead, <span style="font-style:italic;">italic</span> = would organize)</span></h4>
+                        <h4>Found "${q}" in ${answers.size()} answer<g:if test="${answers.size()>1}">s</g:if>: <span style="font-weight:normal;">(<span style="font-weight:bold;">bold</span> = would lead, <span style="font-style:italic;">italic</span> = would organize)</span></h4>
                     </div>
                     <g:each in="${answers}" var="answer">
                         <div class="content-children-row">

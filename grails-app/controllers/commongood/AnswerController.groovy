@@ -50,7 +50,7 @@ class AnswerController {
         render JsonWriter.write( result )
     }
 
-    // Save a user's changes to an answer
+    // Save changes to one answer
     def save( ) {
         def answerId =  params.long('id')
         log.info "${session.user.getFullName()} requests save answer/${answerId}"
@@ -59,10 +59,13 @@ class AnswerController {
         answer.text = params.text
         answer.wouldLead = ('wouldLead' in params)
         answer.wouldOrganize = ('wouldOrganize' in params)
+        answer.wouldAssist = ('wouldAssist' in params)
+        answer.note = ''
         answer.save( flush:true, failOnError: true )
         forward controller:'navigate', action:'familymember', id:answer.person.id
     }
 
+    // Save a famiy's interview data (changes 2 tables: family & answer)
     def saveInterview( ) {
         /* Expecting parameters like this (for person 12 & 444, questions 34 & 36 (primary keys)):
                 answer12_34=making+cookies\ngardening

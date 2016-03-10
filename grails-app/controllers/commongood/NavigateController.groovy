@@ -217,28 +217,6 @@ class NavigateController {
             }
         }
 
-        // OLD STYLE Q&A DATA -- DEPRECATED
-        def groupedAnswers = [ '1':'1. Great: ', '2':'2. Better: ', '3':'3. Activities: ', '4':'4. Interests: ', '5':'5. Skill: ', '6':'6. Life: ' ]
-        answers.each {
-            Answer answer = it[0]
-            Question question = it[2]
-
-            def soFar = groupedAnswers[ question.code ]
-            if( soFar.endsWith(': ') ) {
-                groupedAnswers[ question.code ] += answer.text
-            } else {
-                groupedAnswers[ question.code ] += ', ' + answer.text
-            }
-        }
-
-        def children = [ ]
-        groupedAnswers = groupedAnswers.each { key, value ->
-            if( value.endsWith(': ') ) {
-                value += '?'
-            }
-            children << [ id:key, name:value ]
-        }
-
         Map result =
         [
             navContext:
@@ -254,13 +232,6 @@ class NavigateController {
                             birthYear:theMember.birthYear, emailAddress:theMember.emailAddress,
                             phoneNumber:theMember.phoneNumber, orderWithinFamily:theMember.orderWithinFamily,
                             note:theMember.note ],
-
-            // navChildren DEPRECATED
-            navChildren:
-            [
-            childType: 'Question',
-            children: children
-            ],
             
             questionsAndAnswers: qna
         ]
