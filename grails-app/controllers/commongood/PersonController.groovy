@@ -47,14 +47,15 @@ class PersonController {
         // TODO Replace failOnError with logic
         person.save( flush:true, failOnError: true )
         if( newPerson ) {
-            forward controller:'navigate', action:'family', id:person.family.id
+            redirect controller:'navigate', action:'family', id:person.family.id
         } else {
-            forward controller:'navigate', action:'familymember', id:person.id
+            redirect controller:'navigate', action:'familymember', id:person.id
         }
     }
 
     def setBlockConnector( ) {
         Long id = Long.parseLong( params.id )
+        log.info "${session.user.getFullName()} requests person/${id} be a BC"
         Person person = Person.get( id )
         def blockId = person.family.address.block.id
         authorizationService.block( blockId, session )
@@ -66,6 +67,6 @@ class PersonController {
         da.domainKey = blockId as Integer
         da.orderWithinDomain = 100
         da.save( flush:true, failOnError: true )
-        forward controller:'navigate', action:'block', id:blockId
+        redirect controller:'navigate', action:'block', id:blockId
     }
 }

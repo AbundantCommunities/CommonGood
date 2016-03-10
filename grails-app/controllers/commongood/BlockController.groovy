@@ -89,7 +89,7 @@ class BlockController {
         if( block.code && block.description ) {
             block.orderWithinNeighbourhood = Integer.valueOf( params.orderWithinNeighbourhood ?: '0' )
             block.save( flush:true, failOnError: true )
-            forward controller: "navigate", action: "block", id: blockId
+            redirect controller: "navigate", action: "block", id: blockId
         } else {
             throw new RuntimeException( "Empty code and/or description?" )
         }

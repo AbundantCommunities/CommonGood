@@ -62,7 +62,7 @@ class AnswerController {
         answer.wouldAssist = ('wouldAssist' in params)
         answer.note = ''
         answer.save( flush:true, failOnError: true )
-        forward controller:'navigate', action:'familymember', id:answer.person.id
+        redirect controller:'navigate', action:'familymember', id:answer.person.id
     }
 
     // Save a famiy's interview data (changes 2 tables: family & answer)

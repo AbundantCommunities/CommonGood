@@ -64,9 +64,9 @@ class FamilyController {
         // TODO Replace failOnError with logic
         family.save( flush:true, failOnError: true )
         if( newFamily ) {
-            forward controller:'navigate', action:'address', id:family.address.id
+            redirect controller:'navigate', action:'address', id:family.address.id
         } else {
-            forward controller:'navigate', action:'family', id:family.id
+            redirect controller:'navigate', action:'family', id:family.id
         }
     }
 }

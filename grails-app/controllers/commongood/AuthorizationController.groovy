@@ -8,9 +8,9 @@ class AuthorizationController {
     def deauthorizeBlockConnector( ) {
         Long personId = Long.valueOf( params.id )
         Long blockId = Long.valueOf( params.blockId )
-
+        log.info "${session.user.getFullName()} requests person/${personId} no longer be a BC for block/${blockId}"
         authorizationService.block( blockId, session )
         domainAuthorizationService.deauthorizeBlockConnector( personId, blockId )
-        forward controller: "navigate", action: "block", id: blockId
+        redirect controller: "navigate", action: "block", id: blockId
     }
 }

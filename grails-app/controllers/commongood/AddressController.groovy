@@ -9,6 +9,7 @@ class AddressController {
     def families( ) {
         def id = Long.valueOf( params.id )
         authorizationService.address( id, session )
+        log.info "${session.user.getFullName()} requests list of families at address/${id}"
 
         def famAddresses = Family.findAll("from Family fam join fam.address addr where addr.id=?", [ id ])
 
@@ -23,6 +24,7 @@ class AddressController {
     
     def save( ) {
         def addressId = params.long('id')
+        log.info "${session.user.getFullName()} requests save address/${addressId}"
         authorizationService.address( addressId, session )
         def address = Address.get( addressId )
 
@@ -34,6 +36,6 @@ class AddressController {
         address.orderWithinBlock = params.int('orderWithinBlock')
         address.save( flush:true, failOnError: true )
 
-        forward controller:'navigate', action:'address', id:addressId
+        redirect controller:'navigate', action:'address', id:addressId
     }
 }
