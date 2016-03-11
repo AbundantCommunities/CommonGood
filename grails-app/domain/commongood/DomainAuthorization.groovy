@@ -13,14 +13,8 @@ class DomainAuthorization {
     Person person
     String domainCode // A, N, B → Application Administrator, NeighbourHood Connector, Block Connector
     Integer orderWithinDomain
-
-    // FIXME domainKey must be a Long, not an Integer
     Long domainKey // domainCode: A means domainKey is null, N means key is neighbourhood.id, B means block.id
 
     Date dateCreated
     Date lastUpdated
-
-    static mapping = {
-        orderWithinDomain defaultValue: "100"
-    }
 }

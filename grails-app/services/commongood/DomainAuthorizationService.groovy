@@ -43,6 +43,7 @@ class DomainAuthorizationService {
     def getBlockConnectors( blockId ) {
         def result = [ ]
 
+        // TODO Sort by new orderWithinDomain column !!
         def das = DomainAuthorization.findAll("from DomainAuthorization da join da.person where da.domainCode=? and da.domainKey=?",
                     [ DomainAuthorization.BLOCK, blockId ])
 

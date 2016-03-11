@@ -23,6 +23,7 @@ class NavigateController {
         }
         Map result =
             [
+            authorized: session.authorized,
             navContext: [ ],
 
             navSelection: [ levelInHierarchy:'Installation', description:thisInstallation.name,
@@ -47,6 +48,7 @@ class NavigateController {
         List blocks = blockService.getForNeighbourhood( hoodId )
         Map result =
             [
+            authorized: session.authorized,
             navContext: [ ],
 
             navSelection: [ levelInHierarchy:'Neighbourhood', id:hoodId,
@@ -74,6 +76,7 @@ class NavigateController {
         }
         Map result =
             [
+            authorized: session.authorized,
             navContext:
                 [
                     [level:'Neighbourhood', id: theBlock.neighbourhood.id, description: theBlock.neighbourhood.name]
@@ -111,6 +114,7 @@ class NavigateController {
         
         Map result =
             [
+            authorized: session.authorized,
             navContext:
                 [
                     [id: theAddress.block.neighbourhood.id, level: 'Neighbourhood', description: theAddress.block.neighbourhood.name],
@@ -150,6 +154,7 @@ class NavigateController {
 
         Map result =
             [
+            authorized: session.authorized,
             navContext:
                 [
                     [id: theFamily.address.block.neighbourhood.id, level: 'Neighbourhood', description: theFamily.address.block.neighbourhood.name],
@@ -194,7 +199,7 @@ class NavigateController {
             theMember = answers[0][1]
         }
 
-        // New Q&A data to pass to member page
+        // Questions & Answers
         def qna = [ ]
         if( theMember.family.getInterviewed() ) {
             def previousQuestion = null
@@ -219,6 +224,7 @@ class NavigateController {
 
         Map result =
         [
+            authorized: session.authorized,
             navContext:
             [
                 [id: theMember.family.address.block.neighbourhood.id, level: 'Neighbourhood', description: theMember.family.address.block.neighbourhood.name],

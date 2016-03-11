@@ -223,7 +223,10 @@
             <div id="content-detail">
                 <div id="content-detail-title">${navSelection.levelInHierarchy}</div>
                 <div id="hood-name-heading">Name: </div>
-                <div id="hood-name-value">${navSelection.description}</div>
+                <div id="hood-name-value">${navSelection.description}
+                    <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}">NEIGHBOURHOOD ACCESS</g:if>
+                    <g:if test="${authorized.forBlock()==Boolean.TRUE}">BLOCK ACCESS</g:if>
+                </div>
 
                 <div id="content-actions-left-side">
                     <div class="content-left-action"><g:link controller="blockSummary" action="index">Block Summary</g:link></div>

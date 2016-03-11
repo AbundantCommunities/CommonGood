@@ -1,6 +1,9 @@
 package commongood
 
+import org.abundantcommunityinitiative.commongood.Authorization
+
 class LoginController {
+    static allowedMethods = [index:'GET', authenticate:'POST']
 
     // Grails automagically injects instances of these services for us
     def authenticateService
@@ -29,18 +32,28 @@ class LoginController {
                 // If the following "get" fails we do not want user in session:
                 session.neighbourhood = Neighbourhood.get( neighbourhoodId )
                 session.user = user
-                forward controller:'navigate', action:'neighbourhood', id:neighbourhoodId
+                if( user.id % 2 ) {
+                    // While we develop BC access, Odd #'ed users get to be NCs!
+                    log.info 'Lucky user gets to be an NC!'
+                    session.authorized = Authorization.getForNeighbourhood( )
+                    redirect controller:'navigate', action:'neighbourhood', id:neighbourhoodId
+                } else {
+                    log.info 'Yay, we have a BC here!'
+                    session.authorized = Authorization.getForBlock( )
+                    redirect controller:'navigate', action:'neighbourhood', id:neighbourhoodId
+                }
+
             } else {
                 log.warn "NO neighbourhood authorization to store in session for ${params.emailAddress}"
-                flash.message = 'Please contact the system administrator'
+                flash.message = 'Please contact the owner of this system'
                 // TODO Count login failures; lock account
-                forward action: "index"
+                redirect action: "index"
             }
         } else {
             flash.message = 'Invalid login; please try again'
             log.warn "FAILED to authenticate ${params.emailAddress}"
             // TODO Count login failures; lock account
-            forward action: "index"
+            redirect action: "index"
         }
     }
 }
