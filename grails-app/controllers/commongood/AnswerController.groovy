@@ -53,7 +53,7 @@ class AnswerController {
     // Save changes to one answer
     def save( ) {
         def answerId =  params.long('id')
-        log.info "${session.user.getFullName()} requests save answer/${answerId}"
+        log.info "${session.user.getFullName()} save answer/${answerId}"
         authorizationService.answer( answerId, session )
         Answer answer = Answer.get( answerId )
         answer.text = params.text

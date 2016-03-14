@@ -1,17 +1,19 @@
 package org.abundantcommunityinitiative.commongood
 
 /**
- * Specifies what "level" of information the application user is authorized to use.
+ * Specifies what "level" of information the application user is authorized to use
+ * and the primary key of the relevant Neighbourhood or Block.
  */
 class Authorization {
-    boolean neighbourhood = false;
+    boolean neighbourhood = false
+    Long domainKey
 
-    static Authorization getForNeighbourhood( ) {
-        return new Authorization( neighbourhood: true )
+    static Authorization getForNeighbourhood( id  ) {
+        return new Authorization( neighbourhood: true, domainKey: id )
     }
     
-    static Authorization getForBlock( ) {
-        return new Authorization( neighbourhood: false )
+    static Authorization getForBlock( id ) {
+        return new Authorization( neighbourhood: false, domainKey: id )
     }
 
     Boolean forNeighbourhood( ) {
@@ -28,6 +30,10 @@ class Authorization {
         } else {
             Boolean.TRUE
         }
+    }
+
+    String toString( ) {
+        "[Authorization ${neighbourhood?'NH':'BLK'} ${domainKey}]"
     }
 }
 

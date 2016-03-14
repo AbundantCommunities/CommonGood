@@ -1,52 +1,67 @@
 package commongood
 
 import grails.transaction.Transactional
+import org.abundantcommunityinitiative.commongood.Authorization
 
 @Transactional
 class DomainAuthorizationService {
 
+    /*
+     * Remove a given person+block pairing from DomainAuthorization
+     */
     def deauthorizeBlockConnector( personId, blockId ) {
         def das = DomainAuthorization.findAll("from DomainAuthorization da join da.person where da.domainCode=? and da.domainKey=? and da.person.id=?",
                     [ DomainAuthorization.BLOCK, blockId, personId ])
 
-        if( das.size() == 1 ) {
-            das[0][0].delete( flush:true )
-        } else {
-            throw new RuntimeException('Failed to delete')
+        if( das.size() == 0 ) {
+            log.warn( "No DomainAuthorization rows found for person ${personId} and block ${blockId}")
+        } else if( das.size() > 1 ) {
+            log.warn( "${das.size()} DomainAuthorization rows found for person ${personId} and block ${blockId}")
+        }
+
+        das.each{
+            it[0].delete( flush:true )
         }
     }
 
-    def getNeighbourhoodAuthorization( person ) {
-        log.debug "Request to getNeighbourhoodAuthorization for ${person.fullName}"
+    def getForPerson( person ) {
+        log.info "Get Authorization for ${person.logName}"
 
-        def da = DomainAuthorization.findAll( "from DomainAuthorization da where da.domainCode=? and da.person.id=?",
-                    [ DomainAuthorization.NEIGHBOURHOOD, person.id ] )
+        def da = DomainAuthorization.findAll( "from DomainAuthorization da where da.person.id=?", [ person.id ] )
 
-        if( da.size() ) {
-            log.debug "Got ${da.size()} Neighbourhood authorization(s)"
-            if( da.size() > 1 ) {
-                // TODO Improve authorization scheme to handle multiple privs
-                log.warn "WARNING: too many DomainAuthorization entries for ${person}"
-            }
+        if( da.size() == 0 ) {
+            log.warn( "No DA rows found for ${person.fullName}" )
 
-            // TODO domainKey should be a Long
-            return da[0].domainKey as Long
+        } else if( da.size() > 1 ) {
+            log.warn( "${da.size()} DA rows found for ${person.fullName}" )
+        
         } else {
-            log.info "Found no NH authorizations"
-            return null
+            // Is the DA for a Neighbourhood or a Block?
+            def domAuth = da[0]
+            switch( domAuth.domainCode ) {
+                case DomainAuthorization.NEIGHBOURHOOD:
+                    return Authorization.getForNeighbourhood( domAuth.domainKey )
+
+                case DomainAuthorization.BLOCK:
+                    return Authorization.getForBlock( domAuth.domainKey )
+
+                default:
+                    log.warn "Did not understand domainCode ${domAuth.domainCode}"
+            }
         }
+        return null // Failed to find valid DomainAuthorization configuration for person
     }
 
     /**
-     * Result is a list of People.
+     * Return the list of Person who have DomainAuthorization entries for a given block.
     */
     def getBlockConnectors( blockId ) {
-        def result = [ ]
 
         // TODO Sort by new orderWithinDomain column !!
         def das = DomainAuthorization.findAll("from DomainAuthorization da join da.person where da.domainCode=? and da.domainKey=?",
                     [ DomainAuthorization.BLOCK, blockId ])
 
+        def result = [ ]
         das.each {
             result << it[1]
         }

@@ -55,9 +55,9 @@ class PersonController {
 
     def setBlockConnector( ) {
         Long id = Long.parseLong( params.id )
-        log.info "${session.user.getFullName()} requests person/${id} be a BC"
         Person person = Person.get( id )
         def blockId = person.family.address.block.id
+        log.info "${session.user.getFullName()} requests person/${id} be a BC for block ${blockId}"
         authorizationService.block( blockId, session )
 
         // The person becomes a BC for his block

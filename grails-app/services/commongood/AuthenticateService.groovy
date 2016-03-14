@@ -27,7 +27,7 @@ class AuthenticateService {
                 log.info "${peep.fullName} authenticated successfully"
                 return peep
             } else {
-                log.warn "${peep.fullName} FAILED to authenticate"
+                log.warn "${peep.fullName} failed password validation"
             }
         }
 

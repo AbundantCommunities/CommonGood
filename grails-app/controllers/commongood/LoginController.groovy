@@ -21,30 +21,29 @@ class LoginController {
     def authenticate( ) {
         session.user = null
         session.neighbourhood = null
-        log.info("Request to authenticate, using ${params.emailAddress}; pwd len is ${params.password.size()}")
+        log.info("Authenticate ${params.emailAddress}; pwd len is ${params.password.size()}")
 
         def user = authenticateService.check( params.emailAddress, params.password )
         if( user ) {
-            def neighbourhoodId = domainAuthorizationService.getNeighbourhoodAuthorization( user )
-            if( neighbourhoodId ) {
-                log.debug "Will store info in session for NH with id=${neighbourhoodId}"
-                
-                // If the following "get" fails we do not want user in session:
-                session.neighbourhood = Neighbourhood.get( neighbourhoodId )
-                session.user = user
-                if( user.id % 2 ) {
-                    // While we develop BC access, Odd #'ed users get to be NCs!
-                    log.info 'Lucky user gets to be an NC!'
-                    session.authorized = Authorization.getForNeighbourhood( )
-                    redirect controller:'navigate', action:'neighbourhood', id:neighbourhoodId
+            def authorization = domainAuthorizationService.getForPerson( user )
+            if( authorization ) {
+                log.info "${user.logName} authorized for ${authorization}"
+
+                if( authorization.forNeighbourhood() ) {
+                    session.neighbourhood = Neighbourhood.get( authorization.domainKey )
+                    redirect controller:'navigate', action:'neighbourhood', id:authorization.domainKey
                 } else {
-                    log.info 'Yay, we have a BC here!'
-                    session.authorized = Authorization.getForBlock( )
-                    redirect controller:'navigate', action:'neighbourhood', id:neighbourhoodId
+                    session.block = Block.get( authorization.domainKey )
+                    // TODO Reconsider storing the HOOD in session for BCs
+                    session.neighbourhood = session.block.neighbourhood
+                    redirect controller:'navigate', action:'block', id:authorization.domainKey
                 }
 
+                session.authorized = authorization
+                session.user = user
+
             } else {
-                log.warn "NO neighbourhood authorization to store in session for ${params.emailAddress}"
+                log.warn "No valid Domain Authorization for ${user.logName}"
                 flash.message = 'Please contact the owner of this system'
                 // TODO Count login failures; lock account
                 redirect action: "index"
