@@ -6,36 +6,52 @@ import grails.transaction.Transactional
 class SearchService {
 
     def answers( session, q ) {
-        def neighbourhoodId = session.neighbourhood.id
-        log.debug "Searching NH ${neighbourhoodId} answers for ${q}"
         def searchTerm = "%${q}%".toLowerCase( )
         def answers
 
-        answers = Answer.executeQuery(
-            'select a.text, a.wouldLead, a.wouldOrganize, p.id, p.firstNames, p.lastName, q.shortText \
-             from Answer a, Person p, Question q \
-             where lower(a.text) like ? \
-             AND a.person.id = p.id \
-             AND a.question.id = q.id \
-             AND q.neighbourhood.id = ? \
-             ORDER BY p.firstNames, p.lastName, p.id',
-            [ searchTerm, neighbourhoodId ])
+        if( session.authorized.forNeighbourhood() ) {
+            def neighbourhoodId = session.neighbourhood.id
+            log.info "${session.user.logName} searching neighbourhood ${neighbourhoodId} answers for ${q}"
+            answers = Answer.executeQuery(
+                'select ans.text, ans.wouldLead, ans.wouldOrganize, p.id, p.firstNames, p.lastName, q.shortText \
+                 from Answer ans, Person p, Question q \
+                 where lower(a.text) like ? \
+                 AND a.person.id = p.id \
+                 AND a.question.id = q.id \
+                 AND q.neighbourhood.id = ? \
+                 ORDER BY p.firstNames, p.lastName, p.id',
+                [ searchTerm, neighbourhoodId ])
+        } else {
+            def blockId = session.block.id
+            log.info "${session.user.logName} searching block ${blockId} answers for ${q}"
+            answers = Answer.executeQuery(
+                'SELECT ans.text, ans.wouldLead, ans.wouldOrganize, p.id, p.firstNames, p.lastName, q.shortText \
+                 FROM Answer ans, Person p, Family f, Address addr, Question q \
+                 WHERE lower(ans.text) LIKE ? \
+                 AND ans.person.id = p.id \
+                 AND ans.question.id = q.id \
+                 AND p.family.id = f.id \
+                 AND f.address.id = addr.id \
+                 AND addr.block.id = ? \
+                 ORDER BY p.firstNames, p.lastName, p.id',
+                [ searchTerm, blockId ])
+        }
 
-        log.debug "Found ${answers.size()} answers"
+        log.info "Found ${answers.size()} answers"
         return answers
     }
 
     def answersWithContactInfo( session, q ) {
         def neighbourhoodId = session.neighbourhood.id
-        log.debug "Searching NH ${neighbourhoodId} answers for ${q}"
+        log.info "Searching NH ${neighbourhoodId} answers for ${q}"
         def searchTerm = "%${q}%".toLowerCase( )
         def answers
 
         answers = Answer.executeQuery(
-            'select ans.text, ans.wouldLead, ans.wouldOrganize, p.id, p.firstNames, p.lastName, q.shortText, \
+            'SELECT ans.text, ans.wouldLead, ans.wouldOrganize, p.id, p.firstNames, p.lastName, q.shortText, \
              p.phoneNumber, p.emailAddress, addr.text \
-             from Answer ans, Person p, Family f, Address addr, Question q \
-             where lower(ans.text) like ? \
+             FROM Answer ans, Person p, Family f, Address addr, Question q \
+             WHERE lower(ans.text) like ? \
              AND ans.person.id = p.id \
              AND ans.question.id = q.id \
              AND q.neighbourhood.id = ? \
@@ -44,13 +60,13 @@ class SearchService {
              ORDER BY p.firstNames, p.lastName, p.id',
             [ searchTerm, neighbourhoodId ])
 
-        log.debug "Found ${answers.size()} answers"
+        log.info "Found ${answers.size()} answers"
         return answers
     }
 
     def people( session, q ) {
         def neighbourhoodId = session.neighbourhood.id
-        log.debug "Searching NH ${neighbourhoodId} people for ${q}"
+        log.info "Searching NH ${neighbourhoodId} people for ${q}"
         def searchTerm = "%${q}%".toLowerCase( )
 
         def peeps = Person.executeQuery(
@@ -61,13 +77,13 @@ class SearchService {
              or lower(p.note) like ?) and a.block.neighbourhood.id = ? order by p.firstNames, p.lastName, p.id',
             ([ searchTerm ] * 9) << neighbourhoodId )
 
-        log.debug "Found ${peeps.size()} people"
+        log.info "Found ${peeps.size()} people"
         return peeps
     }
 
     def peopleWithContactInfo( session, q ) {
         def neighbourhoodId = session.neighbourhood.id
-        log.debug "Searching NH ${neighbourhoodId} people for ${q}"
+        log.info "Searching NH ${neighbourhoodId} people for ${q}"
         def searchTerm = "%${q}%".toLowerCase( )
 
         def peeps = Person.executeQuery(
@@ -78,7 +94,7 @@ class SearchService {
              or lower(p.note) like ?) and a.block.neighbourhood.id = ? order by p.firstNames, p.lastName, p.id',
             ([ searchTerm ] * 9) << neighbourhoodId )
 
-        log.debug "Found ${peeps.size()} people"
+        log.info "Found ${peeps.size()} people"
         return peeps
     }
 }
