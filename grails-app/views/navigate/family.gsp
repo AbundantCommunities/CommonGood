@@ -417,7 +417,7 @@
                 <div class="content-heading">Family Members for ${navSelection.levelInHierarchy} ${navSelection.description}&nbsp;&nbsp;<a href="#" onclick="presentNewModal()" style="font-weight:normal;">+ Add New Family Member</a></div>
                 <g:if test="${navChildren.children.size() > 0}">
                     <g:each in="${navChildren.children}" var="child">
-                        <div class="content-children-row"><a href="${resource(dir:'navigate/'+navChildren.childType.toLowerCase(),file:"${child.id}")}">${child.name}</a></div>
+                        <div class="content-children-row"><g:link controller='navigate' action='${navChildren.childType.toLowerCase()}' id='${child.id}'>${child.name}</g:link></div>
                     </g:each>
                 </g:if>
                 <g:else>
@@ -429,7 +429,7 @@
             </div>
             <div id="edit-container">
                 <div class="modal-title">Edit Family</div>
-                <form id="edit-form" action=${resource(file:'Family/save')} method="post">
+                <form id="edit-form" action="<g:createLink controller='family' action='save' />" method="post">
                     <input type="hidden" name="id" value="${navSelection.id}" />
                     <div class="modal-row">Family name: <input id="familyNameInput" type="text" name="familyName" value=""/></div>
                     <div class="modal-row">Order within address: <input id="orderWithinAddressInput" type="text" name="orderWithinAddress" value="" size="12"/></div>
@@ -443,7 +443,7 @@
 
             <div id="new-container">
                 <div class="modal-title">New Family Member</div>
-                <form id="new-form" action=${resource(file:'Person/save')} method="POST">
+                <form id="new-form" action="<g:createLink controller='person' action='save' />" method="POST">
                     <input type="hidden" name="familyId" value="${navSelection.id}" />
                     <div class="modal-row">First names: <input id="firstNamesInput" type="text" name="firstNames" value=""/></div>
                     <div class="modal-row">Last name: <input id="lastNameInput" type="text" name="lastName" value=""/></div>

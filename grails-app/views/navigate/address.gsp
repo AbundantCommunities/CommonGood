@@ -307,13 +307,6 @@
                 <div id="note-heading">Note: </div>
                 <div id="note-value"><textarea cols="60" rows="5" style="color: #222222;" disabled>${navSelection.note}</textarea></div>
 
-                <g:if test="${navSelection.levelInHierarchy.toLowerCase() == 'neighbourhood'}">
-                    <div id="content-actions-left-side">
-                        <div class="content-left-action"><a href="${resource(dir:'blockSummary',file:"index")}" target="_blank">Block Summary</a></div>
-                        <div class="content-left-action"><a href="${resource(dir:'blockConnectorSummary',file:"index")}" target="_blank">Block Connector Contact List</a></div>
-                    </div>
-                </g:if>
-
                 <div id="content-actions">
                     <div class="content-action"><a href="#" onclick="presentEditModal();">Edit</a></div>
                     <div class="content-action"><a href="#" onclick="alert('not yet implemented');">Delete</a></div>
@@ -323,7 +316,7 @@
                 <div class="content-heading">Families for ${navSelection.levelInHierarchy} ${navSelection.description}&nbsp;&nbsp;<a onclick="presentNewModal();" href="#" style="font-weight:normal;">+ Add New ${navChildren.childType}</a></div>
                 <g:if test="${navChildren.children.size() > 0}">
                     <g:each in="${navChildren.children}" var="child">
-                        <div class="content-children-row"><a href="${resource(dir:'navigate/'+navChildren.childType.toLowerCase(),file:"${child.id}")}">${child.name}</a></div>
+                        <div class="content-children-row"><g:link controller='Navigate' action='${navChildren.childType.toLowerCase()}' id='${child.id}'>${child.name}</g:link></div>
                     </g:each>
                 </g:if>
                 <g:else>
@@ -335,7 +328,7 @@
             </div>
             <div id="edit-container">
                 <div class="modal-title">Edit Address</div>
-                <form id="edit-form" action=${resource(file:'Address/save')} method="POST">
+                <form id="edit-form" action="<g:createLink controller='Address' action='save'/>" method="POST">
                     <input type="hidden" name="id" value="${navSelection.id}" />
                     <div class="modal-row">Address: <input id="addressTextInput" type="text" name="text" value="" style="width:70%;"/></div>
                     <div class="modal-row">Order within block: <input id="orderWithinBlockInput" type="text" name="orderWithinBlock" value="" size="12"/></div>
@@ -348,7 +341,7 @@
             </div>
             <div id="new-container">
                 <div class="modal-title">New Family</div>
-                <form id="new-form" action=${resource(file:'Family/save')} method="POST">
+                <form id="new-form" action="<g:createLink controller='Address' action='save'/>" method="POST">
                     <input type="hidden" name="addressId" value="${navSelection.id}" />
                     <div class="modal-row">Family name: <input id="familyNameInput" type="text" name="familyName" value=""/></div>
                     <div class="modal-row">Note: <br/><textarea id="familyNoteTextarea" class="noteTextarea" name="note" cols=44 rows=4></textarea></div>

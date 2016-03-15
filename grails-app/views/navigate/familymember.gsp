@@ -487,7 +487,7 @@
             </div>
             <div id="edit-fm-container">
                 <div class="modal-title">Edit Family Member</div>
-                <form id="edit-fm-form" action=${resource(file:'Person/save')} method="POST">
+                <form id="edit-fm-form" action="<g:createLink controller='person' action='save' />" method="POST">
                     <input type="hidden" name="id" value="${navSelection.id}" />
                     <div class="modal-row">First names: <input id="firstNamesInput" type="text" name="firstNames" value=""/></div>
                     <div class="modal-row">Last name: <input id="lastNameInput" type="text" name="lastName" value=""/></div>
@@ -504,7 +504,7 @@
             </div>
             <div id="edit-answer-container">
                 <div class="modal-title">Edit Answer</div>
-                <form id="edit-answer-form" action=${resource(file:'Answer/save')} method="POST">
+                <form id="edit-answer-form" action="<g:createLink controller='answer' action='save' />" method="POST">
                     <input id="answer-id-input" type="hidden" name="id" value="" />
                     <div id="question-div"></div>
                     <div id="answer-input-div"><input id="answer-text-input" name="text" type="text" size="45"/></div>
@@ -516,7 +516,7 @@
                     <div id="edit-answer-savebutton" onclick="JavaScript:saveAnswer();">Save</div>
                     <div id="edit-answer-deletebutton" onclick="JavaScript:deleteAnswer();">Delete Answer</div>
                 </div>
-                <form id="delete-answer-form" action=${resource(file:'Answer/delete')} method="POST">
+                <form id="delete-answer-form" action="<g:createLink controller='answer' action='delete' />" method="POST">
                     <input id="delete-answer-id-input" type="hidden" name="id" value="" />
                 </form>
             </div>
