@@ -19,7 +19,6 @@ class Person {
         hashedPassword should be empty or null
     */
     Boolean appUser
-    Integer passwordHash
     String hashedPassword
 
     Date dateCreated
@@ -29,7 +28,6 @@ class Person {
 
     Person( ) {
         appUser = Boolean.FALSE
-        passwordHash = 0
         note = ''
     }
 

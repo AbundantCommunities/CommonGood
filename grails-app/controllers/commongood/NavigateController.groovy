@@ -15,37 +15,13 @@ class NavigateController {
         session.lastNavigationId = lastNavigationId
     }
 
-    def installation( ) {
-        ThisInstallation thisInstallation = ThisInstallation.get( )
-        List hoods = Neighbourhood.list( sort:'name', order:'asc')
-        hoods = hoods.collect{
-            [ id:it.id, name:it.name]
-        }
-        Map result =
-            [
-            authorized: session.authorized,
-            navContext: [ ],
-
-            navSelection: [ levelInHierarchy:'Installation', description:thisInstallation.name,
-                            configured: thisInstallation.configured ],
-
-            navChildren:
-                [
-                childType: 'Neighbourhood',
-                children: hoods
-                ]
-            ]
-        remember( 'installation', null )
-        render "This installation of CommonGood is: ${thisInstallation.name}"
-    }
-
     def neighbourhood( ) {
         Integer hoodId = Integer.valueOf( params.id )
         authorizationService.neighbourhood( hoodId, session )
-        log.info "${session.user.getFullName()} to neighbourhood/${hoodId}"
+        log.info "${session.user.getLogName()} to neighbourhood/${hoodId}"
         Neighbourhood theHood = Neighbourhood.where{ id == hoodId }.get( )
         List questions = Question.where{ neighbourhood.id == hoodId }.list( sort:'orderWithinQuestionnaire', order:'asc' )
-        List blocks = blockService.getForNeighbourhood( hoodId )
+        List blocks = blockService.getForNeighbourhood( session.authorized )
         Map result =
             [
             authorized: session.authorized,
@@ -67,7 +43,7 @@ class NavigateController {
     def block( ) {
         def blockId = Long.valueOf( params.id )
         authorizationService.block( blockId, session )
-        log.info "${session.user.getFullName()} to block/${blockId}"
+        log.info "${session.user.getLogName()} to block/${blockId}"
         Block theBlock = Block.where{ id == blockId }.get( )
         def blockConnectors = domainAuthorizationService.getBlockConnectors( blockId )
         List addresses = Address.where{ block.id == blockId }.list( sort:'orderWithinBlock', order:'asc' )
@@ -99,7 +75,7 @@ class NavigateController {
     def address( ) {
         Integer addressId = Integer.valueOf( params.id )
         authorizationService.address( addressId, session )
-        log.info "${session.user.getFullName()} to address/${addressId}"
+        log.info "${session.user.getLogName()} to address/${addressId}"
         Address theAddress = Address.where{ id == addressId }.get( )
         List families = Family.where{ address.id == addressId }.list( sort:'orderWithinAddress', order:'asc' )
         families = families.collect{
@@ -138,7 +114,7 @@ class NavigateController {
         Person interviewer // Block Connector
         Integer familyId = Integer.valueOf( params.id )
         authorizationService.family( familyId, session )
-        log.info "${session.user.getFullName()} to family/${familyId}"
+        log.info "${session.user.getLogName()} to family/${familyId}"
         Family theFamily = Family.get( familyId )
 
         List members = Person.where{ family.id == familyId }.list( sort:'orderWithinFamily', order:'asc' )
@@ -184,7 +160,7 @@ class NavigateController {
     def familymember( ) {
         Long memberId = Long.valueOf( params.id )
         authorizationService.person( memberId, session )
-        log.info "${session.user.getFullName()} to familyMember/${memberId}"
+        log.info "${session.user.getLogName()} to familyMember/${memberId}"
 
         /* The result of the following query looks like:
 //        [ [commongood.Answer : 54, commongood.Person : 7, commongood.Question : 12],

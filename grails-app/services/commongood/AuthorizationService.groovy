@@ -23,7 +23,9 @@ class AuthorizationService {
                 prevent( 'Neighbourhood', id, session )
             }
         } else {
-            prevent( 'Neighbourhood', id, session )
+            if( id != session.block.neighbourhood.id ) {
+                prevent( 'Neighbourhood', id, session )
+            }
         }
     }
 
