@@ -4,8 +4,6 @@ class Answer {
     Person person
     Question question
     String text
-    Boolean wouldLead
-    Boolean wouldOrganize
     Boolean wouldAssist
     String note
 

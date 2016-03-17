@@ -13,7 +13,7 @@ class SearchService {
             def neighbourhoodId = session.neighbourhood.id
             log.info "${session.user.logName} searching neighbourhood ${neighbourhoodId} answers for ${q}"
             answers = Answer.executeQuery(
-                'select ans.text, ans.wouldLead, ans.wouldOrganize, p.id, p.firstNames, p.lastName, q.shortText \
+                'SELECT ans.text, ans.wouldAssist, p.id, p.firstNames, p.lastName, q.shortText \
                  from Answer ans, Person p, Question q \
                  where LOWER(ans.text) like ? \
                  AND ans.person.id = p.id \
@@ -25,7 +25,7 @@ class SearchService {
             def blockId = session.block.id
             log.info "${session.user.logName} searching block ${blockId} answers for ${q}"
             answers = Answer.executeQuery(
-                'SELECT ans.text, ans.wouldLead, ans.wouldOrganize, p.id, p.firstNames, p.lastName, q.shortText \
+                'SELECT ans.text, ans.wouldAssist, p.id, p.firstNames, p.lastName, q.shortText \
                  FROM Answer ans, Person p, Family f, Address addr, Question q \
                  WHERE LOWER(ans.text) LIKE ? \
                  AND ans.person.id = p.id \
@@ -50,7 +50,7 @@ class SearchService {
             log.info "${session.user.logName} searching neighbourhood ${neighbourhoodId} answers for ${q} (with contact info)"
 
             answers = Answer.executeQuery(
-                'SELECT ans.text, ans.wouldLead, ans.wouldOrganize, p.id, p.firstNames, p.lastName, q.shortText, \
+                'SELECT ans.text, ans.wouldAssist, p.id, p.firstNames, p.lastName, q.shortText, \
                  p.phoneNumber, p.emailAddress, addr.text \
                  FROM Answer ans, Person p, Family f, Address addr, Question q \
                  WHERE LOWER(ans.text) like ? \
@@ -66,7 +66,7 @@ class SearchService {
             log.info "${session.user.logName} searching block ${blockId} answers for ${q} (with contact info)"
 
             answers = Answer.executeQuery(
-                'SELECT ans.text, ans.wouldLead, ans.wouldOrganize, p.id, p.firstNames, p.lastName, q.shortText, \
+                'SELECT ans.text, ans.wouldAssist, p.id, p.firstNames, p.lastName, q.shortText, \
                  p.phoneNumber, p.emailAddress, addr.text \
                  FROM Answer ans, Person p, Family f, Address addr, Question q \
                  WHERE LOWER(ans.text) like ? \

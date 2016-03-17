@@ -43,9 +43,9 @@ class AnswerController {
         log.info "${session.user.getFullName()} requests get answer/${answerId}"
         authorizationService.answer( answerId, session )
         Answer answer = Answer.get( answerId )
-        def result = [ id:answer.id, text:answer.text,
-                wouldLead:answer.wouldLead, wouldOrganize:answer.wouldOrganize,
-                question:answer.question.getLongHeader() ]
+        def result = [ id: answer.id, text: answer.text,
+                wouldAssist: answer.wouldAssist,
+                question: answer.question.getLongHeader() ]
 
         render JsonWriter.write( result )
     }
@@ -57,8 +57,6 @@ class AnswerController {
         authorizationService.answer( answerId, session )
         Answer answer = Answer.get( answerId )
         answer.text = params.text
-        answer.wouldLead = ('wouldLead' in params)
-        answer.wouldOrganize = ('wouldOrganize' in params)
         answer.wouldAssist = ('wouldAssist' in params)
         answer.note = ''
         answer.save( flush:true, failOnError: true )
@@ -99,7 +97,6 @@ class AnswerController {
                     def cleanAnswer = it.replaceAll("\\p{Cntrl}", "").trim( )
                     if( cleanAnswer ) {
                         Answer answer = new Answer( person:person, question:q, text:cleanAnswer, note:'?',
-                                    wouldLead:Boolean.FALSE, wouldOrganize:Boolean.FALSE,
                                     wouldAssist:Boolean.FALSE)
                         // TODO Eiminate multiple flushes (would reduce calls to the db?)
                         // TODO Replace failOnError with logic
