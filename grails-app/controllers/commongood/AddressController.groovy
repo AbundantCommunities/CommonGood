@@ -21,7 +21,8 @@ class AddressController {
 
         render JsonWriter.write( result )
     }
-    
+
+    // Update an existing Address.
     def save( ) {
         def addressId = params.long('id')
         log.info "${session.user.getFullName()} requests save address/${addressId}"
