@@ -41,12 +41,12 @@
             <div id="aci-logo-line">
                 <img src="${resource(dir:'images',file:'aci-logo.png')}" width="80" height="78"/>
                 <div id="welcome-line">Welcome ${session.user.firstNames} ${session.user.lastName} <span id="sign-out"><g:link controller="logout">log out</g:link></span></div>
-                <g:if test="${session.authorized.forNeighbourhood()==Boolean.TRUE}">
+                <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}">
                     <div id="role-line">Neighbourhood Connector for ${session.neighbourhood.name}</div>
                 </g:if>
-                <g:if test="${session.authorized.forBlock()==Boolean.TRUE}">
+                <g:elseif test="${authorized.forBlock()==Boolean.TRUE}">
                     <div id="role-line">Block Connector in ${session.neighbourhood.name}</div>
-                </g:if>
+                </g:elseif>
                 <form id="search-form" action="<g:createLink controller='search' />" method="get">
                     <div id="search"><img id="search-image" src="${resource(dir:'images',file:'search.png')}" width="18" height="18"/><input id="search-criteria" type="text" placeholder="search" name="q" value="" onKeyPress="checkEnter(event);"/></div>
                 </form>

@@ -6,7 +6,7 @@
         <title>Abundant Communities - Edmonton</title>
         <script type="text/javascript">
 
-            <g:if test="${session.authorized.forNeighbourhood()==Boolean.TRUE}">
+            <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}">
 
                 function presentNewModal() {
                     var pagecontainerDiv = document.getElementById("pagecontainer");
@@ -117,7 +117,7 @@
                 left: 60px;
             }
 
-            <g:if test="${session.authorized.forNeighbourhood()==Boolean.TRUE}">
+            <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}">
 
                 #new-container {
                     position:absolute;
@@ -228,12 +228,9 @@
             <div id="content-detail">
                 <div id="content-detail-title">${navSelection.levelInHierarchy}</div>
                 <div id="hood-name-heading">Name: </div>
-                <div id="hood-name-value">${navSelection.description}
-                    <g:if test="${session.authorized.forNeighbourhood()==Boolean.TRUE}">NEIGHBOURHOOD ACCESS</g:if>
-                    <g:if test="${session.authorized.forBlock()==Boolean.TRUE}">BLOCK ACCESS</g:if>
-                </div>
+                <div id="hood-name-value">${navSelection.description}</div>
 
-                <g:if test="${session.authorized.forNeighbourhood()==Boolean.TRUE}">
+                <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}">
                     <div id="content-actions-left-side">
                         <div class="content-left-action"><g:link controller="blockSummary" action="index">Block Summary</g:link></div>
                         <div class="content-left-action"><g:link controller="neighbourhood" action="blockConnectors">Block Connector Contact List</g:link></div>
@@ -248,12 +245,12 @@
                 </g:if>
             </div>
             <div id="content-children">
-                <g:if test="${session.authorized.forNeighbourhood()==Boolean.TRUE}">
+                <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}">
                     <div class="content-heading">${navChildren.childType+'s'} for ${navSelection.levelInHierarchy} ${navSelection.description}&nbsp;&nbsp;<a href="#" onclick="presentNewModal();" style="font-weight:normal;">+ Add New Block</a></div>
                 </g:if>
-                <g:if test="${session.authorized.forBlock()==Boolean.TRUE}">
+                <g:elseif test="${authorized.forBlock()==Boolean.TRUE}">
                     <div class="content-heading">Your ${navChildren.childType}<g:if test="${navChildren.children.size() > 1}">s</g:if></div>
-                </g:if>
+                </g:elseif>
                 <g:if test="${navChildren.children.size() > 0}">
                     <g:each in="${navChildren.children}" var="child">
                         <div class="content-children-row">
@@ -279,7 +276,7 @@
             </div>
 
 
-            <g:if test="${session.authorized.forNeighbourhood()==Boolean.TRUE}">
+            <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}">
                 <div id="new-container">
                     <div class="modal-title">New Block</div>
                     <form id="new-form" action="<g:createLink controller='Neighbourhood' action='addBlock' />" method="POST">

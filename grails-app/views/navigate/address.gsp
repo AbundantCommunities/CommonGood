@@ -341,7 +341,7 @@
             </div>
             <div id="new-container">
                 <div class="modal-title">New Family</div>
-                <form id="new-form" action="<g:createLink controller='Address' action='save'/>" method="POST">
+                <form id="new-form" action="<g:createLink controller='Family' action='save'/>" method="POST">
                     <input type="hidden" name="addressId" value="${navSelection.id}" />
                     <div class="modal-row">Family name: <input id="familyNameInput" type="text" name="familyName" value=""/></div>
                     <div class="modal-row">Note: <br/><textarea id="familyNoteTextarea" class="noteTextarea" name="note" cols=44 rows=4></textarea></div>

@@ -6,7 +6,7 @@
         <title>Abundant Communities - Edmonton</title>
         <script type="text/javascript">
 
-            <g:if test="${session.authorized.forNeighbourhood()==Boolean.TRUE}">
+            <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}">
 
                 function populateEditModal() {
                     Encoder.EncodeType = "entity";
@@ -141,7 +141,7 @@
                 }
             }
 
-            <g:if test="${session.authorized.forNeighbourhood()==Boolean.TRUE}">
+            <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}">
 
                 function presentAddBC() {
                     if (${navChildren.children.size() > 0}) {
@@ -370,7 +370,7 @@
                 left: 400px;
             }
 
-            <g:if test="${session.authorized.forNeighbourhood()==Boolean.TRUE}">
+            <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}">
 
                 #new-bc-container {
                     position:absolute;
@@ -440,7 +440,7 @@
                 left:20px;
             }
 
-            <g:if test="${session.authorized.forNeighbourhood()==Boolean.TRUE}">
+            <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}">
 
                 #select-address {
                     position: absolute;
@@ -571,13 +571,13 @@
 
                 
                 <div id="bc-title">Block Connector<g:if test="${navSelection.blockConnectors.size() > 1}">s</g:if></div>
-                <g:if test="${session.authorized.forNeighbourhood()==Boolean.TRUE}"><script type="text/javascript">var existingBCs = [];</script></g:if>
+                <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}"><script type="text/javascript">var existingBCs = [];</script></g:if>
                 <g:if test="${navSelection.blockConnectors.size() > 0}">
                     <g:each in="${navSelection.blockConnectors}" var="bc" status="i">
-                        <div class="bc" style="top:${(i*20)+30}px;"><g:link controller='Navigate' action='familymember' id='${bc.id}'>${bc.fullName}</g:link><g:if test="${session.authorized.forNeighbourhood()==Boolean.TRUE}"> <span style="font-size:smaller;">(<a id="revoke|${bc.id}|${navSelection.id}" href="#" onclick="revokeBC(this);">revoke</a>)</span></g:if></div>
-                        <g:if test="${session.authorized.forNeighbourhood()==Boolean.TRUE}"><script type="text/javascript">existingBCs.push(${bc.id});</script></g:if>
+                        <div class="bc" style="top:${(i*20)+30}px;"><g:link controller='Navigate' action='familymember' id='${bc.id}'>${bc.fullName}</g:link><g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}"> <span style="font-size:smaller;">(<a id="revoke|${bc.id}|${navSelection.id}" href="#" onclick="revokeBC(this);">revoke</a>)</span></g:if></div>
+                        <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}"><script type="text/javascript">existingBCs.push(${bc.id});</script></g:if>
                     </g:each>
-                    <g:if test="${session.authorized.forNeighbourhood()==Boolean.TRUE}">
+                    <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}">
                         <form id="revoke-form" action="<g:createLink controller='authorization' action='deauthorizeBlockConnector'/>" method="DELETE">
                             <input id="revoke-bc-id" type="hidden" name="id"/>
                             <input id="revoke-bc-block-id" type="hidden" name="blockId"/>
@@ -589,7 +589,7 @@
 
                 </g:else>
 
-                <g:if test="${session.authorized.forNeighbourhood()==Boolean.TRUE}">
+                <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}">
                     <g:if test="${navSelection.blockConnectors.size() > 0}">
                         <div class="bc" style="top:${(navSelection.blockConnectors.size()*20)+35}px;"><a href="#" onclick="presentAddBC();">+ Add Another Block Connector</a></div>
                     </g:if>
@@ -598,7 +598,7 @@
                     </g:else>
                 </g:if>
 
-                <g:if test="${session.authorized.forNeighbourhood()==Boolean.TRUE}">
+                <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}">
                     <div id="content-actions-left-side">
                         <div class="content-left-action"><g:link controller='block' action='contactList' id='${navSelection.id}'>Contact List</g:link></div>
                     </div>
@@ -608,11 +608,11 @@
                         <div class="content-action"><a href="#" onclick="alert('not yet implemented');">Delete</a></div>
                     </div>
                 </g:if>
-                <g:if test="${session.authorized.forBlock()==Boolean.TRUE}">
+                <g:elseif test="${authorized.forBlock()==Boolean.TRUE}">
                     <div id="content-actions" style="left:820px;">
                         <div class="content-action"><g:link controller='block' action='contactList' id='${navSelection.id}'>Contact List</g:link></div>
                     </div>
-                </g:if>
+                </g:elseif>
 
             </div>
             <div id="content-children">
@@ -630,7 +630,7 @@
             <div id="transparent-overlay">
             </div>
 
-            <g:if test="${session.authorized.forNeighbourhood()==Boolean.TRUE}">
+            <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}">
 
                 <div id="new-bc-container">
                     <div class="modal-title">Add Block Connector</div>

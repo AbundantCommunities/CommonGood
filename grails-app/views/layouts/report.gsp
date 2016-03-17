@@ -44,9 +44,9 @@
                 <g:if test="${session.authorized.forNeighbourhood()==Boolean.TRUE}">
                     <div id="role-line">Neighbourhood Connector for ${session.neighbourhood.name}</div>
                 </g:if>
-                <g:if test="${session.authorized.forBlock()==Boolean.TRUE}">
+                <g:elseif test="${session.authorized.forBlock()==Boolean.TRUE}">
                     <div id="role-line">Block Connector in ${session.neighbourhood.name}</div>
-                </g:if>
+                </g:elseif>
                 <g:link controller="navigate" action="${session.lastNavigationLevel}" id="${session.lastNavigationId}"><div id="browse-deselected">Browse</div></g:link>
                 <form id="search-form" action="<g:createLink controller='search' />" method="get">
                     <div id="search"><img id="search-image" src="${resource(dir:'images',file:'search.png')}" width="18" height="18"/><input id="search-criteria" type="text" placeholder="search" name="q" value="" onKeyPress="checkEnter(event);"/></div>
