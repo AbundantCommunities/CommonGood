@@ -47,10 +47,10 @@
                     <g:each in="${answers}" var="answer">
                         <div class="content-children-row">
                             <div class="cell550">
-                                <span class="<g:if test='${answer[1]}'>cg-bold </g:if><g:if test='${answer[2]}'>cg-italic</g:if>">${answer[0]}</span> 
-                                <span style="font-size:x-small;">(${answer[6]})</span>
+                                <span class="<g:if test='${answer[1]}'>cg-bold</g:if>">${answer[0]}</span>
+                                <span style="font-size:x-small;">(${answer[5]})</span>
                             </div>
-                            <g:link controller="navigate" action="familymember" id="${answer[3]}"><div class="cell300">${answer[4]} ${answer[5]}</div></g:link>
+                            <g:link controller="navigate" action="familymember" id="${answer[2]}"><div class="cell300">${answer[3]} ${answer[4]}</div></g:link>
                         </div>
                     </g:each>
                     <div class="content-children-row" style="height:5px;"></div>

@@ -45,6 +45,7 @@ class AnswerController {
         Answer answer = Answer.get( answerId )
         def result = [ id: answer.id, text: answer.text,
                 wouldAssist: answer.wouldAssist,
+                note: answer.note,
                 question: answer.question.getLongHeader() ]
 
         render JsonWriter.write( result )
@@ -58,7 +59,7 @@ class AnswerController {
         Answer answer = Answer.get( answerId )
         answer.text = params.text
         answer.wouldAssist = ('wouldAssist' in params)
-        answer.note = ''
+        answer.note = params.note
         answer.save( flush:true, failOnError: true )
         redirect controller:'navigate', action:'familymember', id:answer.person.id
     }
