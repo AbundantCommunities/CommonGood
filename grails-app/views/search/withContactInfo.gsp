@@ -67,21 +67,13 @@
                 var aEmail = [];
                 var aAddress = [];
 
-                var aLeadQuestion = [];
-                var aLeadAnswer = [];
-                var aLeadFNames = [];
-                var aLeadLName = [];
-                var aLeadPhone = [];
-                var aLeadEmail = [];
-                var aLeadAddress = [];
-
-                var aOrgQuestion = [];
-                var aOrgAnswer = [];
-                var aOrgFNames = [];
-                var aOrgLName = [];
-                var aOrgPhone = [];
-                var aOrgEmail = [];
-                var aOrgAddress = [];
+                var aAssistQuestion = [];
+                var aAssistAnswer = [];
+                var aAssistFNames = [];
+                var aAssistLName = [];
+                var aAssistPhone = [];
+                var aAssistEmail = [];
+                var aAssistAddress = [];
 
                 Encoder.EncodeType = "entity";
 
@@ -98,32 +90,23 @@
                 <g:if test="${answers.size() > 0}">
                     <g:each in="${answers}" var="answer">
                         <g:if test="${answer[1]}">
-                            aLeadQuestion.push(Encoder.htmlDecode('${answer[6]}'));
-                            aLeadAnswer.push(Encoder.htmlDecode('${answer[0]}'));
-                            aLeadFNames.push(Encoder.htmlDecode('${answer[4]}'));
-                            aLeadLName.push(Encoder.htmlDecode('${answer[5]}'));
-                            aLeadPhone.push(Encoder.htmlDecode('${answer[7]}'));
-                            aLeadEmail.push(Encoder.htmlDecode('${answer[8]}'));
-                            aLeadAddress.push(Encoder.htmlDecode('${answer[9]}'));
+                            aAssistQuestion.push(Encoder.htmlDecode('${answer[5]}'));
+                            aAssistAnswer.push(Encoder.htmlDecode('${answer[0]}'));
+                            aAssistFNames.push(Encoder.htmlDecode('${answer[3]}'));
+                            aAssistLName.push(Encoder.htmlDecode('${answer[4]}'));
+                            aAssistPhone.push(Encoder.htmlDecode('${answer[6]}'));
+                            aAssistEmail.push(Encoder.htmlDecode('${answer[7]}'));
+                            aAssistAddress.push(Encoder.htmlDecode('${answer[8]}'));
                         </g:if>
-                        <g:if test="${answer[2]}">
-                            aOrgQuestion.push(Encoder.htmlDecode('${answer[6]}'));
-                            aOrgAnswer.push(Encoder.htmlDecode('${answer[0]}'));
-                            aOrgFNames.push(Encoder.htmlDecode('${answer[4]}'));
-                            aOrgLName.push(Encoder.htmlDecode('${answer[5]}'));
-                            aOrgPhone.push(Encoder.htmlDecode('${answer[7]}'));
-                            aOrgEmail.push(Encoder.htmlDecode('${answer[8]}'));
-                            aOrgAddress.push(Encoder.htmlDecode('${answer[9]}'));
-                        </g:if>
-                        <g:if test="${!answer[1]&&!answer[2]}">
-                            aQuestion.push(Encoder.htmlDecode('${answer[6]}'));
+                        <g:else>
+                            aQuestion.push(Encoder.htmlDecode('${answer[5]}'));
                             aAnswer.push(Encoder.htmlDecode('${answer[0]}'));
-                            aFNames.push(Encoder.htmlDecode('${answer[4]}'));
-                            aLName.push(Encoder.htmlDecode('${answer[5]}'));
-                            aPhone.push(Encoder.htmlDecode('${answer[7]}'));
-                            aEmail.push(Encoder.htmlDecode('${answer[8]}'));
-                            aAddress.push(Encoder.htmlDecode('${answer[9]}'));
-                        </g:if>
+                            aFNames.push(Encoder.htmlDecode('${answer[3]}'));
+                            aLName.push(Encoder.htmlDecode('${answer[4]}'));
+                            aPhone.push(Encoder.htmlDecode('${answer[6]}'));
+                            aEmail.push(Encoder.htmlDecode('${answer[7]}'));
+                            aAddress.push(Encoder.htmlDecode('${answer[8]}'));
+                        </g:else>
                     </g:each>
                 </g:if>
 
@@ -161,26 +144,17 @@
                     }
                 }
 
-                if (aLeadLName.length>0) {
-                    body = body+'Those who would lead:\n\n';
-                    for (i=0;i<aLeadLName.length;i++) {
-                        body = body+'Answer: '+aLeadAnswer[i]+' (Question: '+aLeadQuestion[i]+')\n';
-                        body = body+constructLine(aLeadFNames[i],aLeadLName[i],aLeadPhone[i],aLeadEmail[i],aLeadAddress[i]);
+                if (aAssistLName.length>0) {
+                    body = body+'Those who would assist:\n\n';
+                    for (i=0;i<aAssistLName.length;i++) {
+                        body = body+'Answer: '+aAssistAnswer[i]+' (Question: '+aAssistQuestion[i]+')\n';
+                        body = body+constructLine(aAssistFNames[i],aAssistLName[i],aAssistPhone[i],aAssistEmail[i],aAssistAddress[i]);
                         body = body+'\n';
                     }
                 }
 
-                if (aOrgLName.length>0) {
-                    body = body+'Those who would organize:\n\n';
-                    for (i=0;i<aOrgLName.length;i++) {
-                        body = body+'Answer: '+aOrgAnswer[i]+' (Question: '+aOrgQuestion[i]+')\n';
-                        body = body+constructLine(aOrgFNames[i],aOrgLName[i],aOrgPhone[i],aOrgEmail[i],aOrgAddress[i]);
-                        body = body+'\n';
-                    }
-                }
-
-                if (aLName.length>0&&aLeadLName.length==0&&aOrgLName.length==0) {
-                    body = body+'No one has offered to lead or organize.';
+                if (aLName.length>0&&aAssistLName.length==0) {
+                    body = body+'No one has offered to assist.';
                 }
 
                 body = encodeURIComponent(body);
@@ -196,7 +170,7 @@
             <div id="content-children" style="padding-bottom:10px;">
 
                 <div style="width:910px;">
-                    <div class="content-heading" style="display:inline-block;">Searched for "${q}"</div>
+                    <div class="content-heading" style="display:inline-block;">&nbsp;</div>
                     <g:if test="${people.size()>0 || answers.size()>0}">
                         <div style="display:inline-block;float:right;"><span style="font-weight:bold;">Show:</span>  <a href="#" onclick="showSearchResults();">Search Results</a> | Contact Info</div>
                     </g:if>
@@ -212,11 +186,11 @@
                 </g:if>
 
                 <g:if test="${people.size() == 0 && answers.size() == 0}">
-                    <h4>"${q}" not found.</h4>
+                    <h4>Failed to find the exact word/phrase: "${q}"</h4>
                 </g:if>
 
                 <g:if test="${people.size() > 0}">
-                    <div style="margin-top:-5px;margin-bottom:-15px;"><h4>Found in ${people.size()} family member<g:if test="${people.size()>1}">s</g:if>:</h4></div>
+                    <div style="margin-top:-5px;margin-bottom:-15px;"><h4>Found "${q}" in ${people.size()} family member<g:if test="${people.size()>1}">s</g:if>:</h4></div>
                     <g:each in="${people}" var="person">
                         <div class="content-children-row">
                             <div class="cell190"><g:link controller="navigate" action="familymember" id="${person[0]}">${person[1]} ${person[2]}</g:link></div>
@@ -230,14 +204,14 @@
 
                 <g:if test="${answers.size() > 0}">
                     <div style="margin-top:-5px;margin-bottom:-15px;">
-                        <h4>Found in ${answers.size()} answer<g:if test="${answers.size()>1}">s</g:if>: <span style="font-weight:normal;">(<span style="font-weight:bold;">bold</span> = would lead, <span style="font-style:italic;">italic</span> = would organize)</span></h4>
+                        <h4>Found "${q}" in ${answers.size()} answer<g:if test="${answers.size()>1}">s</g:if>: <span style="font-weight:normal;">(<span style="font-weight:bold;">bold</span> = would assist)</span></h4>
                     </div>
                     <g:each in="${answers}" var="answer">
                         <div class="content-children-row">
-                            <g:link controller="navigate" action="familymember" id="${answer[3]}"><div class="cell190 <g:if test='${answer[1]}'>cg-bold </g:if><g:if test='${answer[2]}'>cg-italic</g:if>">${answer[4]} ${answer[5]}</div></g:link>
-                            <div class="cell120">${answer[7]}</div>
-                            <div class="cell300"><a href="mailto:${answer[8]}">${answer[8]}</a></div>
-                            <div class="cell250">${answer[9]}</div>
+                            <g:link controller="navigate" action="familymember" id="${answer[2]}"><div class="cell190 <g:if test='${answer[1]}'>cg-bold</g:if>">${answer[3]} ${answer[4]}</div></g:link>
+                            <div class="cell120">${answer[6]}</div>
+                            <div class="cell300"><a href="mailto:${answer[7]}">${answer[7]}</a></div>
+                            <div class="cell250">${answer[8]}</div>
                         </div>
                     </g:each>
                     <div class="content-children-row" style="height:5px;"></div>

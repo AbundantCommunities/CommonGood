@@ -161,8 +161,8 @@
                     document.getElementById('delete-answer-id-input').value = answerValues.id;
                     document.getElementById('question-div').innerHTML = answerValues.question;
                     document.getElementById('answer-text-input').value = answerValues.text;
-                    document.getElementById('would-lead-input').checked = answerValues.wouldLead;
-                    document.getElementById('would-organize-input').checked = answerValues.wouldOrganize;
+                    document.getElementById('would-assist-input').checked = answerValues.wouldAssist;
+                    document.getElementById('answer-note-input').value = answerValues.note;
 
                     var pagecontainerDiv = document.getElementById("pagecontainer");
                     document.getElementById("transparent-overlay").setAttribute("style","height:"+pagecontainerDiv.clientHeight+"px;");
@@ -374,13 +374,18 @@
                 margin-left: 10px;
             }
 
-            #would-lead-div {
+            #would-assist-div {
                 margin-top: 15px;
                 margin-left: 10px;
             }
 
-            #would-organize-div {
-                margin-top: 5px;
+            #answer-note-title-div {
+                margin-top: 15px;
+                margin-left: 10px;
+            }
+
+            #answer-note-input-div {
+                margin-top: 0px;
                 margin-left: 10px;
             }
 
@@ -436,13 +441,6 @@
                 border-color: #B48B6A;
                 background-color:#FFFFFF;
             }
-
-
-
-
-
-
-
 
 
         </style>
@@ -508,9 +506,11 @@
                     <input id="answer-id-input" type="hidden" name="id" value="" />
                     <div id="question-div"></div>
                     <div id="answer-input-div"><input id="answer-text-input" name="text" type="text" size="45"/></div>
-                    <div id="would-lead-div"><input id="would-lead-input" name="wouldLead" type="checkbox" /> Would lead</div>
-                    <div id="would-organize-div"><input id="would-organize-input" name="wouldOrganize" type="checkbox" /> Would organize</div>
+                    <div id="would-assist-div"><input id="would-assist-input" name="wouldAssist" type="checkbox" /> Would assist</div>
+                    <div id="answer-note-title-div">Note:</div>
+                    <div id="answer-note-input-div"><input id="answer-note-input" name="note" type="text" size="45"/></div>
                 </form>
+                <div>&nbsp;</div>
                 <div class="button-row">
                     <div id="edit-answer-cancelbutton" onclick="JavaScript:cancelEditAnswer();">Cancel</div>
                     <div id="edit-answer-savebutton" onclick="JavaScript:saveAnswer();">Save</div>
