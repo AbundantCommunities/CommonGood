@@ -162,10 +162,7 @@
                     document.getElementById('question-div').innerHTML = answerValues.question;
                     document.getElementById('answer-text-input').value = answerValues.text;
                     document.getElementById('would-assist-input').checked = answerValues.wouldAssist;
-<<<<<<< HEAD
-=======
                     document.getElementById('answer-note-input').value = answerValues.note;
->>>>>>> 3c56049827c8863c564bb11906e9e2db4022fcb3
 
                     var pagecontainerDiv = document.getElementById("pagecontainer");
                     document.getElementById("transparent-overlay").setAttribute("style","height:"+pagecontainerDiv.clientHeight+"px;");
@@ -382,8 +379,6 @@
                 margin-left: 10px;
             }
 
-<<<<<<< HEAD
-=======
             #answer-note-title-div {
                 margin-top: 15px;
                 margin-left: 10px;
@@ -394,7 +389,6 @@
                 margin-left: 10px;
             }
 
->>>>>>> 3c56049827c8863c564bb11906e9e2db4022fcb3
             .button-row {
                 margin-top: 20px;
                 margin-left: 0px;
