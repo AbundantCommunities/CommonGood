@@ -388,6 +388,14 @@
                 margin-top: 0px;
                 margin-left: 10px;
             }
+            #answer-text-input {
+                width: 400px;
+
+            }
+
+            #answer-note-input {
+                width: 400px;
+            }
 
             .button-row {
                 margin-top: 20px;
