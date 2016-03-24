@@ -75,11 +75,11 @@ class NeighbourhoodController {
             block.orderWithinNeighbourhood = lastOrder + 100
         }
 
-        if( block.code && block.description ) {
+        if( block.code ) {
             block.save( flush:true, failOnError: true )
-            forward controller: "navigate", action: "neighbourhood", id: neighbourhoodId
+            redirect controller: "navigate", action: "neighbourhood", id: neighbourhoodId
         } else {
-            throw new RuntimeException("Bad code and/or description?")
+            throw new RuntimeException("Missing block code")
         }
     }
 }

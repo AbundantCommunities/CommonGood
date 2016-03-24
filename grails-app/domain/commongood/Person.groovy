@@ -36,7 +36,7 @@ class Person {
     }
 
     def getLogName( ) {
-        return "[PERSON ${id} ${emailAddress} ${firstNames} ${lastName}]"
+        return "${firstNames} ${lastName} ${emailAddress}"
     }
 
     static constraints = {

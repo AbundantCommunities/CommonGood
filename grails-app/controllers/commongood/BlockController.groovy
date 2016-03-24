@@ -42,7 +42,7 @@ class BlockController {
             }
         }
 
-        forward controller:'navigate', action:'block', id:blockId
+        redirect controller:'navigate', action:'block', id:blockId
     }
 
     def contactList() {

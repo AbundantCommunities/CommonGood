@@ -6,6 +6,7 @@ class AddressController {
     static allowedMethods = [families:'GET', save:'POST']
     def authorizationService
 
+    // Get a JSON list of families at a given address
     def families( ) {
         def id = Long.valueOf( params.id )
         authorizationService.address( id, session )

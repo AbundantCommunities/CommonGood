@@ -34,7 +34,7 @@ class AnswerController {
         def answer = Answer.get( answerId )
         def person = answer.person
         answer.delete(flush: true)
-        forward controller:'navigate', action:'familymember', id:person.id
+        redirect controller:'navigate', action:'familymember', id:person.id
     }
 
     // Get one answer as JSON
@@ -114,6 +114,6 @@ class AnswerController {
         family.permissionToContact = ('permissionToContact' in params)
         family.save( flush:true, failOnError: true )
 
-        forward controller: "navigate", action: "family", id: familyId
+        redirect controller: "navigate", action: "family", id: familyId
     }
 }

@@ -57,8 +57,8 @@ VALUES( XXXXX, 0, WWWWW, CURRENT_DATE, CURRENT_DATE, NULL, CURRENT_DATE, '* NC S
 INSERT INTO person( id, version, app_user, birth_year, date_created, email_address, family_id, first_names, last_name, last_updated, order_within_family, password_hash, phone_number, note, hashed_password )
 VALUES( YYYYY, 0, TRUE, 0, CURRENT_DATE, 'stewcarson@shaw.ca', XXXXX, '* GIVEN NAMES *', '* SURNAME *', CURRENT_DATE, 100, 0, '999-999-9999', '(note)', '* BAD HASH *' );
 
-INSERT INTO domain_authorization( id, version, date_created, domain_code, domain_key, last_updated, person_id, primary_person )
-VALUES( ZZZZZ, 0, CURRENT_DATE, 'N', AAAAA, CURRENT_DATE, YYYYY, false );
+INSERT INTO domain_authorization( id, version, date_created, domain_code, domain_key, last_updated, person_id, primary_person, order_within_domain )
+VALUES( ZZZZZ, 0, CURRENT_DATE, 'N', AAAAA, CURRENT_DATE, YYYYY, false, 100 );
 
 INSERT INTO question( id, version, code, date_created, last_updated, neighbourhood_id, order_within_questionnaire, text, short_text )
 VALUES( QQQQQ, 0, '1', CURRENT_DATE, CURRENT_DATE, AAAAA, 100, 'What makes a great neighbourhood?', 'Great NH?');
