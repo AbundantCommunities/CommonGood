@@ -3,7 +3,7 @@
 <html>
     <head>
         <meta name="layout" content="report">
-        <title>Abundant Communities - Edmonton</title>
+        <title>CommonGood Question</title>
 
         <script type="text/javascript">
 

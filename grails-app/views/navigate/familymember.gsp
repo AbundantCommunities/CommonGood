@@ -3,7 +3,7 @@
 <html>
     <head>
         <meta name="layout" content="navigate"/>
-        <title>Abundant Communities - Edmonton</title>
+        <title>CommonGood Family Member</title>
         <script type="text/javascript">
             function populateEditModal() {
                 Encoder.EncodeType = "entity";

@@ -4,7 +4,7 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
         <title><g:layoutTitle default="Grails"/></title>
-        <meta name="description" content="Abundant Communities - Edmonton" />
+        <meta name="description" content="Abundant Community Initiative CommonGood" />
         <link rel="stylesheet" href="${resource(dir:'css',file:'common.css')}" />
         <script src="${resource(dir:'js',file:'encoder.js')}">
         <script type="text/javascript">

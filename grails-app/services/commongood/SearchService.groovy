@@ -5,6 +5,10 @@ import grails.transaction.Transactional
 @Transactional
 class SearchService {
 
+    // IMPORTANT NOTE RE LOGGING
+    // We call log.info before and after each query, to monitor performance
+    // Some of these searches have the potential to run very slowly.
+
     def answers( session, q ) {
         def searchTerm = "%${q}%".toLowerCase( )
         def answers

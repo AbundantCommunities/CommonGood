@@ -3,7 +3,7 @@
 <html>
     <head>
         <meta name="layout" content="report">
-        <title>Abundant Communities - Edmonton</title>
+        <title>Block Summary</title>
     </head>
     <body>
             <div id="content-children" style="padding-bottom:10px;">

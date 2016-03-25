@@ -3,8 +3,8 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-        <title>Abundant Communities - Edmonton</title>
-        <meta name="description" content="Abundant Communities - Edmonton" />
+        <title>CommonGood</title>
+        <meta name="description" content="Abundant Community Initiative CommonGood" />
         <link rel="stylesheet" href="${resource(dir:'css',file:'common.css')}" />
         <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Quicksand">
         <g:if test="${navChildren.childType.toLowerCase() == 'family'}">

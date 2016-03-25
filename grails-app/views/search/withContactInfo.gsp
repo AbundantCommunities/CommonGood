@@ -3,7 +3,7 @@
 <html>
     <head>
         <meta name="layout" content="report">
-        <title>Abundant Communities - Edmonton</title>
+        <title>CommonGood Search With Contact Info</title>
 
         <script type="text/javascript">
             function showSearchResults() {

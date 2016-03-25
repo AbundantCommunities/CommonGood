@@ -3,7 +3,7 @@
 <html>
     <head>
         <meta name="layout" content="session"/>
-        <title>Abundant Communities - Edmonton</title>
+        <title>CommonGood Login</title>
         <script type="text/javascript">
             
             var currentlyHidden = true;

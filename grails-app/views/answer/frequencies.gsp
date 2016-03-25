@@ -3,7 +3,7 @@
 <html>
     <head>
         <meta name="layout" content="report"/>
-        <title>Abundant Communities - Edmonton</title>
+        <title>Answer Ranking</title>
         <style type="text/css">
             .bar-graph {
                 display: inline-block;

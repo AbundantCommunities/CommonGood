@@ -3,7 +3,7 @@
 <html>
     <head>
         <meta name="layout" content="report">
-        <title>Abundant Communities - Edmonton</title>
+        <title>Block Connectors</title>
         <script src="${resource(dir:'js',file:'encoder.js')}"></script>
         <script type="text/javascript">
             function emailAll() {

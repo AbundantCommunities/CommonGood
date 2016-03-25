@@ -3,7 +3,7 @@
 <html>
     <head>
         <meta name="layout" content="navigate"/>
-        <title>Abundant Communities - Edmonton</title>
+        <title>CommonGood Neighbourhood</title>
         <script type="text/javascript">
 
             <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}">
