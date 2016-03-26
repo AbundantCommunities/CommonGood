@@ -44,12 +44,9 @@ class NavigateController {
         def blockId = Long.valueOf( params.id )
         authorizationService.block( blockId, session )
         log.info "${session.user.getLogName()} to block/${blockId}"
-        Block theBlock = Block.where{ id == blockId }.get( )
+        Block theBlock = Block.get( blockId )
         def blockConnectors = domainAuthorizationService.getBlockConnectors( blockId )
-        List addresses = Address.where{ block.id == blockId }.list( sort:'orderWithinBlock', order:'asc' )
-        addresses = addresses.collect{
-            [ id:it.id, name:it.text]
-        }
+
         Map result =
             [
             authorized: session.authorized,
@@ -65,7 +62,7 @@ class NavigateController {
             navChildren:
                 [
                 childType: 'Address',
-                children: addresses
+                children: blockService.getAddresses( blockId )
                 ]
             ]
         remember( 'block', blockId )

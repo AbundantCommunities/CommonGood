@@ -619,7 +619,12 @@
                 <div class="content-heading">Addresses for ${navSelection.levelInHierarchy} ${navSelection.description}&nbsp;&nbsp;<a href="#" onclick="presentNewModal();" style="font-weight:normal;">+ Add New Addresses</a></div>
                 <g:if test="${navChildren.children.size() > 0}">
                     <g:each in="${navChildren.children}" var="child">
-                        <div class="content-children-row"><g:link controller='Navigate' action='${navChildren.childType.toLowerCase()}' id='${child.id}'>${child.name}</g:link></div>
+                        <div class="content-children-row">
+                            <g:link controller='Navigate' action='${navChildren.childType.toLowerCase()}' id='${child.id}'>${child.address}</g:link>
+                            <g:each in="${child.families}" var="family">
+                                ${family.id} ${family.name} ${family.interviewed}
+                            </g:each>
+                        </div>
                     </g:each>
                 </g:if>
                 <g:else>
