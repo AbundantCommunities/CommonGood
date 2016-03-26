@@ -24,7 +24,6 @@ class BlockService {
         def lastAddress = -1
         def families
         rows.each {
-            println "${it} ${it.addrid.class.name}"
             if( it.addrid != lastAddress ) {
                 families = [ ]
                 addresses << [ id:it.addrid, address:it.address, families:families ]
@@ -34,13 +33,14 @@ class BlockService {
             }
             lastAddress = it.addrid
         }
+        log.warn 'WEIRD: weakly mapped SQL Result (?) REQUIRES us to TOUCH query results'
         // WEIRD: remove the following lines and get
         // Error evaluating expression [child.id] on line [623]: No such property: id for class: groovy.sql.GroovyRowResult
         // :-)   something is weakly mapped; TODO later; for now, commit for our HTML+CSS+JS wizard!
         addresses.each {
-            println "${it.id} ${it.address}"
+            def workaround = "${it.id} ${it.address}"
             it.families.each {
-                println "     ${it.id}, ${it.name} ${it.interviewed}"
+                workaround = "${it.id}, ${it.name} ${it.interviewed}"
             }
         }
     }
