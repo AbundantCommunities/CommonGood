@@ -620,10 +620,15 @@
                 <g:if test="${navChildren.children.size() > 0}">
                     <g:each in="${navChildren.children}" var="child">
                         <div class="content-children-row">
-                            <g:link controller='Navigate' action='${navChildren.childType.toLowerCase()}' id='${child.id}'>${child.address}</g:link>
-                            <g:each in="${child.families}" var="family">
-                                ${family.id} ${family.name} ${family.interviewed}
+                            <g:link controller='Navigate' action='${navChildren.childType.toLowerCase()}' id='${child.id}'>${child.address}</g:link>:
+                            <g:if test="${child.families.size()>0}">
+                            <g:each in="${child.families}" var="family" status="i">
+                                <g:link controller='Navigate' action='family' id='${family.id}'><g:if test="${!family.interviewed}"><span style='font-weight:bold'></g:if>${family.name}<g:if test="${!family.interviewed}"></span></g:if></g:link><g:if test="${i+1<child.families.size()}">,</g:if>
                             </g:each>
+                            </g:if>
+                            <g:else>
+                                 <span style="color:#CCCCCC;">no family entered for address</span>
+                            </g:else>
                         </div>
                     </g:each>
                 </g:if>
