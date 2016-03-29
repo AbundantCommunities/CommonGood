@@ -11,10 +11,20 @@ class SearchController {
     }
 
     def advanced() {
-        log.warn 'ADVANCED SEARCH NOT IMPLEMENTED -- INVOKING SEARCH SANS CONTACT INFO'
-        log.info "${session.user.getLogName()} ${session.authorized} advanced search for '${params.q}' ${params.fromBirthYear}:${params.toBirthYear}"
-        def people = searchService.people( session, params.q )
-        def answers = searchService.answers( session, params.q )
+        def fromBirthYear = params.int('fromBirthYear')
+        def toBirthYear = params.int('toBirthYear')
+        log.info "${session.user.getLogName()} ${session.authorized} advanced search for '${params.q}' ${fromBirthYear}:${toBirthYear}"
+
+        if( !params.fromBirthYear ) {
+            fromBirthYear = Integer.MIN_VALUE
+        }
+        if( !params.toBirthYear ) {
+            toBirthYear = Integer.MAX_VALUE
+        }
+
+        def people = searchService.people( session, params.q, fromBirthYear, toBirthYear )
+        def answers = searchService.answers( session, params.q, fromBirthYear, toBirthYear )
+
         return [ q:params.q, fromBirthYear:params.fromBirthYear, toBirthYear:params.toBirthYear,
             answers:answers, people:people ]
     }
