@@ -1,31 +1,40 @@
 package commongood
 
+import java.time.Year
 import grails.transaction.Transactional
 
 @Transactional
 class SearchService {
+
+    // For our purposes (to ensure we don't overflow Integer math)
+    // we use these minimum and maximum ages.
+    static Integer MIN_AGE = -1000000
+    static Integer MAX_AGE =  1000000
 
     // IMPORTANT NOTE RE LOGGING
     // We call log.info before and after each query, to monitor performance
     // Some of these searches have the potential to run very slowly.
 
     def answers( session, q ) {
-        answers( session, q, Integer.MIN_VALUE, Integer.MAX_VALUE )
+        answers( session, q, MIN_AGE, MAX_AGE )
     }
 
     def answersWithContactInfo( session, q ) {
-        answersWithContactInfo( session, q, Integer.MIN_VALUE, Integer.MAX_VALUE )
+        answersWithContactInfo( session, q, MIN_AGE, MAX_AGE )
     }
 
     def people( session, q ) {
-        people( session, q, Integer.MIN_VALUE, Integer.MAX_VALUE )
+        people( session, q, MIN_AGE, MAX_AGE )
     }
 
     def peopleWithContactInfo( session, q ) {
-        peopleWithContactInfo( session, q, Integer.MIN_VALUE, Integer.MAX_VALUE )
+        peopleWithContactInfo( session, q, MIN_AGE, MAX_AGE )
     }
 
-    def answers( session, q, fromYear, toYear ) {
+    def answers( session, q, fromAge, toAge ) {
+        Integer fromYear = Year.now().getValue() - toAge
+        Integer toYear = Year.now().getValue() - fromAge
+
         def searchTerm = "%${q}%".toLowerCase( )
         def answers
 
@@ -63,13 +72,16 @@ class SearchService {
         return answers
     }
 
-    def answersWithContactInfo( session, q, fromYear, toYear ) {
+    def answersWithContactInfo( session, q, fromAge, toAge ) {
+        Integer fromYear = Year.now().getValue() - toAge
+        Integer toYear = Year.now().getValue() - fromAge
+
         def searchTerm = "%${q}%".toLowerCase( )
         def answers
 
         if( session.authorized.forNeighbourhood() ) {
             def neighbourhoodId = session.neighbourhood.id
-            log.info "${session.user.logName} searching neighbourhood ${neighbourhoodId} answers for '${q}', birthYears ${fromYear}:${toYear} with contact info"
+            log.info "${session.user.logName} search hood ${neighbourhoodId} answers for '${q}', birthYears ${fromYear}:${toYear} with contact info"
 
             answers = Answer.executeQuery(
                 'SELECT ans.text, ans.wouldAssist, p.id, p.firstNames, p.lastName, q.shortText, \
@@ -86,7 +98,7 @@ class SearchService {
                 [ q:searchTerm, id:neighbourhoodId, fromYear:fromYear, toYear:toYear ] )
         } else {
             def blockId = session.block.id
-            log.info "${session.user.logName} searching block ${blockId} answers for ${q} (with contact info)"
+            log.info "${session.user.logName} search block ${blockId} answers for '${q}', birthYears ${fromYear}:${toYear} with contact info"
 
             answers = Answer.executeQuery(
                 'SELECT ans.text, ans.wouldAssist, p.id, p.firstNames, p.lastName, q.shortText, \
@@ -107,13 +119,16 @@ class SearchService {
         return answers
     }
 
-    def people( session, q, fromYear, toYear ) {
+    def people( session, q, fromAge, toAge ) {
+        Integer fromYear = Year.now().getValue() - toAge
+        Integer toYear = Year.now().getValue() - fromAge
+
         def searchTerm = "%${q}%".toLowerCase( )
         def peeps
 
         if( session.authorized.forNeighbourhood() ) {
             def neighbourhoodId = session.neighbourhood.id
-            log.info "${session.user.logName} searching neighbourhood ${neighbourhoodId} people for '${q}', birthYears ${fromYear}:${toYear}"
+            log.info "${session.user.logName} search hood ${neighbourhoodId} people for '${q}', birthYears ${fromYear}:${toYear}"
 
             peeps = Person.executeQuery(
             'select p.id, p.firstNames, p.lastName \
@@ -126,7 +141,7 @@ class SearchService {
 
         } else {
             def blockId = session.block.id
-            log.info "${session.user.logName} searching block ${blockId} people for ${q}"
+            log.info "${session.user.logName} search block ${blockId} people for '${q}', birthYears ${fromYear}:${toYear}"
 
             peeps = Person.executeQuery(
             'select p.id, p.firstNames, p.lastName \
@@ -143,13 +158,16 @@ class SearchService {
         return peeps
     }
 
-    def peopleWithContactInfo( session, q, fromYear, toYear ) {
+    def peopleWithContactInfo( session, q, fromAge, toAge ) {
+        Integer fromYear = Year.now().getValue() - toAge
+        Integer toYear = Year.now().getValue() - fromAge
+
         def searchTerm = "%${q}%".toLowerCase( )
         def peeps
 
         if( session.authorized.forNeighbourhood() ) {
             def neighbourhoodId = session.neighbourhood.id
-            log.info "Searching NH ${neighbourhoodId} people for '${q}', birthYears ${fromYear}:${toYear} with contact info"
+            log.info "${session.user.logName} search hood ${neighbourhoodId} people for '${q}', birthYears ${fromYear}:${toYear} with contact info"
 
             peeps = Person.executeQuery(
                 'select p.id, p.firstNames, p.lastName, p.phoneNumber, p.emailAddress, a.text \
@@ -161,7 +179,7 @@ class SearchService {
                 [ q:searchTerm, id:neighbourhoodId, fromYear:fromYear, toYear:toYear ] )
         } else {
             def blockId = session.block.id
-            log.info "Searching block ${blockId} people for ${q} (with contact info)"
+            log.info "${session.user.logName} search block ${blockId} people for '${q}', birthYears ${fromYear}:${toYear} with contact info"
 
             peeps = Person.executeQuery(
                 'select p.id, p.firstNames, p.lastName, p.phoneNumber, p.emailAddress, a.text \
