@@ -58,7 +58,7 @@
                 </g:if>
 
                 <g:if test="${people.size() > 0}">
-                    <div style="margin-top:-5px;margin-bottom:-15px;"><h4>Found <g:if test="${q.size()>0}">${q}" in </g:if>${people.size()} family member<g:if test="${people.size()>1}">s</g:if><span id="peopleAgeDescription"></span>:</h4></div>
+                    <div style="margin-top:-5px;margin-bottom:-15px;"><h4>Found <g:if test="${q.size()>0}">"${q}" in </g:if>${people.size()} family member<g:if test="${people.size()>1}">s</g:if><span id="peopleAgeDescription"></span>:</h4></div>
                     <g:each in="${people}" var="person">
                         <div class="content-children-row">
                             <g:link controller="navigate" action="familymember" id="${person[0]}">${person[1]} ${person[2]}</g:link>
