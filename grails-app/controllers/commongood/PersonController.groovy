@@ -4,6 +4,7 @@ class PersonController {
     static allowedMethods = [save:'POST', setBlockConnector:'POST']
     def authorizationService
 
+    // Write a new person or update an existing person
     def save() {
         Person person
         def newPerson
@@ -53,6 +54,7 @@ class PersonController {
         }
     }
 
+    // Make a given person a BC for the block she lives on
     def setBlockConnector( ) {
         Long id = Long.parseLong( params.id )
         Person person = Person.get( id )

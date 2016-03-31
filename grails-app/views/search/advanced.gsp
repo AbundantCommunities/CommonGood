@@ -12,8 +12,6 @@
         </script>
     </head>
     <body>
-        From ${fromBirthYear} To ${toBirthYear}
-        <br/>
             <div id="content-children" style="padding-bottom:10px;">
 
                 <div style="width:910px;">

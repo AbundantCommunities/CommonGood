@@ -6,10 +6,9 @@ import grails.transaction.Transactional
 @Transactional
 class SearchService {
 
-    // For our purposes (to ensure we don't overflow Integer math)
-    // we use these minimum and maximum ages.
-    static Integer MIN_AGE = -1000000
-    static Integer MAX_AGE =  1000000
+    // Ee use these minimum and maximum ages to keep things clear & simple.
+    static Integer MIN_AGE = -199
+    static Integer MAX_AGE =  199
 
     // IMPORTANT NOTE RE LOGGING
     // We call log.info before and after each query, to monitor performance

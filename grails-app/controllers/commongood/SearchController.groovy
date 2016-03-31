@@ -11,21 +11,32 @@ class SearchController {
     }
 
     def advanced() {
-        def fromBirthYear = params.int('fromBirthYear')
-        def toBirthYear = params.int('toBirthYear')
-        log.info "${session.user.getLogName()} ${session.authorized} advanced search for '${params.q}' ${fromBirthYear}:${toBirthYear}"
+        def fromAge = params.int('fromAge')
+        def toAge = params.int('toAge')
+        def contactInfo = params.boolean('contactInfo')
+        log.info "${session.user.getLogName()} ${session.authorized} advanced search for '${params.q}' aged ${fromAge}:${toAge} contact ${contactInfo}"
 
-        if( !params.fromBirthYear ) {
-            fromBirthYear = Integer.MIN_VALUE
+        if( !fromAge ) {
+            fromAge = searchService.MIN_AGE
         }
-        if( !params.toBirthYear ) {
-            toBirthYear = Integer.MAX_VALUE
+        if( !toAge ) {
+            toAge = searchService.MAX_AGE
+        }
+        if( !contactInfo ) {
+            contactInfo = false
         }
 
-        def people = searchService.people( session, params.q, fromBirthYear, toBirthYear )
-        def answers = searchService.answers( session, params.q, fromBirthYear, toBirthYear )
+        def people
+        def answers
+        if( contactInfo ) {
+            people = searchService.peopleWithContactInfo( session, params.q, fromAge, toAge )
+            answers = searchService.answersWithContactInfo( session, params.q, fromAge, toAge )
+        } else {
+            people = searchService.people( session, params.q, fromAge, toAge )
+            answers = searchService.answers( session, params.q, fromAge, toAge )
+        }
 
-        return [ q:params.q, fromBirthYear:params.fromBirthYear, toBirthYear:params.toBirthYear,
+        return [ q:params.q, fromAge:params.fromAge, toAge:params.toAge, contactInfo:params.contactInfo,
             answers:answers, people:people ]
     }
 

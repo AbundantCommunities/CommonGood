@@ -77,14 +77,14 @@
                 } else {
                     if (fromAge.length > 0 && toAge.length > 0) {
                         if (fromAge == toAge) {
-                            return 'who are age '+fromAge+'.';
+                            return ' '+fromAge+' years old';
                         } else {
-                            return 'who are age '+fromAge+' through '+toAge+'.';
+                            return ' aged '+fromAge+' to '+toAge;
                         }
                     } else if (fromAge.length > 0) {
-                        return 'who are age '+fromAge+' and older.';
+                        return ' '+fromAge+' and older';
                     } else {
-                        return 'who are age '+toAge+' and younger.';
+                        return ' age '+toAge+' or less';
                     }
                 }
             }
@@ -120,14 +120,13 @@
                         if (searchTextPresent || fromBirthYearPresent || toBirthYearPresent) {
                             var newSearchDescription;
                             if (searchTextPresent) {
-                                newSearchDescription = 'Will find people and people with answers containing "'+searchText+'"';
+                                newSearchDescription = 'Search answers and people';
                                 if (fromBirthYearPresent || toBirthYearPresent) {
-                                    newSearchDescription = newSearchDescription+' '+constructAgeRangeDescription(fromBirthYearValue,toBirthYearValue);
-                                } else {
-                                    newSearchDescription = newSearchDescription+'.';
+                                    newSearchDescription = newSearchDescription+constructAgeRangeDescription(fromBirthYearValue,toBirthYearValue);
                                 }
+                                newSearchDescription = newSearchDescription+' for "'+searchText+'"'
                             } else {
-                                newSearchDescription = 'Will show people '+constructAgeRangeDescription(fromBirthYearValue,toBirthYearValue);
+                                newSearchDescription = 'Search for people'+constructAgeRangeDescription(fromBirthYearValue,toBirthYearValue);
                             }
                             document.getElementById('searchDescription').innerHTML = newSearchDescription;
                         } else {
@@ -213,12 +212,11 @@
             <div id="content-children" style="padding-bottom:10px;text-align:center;background:rgba(0,0,0,0.1);">
                 <div id="advanced-content">
                     <div style="margin-top:-15px;"><h3>Advanced Search</h3></div>
-                    <div style="margin-top:-10px;"><h4>Enter something to search for below:</h4></div>
-                    <div style="font-size:smaller;margin-top:-10px;margin-bottom:10px;">Enter one or more values.</div>
+                    <div style="font-size:smaller;margin-top:-10px;margin-bottom:10px;">Enter one or more values</div>
                     <form id="advanced-form" action="advanced">
                         <div class="criteria-container">
                             <div class="criteria-label">
-                                <div>Search text:</div>
+                                <div>Search text</div>
                             </div>
                             <div class="criteria-value">
                                 <div><input id="qInput" type="text" name="q" value="" onKeyUp="checkAdvancedEnter(event);" size="18"/></div>
@@ -226,18 +224,18 @@
                         </div>
                         <div class="criteria-container">
                             <div class="criteria-label">
-                                <div>From age:</div>
+                                <div>From age</div>
                             </div>
                             <div class="criteria-value">
-                                <div><input id="fromBirthYearInput" type="text" name="fromBirthYear" value="" onKeyUp="checkAdvancedEnter(event);" size="10"/><span id="fromValidImg" style="display:none;">&nbsp;<img style="vertical-align:middle;" src="${resource(dir:'images',file:'invalid.png')}" width="16px" height="16px" /></span></div>
+                                <div><input id="fromBirthYearInput" type="text" name="fromAge" value="" onKeyUp="checkAdvancedEnter(event);" size="10"/><span id="fromValidImg" style="display:none;">&nbsp;<img style="vertical-align:middle;" src="${resource(dir:'images',file:'invalid.png')}" width="16px" height="16px" /></span></div>
                             </div>
                         </div>
                         <div class="criteria-container">
                             <div class="criteria-label">
-                                <div>To age:</div>
+                                <div>To age</div>
                             </div>
                             <div class="criteria-value">
-                                <div><input id="toBirthYearInput" type="text" name="toBirthYear" value="" onKeyUp="checkAdvancedEnter(event);" size="10"/><span id="toValidImg" style="display:none;">&nbsp;<img style="vertical-align:middle;" src="${resource(dir:'images',file:'invalid.png')}" width="16px" height="16px" /></span></div>
+                                <div><input id="toBirthYearInput" type="text" name="toAge" value="" onKeyUp="checkAdvancedEnter(event);" size="10"/><span id="toValidImg" style="display:none;">&nbsp;<img style="vertical-align:middle;" src="${resource(dir:'images',file:'invalid.png')}" width="16px" height="16px" /></span></div>
                             </div>
                         </div>
                     </form>
