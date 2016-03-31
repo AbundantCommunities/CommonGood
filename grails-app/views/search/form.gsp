@@ -9,25 +9,25 @@
 
             function criteriaStatus() {
                 var searchText = document.getElementById('qInput').value;
-                var fromBirthYearValue = document.getElementById('fromBirthYearInput').value;
-                var toBirthYearValue = document.getElementById('toBirthYearInput').value;
+                var fromAgeValue = document.getElementById('fromAgeInput').value;
+                var toAgeValue = document.getElementById('toAgeInput').value;
 
                 var searchTextPresent = searchText.length>0;
-                var fromBirthYearPresent = fromBirthYearValue.length>0;
-                var fromBirthYearValid = isValidAge(fromBirthYearValue);
-                var toBirthYearPresent = toBirthYearValue.length>0;
-                var toBirthYearValid = isValidAge(toBirthYearValue);
+                var fromAgePresent = fromAgeValue.length>0;
+                var fromAgeValid = isValidAge(fromAgeValue);
+                var toAgePresent = toAgeValue.length>0;
+                var toAgeValid = isValidAge(toAgeValue);
 
-                if (!searchTextPresent && !fromBirthYearPresent && !toBirthYearPresent) {
+                if (!searchTextPresent && !fromAgePresent && !toAgePresent) {
                     return "Please enter something to search for.";
                 } else {
-                    if (fromBirthYearPresent && !fromBirthYearValid) {
+                    if (fromAgePresent && !fromAgeValid) {
                         return "Please enter a valid 'from age'.";
                     }
-                    if (toBirthYearPresent && !toBirthYearValid) {
+                    if (toAgePresent && !toAgeValid) {
                         return "Please enter a valid 'to age'.";
                     }
-                    if (fromBirthYearPresent && toBirthYearPresent && parseInt(toBirthYearValue) < parseInt(fromBirthYearValue)) {
+                    if (fromAgePresent && toAgePresent && parseInt(toAgeValue) < parseInt(fromAgeValue)) {
                         return "The 'to' age must be the same or greater than the 'from' age.";
                     }
                 }
@@ -82,9 +82,9 @@
                             return ' aged '+fromAge+' to '+toAge;
                         }
                     } else if (fromAge.length > 0) {
-                        return ' '+fromAge+' and older';
+                        return ' age '+fromAge+' or older';
                     } else {
-                        return ' age '+toAge+' or less';
+                        return ' age '+toAge+' or younger';
                     }
                 }
             }
@@ -92,41 +92,41 @@
 
             function updateSearchStatus() {
                 var searchText = document.getElementById('qInput').value;
-                var fromBirthYearValue = document.getElementById('fromBirthYearInput').value;
-                var toBirthYearValue = document.getElementById('toBirthYearInput').value;
+                var fromAgeValue = document.getElementById('fromAgeInput').value;
+                var toAgeValue = document.getElementById('toAgeInput').value;
 
                 var searchTextPresent = searchText.length>0;
-                var fromBirthYearPresent = fromBirthYearValue.length>0;
-                var fromBirthYearValid = isValidAge(fromBirthYearValue);
-                var toBirthYearPresent = toBirthYearValue.length>0;
-                var toBirthYearValid = isValidAge(toBirthYearValue);
+                var fromAgePresent = fromAgeValue.length>0;
+                var fromAgeValid = isValidAge(fromAgeValue);
+                var toAgePresent = toAgeValue.length>0;
+                var toAgeValid = isValidAge(toAgeValue);
 
-                if (fromBirthYearValid) {
+                if (fromAgeValid) {
                     document.getElementById('fromValidImg').setAttribute("style","display:none;");
                 } else {
                     document.getElementById('fromValidImg').setAttribute("style","display:default;");
                 }
-                if (toBirthYearValid) {
+                if (toAgeValid) {
                     document.getElementById('toValidImg').setAttribute("style","display:none;");
                 } else {
                     document.getElementById('toValidImg').setAttribute("style","display:default;");
                 }
 
-                if (fromBirthYearValid && toBirthYearValid) {
+                if (fromAgeValid && toAgeValid) {
                     // valid input values, check if toAge is >= fromAge
-                    if (fromBirthYearPresent && toBirthYearPresent && parseInt(toBirthYearValue) < parseInt(fromBirthYearValue)) {
+                    if (fromAgePresent && toAgePresent && parseInt(toAgeValue) < parseInt(fromAgeValue)) {
                         document.getElementById('searchDescription').innerHTML = "The 'to' age must be the same or greater than the 'from' age.";
                     } else {
-                        if (searchTextPresent || fromBirthYearPresent || toBirthYearPresent) {
+                        if (searchTextPresent || fromAgePresent || toAgePresent) {
                             var newSearchDescription;
                             if (searchTextPresent) {
                                 newSearchDescription = 'Search answers and people';
-                                if (fromBirthYearPresent || toBirthYearPresent) {
-                                    newSearchDescription = newSearchDescription+constructAgeRangeDescription(fromBirthYearValue,toBirthYearValue);
+                                if (fromAgePresent || toAgePresent) {
+                                    newSearchDescription = newSearchDescription+constructAgeRangeDescription(fromAgeValue,toAgeValue);
                                 }
                                 newSearchDescription = newSearchDescription+' for "'+searchText+'"'
                             } else {
-                                newSearchDescription = 'Search for people'+constructAgeRangeDescription(fromBirthYearValue,toBirthYearValue);
+                                newSearchDescription = 'Search for people'+constructAgeRangeDescription(fromAgeValue,toAgeValue);
                             }
                             document.getElementById('searchDescription').innerHTML = newSearchDescription;
                         } else {
@@ -135,7 +135,7 @@
                     }
 
 
-                } else if (!fromBirthYearValid) {
+                } else if (!fromAgeValid) {
                     document.getElementById('searchDescription').innerHTML = "Please enter a valid 'from age'.";
                 } else {
                     document.getElementById('searchDescription').innerHTML = "Please enter a valid 'to age'.";
@@ -213,7 +213,7 @@
                 <div id="advanced-content">
                     <div style="margin-top:-15px;"><h3>Advanced Search</h3></div>
                     <div style="font-size:smaller;margin-top:-10px;margin-bottom:10px;">Enter one or more values</div>
-                    <form id="advanced-form" action="advanced">
+                    <form id="advanced-form" action="advanced" method="GET">
                         <div class="criteria-container">
                             <div class="criteria-label">
                                 <div>Search text</div>
@@ -227,7 +227,7 @@
                                 <div>From age</div>
                             </div>
                             <div class="criteria-value">
-                                <div><input id="fromBirthYearInput" type="text" name="fromAge" value="" onKeyUp="checkAdvancedEnter(event);" size="10"/><span id="fromValidImg" style="display:none;">&nbsp;<img style="vertical-align:middle;" src="${resource(dir:'images',file:'invalid.png')}" width="16px" height="16px" /></span></div>
+                                <div><input id="fromAgeInput" type="text" name="fromAge" value="" onKeyUp="checkAdvancedEnter(event);" size="10"/><span id="fromValidImg" style="display:none;">&nbsp;<img style="vertical-align:middle;" src="${resource(dir:'images',file:'invalid.png')}" width="16px" height="16px" /></span></div>
                             </div>
                         </div>
                         <div class="criteria-container">
@@ -235,7 +235,7 @@
                                 <div>To age</div>
                             </div>
                             <div class="criteria-value">
-                                <div><input id="toBirthYearInput" type="text" name="toAge" value="" onKeyUp="checkAdvancedEnter(event);" size="10"/><span id="toValidImg" style="display:none;">&nbsp;<img style="vertical-align:middle;" src="${resource(dir:'images',file:'invalid.png')}" width="16px" height="16px" /></span></div>
+                                <div><input id="toAgeInput" type="text" name="toAge" value="" onKeyUp="checkAdvancedEnter(event);" size="10"/><span id="toValidImg" style="display:none;">&nbsp;<img style="vertical-align:middle;" src="${resource(dir:'images',file:'invalid.png')}" width="16px" height="16px" /></span></div>
                             </div>
                         </div>
                     </form>
