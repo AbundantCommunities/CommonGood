@@ -167,7 +167,7 @@
 
     </head>
     <body>
-            <div id="content-children" style="padding-bottom:10px;">
+            <div class="content-section">
 
                 <div style="width:910px;">
                     <div class="content-heading" style="display:inline-block;">&nbsp;</div>
@@ -208,7 +208,7 @@
                     </div>
                     <g:each in="${answers}" var="answer">
                         <div class="content-children-row">
-                            <g:link controller="navigate" action="familymember" id="${answer[2]}"><div class="cell190 <g:if test='${answer[1]}'>cg-bold</g:if>">${answer[3]} ${answer[4]}</div></g:link>
+                            <g:link controller="navigate" action="familymember" id="${answer[2]}"><div class="cell190 <g:if test='${answer[1]}'>bold</g:if>">${answer[3]} ${answer[4]}</div></g:link>
                             <div class="cell120">${answer[6]}</div>
                             <div class="cell300"><a href="mailto:${answer[7]}">${answer[7]}</a></div>
                             <div class="cell250">${answer[8]}</div>

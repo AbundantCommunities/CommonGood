@@ -53,9 +53,9 @@
                 </form>
             </div>
             <g:if test="${navContext.size() > 0}">
-                <div id="nav-path">
+                <div class="content-section">
                     <g:each in="${navContext}" var="oneLevel">
-                        <span>${oneLevel.level}: <span style="font-weight:bold;"><a href="${resource(dir:'navigate/'+oneLevel.level.toLowerCase(),file:"${oneLevel.id}")}">${oneLevel.description}</a></span></span><span class="nav-path-space"></span>
+                        <span>${oneLevel.level}: <span class="bold"><g:link controller="navigate" action="${oneLevel.level.toLowerCase()}" id="${oneLevel.id}">${oneLevel.description}</g:link></span></span><span class="nav-path-space"></span>
                     </g:each>
                 </div>
             </g:if>

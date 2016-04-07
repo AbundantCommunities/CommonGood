@@ -3,7 +3,7 @@
 <html>
     <head>
         <meta name="layout" content="navigate"/>
-        <title>CommonGood Block</title>
+        <title>CommonGood - Block</title>
         <script type="text/javascript">
 
             <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}">
@@ -325,115 +325,7 @@
 
         </script>
         <style type="text/css">
-            #content-detail {
-                height:100px;
-            }
-            #block-code-heading {
-                position: absolute;
-                top:30px;
-                left: 10px;
-            }
-            #block-code-value {
-                position: absolute;
-                top:30px;
-                left: 155px;
-            }
-            #block-description-heading {
-                position: absolute;
-                top:50px;
-                left: 10px;
-            }
-            #block-description-value {
-                position: absolute;
-                top:50px;
-                left: 155px;
-            }
-            #order-within-neighbourhood-heading {
-                position: absolute;
-                top:70px;
-                left: 10px;
-            }
-            #order-within-neighbourhood-value {
-                position: absolute;
-                top:70px;
-                left: 155px;
-            }
 
-            #bc-title {
-                font-weight:bold;
-                position: absolute;
-                top:7px;
-                left: 400px;
-            }
-            .bc {
-                position: absolute;
-                left: 400px;
-            }
-
-            <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}">
-
-                #new-bc-container {
-                    position:absolute;
-                    top:140px;
-                    left:260px;
-                    width:420px;
-                    height:165px;
-                    padding:20px;
-                    padding-top: 10px;
-                    background-color: #FFFFFF;
-                    border-radius:10px;
-                    visibility:hidden;
-                }
-
-                #new-bc-cancelbutton{
-                    display: inline-block;
-                    height: 22px;
-                    width: 80px;
-                    cursor:pointer; /*forces the cursor to change to a hand when the button is hovered*/
-                    color:#B48B6A;
-                    padding-top: 4px;
-                    text-align: center;
-                    border-radius: 5px;
-                    border-width:thin;
-                    border-style:solid;
-                    border-color: #B48B6A;
-                    background-color:#FFFFFF;
-                }
-                #new-bc-savebutton{
-                    display: inline-block;
-                    height: 22px;
-                    width: 80px;
-                    margin-left: 10px;
-                    cursor:pointer; /*forces the cursor to change to a hand when the button is hovered*/
-                    color:#B48B6A;
-                    padding-top: 4px;
-                    text-align: center;
-                    border-radius: 5px;
-                    border-width:thin;
-                    border-style:solid;
-                    border-color: #B48B6A;
-                    background-color:#FFFFFF;
-                    font-weight: bold;
-                }
-
-            </g:if>
-
-            .modal-title {
-                margin-top: 10px;
-                font-weight:bold;
-                font-size:14px;
-            }
-
-            .modal-row {
-                margin-top: 10px;
-            }
-
-            .button-row {
-                margin-top: 20px;
-                margin-left: 0px;
-                width: 100%;
-            }
-            
             #button-row-div {
                 position: absolute;
                 top:130px;
@@ -442,139 +334,71 @@
 
             <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}">
 
+                #new-bc-container {
+                    top:140px;
+                    left:260px;
+                    width:420px;
+                }
+
                 #select-address {
                     position: absolute;
                     top:35px;
                     left: 20px;
                 }
-
                 #select-family {
                     position: absolute;
                     top:65px;
                     left: 20px;
                     display: none;
                 }
-
                 #select-member {
                     position: absolute;
                     top:95px;
                     left: 20px;
                     display: none;
                 }
-
-
                 #edit-container {
-                    position:absolute;
                     top:90px;
                     left:280px;
                     width:370px;
-                    padding:20px;
-                    padding-top: 10px;
-                    background-color: #FFFFFF;
-                    border-radius:10px;
-                    visibility:hidden;
-
-                }
-                #edit-cancelbutton{
-                    display: inline-block;
-                    height: 22px;
-                    width: 80px;
-                    cursor:pointer; /*forces the cursor to change to a hand when the button is hovered*/
-                    color:#B48B6A;
-                    padding-top: 4px;
-                    text-align: center;
-                    border-radius: 5px;
-                    border-width:thin;
-                    border-style:solid;
-                    border-color: #B48B6A;
-                    background-color:#FFFFFF;
-                }
-                #edit-savebutton{
-                    display: inline-block;
-                    height: 22px;
-                    width: 80px;
-                    margin-left: 10px;
-                    cursor:pointer; /*forces the cursor to change to a hand when the button is hovered*/
-                    color:#B48B6A;
-                    padding-top: 4px;
-                    text-align: center;
-                    border-radius: 5px;
-                    border-width:thin;
-                    border-style:solid;
-                    border-color: #B48B6A;
-                    background-color:#FFFFFF;
-                    font-weight: bold;
                 }
 
             </g:if>
 
             #new-container {
-                position:absolute;
                 top:90px;
                 left:260px;
                 width:420px;
-                padding:20px;
-                padding-top: 10px;
-                background-color: #FFFFFF;
-                border-radius:10px;
-                visibility:hidden;
             }
-            #new-cancelbutton{
-                display: inline-block;
-                height: 22px;
-                width: 80px;
-                cursor:pointer; /*forces the cursor to change to a hand when the button is hovered*/
-                color:#B48B6A;
-                padding-top: 4px;
-                text-align: center;
-                border-radius: 5px;
-                border-width:thin;
-                border-style:solid;
-                border-color: #B48B6A;
-                background-color:#FFFFFF;
+            #bc-section {
+                position: absolute;
+                top:10px;
+                left:400px;
             }
-            #new-savebutton{
-                display: inline-block;
-                height: 22px;
-                width: 80px;
-                margin-left: 10px;
-                cursor:pointer; /*forces the cursor to change to a hand when the button is hovered*/
-                color:#B48B6A;
-                padding-top: 4px;
-                text-align: center;
-                border-radius: 5px;
-                border-width:thin;
-                border-style:solid;
-                border-color: #B48B6A;
-                background-color:#FFFFFF;
-                font-weight: bold;
-            }
-
-            .note-style {
-                width:95%;
-            }
-
-
 
         </style>
     </head>
     <body>
-            <div id="content-detail">
-                <div id="content-detail-title">${navSelection.levelInHierarchy}</div>
+            <div class="content-section">
+                <div class="content-heading">${navSelection.levelInHierarchy}</div>
 
-                <div id="block-code-heading">Block code: </div>
-                <div id="block-code-value">${navSelection.code}</div>
-                <div id="block-description-heading">Description: </div>
-                <div id="block-description-value">${navSelection.description}</div>
-                <div id="order-within-neighbourhood-heading">Order within hood: </div>
-                <div id="order-within-neighbourhood-value">${navSelection.orderWithinNeighbourhood}</div>
+                <div class="content-row">
+                    <div class="content-row-item" style="width:210px;">Block code: </div><div class="content-row-item">${navSelection.code}</div>
+                </div>
+                <div class="content-row">
+                    <div class="content-row-item" style="width:210px;">Description: </div><div class="content-row-item">${navSelection.description}</div>
+                </div>
+                <div class="content-row">
+                    <div class="content-row-item" style="width:210px;">Order within neighbourhood: </div><div class="content-row-item">${navSelection.orderWithinNeighbourhood}</div>
+                </div>
 
-                
-                <div id="bc-title">Block Connector<g:if test="${navSelection.blockConnectors.size() > 1}">s</g:if></div>
+                <div id="bc-section">
+
+                <div class="content-heading less-bottom-margin">Block Connector<g:if test="${navSelection.blockConnectors.size() > 1}">s</g:if></div>
                 <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}"><script type="text/javascript">var existingBCs = [];</script></g:if>
                 <g:if test="${navSelection.blockConnectors.size() > 0}">
                     <g:each in="${navSelection.blockConnectors}" var="bc" status="i">
-                        <div class="bc" style="top:${(i*20)+30}px;"><g:link controller='Navigate' action='familymember' id='${bc.id}'>${bc.fullName}</g:link><g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}"> <span style="font-size:smaller;">(<a id="revoke|${bc.id}|${navSelection.id}" href="#" onclick="revokeBC(this);">revoke</a>)</span></g:if></div>
+                        <div ><g:link controller='Navigate' action='familymember' id='${bc.id}'>${bc.fullName}</g:link><g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}"> <span style="font-size:smaller;">(<a id="revoke|${bc.id}|${navSelection.id}" href="#" onclick="revokeBC(this);">revoke</a>)</span></g:if></div>
                         <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}"><script type="text/javascript">existingBCs.push(${bc.id});</script></g:if>
                     </g:each>
                     <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}">
@@ -585,18 +409,23 @@
                     </g:if>
                 </g:if>
                 <g:else>
-                    <div class="bc" style="top:30px;">no assigned block connector</div>
+                    <div class="bc" >no assigned block connector</div>
 
                 </g:else>
 
                 <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}">
                     <g:if test="${navSelection.blockConnectors.size() > 0}">
-                        <div class="bc" style="top:${(navSelection.blockConnectors.size()*20)+35}px;"><a href="#" onclick="presentAddBC();">+ Add Another Block Connector</a></div>
+                        <div class="small-top-margin"><a href="#" onclick="presentAddBC();">+ Add Another Block Connector</a></div>
                     </g:if>
                     <g:else>
-                        <div class="bc" style="top:55px;"><a href="#" onclick="presentAddBC();">+ Add Block Connector</a></div>
+                        <div class="small-top-margin"><a href="#" onclick="presentAddBC();">+ Add Block Connector</a></div>
                     </g:else>
                 </g:if>
+
+
+
+                </div>
+
 
                 <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}">
                     <div id="content-actions-left-side">
@@ -615,7 +444,7 @@
                 </g:elseif>
 
             </div>
-            <div id="content-children">
+            <div class="content-section">
                 <div class="content-heading">Addresses for ${navSelection.levelInHierarchy} ${navSelection.description}&nbsp;&nbsp;<a href="#" onclick="presentNewModal();" style="font-weight:normal;">+ Add New Addresses</a></div>
                 <g:if test="${navChildren.children.size() > 0}">
                     <g:each in="${navChildren.children}" var="child">
@@ -627,13 +456,13 @@
                             </g:each>
                             </g:if>
                             <g:else>
-                                 <span style="color:#CCCCCC;">no family entered for address</span>
+                                 <span class="light-text">no family entered for address</span>
                             </g:else>
                         </div>
                     </g:each>
                 </g:if>
                 <g:else>
-                    <div class="content-children-row" style="color:#CCCCCC;">no addresses</div>
+                    <div class="content-children-row light-text">no addresses</div>
                 </g:else>
                 <div class="content-children-row"></div>
             </div>
@@ -642,13 +471,13 @@
 
             <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}">
 
-                <div id="new-bc-container">
+                <div id="new-bc-container" class="modal" style="height:165px;">
                     <div class="modal-title">Add Block Connector</div>
                     <div class="modal-row">Select address of block connector: 
                         <select id="addresses-select" onchange="addressSelected();">
                             <option value="0"></option>
-                            <g:each in="${navChildren.children}" var="address">
-                                <option value="${address.id}">${address.name}</option>
+                            <g:each in="${navChildren.children}" var="child">
+                                <option value="${child.id}">${child.address}</option>
                             </g:each>
                             <option value="-1"></option>
                             <option value="-2">Address not listed</option>
@@ -665,20 +494,21 @@
                     </div>
                     <form id="new-bc-form" action="<g:createLink controller='person' action='setBlockConnector' />" method="POST">
                         <div id="select-member" class="modal-row">Select block connector: 
-                                <select id="members-select" name="id" onchange="memberSelected();">
-                                    <option value=""></option>
-                                </select>
+                            <select id="members-select" name="id" onchange="memberSelected();">
+                                <option value=""></option>
+                            </select>
                         </div>
                     </form>
                     <div id="button-row-div">
                         <div class="button-row">
-                            <div id="new-bc-cancelbutton" type="button" onclick="JavaScript:dismissAddBCModal();">Cancel</div>
-                            <div id="new-bc-savebutton" type="button" onclick="JavaScript:addBC();">Add</div>
+                            <div class="button" onclick="JavaScript:dismissAddBCModal();">Cancel</div>
+                            <div class="button-spacer"></div>
+                            <div class="button bold" type="button" onclick="JavaScript:addBC();">Add</div>
                         </div>
                     </div>
                 </div>
 
-                <div id="edit-container">
+                <div id="edit-container" class="modal">
                     <div class="modal-title">Edit Block</div>
                     <form id="edit-form" action="<g:createLink controller='block' action='save' />" method="POST">
                         <input type="hidden" name="id" value="${navSelection.id}" />
@@ -687,14 +517,15 @@
                         <div class="modal-row">Order within neighbourhood: <input id="orderWithinNeighbourhoodInput" type="text" name="orderWithinNeighbourhood" value="" size="12"/></div>
                     </form>
                     <div class="button-row">
-                        <div id="edit-cancelbutton" type="button" onclick="JavaScript:dismissEditModal();">Cancel</div>
-                        <div id="edit-savebutton" type="button" onclick="JavaScript:saveBlock();">Save</div>
+                        <div class="button" onclick="JavaScript:dismissEditModal();">Cancel</div>
+                        <div class="button-spacer"></div>
+                        <div class="button bold" onclick="JavaScript:saveBlock();">Save</div>
                     </div>
                 </div>
 
             </g:if>
 
-            <div id="new-container">
+            <div id="new-container" class="modal">
                 <div class="modal-title">New Addresses</div>
                 <div class="footnote">Add multiple addresses by pressing Return after each.</div>
                 <form id="new-form" action="<g:createLink controller='block' action='addAddresses' />" method="POST">
@@ -702,8 +533,9 @@
                     <div class="modal-row">Addresses: <br/><textarea id="addressesInput" class="note-style" name="addresses" cols=56 rows=8></textarea></div>
                 </form>
                 <div class="button-row">
-                    <div id="new-cancelbutton" type="button" onclick="JavaScript:dismissNewModal();">Cancel</div>
-                    <div id="new-savebutton" type="button" onclick="JavaScript:addAddresses();">Save</div>
+                    <div class="button" onclick="JavaScript:dismissNewModal();">Cancel</div>
+                    <div class="button-spacer"></div>
+                    <div class="button bold" onclick="JavaScript:addAddresses();">Save</div>
                 </div>
             </div>
 

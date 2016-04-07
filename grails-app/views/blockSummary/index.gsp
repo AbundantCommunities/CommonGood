@@ -6,10 +6,10 @@
         <title>Block Summary</title>
     </head>
     <body>
-            <div id="content-children" style="padding-bottom:10px;">
+            <div class="content-section">
                 <div style="margin-top:-15px;"><h3>Block Summary for ${session.neighbourhood.name}</h3></div>
                 <div style="margin-top:-10px;"><h4>Number of blocks in neighbourhood: ${result.blocks.size()}</h4></div>
-                <div id="content-children-heading">
+                <div class="content-row bold">
                     <div class="cell250">Block</div>
                     <div class="cell130">First Interview</div>
                     <div class="cell130">Last Interview</div>

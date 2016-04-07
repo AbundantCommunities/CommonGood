@@ -37,7 +37,7 @@
         </script>
     </head>
     <body>
-            <div id="content-children" style="padding-bottom:10px;">
+            <div class="content-section">
 
                 <div style="width:910px;">
                     <g:if test="${people.size()>0 || answers.size()>0}">
@@ -74,7 +74,7 @@
                     <g:each in="${answers}" var="answer">
                         <div class="content-children-row">
                             <div class="cell550">
-                                <span class="<g:if test='${answer[1]}'>cg-bold</g:if>">${answer[0]}</span> 
+                                <span class="<g:if test='${answer[1]}'>bold</g:if>">${answer[0]}</span> 
                                 <span style="font-size:x-small;">(${answer[5]})</span>
                             </div>
                             <g:link controller="navigate" action="familymember" id="${answer[2]}"><div class="cell300">${answer[3]} ${answer[4]}</div></g:link>

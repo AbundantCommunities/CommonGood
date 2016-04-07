@@ -105,119 +105,21 @@
             </g:if>
 
         </script>
+
         <style type="text/css">
-            #hood-name-heading {
-                position: absolute;
-                top:30px;
-                left: 10px;
-            }
-            #hood-name-value {
-                position: absolute;
-                top:30px;
-                left: 60px;
-            }
 
             <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}">
 
                 #new-container {
-                    position:absolute;
                     top:90px;
                     left:280px;
                     width:370px;
-                    padding:20px;
-                    padding-top: 10px;
-                    background-color: #FFFFFF;
-                    border-radius:10px;
-                    visibility:hidden;
-
                 }
-                #new-cancelbutton{
-                    display: inline-block;
-                    height: 22px;
-                    width: 80px;
-                    cursor:pointer; /*forces the cursor to change to a hand when the button is hovered*/
-                    color:#B48B6A;
-                    padding-top: 4px;
-                    text-align: center;
-                    border-radius: 5px;
-                    border-width:thin;
-                    border-style:solid;
-                    border-color: #B48B6A;
-                    background-color:#FFFFFF;
-                }
-                #new-savebutton{
-                    display: inline-block;
-                    height: 22px;
-                    width: 80px;
-                    margin-left: 10px;
-                    cursor:pointer; /*forces the cursor to change to a hand when the button is hovered*/
-                    color:#B48B6A;
-                    padding-top: 4px;
-                    text-align: center;
-                    border-radius: 5px;
-                    border-width:thin;
-                    border-style:solid;
-                    border-color: #B48B6A;
-                    background-color:#FFFFFF;
-                    font-weight: bold;
-                }
-                .modal-title {
-                    margin-top: 10px;
-                    font-weight:bold;
-                    font-size:14px;
-                }
-                .button-row {
-                    margin-top: 20px;
-                    margin-left: 0px;
-                    width: 100%;
-                }
-                
-                .modal-row {
-                    margin-top: 10px;
-                }
-
 
                 #select-question-container {
-                    position:absolute;
                     top:100px;
                     left:300px;
                     width:330px;
-                    height:100px;
-                    padding:20px;
-                    padding-top: 10px;
-                    background-color: #FFFFFF;
-                    border-radius:10px;
-                    visibility:hidden;
-                }
-                #select-question-cancelbutton {
-                    display: inline-block;
-                    height: 22px;
-                    width: 80px;
-                    cursor:pointer; /*forces the cursor to change to a hand when the button is hovered*/
-                    color:#B48B6A;
-                    padding-top: 4px;
-                    text-align: center;
-                    border-radius: 5px;
-                    border-width:thin;
-                    border-style:solid;
-                    border-color: #B48B6A;
-                    background-color:#FFFFFF;
-                }
-                #select-question-generatebutton {
-                    display: inline-block;
-                    height: 22px;
-                    width: 160px;
-                    margin-left: 10px;
-                    cursor:pointer; /*forces the cursor to change to a hand when the button is hovered*/
-                    color:#B48B6A;
-                    padding-top: 4px;
-                    text-align: center;
-                    border-radius: 5px;
-                    border-width:thin;
-                    border-style:solid;
-                    border-color: #B48B6A;
-                    background-color:#FFFFFF;
-                    font-weight: bold;
                 }
 
             </g:if>
@@ -225,10 +127,11 @@
         </style>
     </head>
     <body>
-            <div id="content-detail">
-                <div id="content-detail-title">${navSelection.levelInHierarchy}</div>
-                <div id="hood-name-heading">Name: </div>
-                <div id="hood-name-value">${navSelection.description}</div>
+            <div class="content-section" style="height:80px;">
+                <div class="content-heading">${navSelection.levelInHierarchy}</div>
+                <div class="content-row">
+                    <div class="content-row-item" style="width:55px;">Name: </div><div class="content-row-item">${navSelection.description}</div>
+                </div>
 
                 <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}">
                     <div id="content-actions-left-side">
@@ -244,7 +147,7 @@
                     </div>
                 </g:if>
             </div>
-            <div id="content-children">
+            <div class="content-section">
                 <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}">
                     <div class="content-heading">${navChildren.childType+'s'} for ${navSelection.levelInHierarchy} ${navSelection.description}&nbsp;&nbsp;<a href="#" onclick="presentNewModal();" style="font-weight:normal;">+ Add New Block</a></div>
                 </g:if>
@@ -262,13 +165,13 @@
                                 </g:each>
                             </g:if>
                             <g:else>
-                                 <span style="color:#CCCCCC;">no block connector</span>
+                                 <span class="light-text">no block connector</span>
                             </g:else>
                         </div>
                     </g:each>
                 </g:if>
                 <g:else>
-                    <div class="content-children-row" style="color:#CCCCCC;">no blocks</div>
+                    <div class="content-children-row light-text">no blocks</div>
                 </g:else>
                 <div class="content-children-row"></div>
             </div>
@@ -277,7 +180,7 @@
 
 
             <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}">
-                <div id="new-container">
+                <div id="new-container" class="modal">
                     <div class="modal-title">New Block</div>
                     <form id="new-form" action="<g:createLink controller='Neighbourhood' action='addBlock' />" method="POST">
                         <input type="hidden" name="id" value="${navSelection.id}" />
@@ -285,13 +188,14 @@
                         <div class="modal-row">Block description: <input id="blockDescriptionInput" type="text" name="description" value=""/></div>
                     </form>
                     <div class="button-row">
-                        <div id="new-cancelbutton" type="button" onclick="JavaScript:dismissNewModal();">Cancel</div>
-                        <div id="new-savebutton" type="button" onclick="JavaScript:saveBlock();">Save</div>
+                        <div class="button" onclick="JavaScript:dismissNewModal();">Cancel</div>
+                        <div class="button-spacer"></div>
+                        <div class="button bold" onclick="JavaScript:saveBlock();">Save</div>
                     </div>
                 </div>
 
 
-                <div id="select-question-container">
+                <div id="select-question-container" class="modal">
                     <div class="modal-title">Select Question for Answer Ranking</div>
                     <form id="select-question-form" action="<g:createLink controller='answer' action='frequencies'/>" method="get">
                         <input id="inputId" type="hidden" name="id" value="${navSelection.questions?navSelection.questions[0].id:''}" />
@@ -304,8 +208,9 @@
                         </div>
                     </form>
                     <div class="button-row">
-                        <div id="select-question-cancelbutton" onclick="JavaScript:dismissSelectQuestionModal();">Cancel</div>
-                        <div id="select-question-generatebutton" onclick="JavaScript:generateAnswerRankingReport();">Generate Report</div>
+                        <div class="button" onclick="JavaScript:dismissSelectQuestionModal();">Cancel</div>
+                        <div class="button-spacer"></div>
+                        <div class="button bold" onclick="JavaScript:generateAnswerRankingReport();">Generate Report</div>
                     </div>
                 </div>
             </g:if>

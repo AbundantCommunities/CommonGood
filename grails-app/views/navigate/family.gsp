@@ -3,7 +3,7 @@
 <html>
     <head>
         <meta name="layout" content="navigate"/>
-        <title>CommonGood Family</title>
+        <title>CommonGood - Family</title>
         <script type="text/javascript">
             function populateEditModal() {
                 Encoder.EncodeType = "entity";
@@ -185,205 +185,48 @@
 
         </script>
         <style type="text/css">
-            #content-interview {
-                width:925px;
-                height:80px;
-                margin-left:14px;
-                margin-bottom: 7px;
-                padding-left:10px;
-                padding-top:7px;
-                position:relative;
-                border-radius: 5px;
-                border-width:thin;
-                border-style:solid;
-                border-color: #B48B6A;
-                background-color:#FFFFFF;
-            }
-            #content-detail {
-                height:190px;
-            }
-            #detail-headings {
-                position: absolute;
-                top:30px;
-                left: 10px;
-            }
-            #detail-values {
-                position: absolute;
-                top:30px;
-                left: 170px;
-            }
-            .detail-item {
-                height: 20px;
-            }
-            #content-interview-actions {
-                position:absolute;
-                left:775px;
-                top:10px;
-            }
-            #interview-headings-left {
-                position: absolute;
-                top:30px;
-                left: 10px;
-            }
-            #interview-values-left {
-                position: absolute;
-                top:30px;
-                left: 260px;
-            }
-            #interview-headings-right {
-                position: absolute;
-                top:30px;
-                left: 320px;
-            }
-            #interview-values-right {
-                position: absolute;
-                top:30px;
-                left: 477px;
-            }
 
             #edit-container {
-                position:absolute;
                 top:90px;
                 left:300px;
                 width:330px;
-                padding:20px;
-                padding-top: 10px;
-                background-color: #FFFFFF;
-                border-radius:10px;
-                visibility:hidden;
-
-            }
-            #edit-cancelbutton{
-                display: inline-block;
-                height: 22px;
-                width: 80px;
-                cursor:pointer; /*forces the cursor to change to a hand when the button is hovered*/
-                color:#B48B6A;
-                padding-top: 4px;
-                text-align: center;
-                border-radius: 5px;
-                border-width:thin;
-                border-style:solid;
-                border-color: #B48B6A;
-                background-color:#FFFFFF;
-            }
-            #edit-savebutton{
-                display: inline-block;
-                height: 22px;
-                width: 80px;
-                margin-left: 10px;
-                cursor:pointer; /*forces the cursor to change to a hand when the button is hovered*/
-                color:#B48B6A;
-                padding-top: 4px;
-                text-align: center;
-                border-radius: 5px;
-                border-width:thin;
-                border-style:solid;
-                border-color: #B48B6A;
-                background-color:#FFFFFF;
-                font-weight: bold;
-            }
-            .modal-title {
-                margin-top: 10px;
-                font-weight:bold;
-                font-size:14px;
             }
             #familyNoteInput {
                 width: 95%;
             }
             #new-container {
-                position:absolute;
                 top:90px;
                 left:260px;
                 width:420px;
-                padding:20px;
-                padding-top: 10px;
-                background-color: #FFFFFF;
-                border-radius:10px;
-                visibility:hidden;
-            }
-            #new-fm-cancelbutton{
-                display: inline-block;
-                height: 22px;
-                width: 80px;
-                cursor:pointer; /*forces the cursor to change to a hand when the button is hovered*/
-                color:#B48B6A;
-                padding-top: 4px;
-                text-align: center;
-                border-radius: 5px;
-                border-width:thin;
-                border-style:solid;
-                border-color: #B48B6A;
-                background-color:#FFFFFF;
-            }
-            #new-fm-savebutton{
-                display: inline-block;
-                height: 22px;
-                width: 80px;
-                margin-left: 10px;
-                cursor:pointer; /*forces the cursor to change to a hand when the button is hovered*/
-                color:#B48B6A;
-                padding-top: 4px;
-                text-align: center;
-                border-radius: 5px;
-                border-width:thin;
-                border-style:solid;
-                border-color: #B48B6A;
-                background-color:#FFFFFF;
-                font-weight: bold;
-            }
-
-            .button-row {
-                margin-top: 20px;
-                margin-left: 0px;
-                width: 100%;
-            }
-            
-            .modal-row {
-                margin-top: 10px;
-            }
-
-            .email-style {
-                width:70%;
-            }
-
-            .note-style {
-                width:95%;
             }
 
         </style>
     </head>
     <body>
-            <div id="content-detail">
-                <div id="content-detail-title">${navSelection.levelInHierarchy}</div>
-                <div id="detail-headings">
-                    <div class="detail-item">Family name: </div>
-                    <div class="detail-item">Order within address: </div>
-                    <div class="detail-item">Note: </div>
+            <div class="content-section" >
+                <div class="content-heading">${navSelection.levelInHierarchy}</div>
+                <div class="content-row">
+                    <div class="content-row-item" style="width:160px;">Family name: </div><div class="content-row-item">${navSelection.description}</div>
                 </div>
-                <div id="detail-values">
-                    <div class="detail-item">${navSelection.description}</div>
-                    <div class="detail-item">${navSelection.orderWithinAddress}</div>
-                    <div class="detail-item"><textarea cols="60" rows="5" style="color: #222222;" disabled>${navSelection.note}</textarea></div>
+                <div class="content-row">
+                    <div class="content-row-item" style="width:160px;">Order within address: </div><div class="content-row-item">${navSelection.orderWithinAddress}</div>
                 </div>
-
+                <div class="content-row">
+                    <div class="content-row-item" style="width:160px;">Note: </div><div class="content-row-item"><textarea cols="60" rows="5" style="color: #222222;" disabled>${navSelection.note}</textarea></div>
+                </div>
                 <div id="content-actions">
                     <div class="content-action"><a href="#" onclick="presentEditModal()">Edit</a></div>
                     <div class="content-action"><a href="#" onclick="alert('not yet implemented');">Delete</a></div>
                 </div>
             </div>
-            <div id="content-interview">
+            <div class="content-section">
                 <div class="content-heading">Interview&nbsp;&nbsp;<a href="#" onclick="presentInterviewForm()" style="font-weight:normal;">+ Enter Interview Data</a></div>
-                <form id="present-interview-form" action="<g:createLink controller='question' method='POST'/>">
-                    <input type="hidden" id="familyId-input" name="familyId"/>
-                </form>
+
                 <g:if test="${navSelection.interviewed}">
-                    <div id="interview-headings-left">
-                        <div class="detail-item">Permission to contact: </div>
-                        <div class="detail-item">Agreed to participate in interview: </div>
-                    </div>
-                    <div id="interview-values-left">
-                        <div class="detail-item">
+
+                    <div class="content-row">
+                        <div class="content-row-item" style="width:250px;">Permission to contact: </div>
+                        <div class="content-row-item" style="width:50px;">
                             <g:if test="${navSelection.permissionToContact}">
                                 Yes
                             </g:if>
@@ -391,7 +234,13 @@
                                 No
                             </g:else>
                         </div>
-                        <div class="detail-item">
+                        <div class="content-row-item" style="width:160px;">Initial interview date: </div>
+                        <div class="content-row-item"><g:formatDate format='yyyy-MM-dd' date='${navSelection.interviewDate}'/></div>
+                    </div>
+
+                    <div class="content-row">
+                        <div class="content-row-item" style="width:250px;">Agreed to participate in interview: </div>
+                        <div class="content-row-item" style="width:50px;">
                             <g:if test="${navSelection.participateInInterview}">
                                 Yes
                             </g:if>
@@ -399,21 +248,23 @@
                                 No
                             </g:else>
                         </div>
+                        <div class="content-row-item" style="width:160px;">Initial interviewer: </div>
+                        <div id="initial-interviewer-value" class="content-row-item"></div>
                     </div>
-                    <div id="interview-headings-right">
-                        <div class="detail-item">Initial interview date: </div>
-                        <div class="detail-item">Initial interviewer: </div>
-                    </div>
-                    <div id="interview-values-right">
-                        <div class="detail-item"><g:formatDate format='yyyy-MM-dd' date='${navSelection.interviewDate}'/></div>
-                        <div id="initial-interviewer-value" class="detail-item"></div>
-                    </div>
+
                 </g:if>
                 <g:else>
-                    <div style="color:#BBBBBB;">no interiview data for family</div>
+                    <div class="light-text">no interiview data for family</div>
                 </g:else>
+
+
+                <form id="present-interview-form" action="<g:createLink controller='question' method='POST'/>">
+                    <input type="hidden" id="familyId-input" name="familyId"/>
+                </form>
+
             </div>
-            <div id="content-children">
+
+            <div class="content-section">
                 <div class="content-heading">Family Members for ${navSelection.levelInHierarchy} ${navSelection.description}&nbsp;&nbsp;<a href="#" onclick="presentNewModal()" style="font-weight:normal;">+ Add New Family Member</a></div>
                 <g:if test="${navChildren.children.size() > 0}">
                     <g:each in="${navChildren.children}" var="child">
@@ -421,13 +272,13 @@
                     </g:each>
                 </g:if>
                 <g:else>
-                    <div class="content-children-row" style="color:#BBBBBB;">no family members</div>
+                    <div class="content-children-row light-text">no family members</div>
                 </g:else>
                 <div class="content-children-row"></div>
             </div>
             <div id="transparent-overlay">
             </div>
-            <div id="edit-container">
+            <div id="edit-container" class="modal">
                 <div class="modal-title">Edit Family</div>
                 <form id="edit-form" action="<g:createLink controller='family' action='save' />" method="post">
                     <input type="hidden" name="id" value="${navSelection.id}" />
@@ -436,12 +287,13 @@
                     <div class="modal-row">Note: <br/><textarea id="familyNoteInput" name="note" cols=44 rows=4></textarea></div>
                 </form>
                 <div class="button-row">
-                    <div id="edit-cancelbutton" type="button" onclick="JavaScript:dismissEditModal();">Cancel</div>
-                    <div id="edit-savebutton" type="button" onclick="JavaScript:saveFamily();">Save</div>
+                    <div class="button" onclick="JavaScript:dismissEditModal();">Cancel</div>
+                    <div class="button-spacer"></div>
+                    <div class="button bold" onclick="JavaScript:saveFamily();">Save</div>
                 </div>
             </div>
 
-            <div id="new-container">
+            <div id="new-container" class="modal">
                 <div class="modal-title">New Family Member</div>
                 <form id="new-form" action="<g:createLink controller='person' action='save' />" method="POST">
                     <input type="hidden" name="familyId" value="${navSelection.id}" />
@@ -453,8 +305,9 @@
                     <div class="modal-row">Note: <br/><textarea id="familyMemberNoteInput" class="note-style" name="note" cols=56 rows=4></textarea></div>
                 </form>
                 <div class="button-row">
-                    <div id="new-fm-cancelbutton" type="button" onclick="JavaScript:dismissNewModal();">Cancel</div>
-                    <div id="new-fm-savebutton" type="button" onclick="JavaScript:saveFamilyMember();">Save</div>
+                    <div class="button" onclick="JavaScript:dismissNewModal();">Cancel</div>
+                    <div class="button-spacer"></div>
+                    <div class="button bold" onclick="JavaScript:saveFamilyMember();">Save</div>
                 </div>
             </div>
     </body>

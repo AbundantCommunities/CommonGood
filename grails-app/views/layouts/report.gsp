@@ -48,7 +48,7 @@
                     <div id="role-line">Block Connector in ${session.neighbourhood.name}</div>
                 </g:elseif>
                 <div id="advanced-search"><g:link controller="search" action="form">advanced search</g:link></div>
-                <g:link controller="navigate" action="${session.lastNavigationLevel}" id="${session.lastNavigationId}"><div id="browse-deselected">Browse</div></g:link>
+                <g:link controller="navigate" action="${session.lastNavigationLevel}" id="${session.lastNavigationId}"><div id="browse-button">Browse</div></g:link>
                 <form id="search-form" action="<g:createLink controller='search' />" method="get">
                     <div id="search"><img id="search-image" src="${resource(dir:'images',file:'search.png')}" width="18" height="18"/><input id="search-criteria" type="text" placeholder="search" name="q" value="" onKeyPress="checkEnter(event);"/></div>
                 </form>

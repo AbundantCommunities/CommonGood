@@ -27,10 +27,10 @@
         </script>
     </head>
     <body>
-            <div id="content-children" style="padding-bottom:10px;">
+            <div class="content-section">
                 <div style="margin-top:-15px;"><h3>Block Connector Contact List for ${session.neighbourhood.name}</h3></div>
                 <div style="margin-top:-10px;"><h4>Number of block connectors in neighbourhood: ${result.connectors.size()} (<a href="#" onclick="emailAll();">email all</a>)</h4></div>
-                <div id="content-children-heading">
+                <div id="content-row bold">
                     <div class="cell150">Block Connector</div>
                     <div class="cell230">Email</div>
                     <div class="cell110">Phone</div>

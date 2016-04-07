@@ -209,7 +209,7 @@
         </style>
     </head>
     <body>
-            <div id="content-children" style="padding-bottom:10px;text-align:center;background:rgba(0,0,0,0.1);">
+            <div class="content-section" style="padding-bottom:10px;text-align:center;background:rgba(0,0,0,0.1);">
                 <div id="advanced-content">
                     <div style="margin-top:-15px;"><h3>Advanced Search</h3></div>
                     <div style="font-size:smaller;margin-top:-10px;margin-bottom:10px;">Enter one or more values</div>
