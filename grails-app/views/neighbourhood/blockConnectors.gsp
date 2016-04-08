@@ -4,7 +4,6 @@
     <head>
         <meta name="layout" content="report">
         <title>CommonGood Block Connectors</title>
-        <script src="${resource(dir:'js',file:'encoder.js')}"></script>
         <script type="text/javascript">
             function emailAll() {
                 var emails = 'mailto:';

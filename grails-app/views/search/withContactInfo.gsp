@@ -52,7 +52,6 @@
 
             function emailList() {
 
-
                 var pFNames = [];
                 var pLName = [];
                 var pPhone = [];
@@ -154,13 +153,11 @@
                 }
 
                 if (aLName.length>0&&aAssistLName.length==0) {
-                    body = body+'No one has offered to assist.';
+                    body = body+'No one has offered to assist.\n';
                 }
 
                 body = encodeURIComponent(body);
-
                 var email = 'mailto:?body='+body;
-
                 document.location.href = email;
             }
         </script>

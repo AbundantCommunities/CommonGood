@@ -323,6 +323,27 @@
             </g:if>
 
 
+            window.onload = function onWindowLoad() {
+                // Need to set height of block detail section based on current number of block connectors and NC vs BC authorization.
+
+                var numBCs = ${navSelection.blockConnectors.size()};
+                if (numBCs == 0) {
+                    numBCs = 1;
+                }
+
+                var newHeight = 14 /* space above first BC */ + (numBCs*20) + 20 /* space below last BC, not including '+ Add BC' button */;
+
+                <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}">
+
+                    newHeight = newHeight + 20;
+
+                </g:if>
+
+                document.getElementById("block-detail").setAttribute("style","min-height:94px;height:"+newHeight+"px;");
+
+            }
+
+
         </script>
         <style type="text/css">
 
@@ -372,14 +393,14 @@
             }
             #bc-section {
                 position: absolute;
-                top:10px;
+                top:7px;
                 left:400px;
             }
 
         </style>
     </head>
     <body>
-            <div class="content-section">
+            <div id="block-detail" class="content-section">
                 <div class="content-heading">${navSelection.levelInHierarchy}</div>
 
                 <div class="content-row">
@@ -394,35 +415,32 @@
 
                 <div id="bc-section">
 
-                <div class="content-heading less-bottom-margin">Block Connector<g:if test="${navSelection.blockConnectors.size() > 1}">s</g:if></div>
-                <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}"><script type="text/javascript">var existingBCs = [];</script></g:if>
-                <g:if test="${navSelection.blockConnectors.size() > 0}">
-                    <g:each in="${navSelection.blockConnectors}" var="bc" status="i">
-                        <div ><g:link controller='Navigate' action='familymember' id='${bc.id}'>${bc.fullName}</g:link><g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}"> <span style="font-size:smaller;">(<a id="revoke|${bc.id}|${navSelection.id}" href="#" onclick="revokeBC(this);">revoke</a>)</span></g:if></div>
-                        <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}"><script type="text/javascript">existingBCs.push(${bc.id});</script></g:if>
-                    </g:each>
-                    <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}">
-                        <form id="revoke-form" action="<g:createLink controller='authorization' action='deauthorizeBlockConnector'/>" method="DELETE">
-                            <input id="revoke-bc-id" type="hidden" name="id"/>
-                            <input id="revoke-bc-block-id" type="hidden" name="blockId"/>
-                        </form>
-                    </g:if>
-                </g:if>
-                <g:else>
-                    <div class="bc" >no assigned block connector</div>
-
-                </g:else>
-
-                <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}">
+                    <div class="content-heading less-bottom-margin">Block Connector<g:if test="${navSelection.blockConnectors.size() > 1}">s</g:if></div>
+                    <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}"><script type="text/javascript">var existingBCs = [];</script></g:if>
                     <g:if test="${navSelection.blockConnectors.size() > 0}">
-                        <div class="small-top-margin"><a href="#" onclick="presentAddBC();">+ Add Another Block Connector</a></div>
+                        <g:each in="${navSelection.blockConnectors}" var="bc" status="i">
+                            <div style="height:20px;"><g:link controller='Navigate' action='familymember' id='${bc.id}'>${bc.fullName}</g:link><g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}"> <span style="font-size:smaller;">(<a id="revoke|${bc.id}|${navSelection.id}" href="#" onclick="revokeBC(this);">revoke</a>)</span></g:if></div>
+                            <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}"><script type="text/javascript">existingBCs.push(${bc.id});</script></g:if>
+                        </g:each>
+                        <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}">
+                            <form id="revoke-form" action="<g:createLink controller='authorization' action='deauthorizeBlockConnector'/>" method="DELETE">
+                                <input id="revoke-bc-id" type="hidden" name="id"/>
+                                <input id="revoke-bc-block-id" type="hidden" name="blockId"/>
+                            </form>
+                        </g:if>
                     </g:if>
                     <g:else>
-                        <div class="small-top-margin"><a href="#" onclick="presentAddBC();">+ Add Block Connector</a></div>
+                        <div class="bc light-text" >no assigned block connector</div>
                     </g:else>
-                </g:if>
 
-
+                    <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}">
+                        <g:if test="${navSelection.blockConnectors.size() > 0}">
+                            <div class="small-top-margin"><a href="#" onclick="presentAddBC();">+ Add Another Block Connector</a></div>
+                        </g:if>
+                        <g:else>
+                            <div class="small-top-margin"><a href="#" onclick="presentAddBC();">+ Add Block Connector</a></div>
+                        </g:else>
+                    </g:if>
 
                 </div>
 

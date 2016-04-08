@@ -4,7 +4,6 @@
     <head>
         <meta name="layout" content="report">
         <title>Block Connectors</title>
-        <script src="${resource(dir:'js',file:'encoder.js')}"></script>
         <script type="text/javascript">
 
             function criteriaStatus() {
@@ -161,9 +160,15 @@
                 }
             }
 
+            window.onload = function onWindowLoad() {
+                document.getElementById("qInput").focus();
+                document.getElementById("qInput").select();
+            }
 
         </script>
+
         <style type="text/css">
+
             #advanced-content {
                 width:360px;
                 border-radius: 5px;
@@ -190,23 +195,9 @@
                 display: inline-block;
                 text-align: left;
             }
-            #search-button {
-                display: inline-block;
-                height: 22px;
-                width: 80px;
-                margin-left: 10px;
-                cursor:pointer; /*forces the cursor to change to a hand when the button is hovered*/
-                color:#B48B6A;
-                padding-top: 4px;
-                text-align: center;
-                border-radius: 5px;
-                border-width:thin;
-                border-style:solid;
-                border-color: #B48B6A;
-                background-color:#FFFFFF;
-                font-weight: bold;
-            }
+
         </style>
+
     </head>
     <body>
             <div class="content-section" style="padding-bottom:10px;text-align:center;background:rgba(0,0,0,0.1);">
@@ -240,7 +231,7 @@
                         </div>
                     </form>
                     <div id="searchDescription" style="font-size:smaller;margin-bottom:15px;margin-top:15px;min-height:30px;"></div>
-                    <div id="search-button" onclick="doAdvancedSearch();">Search</div>
+                    <div class="button bold" onclick="doAdvancedSearch();">Search</div>
                 </div>
             </div>
     </body>

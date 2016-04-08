@@ -6,7 +6,7 @@
         <title><g:layoutTitle default="Grails"/></title>
         <meta name="description" content="Abundant Community Initiative CommonGood" />
         <link rel="stylesheet" href="${resource(dir:'css',file:'common.css')}" />
-        <script src="${resource(dir:'js',file:'encoder.js')}">
+        <script src="${resource(dir:'js',file:'encoder.js')}" type="text/javascript" ></script>
         <script type="text/javascript">
             function doSearch() {
                 document.getElementById('search-form').submit();
