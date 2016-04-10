@@ -13,7 +13,7 @@ class BlockSummaryController {
         def hoodId = session.neighbourhood.id
         authorizationService.neighbourhood( hoodId, session )
 
-        log.info "${session.user.getFullName()} requests Block Summary for neighbourhood/${hoodId}"
+        log.info "${session.user.getLogName()} requests Block Summary for neighbourhood/${hoodId}"
         // Eschew GORM; let's kick it ol' school...
         def query = '''SELECT blk.id AS blockId,
                             blk.code,

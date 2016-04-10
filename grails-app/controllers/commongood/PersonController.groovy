@@ -3,54 +3,24 @@ package commongood
 class PersonController {
     static allowedMethods = [save:'POST', setBlockConnector:'POST']
     def authorizationService
+    def personService
 
     // Write a new person or update an existing person
-    def save() {
-        Person person
-        def newPerson
+    def save( ) {
         if( 'id' in params ) {
-            def personId = Long.valueOf( params.id )
+            // Update an existing person
+            Integer personId = params.int('id')
             authorizationService.person( personId, session )
-            log.info "${session.user.getFullName()} requests save changes to person/${personId}"
-            person = Person.get( personId )
-            newPerson = false
+            log.info "${session.user.getLogName()} SAVE changes to person/${personId}"
+            personService.update( personId, params )
+            redirect controller:'navigate', action:'familymember', id:personId
         } else {
-            // The request is to create a new person
-            def familyId = Long.valueOf( params.familyId )
+            // Create a new person
+            def familyId = params.int('familyId')
             authorizationService.family( familyId, session )
-            log.info "${session.user.getFullName()} requests add person to family/${familyId}"
-            person = new Person( )
-            person.family = Family.get( familyId )
-            newPerson = true
-        }
-
-        person.firstNames = params.firstNames
-        person.lastName = params.lastName
-        person.birthYear = Integer.valueOf( params.birthYear?:'0' )
-        person.emailAddress = params.emailAddress
-        person.phoneNumber = params.phoneNumber
-        person.note = params.note
-
-        if( params.orderWithinFamily ) {
-            person.orderWithinFamily = params.int('orderWithinFamily')
-        } else {
-            // Find the largest value of orderWithinFamily and go from there...
-            def query = Person.where {
-                family.id == person.family.id
-            }.projections {
-                max('orderWithinFamily')
-            }
-            def lastOrder = query.find() as Integer
-            lastOrder = lastOrder ?: 0
-            person.orderWithinFamily = lastOrder + 100
-        }
-
-        // TODO Replace failOnError with logic
-        person.save( flush:true, failOnError: true )
-        if( newPerson ) {
-            redirect controller:'navigate', action:'family', id:person.family.id
-        } else {
-            redirect controller:'navigate', action:'familymember', id:person.id
+            log.info "${session.user.getLogName()} ADD person to family/${familyId}"
+            personService.insert( familyId, params )
+            redirect controller:'navigate', action:'family', id:familyId
         }
     }
 
@@ -59,7 +29,7 @@ class PersonController {
         Long id = Long.parseLong( params.id )
         Person person = Person.get( id )
         def blockId = person.family.address.block.id
-        log.info "${session.user.getFullName()} requests person/${id} be a BC for block ${blockId}"
+        log.info "${session.user.getLogName()} requests person/${id} be a BC for block ${blockId}"
         authorizationService.block( blockId, session )
 
         // The person becomes a BC for his block

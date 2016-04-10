@@ -10,6 +10,10 @@ class LoginController {
     def domainAuthorizationService
 
     def index( ) {
+        // Tomcat's default 30 minute timeout is too brief.
+        // Force it to several hours; later we might make it configurable.
+        session.setMaxInactiveInterval( 6 * 36000 )
+        log.info "Session timeout set to ${session.getMaxInactiveInterval()} seconds"
         if( session.user && session.neighbourhood ) {
             log.info( "LoginController found ${session.user} still logged in" )
             redirect controller: 'navigate', action:'neighbourhood', id:session.neighbourhood.id

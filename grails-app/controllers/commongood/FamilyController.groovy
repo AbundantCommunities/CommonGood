@@ -30,7 +30,7 @@ class FamilyController {
             // We will not change the family's address.
             def familyId = Long.valueOf( params.id )
             authorizationService.family( familyId, session )
-            log.info "${session.user.getFullName()} requests save changes for family/${familyId}"
+            log.info "${session.user.getLogName()} requests save changes for family/${familyId}"
             family = Family.get( familyId )
             newFamily = false
         } else {
@@ -39,7 +39,7 @@ class FamilyController {
             family = new Family( )
             def addressId = Long.valueOf( params.addressId )
             authorizationService.address( addressId, session )
-            log.info "${session.user.getFullName()} requests add a family to address/${addressId}"
+            log.info "${session.user.getLogName()} requests add a family to address/${addressId}"
             family.address = Address.get( addressId )
             family.participateInInterview = Boolean.FALSE
             family.permissionToContact = Boolean.FALSE

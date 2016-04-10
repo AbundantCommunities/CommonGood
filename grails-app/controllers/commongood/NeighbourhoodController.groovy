@@ -11,7 +11,7 @@ class NeighbourhoodController {
         // but without it, the code appears to lack authorization enforcement...
         def neighbourhoodId = session.neighbourhood.id
         authorizationService.neighbourhood( neighbourhoodId, session )
-        log.info "${session.user.getFullName()} requests Block Connector Contact List for neighbourhood/${neighbourhoodId}"
+        log.info "${session.user.getLogName()} requests Block Connector Contact List for neighbourhood/${neighbourhoodId}"
 
         String query = '''SELECT blk.id,
                                 blk.code,
@@ -52,7 +52,7 @@ class NeighbourhoodController {
 
     def addBlock( ) {
         def neighbourhoodId = params.long('id')
-        log.info "${session.user.getFullName()} requests addBlock for neighbourhood/${neighbourhoodId}"
+        log.info "${session.user.getLogName()} requests addBlock for neighbourhood/${neighbourhoodId}"
         authorizationService.neighbourhood( neighbourhoodId, session )
         def neighbourhood = Neighbourhood.get( neighbourhoodId )
 

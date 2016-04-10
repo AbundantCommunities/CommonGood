@@ -11,7 +11,7 @@ class QuestionController {
      */
     def index( ) {
         def familyId = Long.parseLong( params.familyId )
-        log.info "${session.user.getFullName()} requests an interview form for family/${familyId}"
+        log.info "${session.user.getLogName()} requests an interview form for family/${familyId}"
         authorizationService.family( familyId, session )
         Family family = Family.get( familyId )
 

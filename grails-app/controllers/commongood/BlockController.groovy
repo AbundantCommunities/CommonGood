@@ -12,7 +12,7 @@ class BlockController {
      */
     def addAddresses( ) {
         def blockId = Long.parseLong( params.id )
-        log.info "${session.user.getFullName()} requests add address(es) block/${blockId}"
+        log.info "${session.user.getLogName()} requests add address(es) block/${blockId}"
         authorizationService.block( blockId, session )
         def thisBlock = Block.get( blockId )
 
@@ -50,7 +50,7 @@ class BlockController {
         authorizationService.block( blockId, session )
 
         def block = Block.get( blockId )
-        log.info "${session.user.getFullName()} requests Contact List for block/${blockId}"
+        log.info "${session.user.getLogName()} requests Contact List for block/${blockId}"
         def connectors = domainAuthorizationService.getBlockConnectors( blockId )
 
         def blockPeople = Person.findAll(
@@ -79,7 +79,7 @@ class BlockController {
 
     def save( ) {
         def blockId = params.long('id')
-        log.info "${session.user.getFullName()} requests save change to block/${blockId}"
+        log.info "${session.user.getLogName()} requests save change to block/${blockId}"
         authorizationService.block( blockId, session )
         def block = Block.get( blockId )
 

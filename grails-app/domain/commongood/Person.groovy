@@ -8,7 +8,7 @@ class Person {
     String emailAddress
     String phoneNumber
     String note
-    Integer orderWithinFamily // first in order is our primary contact
+    Integer orderWithinFamily
     /*
     If appUser then
         if hashedPassword nonempty then

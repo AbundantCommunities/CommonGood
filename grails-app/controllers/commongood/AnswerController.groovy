@@ -11,7 +11,7 @@ class AnswerController {
         if( params.json ) {
             log.info "Anon requests Answer Ranking question/${questionId}"
         } else {
-            log.info "${session.user.getFullName()} requests Answer Ranking question/${questionId}"
+            log.info "${session.user.getLogName()} requests Answer Ranking question/${questionId}"
         }
         def question = Question.get( questionId )
 
@@ -29,7 +29,7 @@ class AnswerController {
 
     def delete( ) {
         def answerId = Long.parseLong( params.id )
-        log.info "${session.user.getFullName()} requests delete answer/${answerId}"
+        log.info "${session.user.getLogName()} requests delete answer/${answerId}"
         authorizationService.answer( answerId, session )
         def answer = Answer.get( answerId )
         def person = answer.person
@@ -40,7 +40,7 @@ class AnswerController {
     // Get one answer as JSON
     def get( ) {
         def answerId = Long.parseLong( params.id )
-        log.info "${session.user.getFullName()} requests get answer/${answerId}"
+        log.info "${session.user.getLogName()} requests get answer/${answerId}"
         authorizationService.answer( answerId, session )
         Answer answer = Answer.get( answerId )
         def result = [ id: answer.id, text: answer.text,
@@ -54,7 +54,7 @@ class AnswerController {
     // Save changes to one answer
     def save( ) {
         def answerId =  params.long('id')
-        log.info "${session.user.getFullName()} save answer/${answerId}"
+        log.info "${session.user.getLogName()} save answer/${answerId}"
         authorizationService.answer( answerId, session )
         Answer answer = Answer.get( answerId )
         answer.text = params.text
@@ -73,7 +73,7 @@ class AnswerController {
         where \n represents a single newline character
         */
         Long familyId = Long.parseLong( params.familyId )
-        log.info "${session.user.getFullName()} requests save interview for family/${familyId}"
+        log.info "${session.user.getLogName()} requests save interview for family/${familyId}"
         authorizationService.family( familyId, session )
         Family family = Family.get( familyId )
 
