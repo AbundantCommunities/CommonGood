@@ -12,7 +12,7 @@ class LoginController {
     def index( ) {
         // Tomcat's default 30 minute timeout is too brief.
         // Force it to several hours; later we might make it configurable.
-        session.setMaxInactiveInterval( 6 * 36000 )
+        session.setMaxInactiveInterval( 6 * 3600 )
         log.info "Session timeout set to ${session.getMaxInactiveInterval()} seconds"
         if( session.user && session.neighbourhood ) {
             log.info( "LoginController found ${session.user} still logged in" )
