@@ -5,8 +5,9 @@
         <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
         <title><g:layoutTitle default="Grails"/></title>
         <meta name="description" content="Abundant Community Initiative CommonGood" />
-        <link rel="stylesheet" href="${resource(dir:'css',file:'common.css')}" />
-        <script src="${resource(dir:'js',file:'encoder.js')}" type="text/javascript" ></script>
+        <asset:link rel="icon" href="favicon.ico" type="image/x-icon"/>
+        <asset:stylesheet src="common.css"/>
+        <asset:javascript src="encoder.js" />
         <script type="text/javascript">
             function doSearch() {
                 document.getElementById('search-form').submit();
@@ -39,7 +40,7 @@
     <body>
         <div id="pagecontainer">
             <div id="aci-logo-line">
-                <img src="${resource(dir:'images',file:'aci-logo.png')}" width="80" height="78"/>
+                <asset:image src="aci-logo.png" width="80" height="78"/>
                 <div id="welcome-line">Welcome ${session.user.firstNames} ${session.user.lastName} <span id="sign-out"><g:link controller="logout">log out</g:link></span></div>
                 <g:if test="${session.authorized.forNeighbourhood()==Boolean.TRUE}">
                     <div id="role-line">Neighbourhood Connector for ${session.neighbourhood.name}</div>
@@ -50,7 +51,7 @@
                 <div id="advanced-search"><g:link controller="search" action="form">advanced search</g:link></div>
                 <g:link controller="navigate" action="${session.lastNavigationLevel}" id="${session.lastNavigationId}"><div id="browse-button">Browse</div></g:link>
                 <form id="search-form" action="<g:createLink controller='search' />" method="get">
-                    <div id="search"><img id="search-image" src="${resource(dir:'images',file:'search.png')}" width="18" height="18"/><input id="search-criteria" type="text" placeholder="search" name="q" value="" onKeyPress="checkEnter(event);"/></div>
+                    <div id="search"><asset:image id="search-image" src="search.png" width="18" height="18"/><input id="search-criteria" type="text" placeholder="search" name="q" value="" onKeyPress="checkEnter(event);"/></div>
                 </form>
             </div>
             <g:layoutBody/>

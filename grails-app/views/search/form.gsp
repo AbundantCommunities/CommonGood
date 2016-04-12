@@ -218,7 +218,7 @@
                                 <div>From age</div>
                             </div>
                             <div class="criteria-value">
-                                <div><input id="fromAgeInput" type="text" name="fromAge" value="" onKeyUp="checkAdvancedEnter(event);" size="10"/><span id="fromValidImg" style="display:none;">&nbsp;<img style="vertical-align:middle;" src="${resource(dir:'images',file:'invalid.png')}" width="16px" height="16px" /></span></div>
+                                <div><input id="fromAgeInput" type="text" name="fromAge" value="" onKeyUp="checkAdvancedEnter(event);" size="10"/><span id="fromValidImg" style="display:none;">&nbsp;<asset:image style="vertical-align:middle;" src="invalid.png" width="16px" height="16px" /></span></div>
                             </div>
                         </div>
                         <div class="criteria-container">
@@ -226,7 +226,7 @@
                                 <div>To age</div>
                             </div>
                             <div class="criteria-value">
-                                <div><input id="toAgeInput" type="text" name="toAge" value="" onKeyUp="checkAdvancedEnter(event);" size="10"/><span id="toValidImg" style="display:none;">&nbsp;<img style="vertical-align:middle;" src="${resource(dir:'images',file:'invalid.png')}" width="16px" height="16px" /></span></div>
+                                <div><input id="toAgeInput" type="text" name="toAge" value="" onKeyUp="checkAdvancedEnter(event);" size="10"/><span id="toValidImg" style="display:none;">&nbsp;<asset:image style="vertical-align:middle;" src="invalid.png" width="16px" height="16px" /></span></div>
                             </div>
                         </div>
                     </form>

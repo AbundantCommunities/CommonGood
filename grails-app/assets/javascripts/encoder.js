@@ -78,7 +78,6 @@ Encoder = {
 	
 	// HTML Decode numerical and HTML entities back to original values
 	htmlDecode : function(s){
-
 		var c,m,d = s;
 		
 		if(this.isEmpty(d)) return "";

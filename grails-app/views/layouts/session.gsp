@@ -5,13 +5,14 @@
         <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
         <title><g:layoutTitle default="Grails"/></title>
         <meta name="description" content="Abundant Community Initiative CommonGood" />
-        <link rel="stylesheet" href="${resource(dir:'css',file:'session.css')}" />
+        <asset:link rel="icon" href="favicon.ico" type="image/x-icon"/>
+        <asset:stylesheet src="session.css"/>
         <g:layoutHead/>
     </head>
     <body>
         <div id="pagecontainer">
             <div id="aci-logo-line">
-                    <img src="${resource(dir:'images',file:'aci-logo.png')}" width="160" height="156" />
+                    <asset:image src="aci-logo.png" width="160" height="156"/>
             </div>
             <g:layoutBody/>
             <div id="footer">
