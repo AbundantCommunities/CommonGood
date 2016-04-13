@@ -28,14 +28,13 @@
             
 
             function populateEditModal() {
-                Encoder.EncodeType = "entity";
-                document.getElementById('addressTextInput').value = Encoder.htmlDecode("${navSelection.description}");
+                document.getElementById('addressTextInput').value = decodeEntities("${navSelection.description}");
                 document.getElementById('orderWithinBlockInput').value = "${navSelection.orderWithinBlock}";
 
                 var encodedNote = "${navSelection.note.split('\r\n').join('|')}";
                 var decodedNote = encodedNote.split('|').join('\n');
 
-                document.getElementById('addressNoteTextarea').value = Encoder.htmlDecode(decodedNote);
+                document.getElementById('addressNoteTextarea').value = decodeEntities(decodedNote);
             }
             function presentEditModal() {
                 var pagecontainerDiv = document.getElementById("pagecontainer");

@@ -6,28 +6,23 @@
         <title>CommonGood - Family Member</title>
         <script type="text/javascript">
             function populateEditModal() {
-                Encoder.EncodeType = "entity";
-                document.getElementById('firstNamesInput').value = Encoder.htmlDecode("${navSelection.firstNames}");
-                document.getElementById('lastNameInput').value = Encoder.htmlDecode("${navSelection.lastName}");
+                document.getElementById('firstNamesInput').value = decodeEntities("${navSelection.firstNames}");
+                document.getElementById('lastNameInput').value = decodeEntities("${navSelection.lastName}");
                 <g:if test="${navSelection.birthYear == 0}">
                     document.getElementById('birthYearInput').value = "";
                 </g:if>
                 <g:else>
                     document.getElementById('birthYearInput').value = "${navSelection.birthYear}";
                 </g:else>
-
-                //next 2 lines necessary if Encoder not used
-                //var emailToEncode = Encoder.htmlDecode("${navSelection.emailAddress}");
-                //var email = emailToEncode.split('&#64;').join('@');
                 
-                document.getElementById('emailAddressInput').value = Encoder.htmlDecode("${navSelection.emailAddress}");
+                document.getElementById('emailAddressInput').value = decodeEntities("${navSelection.emailAddress}");
 
-                document.getElementById('phoneNumberInput').value = Encoder.htmlDecode("${navSelection.phoneNumber}");
+                document.getElementById('phoneNumberInput').value = decodeEntities("${navSelection.phoneNumber}");
                 document.getElementById('orderWithinFamilyInput').value = "${navSelection.orderWithinFamily}";
 
                 var encodedNote = "${navSelection.note.split('\r\n').join('|')}";
                 var decodedNote = encodedNote.split('|').join('\n');
-                document.getElementById('noteInput').value = Encoder.htmlDecode(decodedNote);
+                document.getElementById('noteInput').value = decodeEntities(decodedNote);
             }
 
 

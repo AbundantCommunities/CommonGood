@@ -74,37 +74,35 @@
                 var aAssistEmail = [];
                 var aAssistAddress = [];
 
-                Encoder.EncodeType = "entity";
-
                 <g:if test="${people.size() > 0}">
                     <g:each in="${people}" var="person">
-                        pFNames.push(Encoder.htmlDecode('${person[1]}'));
-                        pLName.push(Encoder.htmlDecode('${person[2]}'));
-                        pPhone.push(Encoder.htmlDecode('${person[3]}'));
-                        pEmail.push(Encoder.htmlDecode('${person[4]}'));
-                        pAddress.push(Encoder.htmlDecode('${person[5]}'));
+                        pFNames.push(decodeEntities('${person[1]}'));
+                        pLName.push(decodeEntities('${person[2]}'));
+                        pPhone.push(decodeEntities('${person[3]}'));
+                        pEmail.push(decodeEntities('${person[4]}'));
+                        pAddress.push(decodeEntities('${person[5]}'));
                     </g:each>
                 </g:if>
 
                 <g:if test="${answers.size() > 0}">
                     <g:each in="${answers}" var="answer">
                         <g:if test="${answer[1]}">
-                            aAssistQuestion.push(Encoder.htmlDecode('${answer[5]}'));
-                            aAssistAnswer.push(Encoder.htmlDecode('${answer[0]}'));
-                            aAssistFNames.push(Encoder.htmlDecode('${answer[3]}'));
-                            aAssistLName.push(Encoder.htmlDecode('${answer[4]}'));
-                            aAssistPhone.push(Encoder.htmlDecode('${answer[6]}'));
-                            aAssistEmail.push(Encoder.htmlDecode('${answer[7]}'));
-                            aAssistAddress.push(Encoder.htmlDecode('${answer[8]}'));
+                            aAssistQuestion.push(decodeEntities('${answer[5]}'));
+                            aAssistAnswer.push(decodeEntities('${answer[0]}'));
+                            aAssistFNames.push(decodeEntities('${answer[3]}'));
+                            aAssistLName.push(decodeEntities('${answer[4]}'));
+                            aAssistPhone.push(decodeEntities('${answer[6]}'));
+                            aAssistEmail.push(decodeEntities('${answer[7]}'));
+                            aAssistAddress.push(decodeEntities('${answer[8]}'));
                         </g:if>
                         <g:else>
-                            aQuestion.push(Encoder.htmlDecode('${answer[5]}'));
-                            aAnswer.push(Encoder.htmlDecode('${answer[0]}'));
-                            aFNames.push(Encoder.htmlDecode('${answer[3]}'));
-                            aLName.push(Encoder.htmlDecode('${answer[4]}'));
-                            aPhone.push(Encoder.htmlDecode('${answer[6]}'));
-                            aEmail.push(Encoder.htmlDecode('${answer[7]}'));
-                            aAddress.push(Encoder.htmlDecode('${answer[8]}'));
+                            aQuestion.push(decodeEntities('${answer[5]}'));
+                            aAnswer.push(decodeEntities('${answer[0]}'));
+                            aFNames.push(decodeEntities('${answer[3]}'));
+                            aLName.push(decodeEntities('${answer[4]}'));
+                            aPhone.push(decodeEntities('${answer[6]}'));
+                            aEmail.push(decodeEntities('${answer[7]}'));
+                            aAddress.push(decodeEntities('${answer[8]}'));
                         </g:else>
                     </g:each>
                 </g:if>

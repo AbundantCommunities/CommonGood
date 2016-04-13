@@ -48,7 +48,7 @@
 
             function isValidAge(someAge) {
                 minAge = 0;
-                maxAge = 110;
+                maxAge = 130;
 
                 if (someAge.length > 0) {
                     var pattern = /^([1-9]\d*|0)$/;

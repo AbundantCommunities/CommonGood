@@ -7,7 +7,7 @@
         <meta name="description" content="Abundant Community Initiative CommonGood" />
         <asset:link rel="icon" href="favicon.ico" type="image/x-icon"/>
         <asset:stylesheet src="common.css"/>
-        <asset:javascript src="encoder.js"/>
+        <asset:javascript src="decoder.js"/>
         <script type="text/javascript">
             function doSearch() {
                 document.getElementById('search-form').submit();

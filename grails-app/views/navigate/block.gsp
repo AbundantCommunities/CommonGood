@@ -9,9 +9,8 @@
             <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}">
 
                 function populateEditModal() {
-                    Encoder.EncodeType = "entity";
-                    document.getElementById('blockCodeInput').value = Encoder.htmlDecode("${navSelection.code}");
-                    document.getElementById('blockDescriptionInput').value = Encoder.htmlDecode("${navSelection.description}");
+                    document.getElementById('blockCodeInput').value = decodeEntities("${navSelection.code}");
+                    document.getElementById('blockDescriptionInput').value = decodeEntities("${navSelection.description}");
                     document.getElementById('orderWithinNeighbourhoodInput').value = "${navSelection.orderWithinNeighbourhood}";
                 }
 

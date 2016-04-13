@@ -5,15 +5,15 @@
         <meta name="layout" content="navigate"/>
         <title>CommonGood - Family</title>
         <script type="text/javascript">
+
             function populateEditModal() {
-                Encoder.EncodeType = "entity";
-                document.getElementById('familyNameInput').value = Encoder.htmlDecode("${navSelection.description}");
+                document.getElementById('familyNameInput').value = decodeEntities("${navSelection.description}");
                 document.getElementById('orderWithinAddressInput').value = "${navSelection.orderWithinAddress}";
 
                 var encodedNote = "${navSelection.note.split('\r\n').join('|')}";
                 var decodedNote = encodedNote.split('|').join('\n');
 
-                document.getElementById('familyNoteInput').value = Encoder.htmlDecode(decodedNote);
+                document.getElementById('familyNoteInput').value = decodeEntities(decodedNote);
             }
             function presentEditModal() {
                 var pagecontainerDiv = document.getElementById("pagecontainer");

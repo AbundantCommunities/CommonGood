@@ -7,14 +7,13 @@
         <script type="text/javascript">
             function emailAll() {
                 var emails = 'mailto:';
-                Encoder.EncodeType = "entity";
                 <g:if test="${connectors.size() > 0}">
                     <g:each in="${connectors}" var="bc" status="i">
                         <g:if test="${bc.emailAddress.size() > 0}">
                             <g:if test="${i>0}">
                                 emails = emails.concat(",");
                             </g:if>
-                            emails = emails.concat(Encoder.htmlDecode("${bc.emailAddress}"));
+                            emails = emails.concat(decodeEntities("${bc.emailAddress}"));
                         </g:if>
                     </g:each>
                 </g:if>
