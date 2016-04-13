@@ -35,7 +35,7 @@
 
             function interviewDataOkay(initialInterviewDate) {
                 if (!dateOk(initialInterviewDate)) {
-                    alert('Please enter a value initial interview date in the format YYYY-MM-DD.');
+                    alert('Please enter a value for initial interview date in the format YYYY-MM-DD.');
                     return false;
                 }
                 return true;
