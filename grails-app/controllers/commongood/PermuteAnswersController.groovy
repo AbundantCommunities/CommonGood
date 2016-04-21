@@ -3,9 +3,9 @@ package commongood
 /**
  * Permute in the sense of "permuted index". For example, given the input text
  * 'learn to bake bread', the permutations are
- * 'learn to bake bread',
- * 'bake bread, learn to'
- * 'bread, learn to bake'
+ *    'learn to bake bread',
+ *    'bake bread, learn to'
+ *    'bread, learn to bake'
  * 
  * The logic knows to ignore words like 'to', 'and', 'a', etc.
 */
