@@ -29,6 +29,8 @@ class AdminController {
 
     def hashPassword( ) {
         log.info( 'Someone wants to hash a password' )
+        // Neat thing is: one can change the parameters here without affecting
+        // the existing password hashes.
         HashSpec spec = new HashSpec("PBKDF2WithHmacSHA512", 75000, 64, 256)
         Hasher hasher = new Hasher(spec)
         String res = hasher.create(params.password.toCharArray())
