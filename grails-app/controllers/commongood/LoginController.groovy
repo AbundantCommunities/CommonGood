@@ -18,7 +18,7 @@ class LoginController {
             log.info( "LoginController found ${session.user} still logged in" )
             redirect controller: 'navigate', action:'neighbourhood', id:session.neighbourhood.id
         } else {
-            log.info 'Unauthenticated user needs to log in'
+            log.debug 'Unauthenticated user needs to log in'
         }
     }
 
