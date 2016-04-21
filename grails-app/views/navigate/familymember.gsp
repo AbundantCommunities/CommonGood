@@ -308,6 +308,7 @@
                     <div class="modal-row">Phone number: <input id="phoneNumberInput" type="text" name="phoneNumber" value=""/></div>
                     <div class="modal-row">Order within family: <input id="orderWithinFamilyInput" type="text" name="orderWithinFamily" value="" size="12"/></div>
                     <div class="modal-row">Note: <br/><textarea id="noteInput" class="note-style" name="note" cols=56 rows=4></textarea></div>
+                    <input type="hidden" name="version" value="${navSelection.version}" />
                 </form>
                 <div class="button-row">
                     <div class="button" onclick="JavaScript:dismissEditModal();">Cancel</div>

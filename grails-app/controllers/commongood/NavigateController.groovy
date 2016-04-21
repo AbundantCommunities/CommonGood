@@ -210,7 +210,7 @@ class NavigateController {
                             firstNames:theMember.firstNames, lastName:theMember.lastName,
                             birthYear:theMember.birthYear, emailAddress:theMember.emailAddress,
                             phoneNumber:theMember.phoneNumber, orderWithinFamily:theMember.orderWithinFamily,
-                            note:theMember.note ],
+                            note:theMember.note, version:theMember.version ],
             
             questionsAndAnswers: qna
         ]

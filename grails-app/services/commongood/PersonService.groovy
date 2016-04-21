@@ -5,9 +5,13 @@ import grails.transaction.Transactional
 @Transactional
 class PersonService {
 
-    // Write a new Person or update an existing Person.
+    // Update an existing Person.
     def update( Integer personId, params ) {
         Person person = Person.get( personId )
+
+        if( person.version != params.int('version') ) {
+            throw new Exception('Stale person')
+        }
 
         person.firstNames = params.firstNames
         person.lastName = params.lastName
@@ -21,7 +25,7 @@ class PersonService {
         person.save( flush:true, failOnError: true )
     }
 
-    // Write a new Person or update an existing Person.
+    // Insert a new Person to the specified Family.
     def insert( Integer familyId, params ) {
         Person person = new Person( params )
         person.family = Family.get( familyId )
@@ -33,7 +37,8 @@ class PersonService {
         person.phoneNumber = params.phoneNumber
         person.note = params.note
 
-        // Find the largest value of orderWithinFamily and increase it a bit...
+        // Find the largest value of orderWithinFamily so we can
+        // force the new Person to sort to the end of the Family.
         def query = Person.where {
             family.id == person.family.id
         }.projections {
