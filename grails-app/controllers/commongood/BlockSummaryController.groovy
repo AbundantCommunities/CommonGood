@@ -8,12 +8,10 @@ class BlockSummaryController {
     def authorizationService
 
     def index() {
-        // This def and call to our authorizationService accomplishes very little
-        // but without it, the code appears to lack authorization enforcement...
         def hoodId = session.neighbourhood.id
         authorizationService.neighbourhood( hoodId, session )
 
-        log.info "${session.user.getLogName()} requests Block Summary for neighbourhood/${hoodId}"
+        log.info "${session.user.getLogName()} Block Summary for neighbourhood/${hoodId}"
         // Eschew GORM; let's kick it ol' school...
         def query = '''SELECT blk.id AS blockId,
                             blk.code,
@@ -54,7 +52,7 @@ class BlockSummaryController {
                     numFamilies: countFamilies,
                     numInterviews: countInterviews,
                     numDeclined: countPartyPoopers,
-                    numRemaining: countFamilies - countInterviews
+                    numRemaining: countFamilies - (countInterviews+countPartyPoopers)
                 ]
                 countFamilies = 0
                 countInterviews = 0
@@ -67,8 +65,9 @@ class BlockSummaryController {
                 countFamilies++
             }
             if( it.interview_date ) {
-                countInterviews++
-                if( !it.participate_in_interview ) {
+                if( it.participate_in_interview ) {
+                    countInterviews++
+                } else {
                     countPartyPoopers++
                 }
 
