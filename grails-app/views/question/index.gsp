@@ -282,7 +282,7 @@
                     <g:if test="${members.size() > 0}">
                         <div class="heading-row">Add new interview answers*</div>
                         <div class="footnote">* To add multiple answers for one question, press Return after each.</div>
-                        <div class="footnote">* To set lead or organize, or to edit or delete answers you add here, browse to the family member afterwards and click the answer.</div>
+                        <div class="footnote">* To set 'would assist', or to edit or delete answers you add here, browse to the family member afterwards and click the answer.</div>
                         <div id="matrix-container">
                             <div id="question-column">
                                 <div class="question-heading">Question</div>

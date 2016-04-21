@@ -263,7 +263,7 @@
                     <div class="content-row-item" style="width:150px;">Last name: </div><div class="content-row-item">${navSelection.lastName}</div>
                 </div>
                 <div class="content-row">
-                    <div class="content-row-item" style="width:150px;">Birth year: </div><div class="content-row-item">${navSelection.birthYear}</div>
+                    <div class="content-row-item" style="width:150px;">Birth year: </div><div class="content-row-item"><g:if test="${navSelection.birthYear > 0}">${navSelection.birthYear}</g:if></div>
                 </div>
                 <div class="content-row">
                     <div class="content-row-item" style="width:150px;">Email address: </div><div class="content-row-item">${navSelection.emailAddress}</div>
