@@ -1,7 +1,7 @@
 package commongood
 
 class Person {
-    Family family // Can be null if this person is simply an app user
+    Family family
     String firstNames
     String lastName
     Integer birthYear
@@ -40,8 +40,6 @@ class Person {
     }
 
     static constraints = {
-        // We can create a neighbourhood or block connector without identifying a family:
-        family nullable: true
         hashedPassword nullable: true, size: 1..900
     }
 }
