@@ -5,6 +5,7 @@ class Person {
     String firstNames
     String lastName
     Integer birthYear
+    Boolean birthYearIsEstimated
     String emailAddress
     String phoneNumber
     String note
@@ -41,5 +42,6 @@ class Person {
 
     static constraints = {
         hashedPassword nullable: true, size: 1..900
+        birthYearIsEstimated defaultValue: "FALSE", nullable: true
     }
 }
