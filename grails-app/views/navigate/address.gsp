@@ -210,6 +210,7 @@
                     <div class="modal-row">Address: <input id="addressTextInput" type="text" name="text" value="" style="width:70%;"/></div>
                     <div class="modal-row">Order within block: <input id="orderWithinBlockInput" type="text" name="orderWithinBlock" value="" size="12"/></div>
                     <div class="modal-row">Note: <br/><textarea id="addressNoteTextarea" class="note-style" name="note" cols=44 rows=4></textarea></div>
+                    <g:hiddenField name="version" value="${navSelection.version}" />
                 </form>
                 <div class="button-row">
                     <div class="button" onclick="JavaScript:dismissEditModal();">Cancel</div>

@@ -95,7 +95,8 @@ class NavigateController {
                 ],
 
             navSelection: [ levelInHierarchy:'Address', id:addressId, description:theAddress.text, note:theAddress.note,
-                            orderWithinBlock:theAddress.orderWithinBlock, possibleInterviewers:possibleInterviewers ],
+                            orderWithinBlock:theAddress.orderWithinBlock, possibleInterviewers:possibleInterviewers,
+                            version:theAddress.version ],
 
             navChildren:
                 [

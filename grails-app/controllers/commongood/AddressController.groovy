@@ -5,6 +5,7 @@ import org.abundantcommunityinitiative.commongood.handy.JsonWriter
 class AddressController {
     static allowedMethods = [families:'GET', save:'POST']
     def authorizationService
+    def addressService
 
     // Get a JSON list of families at a given address
     def families( ) {
@@ -26,17 +27,12 @@ class AddressController {
     // Update an existing Address.
     def save( ) {
         def addressId = params.long('id')
-        log.info "${session.user.getLogName()} requests save address/${addressId}"
-        authorizationService.address( addressId, session )
-        def address = Address.get( addressId )
-
+        log.info "${session.user.getLogName()} update address/${addressId}"
         if( !params.text ) {
             throw new RuntimeException( "address.text is empty [${session.user}]" )
         }
-        address.text = params.text
-        address.note = params.note
-        address.orderWithinBlock = params.int('orderWithinBlock')
-        address.save( flush:true, failOnError: true )
+        authorizationService.address( addressId, session )
+        addressService.update( params )
 
         redirect controller:'navigate', action:'address', id:addressId
     }
