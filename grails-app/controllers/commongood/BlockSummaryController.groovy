@@ -24,9 +24,7 @@ class BlockSummaryController {
                        LEFT OUTER JOIN family AS fam ON addr.id = fam.address_id
                     WHERE blk.neighbourhood_id = :neighbourhoodId
                     ORDER BY blk.order_within_neighbourhood,
-                             blk.id,
-                             addr.order_within_block,
-                             addr.id'''
+                             blk.id'''
 
         final Sql sql = new Sql(dataSource)
         def fams = sql.rows( query, [neighbourhoodId:hoodId] )

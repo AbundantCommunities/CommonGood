@@ -55,7 +55,7 @@ class BlockService {
                             LEFT OUTER JOIN person AS bc ON da.person_id = bc.id
                         WHERE (da.domain_code = 'B' OR da.domain_code IS NULL)
                         AND blk.neighbourhood_id = :queryId
-                        ORDER BY blk.order_within_neighbourhood'''
+                        ORDER BY blk.order_within_neighbourhood, da.order_within_domain'''
 
         } else {
             query = '''SELECT blk.id, blk.code, blk.description, da.person_id, bc.first_names, bc.last_name
