@@ -422,7 +422,7 @@
                             <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}"><script type="text/javascript">existingBCs.push(${bc.id});</script></g:if>
                         </g:each>
                         <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}">
-                            <form id="revoke-form" action="<g:createLink controller='authorization' action='deauthorizeBlockConnector'/>" method="DELETE">
+                            <form id="revoke-form" action="<g:createLink controller='authorization' action='deauthorizeBlockConnector'/>" method="POST">
                                 <input id="revoke-bc-id" type="hidden" name="id"/>
                                 <input id="revoke-bc-block-id" type="hidden" name="blockId"/>
                             </form>
