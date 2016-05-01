@@ -2,7 +2,7 @@
 
 <html>
     <head>
-        <meta name="layout" content="report">
+        <meta name="layout" content="basic">
         <title>Block Connectors</title>
         <script type="text/javascript">
 
@@ -168,19 +168,6 @@
         </script>
 
         <style type="text/css">
-
-            #advanced-content {
-                width:360px;
-                border-radius: 5px;
-                border-width:thin;
-                border-style:solid;
-                border-color: #B48B6A;
-                background-color:#FFFFFF;
-                margin:auto;
-                margin-top: 10px;
-                margin-bottom: 10px;
-                padding: 20px;
-            }
             .criteria-container {
                 width: 100%;
                 height:30px;
@@ -200,8 +187,8 @@
 
     </head>
     <body>
-            <div class="content-section" style="padding-bottom:10px;text-align:center;background:rgba(0,0,0,0.1);">
-                <div id="advanced-content">
+            <div class="content-section content-container content-centered">
+                <div id="content-section-embedded" style="width:360px">
                     <div style="margin-top:-15px;"><h3>Advanced Search</h3></div>
                     <div style="font-size:smaller;margin-top:-10px;margin-bottom:10px;">Enter one or more values</div>
                     <form id="advanced-form" action="advanced" method="GET">

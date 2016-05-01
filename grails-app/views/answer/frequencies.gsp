@@ -2,7 +2,7 @@
 
 <html>
     <head>
-        <meta name="layout" content="report"/>
+        <meta name="layout" content="basic"/>
         <title>Answer Ranking</title>
         <style type="text/css">
             .bar-graph {
