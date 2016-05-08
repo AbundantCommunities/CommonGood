@@ -2,7 +2,7 @@
 
 <html>
     <head>
-        <meta name="layout" content="report">
+        <meta name="layout" content="basic">
         <title>CommonGood Advanced Search Results</title>
         <script type="text/javascript">
             function showContactInfo() {
