@@ -8,6 +8,17 @@ import grails.transaction.Transactional
 class AuthenticateService {
 
     /**
+     * Handy for client code to check if the user's session has timed out.
+     */
+    public Boolean isAuthenticated( session ) {
+        if( session.user ) {
+            return Boolean.TRUE
+        } else {
+            return Boolean.FALSE
+        }
+    }
+
+    /**
      * Returns a Person if and only if the emailAddress and password match.
     */
     public Person check( emailAddress, password ) {

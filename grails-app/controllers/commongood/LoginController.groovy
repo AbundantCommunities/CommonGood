@@ -22,6 +22,18 @@ class LoginController {
         }
     }
 
+    // Any machine in the world can (optionally) pass us a JSESSIONID and ask if "this person"
+    // is currently authenticated (currently  "logged in"). 
+    def isAuthenticated( ) {
+        if( authenticateService.isAuthenticated(session) ) {
+            log.debug "${session.user.getLogName()} is authenticated"
+            render 'true'
+        } else {
+            log.info( 'Not authenticated')
+            render 'false'
+        }
+    }
+
     def authenticate( ) {
         session.user = null
         session.neighbourhood = null
