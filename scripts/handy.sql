@@ -45,6 +45,58 @@ SELECT MAX(id) FROM person;
 SELECT MAX(id) FROM question;
 SELECT MAX(id) FROM this_installation;
 
+/*  All the Neighbourhood Connectors, sorted by NH Name  */
+SELECT nh.name,
+       p.first_names,
+       p.last_name
+FROM domain_authorization AS da,
+     neighbourhood AS nh,
+     person AS p
+WHERE da.person_id = p.id
+AND   da.domain_key = nh.id
+AND   da.domain_code = 'N'
+ORDER BY nh.name
+
+
+/*  All people who can login to CG,
+    sorted by neighbourhood and 'type' (BC or NC).
+ */
+(SELECT nh.name AS nh_name,
+       ' ' AS block,
+       'N' AS nc_or_bc,
+       p.first_names,
+       p.last_name,
+       p.id AS p_id
+FROM domain_authorization AS da,
+     neighbourhood AS nh,
+     person AS p
+WHERE da.person_id = p.id
+AND   p.app_user = TRUE
+AND   da.domain_key = nh.id
+AND   da.domain_code = 'N')
+UNION
+(SELECT nh.name AS nh_name,
+       b.description AS block,
+       'B' AS nc_or_bc,
+       p.first_names,
+       p.last_name,
+       p.id AS p_id
+FROM domain_authorization AS da,
+     block AS b,
+     neighbourhood AS nh,
+     person AS p
+WHERE da.person_id = p.id
+AND   p.app_user = TRUE
+AND   da.domain_code = 'B'
+AND   da.domain_key = b.id
+AND   b.neighbourhood_id = nh.id)
+ORDER BY nh_name,
+         nc_or_bc,
+         first_names,
+         last_name,
+         p_id
+
+
 
 /* Useful for setting up a new neighbourhood
 
