@@ -6,9 +6,9 @@ package commongood
  * domainKey 123 then she has rights to the Neighbourhood whose id is 123.
 */
 class DomainAuthorization {
-    final static String APPLICATION = "A"
-    final static String NEIGHBOURHOOD = "N"
-    final static String BLOCK = "B"
+    final static String APPLICATION = 'A'
+    final static String NEIGHBOURHOOD = 'N'
+    final static String BLOCK = 'B'
 
     Person person
     String domainCode // A, N, B → Application Administrator, NeighbourHood Connector, Block Connector
