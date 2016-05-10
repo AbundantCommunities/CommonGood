@@ -24,32 +24,57 @@ class DomainAuthorizationService {
         }
     }
 
+    /**
+     * For a given Person, we find their "best" DomainAuthorization row, to discover
+     * what Neighbourhood's or Block's data they can read/write. At this time in the
+     * evolution of CommonGood, "best" works like this: if we find a domainCode of 'N'
+     * then we return authorization for that neighbourhood. If we don't find an 'N'
+     * then we select one of the DA rows.
+     * 
+     * We here you excliaming, "ONE of the DA rows"?! Yes, we are not yet prepared
+     * to handle multiple 'B' domainCodes for one person (unless that person has an
+     * 'N' DA).
+     * 
+     * Lastly, we do not return the selected DomainAuthorization (DA). Instead, we
+     * transform the DA into an instance of org.abundantcommunityinitiative.commongood.Authorization.
+     * That class is a bit more useful for authorzation HTTP requests.
+     */
     def getForPerson( person ) {
         log.info "Get Authorization for ${person.logName}"
-
         def da = DomainAuthorization.findAll( "from DomainAuthorization da where da.person.id=?", [ person.id ] )
 
         if( da.size() == 0 ) {
-            log.warn( "No DA rows found for ${person.fullName}" )
+            log.warn "No DA rows found for ${person.logName}"
 
-        } else if( da.size() > 1 ) {
-            log.warn( "${da.size()} DA rows found for ${person.fullName}" )
-        
         } else {
-            // Is the DA for a Neighbourhood or a Block?
-            def domAuth = da[0]
-            switch( domAuth.domainCode ) {
-                case DomainAuthorization.NEIGHBOURHOOD:
-                    return Authorization.getForNeighbourhood( domAuth.domainKey )
+            log.info "${da.size()} DA rows found for ${person.logName}"
+            def bestDA = null
+            for( domAuth in da ) {
+                if( domAuth.domainCode == DomainAuthorization.NEIGHBOURHOOD ) {
+                    // A person should have at most one of these.
+                    bestDA = domAuth
+                    break
 
-                case DomainAuthorization.BLOCK:
-                    return Authorization.getForBlock( domAuth.domainKey )
+                } else if( domAuth.domainCode == DomainAuthorization.BLOCK ) {
+                    // We'll use the first non-NH DA we find
+                    bestDA = domAuth
+                
+                } else {
+                    log.warn "Ignoring domainCode ${domAuth.domainCode}"
+                }
+            }
 
-                default:
-                    log.warn "Did not understand domainCode ${domAuth.domainCode}"
+            if( bestDA ) {
+                if( bestDA.domainCode == DomainAuthorization.NEIGHBOURHOOD ) {
+                    return Authorization.getForNeighbourhood( bestDA.domainKey )
+                } else {
+                    return Authorization.getForBlock( bestDA.domainKey )
+                }
             }
         }
-        return null // Failed to find valid DomainAuthorization configuration for person
+
+        // Failed to find a valid DomainAuthorization for person.
+        return null
     }
 
     /**
