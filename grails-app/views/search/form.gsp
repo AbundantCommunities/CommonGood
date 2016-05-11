@@ -3,7 +3,7 @@
 <html>
     <head>
         <meta name="layout" content="basic">
-        <title>Block Connectors</title>
+        <title>Common Good - Advanced Search</title>
         <script type="text/javascript">
 
             function criteriaStatus() {
