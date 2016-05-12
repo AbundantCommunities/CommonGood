@@ -91,7 +91,7 @@ class BlockSummaryController {
            numFamilies: countFamilies,
            numInterviews: countInterviews,
            numDeclined: countPartyPoopers,
-           numRemaining: countFamilies - countInterviews
+           numRemaining: countFamilies - countInterviews - countPartyPoopers
        ]
 
         [result:
