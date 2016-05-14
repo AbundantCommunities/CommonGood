@@ -188,7 +188,7 @@
     </head>
     <body>
             <div class="content-section content-container content-centered">
-                <div id="content-section-embedded" style="width:360px">
+                <div class="content-section-embedded" style="width:360px">
                     <div style="margin-top:-15px;"><h3>Advanced Search</h3></div>
                     <div style="font-size:smaller;margin-top:-10px;margin-bottom:10px;">Enter one or more values</div>
                     <form id="advanced-form" action="advanced" method="GET">
