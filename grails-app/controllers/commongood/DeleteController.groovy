@@ -3,6 +3,27 @@ package commongood
 class DeleteController {
     def authorizationService
 
+    // Determine what people and answers would be lost if a given family were to be
+    // deleted (cascading deletions...).
+    def confirmFamily( ) {
+        Family target = Family.get( params.long('id') )
+        log.info "${session.user.getLogName()} confirm deletion of family ${target.name}"
+        authorizationService.family( target.id, session )
+
+        def deleteThis = "FAMILY ${target.name}"
+        def peeps = Person.findAllByFamily( target )
+        def associated = [ "${peeps.size()} Family Members" ]
+
+        def countAnswers = 0
+        peeps.each{
+            // This is a horrid way to treat a database!
+            countAnswers += Answer.countByPerson( it )
+        }
+        associated << "${countAnswers} Answers"
+
+        return [deleteThis: deleteThis, associatedTables: associated ]
+    }
+
     // Determine what answers would be lost if a given person were to be
     // deleted (cascading deletion of person's answers).
     def confirmPerson( ) {
