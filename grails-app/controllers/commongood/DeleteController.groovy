@@ -1,5 +1,7 @@
 package commongood
 
+import org.abundantcommunityinitiative.commongood.handy.TokenGenerator
+
 class DeleteController {
     def authorizationService
 
@@ -21,7 +23,11 @@ class DeleteController {
         }
         associated << "${countAnswers} Answers"
 
-        return [deleteThis: deleteThis, associatedTables: associated ]
+        def token = TokenGenerator.get( )
+        session.deletionType = 'family'
+        session.deletionToken = token
+
+        return [deleteThis: deleteThis, associatedTables: associated, magicToken: token ]
     }
 
     // Determine what answers would be lost if a given person were to be
@@ -34,6 +40,10 @@ class DeleteController {
         def deleteThis = "PERSON ${target.firstNames} ${target.lastName}"
         def count = Answer.countByPerson( target )
 
-        return [deleteThis: deleteThis, associatedTables: ["${count} Answers"] ]
+        def token = TokenGenerator.get( )
+        session.deletionType = 'person'
+        session.deletionToken = token
+
+        return [deleteThis: deleteThis, associatedTables: ["${count} Answers"], magicToken: token ]
     }
 }

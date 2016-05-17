@@ -20,7 +20,7 @@
                         </g:each>
                         </ul>
 
-                        <div class="content-row">Are you CERTAIN you want to delete ${deleteThis}?</div>
+                        <div class="content-row">Are you CERTAIN you want to delete ${deleteThis}? ${magicToken}</div>
                         <div class="content-space-row">&nbsp;</div>
                         <div class="button-row center"><a href="#" onclick="alert('not yet implemented');"><div class="button bold" >Cancel</div></a><div class="button-spacer"></div><a href="#" onclick="alert('not yet implemented');"><div class="button">Delete</div></a></div>
 
