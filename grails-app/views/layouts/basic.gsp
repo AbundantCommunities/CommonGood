@@ -51,7 +51,10 @@
                 <div id="advanced-search"><g:link controller="search" action="form">advanced search</g:link></div>
                 <g:link controller="navigate" action="${session.lastNavigationLevel}" id="${session.lastNavigationId}"><div id="browse-button">Browse</div></g:link>
                 <form id="search-form" action="<g:createLink controller='search' />" method="get">
-                    <div id="search"><asset:image id="search-image" src="search.png" width="18" height="18"/><input id="search-criteria" type="text" placeholder="search" name="q" value="" onKeyPress="checkEnter(event);"/></div>
+                    <div id="search"><asset:image id="search-image" src="search.png" width="18" height="18"/>
+                        <input id="search-criteria" type="text" placeholder="search" name="q" value="" onKeyPress="checkEnter(event);"/>
+                        <input type="hidden" name="contactInfo" value="no"/>
+                    </div>
                 </form>
             </div>
             <g:layoutBody/>

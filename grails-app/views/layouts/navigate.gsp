@@ -68,7 +68,11 @@
                 </g:elseif>
                 <div id="advanced-search"><g:link controller="search" action="form">advanced search</g:link></div>
                 <form id="search-form" action="<g:createLink controller='search' />" method="get">
-                    <div id="search"><asset:image id="search-image" src="search.png" width="18" height="18"/><input id="search-criteria" type="text" placeholder="search" name="q" value="" onKeyPress="checkEnter(event);"/></div>
+                    <div id="search">
+                        <asset:image id="search-image" src="search.png" width="18" height="18"/>
+                        <input id="search-criteria" type="text" placeholder="search" name="q" value="" onKeyPress="checkEnter(event);"/>
+                        <input type="hidden" name="contactInfo" value="no"/>
+                    </div>
                 </form>
             </div>
             <g:if test="${navContext.size() > 0}">

@@ -191,7 +191,7 @@
                 <div class="content-section-embedded" style="width:360px">
                     <div style="margin-top:-15px;"><h3>Advanced Search</h3></div>
                     <div style="font-size:smaller;margin-top:-10px;margin-bottom:10px;">Enter one or more values</div>
-                    <form id="advanced-form" action="advanced" method="GET">
+                    <form id="advanced-form" action="index" method="GET">
                         <div class="criteria-container">
                             <div class="criteria-label">
                                 <div>Search text</div>
@@ -216,6 +216,7 @@
                                 <div><input id="toAgeInput" type="text" name="toAge" value="" onKeyUp="checkAdvancedEnter(event);" size="10"/><span id="toValidImg" style="display:none;">&nbsp;<asset:image style="vertical-align:middle;" src="invalid.png" width="16px" height="16px" /></span></div>
                             </div>
                         </div>
+                        <input type="hidden" name="contactInfo" value="no"/>
                     </form>
                     <div id="searchDescription" style="font-size:smaller;margin-bottom:15px;margin-top:15px;min-height:30px;"></div>
                     <div class="button bold" onclick="doAdvancedSearch();">Search</div>
