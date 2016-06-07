@@ -10,6 +10,8 @@ class NavigateController {
     def authorizationService
     def blockService
 
+    // Allows a GSP to have a link back to the last place to which the user
+    // navigated. Example: remember( 'family', familyId )
     def remember( lastNavigationLevel, lastNavigationId ) {
         session.lastNavigationLevel = lastNavigationLevel
         session.lastNavigationId = lastNavigationId

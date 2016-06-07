@@ -5,6 +5,13 @@ import org.abundantcommunityinitiative.commongood.handy.TokenGenerator
 class DeleteController {
     def authorizationService
 
+    // AJAX. The GSP confirming a deletion can tell us to forget about it.
+    def cancel( ) {
+        session.deleteType = null
+        session.deleteToken = null
+        render ""
+    }
+
     // Determine what people and answers would be lost if a given family were to be
     // deleted (cascading deletions...).
     def confirmFamily( ) {
@@ -24,8 +31,8 @@ class DeleteController {
         associated << "${countAnswers} Answers"
 
         def token = TokenGenerator.get( )
-        session.deletionType = 'family'
-        session.deletionToken = token
+        session.deleteType = 'family'
+        session.deleteToken = token
 
         return [deleteThis: deleteThis, associatedTables: associated, magicToken: token ]
     }
@@ -39,11 +46,64 @@ class DeleteController {
 
         def deleteThis = "PERSON ${target.firstNames} ${target.lastName}"
         def count = Answer.countByPerson( target )
+        def associated = [ "${count} Answers" ]
+
+        def das = DomainAuthorization.findAllByPerson( target )
+        count = 0
+        das.each {
+            count++
+        }
+        if( count ) {
+            associated << "${count} Authorizations (this is technical)"
+        }
+
+        associated << "(not reporting interviewer references!)"
 
         def token = TokenGenerator.get( )
-        session.deletionType = 'person'
-        session.deletionToken = token
+        session.deleteType = 'person'
+        session.deleteToken = token
 
-        return [deleteThis: deleteThis, associatedTables: ["${count} Answers"], magicToken: token ]
+        return [deleteThis: deleteThis, associatedTables: associated, id: target.id, magicToken: token ]
+    }
+
+    // Delete a given person. Cascade the deletion to objects associated with the
+    // person.
+    def person( ) {
+        Person target = Person.get( params.long('id') )
+        log.info "${session.user.getLogName()} DELETE person ${target.logName}"
+        authorizationService.person( target.id, session )
+
+        if( session.deleteType == 'person' && session.deleteToken == params.magicToken ) {
+            // Need to remember family for response page
+            Family family = target.family
+
+            def answers = Answer.findAllByPerson( target )
+            answers.each {
+                it.delete(flush: true)
+            }
+            def das = DomainAuthorization.findAllByPerson( target )
+            das.each {
+                it.delete(flush: true)
+            }
+            def bcs = Family.findAllByInterviewer( target )
+            bcs.each {
+                it.interviwer = null
+                it.save( flush:true, failOnError: true )
+            }
+            
+            // Finally, the coup de grace.
+            target.delete(flush:true)
+
+            session.deleteType = null
+            session.deleteToken = null
+
+            flash.message = "Deleted PERSON ${target.firstNames} ${target.lastName}"
+            flash.nature = 'SUCCESS'
+            redirect controller: "navigate", action: "family", id: family.id
+
+        } else {
+            log.error "${session.user.getLogName()} trickery"
+            throw new Exception('Illogical delete on person')
+        }
     }
 }
