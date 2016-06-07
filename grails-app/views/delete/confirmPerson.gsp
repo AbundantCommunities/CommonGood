@@ -5,6 +5,36 @@
         <meta name="layout" content="basic">
         <title>Common Good - Delete Person Confirmation</title>
 
+
+        <script type="text/javascript">
+
+            function doDelete() {
+                document.getElementById('delete-form').submit();
+            }
+
+
+            function doCancel() {
+                // Cancel delete person.
+
+                var xmlhttp = new XMLHttpRequest( );
+                var url = '<g:createLink controller="delete" action="cancel"/>';
+                xmlhttp.onreadystatechange = function( ) {
+                    if( xmlhttp.readyState == 4 /* && xmlhttp.status == 200 */ ) {
+                        // no response expected
+                        completeCancel();
+                    }
+                };
+
+                xmlhttp.open( "GET", url, true );
+                xmlhttp.send( );
+
+                function completeCancel() {
+                    document.getElementById('cancel-form').submit();
+                }
+            }
+
+
+        </script>
     </head>
     <body>
             <div class="content-section content-container">
@@ -20,9 +50,15 @@
                         </g:each>
                         </ul>
 
-                        <div class="content-row">Are you CERTAIN you want to delete ${deleteThis}? ${magicToken}</div>
+                        <div class="content-row">Are you CERTAIN you want to delete ${deleteThis}?</div>
                         <div class="content-space-row">&nbsp;</div>
-                        <div class="button-row center"><a href="#" onclick="alert('not yet implemented');"><div class="button bold" >Cancel</div></a><div class="button-spacer"></div><a href="#" onclick="alert('not yet implemented');"><div class="button">Delete</div></a></div>
+                        <div class="button-row center"><a href="#" onclick="doCancel();"><div class="button bold" >Cancel</div></a><div class="button-spacer"></div><a href="#" onclick="doDelete();"><div class="button">Delete</div></a></div>
+                        <form id="delete-form" action="<g:createLink controller='delete' action='person' />" method="GET">
+                            <input type="hidden" name="id" value="${id}"/>
+                            <input type="hidden" name="magicToken" value="${magicToken}"/>
+                        </form>
+                        <form id="cancel-form" action="<g:createLink controller='navigate' action='${session.lastNavigationLevel}' id='${session.lastNavigationId}'/>" method="GET">
+                        </form>
 
                 </div>
             </div>
