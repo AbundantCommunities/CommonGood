@@ -4,6 +4,7 @@ import org.abundantcommunityinitiative.commongood.handy.TokenGenerator
 
 class DeleteController {
     def authorizationService
+    def deleteService
 
     // AJAX. The GSP confirming a deletion can tell us to forget about it.
     def cancel( ) {
@@ -34,7 +35,7 @@ class DeleteController {
         session.deleteType = 'family'
         session.deleteToken = token
 
-        return [deleteThis: deleteThis, associatedTables: associated, magicToken: token ]
+        return [deleteThis: deleteThis, id: target.id, associatedTables: associated, magicToken: token ]
     }
 
     // Determine what answers would be lost if a given person were to be
@@ -63,7 +64,39 @@ class DeleteController {
         session.deleteType = 'person'
         session.deleteToken = token
 
-        return [deleteThis: deleteThis, associatedTables: associated, id: target.id, magicToken: token ]
+        return [deleteThis: deleteThis, id: target.id, associatedTables: associated, magicToken: token ]
+    }
+
+    // Delete a given family. Cascade the deletion to objects associated with the
+    // family.
+    def famiy( ) {
+        Family target = Family.get( params.long('id') )
+        log.info "${session.user.getLogName()} DELETE family ${target.id} ${target.name}"
+        authorizationService.family( target.id, session )
+
+        if( session.deleteType == 'family' && session.deleteToken == params.magicToken ) {
+            // Need to remember address for response page
+            Address address = target.address
+
+            def members = Person.findAllByFamily( target )
+            members.each {
+                deleteService.person( it )
+            }
+
+            // Last but not least.
+            target.delete( flush:true )
+
+            session.deleteType = null
+            session.deleteToken = null
+
+            flash.message = "Deleted FAMILY ${target.name}"
+            flash.nature = 'SUCCESS'
+            redirect controller: "navigate", action: "address", id: address.id
+
+        } else {
+            log.error "${session.user.getLogName()} trickery"
+            throw new Exception('Illogical delete on family')
+        }
     }
 
     // Delete a given person. Cascade the deletion to objects associated with the
@@ -90,7 +123,7 @@ class DeleteController {
                 it.interviwer = null
                 it.save( flush:true, failOnError: true )
             }
-            
+
             // Finally, the coup de grace.
             target.delete(flush:true)
 
