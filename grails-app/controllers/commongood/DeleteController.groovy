@@ -69,7 +69,7 @@ class DeleteController {
 
     // Delete a given family. Cascade the deletion to objects associated with the
     // family.
-    def famiy( ) {
+    def family( ) {
         Family target = Family.get( params.long('id') )
         log.info "${session.user.getLogName()} DELETE family ${target.id} ${target.name}"
         authorizationService.family( target.id, session )
