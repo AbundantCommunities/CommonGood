@@ -75,16 +75,9 @@ class DeleteController {
         authorizationService.family( target.id, session )
 
         if( session.deleteType == 'family' && session.deleteToken == params.magicToken ) {
-            // Need to remember address for response page
             Address address = target.address
 
-            def members = Person.findAllByFamily( target )
-            members.each {
-                deleteService.person( it )
-            }
-
-            // Last but not least.
-            target.delete( flush:true )
+            deleteService.family( target )
 
             session.deleteType = null
             session.deleteToken = null
@@ -107,25 +100,9 @@ class DeleteController {
         authorizationService.person( target.id, session )
 
         if( session.deleteType == 'person' && session.deleteToken == params.magicToken ) {
-            // Need to remember family for response page
             Family family = target.family
 
-            def answers = Answer.findAllByPerson( target )
-            answers.each {
-                it.delete(flush: true)
-            }
-            def das = DomainAuthorization.findAllByPerson( target )
-            das.each {
-                it.delete(flush: true)
-            }
-            def bcs = Family.findAllByInterviewer( target )
-            bcs.each {
-                it.interviwer = null
-                it.save( flush:true, failOnError: true )
-            }
-
-            // Finally, the coup de grace.
-            target.delete(flush:true)
+            deleteService.person( target )
 
             session.deleteType = null
             session.deleteToken = null
