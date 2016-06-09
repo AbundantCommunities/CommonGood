@@ -25,7 +25,7 @@ class DeleteService {
             }
             def bcs = Family.findAllByInterviewer( target )
             bcs.each {
-                it.interviwer = null
+                it.interviewer = null
                 it.save( flush:true, failOnError: true )
             }
 
