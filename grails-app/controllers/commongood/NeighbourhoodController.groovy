@@ -2,8 +2,17 @@ package commongood
 
 class NeighbourhoodController {
     static allowedMethods = [addBlock:'POST']
-
     def authorizationService
+
+    def reorder( ) {
+        def block = Block.get( Long.valueOf( params.blockId ) )
+        def nhood = block.neighbourhood
+        authorizationService.neighbourhood( nhood.id, session )
+
+        def afterBlock = Block.get( Long.valueOf(params.afterId) )
+        log.info "${session.user.getLogName()} requests reorder of ${nhood}. Move ${block} after ${afterBlock}"
+        render "thank-you"
+    }
 
     // TODO BC can cover > 1 block; make easier for GSP
     def blockConnectors( ) {
