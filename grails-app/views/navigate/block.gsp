@@ -464,8 +464,10 @@
             <div class="content-section">
                 <div class="content-heading">Addresses for ${navSelection.levelInHierarchy} ${navSelection.description}&nbsp;&nbsp;<a href="#" onclick="presentNewModal();" style="font-weight:normal;">+ Add New Addresses</a></div>
                 <g:if test="${navChildren.children.size() > 0}">
+                <div <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}">id="listWithHandle"</g:if>>
                     <g:each in="${navChildren.children}" var="child">
-                        <div class="content-children-row">
+                        <div <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}">id="${child.id}"</g:if> class="content-children-row">
+                            <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}"><span class="drag-handle"><asset:image src="reorder-row.png" width="18" height="18" style="vertical-align:middle;"/></span></g:if>
                             <g:link controller='Navigate' action='${navChildren.childType.toLowerCase()}' id='${child.id}'>${child.address}</g:link>:
                             <g:if test="${child.families.size()>0}">
                             <g:each in="${child.families}" var="family" status="i">
@@ -481,7 +483,12 @@
                 <g:else>
                     <div class="content-children-row light-text">no addresses</div>
                 </g:else>
+                </div>
                 <div class="content-children-row"></div>
+                <form id="reorder-form" action="<g:createLink controller='Block' action='reorder' />" method="POST">
+                    <input id="reorder-this-id" type="hidden" name="addressId" value=""/>
+                    <input id="reorder-after-id" type="hidden" name="afterId" value=""/>
+                </form>
             </div>
             <div id="transparent-overlay">
             </div>

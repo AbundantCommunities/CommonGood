@@ -202,12 +202,6 @@
                 dismissEditAnswerModal();
             }
 
-            <g:if test="${navSelection.birthYear == 0}">
-                window.onload = function onWindowLoad() {
-                    document.getElementById('birth-year-value').innerHTML = '';
-                }
-            </g:if>
-
 
         </script>
         <style type="text/css">
@@ -286,6 +280,7 @@
             <div class="content-section">
                 <div class="content-heading">Answers for ${navSelection.description}</div>
                 <g:if test="${questionsAndAnswers.size() > 0}">
+                <div id="listWithHandle">
                     <g:each in="${questionsAndAnswers}" var="qa">
                         <div class="content-children-row">${qa.question}: <g:each in="${qa.answers}" var="answer" status="i"><g:if test="${i>0}">, </g:if><span id="answer_${answer.id}" style="cursor:pointer;color:#B48B6A;" onclick="editAnswer(this);">${answer.text}</span></g:each></div>
                     </g:each>
@@ -293,6 +288,7 @@
                 <g:else>
                     <div class="content-children-row light-text">no answers</div>
                 </g:else>
+                </div>
                 <div class="content-children-row"></div>
             </div>
             <div id="transparent-overlay">

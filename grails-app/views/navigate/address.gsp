@@ -191,15 +191,24 @@
             </div>
             <div class="content-section">
                 <div class="content-heading">Families for ${navSelection.levelInHierarchy} ${navSelection.description}&nbsp;&nbsp;<a onclick="presentNewModal();" href="#" style="font-weight:normal;">+ Add New ${navChildren.childType}</a></div>
+                <div id="listWithHandle">
                 <g:if test="${navChildren.children.size() > 0}">
                     <g:each in="${navChildren.children}" var="child">
-                        <div class="content-children-row"><g:link controller='Navigate' action='${navChildren.childType.toLowerCase()}' id='${child.id}'>${child.name}</g:link></div>
+                        <div id="${child.id}" class="content-children-row">
+                            <span class="drag-handle"><asset:image src="reorder-row.png" width="18" height="18" style="vertical-align:middle;"/></span>
+                            <g:link controller='Navigate' action='${navChildren.childType.toLowerCase()}' id='${child.id}'>${child.name}</g:link>
+                        </div>
                     </g:each>
                 </g:if>
                 <g:else>
                     <div class="content-children-row light-text">no families</div>
                 </g:else>
+                </div>
                 <div class="content-children-row"></div>
+                <form id="reorder-form" action="<g:createLink controller='Address' action='reorder' />" method="POST">
+                    <input id="reorder-this-id" type="hidden" name="familyId" value=""/>
+                    <input id="reorder-after-id" type="hidden" name="afterId" value=""/>
+                </form>
             </div>
             <div id="transparent-overlay">
             </div>

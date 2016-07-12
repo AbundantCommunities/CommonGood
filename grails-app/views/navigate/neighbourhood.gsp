@@ -154,9 +154,11 @@
                 <g:elseif test="${authorized.forBlock()==Boolean.TRUE}">
                     <div class="content-heading">Your ${navChildren.childType}<g:if test="${navChildren.children.size() > 1}">s</g:if></div>
                 </g:elseif>
+                <div <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}">id="listWithHandle"</g:if>>
                 <g:if test="${navChildren.children.size() > 0}">
                     <g:each in="${navChildren.children}" var="child">
-                        <div class="content-children-row">
+                        <div <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}">id="${child.id}"</g:if> class="content-children-row">
+                            <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}"><span class="drag-handle"><asset:image src="reorder-row.png" width="18" height="18" style="vertical-align:middle;"/></span></g:if>
                             <g:link controller="Navigate" action="${navChildren.childType.toLowerCase()}" id="${child.id}">(${child.code}) ${child.description}</g:link>:
                             <g:if test="${child.connectors.size()>0}">
                                 <g:each in="${child.connectors}" var="bc" status="i">
@@ -173,7 +175,12 @@
                 <g:else>
                     <div class="content-children-row light-text">no blocks</div>
                 </g:else>
+                </div>
                 <div class="content-children-row"></div>
+                <form id="reorder-form" action="<g:createLink controller='Neighbourhood' action='reorder' />" method="POST">
+                    <input id="reorder-this-id" type="hidden" name="blockId" value=""/>
+                    <input id="reorder-after-id" type="hidden" name="afterId" value=""/>
+                </form>
             </div>
             <div id="transparent-overlay">
             </div>

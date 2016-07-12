@@ -34,7 +34,33 @@
                     return true;
                 }
             }
+
+            function doReorder(thisId,afterId) {
+
+                document.getElementById('reorder-this-id').value = thisId;
+                document.getElementById('reorder-after-id').value = afterId;
+                document.getElementById('reorder-form').submit();
+
+            }
+
+
         </script>
+        <style type="text/css">
+
+            .sortable-ghost {
+                opacity: .2;
+            }
+
+
+            .drag-handle {
+                font: bold 10px Sans-Serif;
+                color: #B48B6A;
+                display: inline-block;
+                cursor: move;
+                cursor: -webkit-grabbing;  /* overrides 'move' */
+            }
+
+        </style>
         <g:layoutHead/>
     </head>
     <body>
@@ -88,5 +114,7 @@
                 CommonGood Version <g:meta name="app.version"/>
             </div>
         </div>
+        <asset:javascript src="Sortable.js"/>
+        <asset:javascript src="app.js"/>
     </body>
 </html>
