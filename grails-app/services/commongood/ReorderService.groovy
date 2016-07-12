@@ -58,4 +58,58 @@ class ReorderService {
             }
         }
     }
+
+    // We assume that no two addresses within this block have the same orderWithinBlock
+    def block( address, afterAddress ) {
+        if( address.block != afterAddress.block ) {
+            throw new Exception('Addresses from different blocks?!')
+        }
+        
+        // First things first
+        def nextNumber = afterAddress.orderWithinBlock + 1
+        address.orderWithinBlock = nextNumber++
+
+        // Now, reorder the addresses that follow afterAddress.
+        // First, find those addresses.
+        def crit = Address.createCriteria( )
+        def addresses = crit.list {
+            eq( 'block', address.block )
+            and {
+                gt( 'orderWithinBlock', afterAddress.orderWithinBlock )
+            }
+            order( 'orderWithinBlock' )
+        }
+        
+        // Do the actual reordering of the addresses that follow afterAddress.
+        log.debug "Reorder ${addresses}"
+        addresses.each{
+            if( it != address ) {
+                // Remember: we already renumbered 'address'
+                it.orderWithinBlock = nextNumber++
+            }
+        }
+    }
+
+    // Make this address the first in the block.
+    def block( address ) {
+        // First things first
+        def nextNumber = 1
+        address.orderWithinBlock = nextNumber++
+
+        // Fetch the block's addresses.
+        def crit = Address.createCriteria( )
+        def addresses = crit.list {
+            eq( 'block', address.block )
+            order( 'orderWithinBlock' )
+        }
+        
+        // Do the actual reordering of the addresses.
+        log.debug "Reorder ${addresses}"
+        addresses.each{
+            if( it != address ) {
+                // Remember: we already renumbered 'address'
+                it.orderWithinBlock = nextNumber++
+            }
+        }
+    }
 }

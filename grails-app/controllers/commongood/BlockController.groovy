@@ -5,6 +5,25 @@ class BlockController {
 
     def domainAuthorizationService
     def authorizationService
+    def reorderService
+
+    def reorder( ) {
+        def address = Address.get( Long.valueOf( params.addressId ) )
+        def block = address.block
+        authorizationService.block( block.id, session )
+
+        def afterId = Long.valueOf( params.afterId )
+        if( afterId ) {
+            def afterAddress = Address.get( afterId )
+            log.info "${session.user.getLogName()} requests move ${address} after ${afterAddress}"
+            reorderService.block( address, afterAddress )
+        } else {
+            log.info "${session.user.getLogName()} requests move ${address} to top"
+            reorderService.block( address )
+        }
+
+        redirect controller:'navigate', action:'block', id:block.id
+    }
 
     /**
      * You can POST a single blob of text containing N new addresses
