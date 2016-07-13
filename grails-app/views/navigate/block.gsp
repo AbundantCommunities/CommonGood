@@ -11,7 +11,6 @@
                 function populateEditModal() {
                     document.getElementById('blockCodeInput').value = decodeEntities("${navSelection.code}");
                     document.getElementById('blockDescriptionInput').value = decodeEntities("${navSelection.description}");
-                    document.getElementById('orderWithinNeighbourhoodInput').value = "${navSelection.orderWithinNeighbourhood}";
                 }
 
                 function presentEditModal() {
@@ -34,22 +33,8 @@
                     document.getElementById("transparent-overlay").style.visibility='hidden';
                 }
 
-                
 
-                function orderOk(order) {
-                    if (order.length == 0) {
-                        return false;
-                    } else {
-                        for (i=0; i<order.length; i++) {
-                            if ('0123456789'.indexOf(order.substr(i,1)) < 0) {
-                                return false;
-                            }
-                        }
-                    }
-                    return true;
-                }
-
-                function blockIsValid(code,description,order) {
+                function blockIsValid(code,description) {
                     if (code == "") {
                         alert("Please enter a block code.");
                         return false;
@@ -57,11 +42,6 @@
                         if (description == "") {
                             alert("Please enter a block description.");
                             return false;
-                        } else {
-                            if (!orderOk(order)) {
-                                alert("Please enter a valid order. Must be a number.");
-                                return false;
-                            }
                         }
                     }
                     return true;
@@ -70,13 +50,11 @@
                 function saveBlock() {
                     var blockCode = document.getElementById('blockCodeInput').value.trim();
                     var blockDescription = document.getElementById('blockDescriptionInput').value.trim();
-                    var order = document.getElementById('orderWithinNeighbourhoodInput').value.trim();
-                    if (blockIsValid(blockCode,blockDescription,order)) {
+                    if (blockIsValid(blockCode,blockDescription)) {
                         dismissEditModal();
 
                         document.getElementById("blockCodeInput").value = blockCode;
                         document.getElementById("blockDescriptionInput").value = blockDescription;
-                        document.getElementById("orderWithinNeighbourhoodInput").value = order;
                         document.getElementById('edit-form').submit();
                     }
                 }
@@ -408,9 +386,6 @@
                 <div class="content-row">
                     <div class="content-row-item" style="width:210px;">Description: </div><div class="content-row-item">${navSelection.description}</div>
                 </div>
-                <div class="content-row">
-                    <div class="content-row-item" style="width:210px;">Order within neighbourhood: </div><div class="content-row-item">${navSelection.orderWithinNeighbourhood}</div>
-                </div>
 
                 <div id="bc-section">
 
@@ -538,7 +513,6 @@
                         <input type="hidden" name="id" value="${navSelection.id}" />
                         <div class="modal-row">Block code: <input id="blockCodeInput" type="text" name="code" value=""/></div>
                         <div class="modal-row">Block description: <input id="blockDescriptionInput" type="text" name="description" value=""/></div>
-                        <div class="modal-row">Order within neighbourhood: <input id="orderWithinNeighbourhoodInput" type="text" name="orderWithinNeighbourhood" value="" size="12"/></div>
                     </form>
                     <div class="button-row">
                         <div class="button" onclick="JavaScript:dismissEditModal();">Cancel</div>
