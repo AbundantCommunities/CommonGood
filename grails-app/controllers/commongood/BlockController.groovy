@@ -106,7 +106,6 @@ class BlockController {
         block.description = params.description.trim( )
 
         if( block.code && block.description ) {
-            block.orderWithinNeighbourhood = Integer.valueOf( params.orderWithinNeighbourhood ?: '0' )
             block.save( flush:true, failOnError: true )
             redirect controller: "navigate", action: "block", id: blockId
         } else {

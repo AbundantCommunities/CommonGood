@@ -29,7 +29,6 @@
 
             function populateEditModal() {
                 document.getElementById('addressTextInput').value = decodeEntities("${navSelection.description}");
-                document.getElementById('orderWithinBlockInput').value = "${navSelection.orderWithinBlock}";
 
                 var encodedNote = "${navSelection.note.split('\r\n').join('|')}";
                 var decodedNote = encodedNote.split('|').join('\n');
@@ -53,19 +52,14 @@
             }
 
 
-            function addressIsValid(addressText,order,note) {
+            function addressIsValid(addressText,note) {
                 if (addressText == "") {
                     alert("Please enter an address.");
                     return false;
                 } else {
-                    if (!orderOk(order)) {
-                        alert("Please enter a valid order. Must be a number.");
+                    if (note.indexOf('|') > -1) {
+                        alert("Notes cannot contain the '|' character. Please use a different character");
                         return false;
-                    } else {
-                        if (note.indexOf('|') > -1) {
-                            alert("Notes cannot contain the '|' character. Please use a different character");
-                            return false;
-                        }
                     }
                 }
                 return true;
@@ -73,13 +67,11 @@
 
             function saveAddress() {
                 var addressText = document.getElementById('addressTextInput').value.trim();
-                var order = document.getElementById('orderWithinBlockInput').value.trim();
                 var note = document.getElementById('addressNoteTextarea').value.trim();
-                if (addressIsValid(addressText,order,note)) {
+                if (addressIsValid(addressText,note)) {
                     dismissEditModal();
 
                     document.getElementById("addressTextInput").value = document.getElementById("addressTextInput").value.trim();
-                    document.getElementById("orderWithinBlockInput").value = document.getElementById("orderWithinBlockInput").value.trim();
                     document.getElementById("addressNoteTextarea").value = document.getElementById("addressNoteTextarea").value.trim();
 
                     document.getElementById('edit-form').submit();
@@ -110,21 +102,6 @@
             function dismissNewModal() {
                 document.getElementById("new-container").style.visibility='hidden';
                 document.getElementById("transparent-overlay").style.visibility='hidden';
-            }
-
-            
-
-            function orderOk(order) {
-                if (order.length == 0) {
-                    return false;
-                } else {
-                    for (i=0; i<order.length; i++) {
-                        if ('0123456789'.indexOf(order.substr(i,1)) < 0) {
-                            return false;
-                        }
-                    }
-                }
-                return true;
             }
 
             function familyIsValid(familyName,note) {
@@ -178,9 +155,6 @@
                     <div class="content-row-item" style="width:145px;">Address: </div><div class="content-row-item">${navSelection.description}</div>
                 </div>
                 <div class="content-row">
-                    <div class="content-row-item" style="width:145px;">Order within block: </div><div class="content-row-item">${navSelection.orderWithinBlock}</div>
-                </div>
-                <div class="content-row">
                     <div class="content-row-item" style="width:145px;">Note: </div><div class="content-row-item"><textarea cols="60" rows="5" style="color: #222222;" disabled>${navSelection.note}</textarea></div>
                 </div>
 
@@ -217,7 +191,6 @@
                 <form id="edit-form" action="<g:createLink controller='Address' action='save'/>" method="POST">
                     <input type="hidden" name="id" value="${navSelection.id}" />
                     <div class="modal-row">Address: <input id="addressTextInput" type="text" name="text" value="" style="width:70%;"/></div>
-                    <div class="modal-row">Order within block: <input id="orderWithinBlockInput" type="text" name="orderWithinBlock" value="" size="12"/></div>
                     <div class="modal-row">Note: <br/><textarea id="addressNoteTextarea" class="note-style" name="note" cols=44 rows=4></textarea></div>
                     <g:hiddenField name="version" value="${navSelection.version}" />
                 </form>

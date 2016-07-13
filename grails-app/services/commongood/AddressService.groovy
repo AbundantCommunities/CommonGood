@@ -15,7 +15,6 @@ class AddressService {
 
         address.text = params.text
         address.note = params.note
-        address.orderWithinBlock = params.int('orderWithinBlock')
         address.save( flush:true, failOnError: true )
     }
 }
