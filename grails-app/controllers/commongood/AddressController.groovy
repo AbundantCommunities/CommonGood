@@ -6,6 +6,25 @@ class AddressController {
     static allowedMethods = [families:'GET', save:'POST']
     def authorizationService
     def addressService
+    def reorderService
+
+    def reorder( ) {
+        def family = Family.get( Long.valueOf( params.familyId ) )
+        def address = family.address
+        authorizationService.address( address.id, session )
+
+        def afterId = Long.valueOf( params.afterId )
+        if( afterId ) {
+            def afterFamily = Family.get( afterId )
+            log.info "${session.user.getLogName()} requests move ${family} after ${afterFamily}"
+            reorderService.address( family, afterFamily )
+        } else {
+            log.info "${session.user.getLogName()} requests move ${family} to top"
+            reorderService.address( family )
+        }
+
+        redirect controller:'navigate', action:'address', id:address.id
+    }
 
     // Get a JSON list of families at a given address
     def families( ) {

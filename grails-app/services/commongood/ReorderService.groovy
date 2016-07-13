@@ -113,6 +113,60 @@ class ReorderService {
         }
     }
 
+    // We assume that no two families within this address have the same orderWithinAddress
+    def address( family, afterFamily ) {
+        if( family.address != afterFamily.address ) {
+            throw new Exception('Families from different addresses?!')
+        }
+        
+        // First things first
+        def nextNumber = afterFamily.orderWithinAddress + 1
+        family.orderWithinAddress = nextNumber++
+
+        // Now, reorder the families that follow afterFamily.
+        // First, find those families.
+        def crit = Family.createCriteria( )
+        def families = crit.list {
+            eq( 'address', family.address )
+            and {
+                gt( 'orderWithinAddress', afterFamily.orderWithinAddress )
+            }
+            order( 'orderWithinAddress' )
+        }
+        
+        // Do the actual reordering of the families that follow afterFamily.
+        log.debug "Reorder ${families}"
+        families.each{
+            if( it != family ) {
+                // Remember: we already renumbered 'family'
+                it.orderWithinAddress = nextNumber++
+            }
+        }
+    }
+
+    // Make this family the first in the address.
+    def address( family ) {
+        // First things first
+        def nextNumber = 1
+        family.orderWithinAddress = nextNumber++
+
+        // Fetch the address's families.
+        def crit = Family.createCriteria( )
+        def families = crit.list {
+            eq( 'address', family.address )
+            order( 'orderWithinAddress' )
+        }
+        
+        // Do the actual reordering of the families.
+        log.debug "Reorder ${families}"
+        families.each{
+            if( it != family ) {
+                // Remember: we already renumbered 'family'
+                it.orderWithinAddress = nextNumber++
+            }
+        }
+    }
+
     // We assume that no two addresses within this block have the same orderWithinBlock
     def family( person, afterPerson ) {
         if( person.family != afterPerson.family ) {
