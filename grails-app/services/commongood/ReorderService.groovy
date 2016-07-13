@@ -112,4 +112,58 @@ class ReorderService {
             }
         }
     }
+
+    // We assume that no two addresses within this block have the same orderWithinBlock
+    def family( person, afterPerson ) {
+        if( person.family != afterPerson.family ) {
+            throw new Exception('People from different families?!')
+        }
+        
+        // First things first
+        def nextNumber = afterPerson.orderWithinFamily + 1
+        person.orderWithinFamily = nextNumber++
+
+        // Now, reorder the people that follow afterPerson.
+        // First, find those people.
+        def crit = Person.createCriteria( )
+        def people = crit.list {
+            eq( 'family', person.family )
+            and {
+                gt( 'orderWithinFamily', afterPerson.orderWithinFamily )
+            }
+            order( 'orderWithinFamily' )
+        }
+        
+        // Do the actual reordering of the people that follow afterPerson.
+        log.debug "Reorder ${people}"
+        people.each{
+            if( it != person ) {
+                // Remember: we already renumbered 'person'
+                it.orderWithinFamily = nextNumber++
+            }
+        }
+    }
+
+    // Make this person the first in the family.
+    def family( person ) {
+        // First things first
+        def nextNumber = 1
+        person.orderWithinFamily = nextNumber++
+
+        // Fetch the family members.
+        def crit = Person.createCriteria( )
+        def people = crit.list {
+            eq( 'family', person.family )
+            order( 'orderWithinFamily' )
+        }
+        
+        // Do the actual reordering of the people.
+        log.debug "Reorder ${people}"
+        people.each{
+            if( it != person ) {
+                // Remember: we already renumbered 'person'
+                it.orderWithinFamily = nextNumber++
+            }
+        }
+    }
 }

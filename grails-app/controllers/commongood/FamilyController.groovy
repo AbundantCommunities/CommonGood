@@ -5,6 +5,25 @@ import org.abundantcommunityinitiative.commongood.handy.JsonWriter
 class FamilyController {
     static allowedMethods = [members:'GET', save:'POST']
     def authorizationService
+    def reorderService
+
+    def reorder( ) {
+        def person = Person.get( Long.valueOf( params.personId ) )
+        def family = person.family
+        authorizationService.family( family.id, session )
+
+        def afterId = Long.valueOf( params.afterId )
+        if( afterId ) {
+            def afterPerson = Person.get( afterId )
+            log.info "${session.user.getLogName()} requests move ${person} after ${afterPerson}"
+            reorderService.family( person, afterPerson )
+        } else {
+            log.info "${session.user.getLogName()} requests move ${person} to top"
+            reorderService.family( person )
+        }
+
+        redirect controller:'navigate', action:'family', id:family.id
+    }
 
     // Returns members of a given family
     // JSON call -- used by Add Block Connector
