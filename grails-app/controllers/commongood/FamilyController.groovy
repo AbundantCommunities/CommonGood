@@ -41,17 +41,22 @@ class FamilyController {
         render JsonWriter.write( result )
     }
 
+    // Add a new Family OR update and existing one.
     def save() {
         Family family
-        def newFamily
         if( 'id' in params ) {
             // The request wants us to change an existing family.
             // We will not change the family's address.
             def familyId = Long.valueOf( params.id )
             authorizationService.family( familyId, session )
             log.info "${session.user.getLogName()} requests save changes for family/${familyId}"
+
             family = Family.get( familyId )
-            newFamily = false
+            family.name = params.familyName
+            family.note = params.note
+
+            family.save( flush:true, failOnError: true )
+            redirect controller:'navigate', action:'family', id:family.id
         } else {
             // The request is to create a new family.
             // We need to get the family's address from the request.
@@ -59,17 +64,14 @@ class FamilyController {
             def addressId = Long.valueOf( params.addressId )
             authorizationService.address( addressId, session )
             log.info "${session.user.getLogName()} requests add a family to address/${addressId}"
+
             family.address = Address.get( addressId )
+            family.name = params.familyName
+            family.note = params.note
             family.participateInInterview = Boolean.FALSE
             family.permissionToContact = Boolean.FALSE
-            newFamily = true
-        }
-        family.name = params.familyName
-        family.note = params.note
-        if( params.orderWithinAddress ) {
-            family.orderWithinAddress = params.int('orderWithinAddress')
-        } else {
-            // Find the largest value of orderWithinAddress and go from there...
+
+            // Find the largest value of orderWithinAddress and make it a wee bit larger.
             def query = Family.where {
                 address.id == family.address.id
             }.projections {
@@ -77,15 +79,10 @@ class FamilyController {
             }
             def lastOrder = query.find() as Integer
             lastOrder = lastOrder ?: 0
-            family.orderWithinAddress = lastOrder + 100
-        }
+            family.orderWithinAddress = lastOrder + 1
 
-        // TODO Replace failOnError with logic
-        family.save( flush:true, failOnError: true )
-        if( newFamily ) {
+            family.save( flush:true, failOnError: true )
             redirect controller:'navigate', action:'address', id:family.address.id
-        } else {
-            redirect controller:'navigate', action:'family', id:family.id
         }
     }
 }

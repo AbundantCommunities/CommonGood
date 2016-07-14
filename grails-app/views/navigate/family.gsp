@@ -8,7 +8,6 @@
 
             function populateEditModal() {
                 document.getElementById('familyNameInput').value = decodeEntities("${navSelection.description}");
-                document.getElementById('orderWithinAddressInput').value = "${navSelection.orderWithinAddress}";
 
                 var encodedNote = "${navSelection.note.split('\r\n').join('|')}";
                 var decodedNote = encodedNote.split('|').join('\n');
@@ -31,19 +30,14 @@
                 document.getElementById("transparent-overlay").style.visibility='hidden';
             }
 
-            function familyIsValid(familyName,order,note) {
+            function familyIsValid(familyName,note) {
                 if (familyName == "") {
                     alert("Please enter a family name for the new family.");
                     return false;
                 } else {
-                    if (!orderOk(order)) {
-                        alert("Please enter a valid order. Must be a number.");
+                    if (note.indexOf('|') > -1) {
+                        alert("Notes cannot contain the '|' character. Please use a different character");
                         return false;
-                    } else {
-                        if (note.indexOf('|') > -1) {
-                            alert("Notes cannot contain the '|' character. Please use a different character");
-                            return false;
-                        }
                     }
                 }
                 return true;
@@ -51,13 +45,11 @@
 
             function saveFamily() {
                 var familyName = document.getElementById('familyNameInput').value.trim();
-                var order = document.getElementById('orderWithinAddressInput').value.trim();
                 var note = document.getElementById('familyNoteInput').value.trim();
-                if (familyIsValid(familyName,order,note)) {
+                if (familyIsValid(familyName,note)) {
                     dismissEditModal();
 
                     document.getElementById("familyNameInput").value = document.getElementById("familyNameInput").value.trim();
-                    document.getElementById("orderWithinAddressInput").value = document.getElementById("orderWithinAddressInput").value.trim();
                     document.getElementById("familyNoteInput").value = document.getElementById("familyNoteInput").value.trim();
 
                     document.getElementById('edit-form').submit();
@@ -101,19 +93,6 @@
             function yearOk(year) {
                 var pattern = /^$|^(19|20)\d{2}$/;
                 return pattern.test(year);
-            }
-
-            function orderOk(order) {
-                if (order.length == 0) {
-                    return false;
-                } else {
-                    for (i=0; i<order.length; i++) {
-                        if ('0123456789'.indexOf(order.substr(i,1)) < 0) {
-                            return false;
-                        }
-                    }
-                }
-                return true;
             }
 
             function familyMemberIsValid (firstNames, lastName, birthYear, email, note) {
@@ -209,9 +188,6 @@
                     <div class="content-row-item" style="width:160px;">Family name: </div><div class="content-row-item">${navSelection.description}</div>
                 </div>
                 <div class="content-row">
-                    <div class="content-row-item" style="width:160px;">Order within address: </div><div class="content-row-item">${navSelection.orderWithinAddress}</div>
-                </div>
-                <div class="content-row">
                     <div class="content-row-item" style="width:160px;">Note: </div><div class="content-row-item"><textarea cols="60" rows="5" style="color: #222222;" disabled>${navSelection.note}</textarea></div>
                 </div>
                 <div id="content-actions">
@@ -292,7 +268,6 @@
                 <form id="edit-form" action="<g:createLink controller='family' action='save' />" method="post">
                     <input type="hidden" name="id" value="${navSelection.id}" />
                     <div class="modal-row">Family name: <input id="familyNameInput" type="text" name="familyName" value=""/></div>
-                    <div class="modal-row">Order within address: <input id="orderWithinAddressInput" type="text" name="orderWithinAddress" value="" size="12"/></div>
                     <div class="modal-row">Note: <br/><textarea id="familyNoteInput" name="note" cols=44 rows=4></textarea></div>
                 </form>
                 <div class="button-row">

@@ -5,6 +5,7 @@ import grails.transaction.Transactional
 @Transactional
 class AddressService {
 
+    // Update and existing Address
     def update( params ) {
         def addressId = params.long('id')
         def address = Address.get( addressId )
