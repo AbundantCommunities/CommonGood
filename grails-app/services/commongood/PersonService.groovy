@@ -19,7 +19,6 @@ class PersonService {
         person.emailAddress = params.emailAddress
         person.phoneNumber = params.phoneNumber
         person.note = params.note
-        person.orderWithinFamily = params.int('orderWithinFamily')
 
         // TODO Replace failOnError with logic
         person.save( flush:true, failOnError: true )

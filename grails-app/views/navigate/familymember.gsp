@@ -18,7 +18,6 @@
                 document.getElementById('emailAddressInput').value = decodeEntities("${navSelection.emailAddress}");
 
                 document.getElementById('phoneNumberInput').value = decodeEntities("${navSelection.phoneNumber}");
-                document.getElementById('orderWithinFamilyInput').value = "${navSelection.orderWithinFamily}";
 
                 var encodedNote = "${navSelection.note.split('\r\n').join('|')}";
                 var decodedNote = encodedNote.split('|').join('\n');
@@ -55,20 +54,7 @@
                 return pattern.test(year);
             }
 
-            function orderOk(order) {
-                if (order.length == 0) {
-                    return false;
-                } else {
-                    for (i=0; i<order.length; i++) {
-                        if ('0123456789'.indexOf(order.substr(i,1)) < 0) {
-                            return false;
-                        }
-                    }
-                }
-                return true;
-            }
-
-            function familyMemberIsValid (firstNames, lastName, birthYear, email, note, order) {
+            function familyMemberIsValid (firstNames, lastName, birthYear, email, note) {
                 if (firstNames == "") {
                     alert("Please enter a first name for the new family member.");
                     return false;
@@ -88,11 +74,6 @@
                                 if (note.indexOf('|') > -1) {
                                     alert("Notes cannot contain the '|' character. Please use a different character.");
                                     return false;
-                                } else {
-                                    if (!orderOk(order)) {
-                                        alert("Please enter a valid order. Must be a number.");
-                                        return false;
-                                    }
                                 }
                             }
                         }
@@ -108,8 +89,7 @@
                 var birthYear = document.getElementById("birthYearInput").value.trim();
                 var email = document.getElementById("emailAddressInput").value.trim();
                 var note = document.getElementById("noteInput").value.trim();
-                var order = document.getElementById("orderWithinFamilyInput").value.trim();
-                if (familyMemberIsValid(firstNames, lastName, birthYear, email, note, order)) {
+                if (familyMemberIsValid(firstNames, lastName, birthYear, email, note)) {
                     dismissEditModal();
                     // trim all values
                     document.getElementById("firstNamesInput").value = document.getElementById("firstNamesInput").value.trim();
@@ -117,7 +97,6 @@
                     document.getElementById('birthYearInput').value = document.getElementById('birthYearInput').value.trim();
                     document.getElementById("emailAddressInput").value = document.getElementById("emailAddressInput").value.trim();
                     document.getElementById("noteInput").value = document.getElementById("noteInput").value.trim();
-                    document.getElementById("orderWithinFamilyInput").value = document.getElementById("orderWithinFamilyInput").value.trim();
                     // check if birth year blank. if yes, set it to '0'.
                     if (document.getElementById('birthYearInput').value.length == 0) {
                         document.getElementById('birthYearInput').value = '0';
@@ -266,9 +245,6 @@
                     <div class="content-row-item" style="width:150px;">Phone number: </div><div class="content-row-item">${navSelection.phoneNumber}</div>
                 </div>
                 <div class="content-row">
-                    <div class="content-row-item" style="width:150px;">Order within family: </div><div class="content-row-item">${navSelection.orderWithinFamily}</div>
-                </div>
-                <div class="content-row">
                     <div class="content-row-item" style="width:150px;">Note: </div><div class="content-row-item"><textarea cols="60" rows="5" style="color: #222222;" disabled>${navSelection.note}</textarea></div>
                 </div>
 
@@ -302,7 +278,6 @@
                     <div class="modal-row">Birth year: <input id="birthYearInput" type="text" name="birthYear" value="" placeholder="YYYY"/></div>
                     <div class="modal-row">Email address: <input id="emailAddressInput" class="email-style" type="email" name="emailAddress" value="" size="40"/></div>
                     <div class="modal-row">Phone number: <input id="phoneNumberInput" type="text" name="phoneNumber" value=""/></div>
-                    <div class="modal-row">Order within family: <input id="orderWithinFamilyInput" type="text" name="orderWithinFamily" value="" size="12"/></div>
                     <div class="modal-row">Note: <br/><textarea id="noteInput" class="note-style" name="note" cols=56 rows=4></textarea></div>
                     <input type="hidden" name="version" value="${navSelection.version}" />
                 </form>
