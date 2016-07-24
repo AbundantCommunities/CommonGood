@@ -5,6 +5,15 @@ import grails.transaction.Transactional
 @Transactional
 class DeleteService {
 
+    def address( Address target ) {
+        def families = Family.findAllByAddress( target )
+        families.each {
+            family( it )
+        }
+
+        target.delete( flush:true )
+    }
+
     def family( Family target ) {
         def members = Person.findAllByFamily( target )
         members.each {

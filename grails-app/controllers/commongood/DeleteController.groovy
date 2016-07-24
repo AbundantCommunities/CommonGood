@@ -13,6 +13,39 @@ class DeleteController {
         render ""
     }
 
+    // Determine what families, people and answers would be lost if a given address
+    // were to be deleted (cascading deletions...).
+    def confirmAddress( ) {
+        Address target = Address.get( params.long('id') )
+        log.info "${session.user.getLogName()} confirm deletion of address ${target.text}"
+        authorizationService.address( target.id, session )
+
+        def deleteThis = "ADDRESS ${target.text}"
+        def families = Family.findAllByAddress( target )
+
+        def countPeeps = 0
+        def countAnswers = 0
+        families.each{
+            def peeps = Person.findAllByFamily( it )
+            countPeeps += peeps.size()
+            peeps.each{
+                // This is a horrid way to treat a database!
+                countAnswers += Answer.countByPerson( it )
+            }
+        }
+
+        def associated = [ "${families.size()} Families" ]
+        associated << "${countPeeps} Family Members"
+        associated << "${countAnswers} Answers"
+
+        def token = TokenGenerator.get( )
+        session.deleteType = 'address'
+        session.deleteToken = token
+
+        return [deleteThis: deleteThis, id: target.id, associatedTables: associated, magicToken: token ]
+
+    }
+
     // Determine what people and answers would be lost if a given family were to be
     // deleted (cascading deletions...).
     def confirmFamily( ) {
@@ -66,6 +99,33 @@ class DeleteController {
 
         return [deleteThis: deleteThis, id: target.id, associatedTables: associated, magicToken: token ]
     }
+
+    // Delete a given address. Cascade the deletion to objects associated with the
+    // address.
+    def address( ) {
+        Address target = Address.get( params.long('id') )
+        log.info "${session.user.getLogName()} DELETE address ${target.id} ${target.text}"
+        authorizationService.address( target.id, session )
+
+        if( session.deleteType == 'address' && session.deleteToken == params.magicToken ) {
+            Block block = target.block
+
+            deleteService.address( target )
+
+            session.deleteType = null
+            session.deleteToken = null
+
+            flash.message = "Deleted ADDRESS ${target.text}"
+            flash.nature = 'SUCCESS'
+            redirect controller: "navigate", action: "block", id: block.id
+
+        } else {
+            log.error "${session.user.getLogName()} trickery"
+            throw new Exception('Illogical delete on address')
+        }
+    }
+
+
 
     // Delete a given family. Cascade the deletion to objects associated with the
     // family.
