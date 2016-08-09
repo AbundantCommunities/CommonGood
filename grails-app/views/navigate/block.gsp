@@ -426,7 +426,7 @@
 
                     <div id="content-actions">
                         <div class="content-action"><a href="#" onclick="presentEditModal();">Edit</a></div>
-                        <div class="content-action"><a href="#" onclick="alert('not yet implemented');">Delete</a></div>
+                        <div class="content-action"><g:link controller="Delete" action="confirmBlock" id="${navSelection.id}">Delete</g:link></div>
                     </div>
                 </g:if>
                 <g:elseif test="${authorized.forBlock()==Boolean.TRUE}">

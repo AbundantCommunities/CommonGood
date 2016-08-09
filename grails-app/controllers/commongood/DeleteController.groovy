@@ -15,34 +15,95 @@ class DeleteController {
 
     // Determine what families, people and answers would be lost if a given address
     // were to be deleted (cascading deletions...).
+    def confirmBlock( ) {
+        Block target = Block.get( params.long('id') )
+        log.info "${session.user.getLogName()} confirm deletion of block ${target.code}"
+        authorizationService.block( target.id, session )
+
+        if ( deleteService.personInBlock( session.user.id, target ) ) {
+            // Cannot delete block because it contains an address that contains a family that contains a family member who is the currently logged in user.
+            flash.message = "You are currently logged in as ${session.user.firstNames} ${session.user.lastName}, a member of a family on the block you attempted to delete. This is not allowed."
+            flash.nature = 'FAILURE'
+            redirect controller: "navigate", action: "block", id: target.id
+            
+        } else {
+
+            def deleteThis = "BLOCK ${target.code}"
+            def addresses = Address.findAllByBlock( target )
+
+            def countFamilies = 0
+            def countPeeps = 0
+            def countAnswers = 0
+
+            addresses.each{
+                def families = Family.findAllByAddress( it )
+                countFamilies += families.size()
+
+                families.each{
+                    def peeps = Person.findAllByFamily( it )
+                    countPeeps += peeps.size()
+                    peeps.each{
+                        // This is a horrid way to treat a database!
+                        countAnswers += Answer.countByPerson( it )
+                    }
+                }
+            }
+
+            def associated = [ "${addresses.size()} Addresses" ]
+            associated << "${countFamilies} Families"
+            associated << "${countPeeps} Family Members"
+            associated << "${countAnswers} Answers"
+
+            def token = TokenGenerator.get( )
+            session.deleteType = 'block'
+            session.deleteToken = token
+
+            return [deleteThis: deleteThis, id: target.id, associatedTables: associated, magicToken: token ]
+
+        }
+
+    }
+
+    // Determine what families, people and answers would be lost if a given address
+    // were to be deleted (cascading deletions...).
     def confirmAddress( ) {
         Address target = Address.get( params.long('id') )
         log.info "${session.user.getLogName()} confirm deletion of address ${target.text}"
         authorizationService.address( target.id, session )
 
-        def deleteThis = "ADDRESS ${target.text}"
-        def families = Family.findAllByAddress( target )
+        if ( deleteService.personInAddress( session.user.id, target ) ) {
+            // Cannot delete address because it contains a family that contains a family member who is the currently logged in user.
+            flash.message = "You are currently logged in as ${session.user.firstNames} ${session.user.lastName}, a member of a family at the address you attempted to delete. This is not allowed."
+            flash.nature = 'FAILURE'
+            redirect controller: "navigate", action: "address", id: target.id
+            
+        } else {
 
-        def countPeeps = 0
-        def countAnswers = 0
-        families.each{
-            def peeps = Person.findAllByFamily( it )
-            countPeeps += peeps.size()
-            peeps.each{
-                // This is a horrid way to treat a database!
-                countAnswers += Answer.countByPerson( it )
+            def deleteThis = "ADDRESS ${target.text}"
+            def families = Family.findAllByAddress( target )
+
+            def countPeeps = 0
+            def countAnswers = 0
+            families.each{
+                def peeps = Person.findAllByFamily( it )
+                countPeeps += peeps.size()
+                peeps.each{
+                    // This is a horrid way to treat a database!
+                    countAnswers += Answer.countByPerson( it )
+                }
             }
+
+            def associated = [ "${families.size()} Families" ]
+            associated << "${countPeeps} Family Members"
+            associated << "${countAnswers} Answers"
+
+            def token = TokenGenerator.get( )
+            session.deleteType = 'address'
+            session.deleteToken = token
+
+            return [deleteThis: deleteThis, id: target.id, associatedTables: associated, magicToken: token ]
+
         }
-
-        def associated = [ "${families.size()} Families" ]
-        associated << "${countPeeps} Family Members"
-        associated << "${countAnswers} Answers"
-
-        def token = TokenGenerator.get( )
-        session.deleteType = 'address'
-        session.deleteToken = token
-
-        return [deleteThis: deleteThis, id: target.id, associatedTables: associated, magicToken: token ]
 
     }
 
@@ -53,22 +114,34 @@ class DeleteController {
         log.info "${session.user.getLogName()} confirm deletion of family ${target.name}"
         authorizationService.family( target.id, session )
 
-        def deleteThis = "FAMILY ${target.name}"
-        def peeps = Person.findAllByFamily( target )
-        def associated = [ "${peeps.size()} Family Members" ]
+        if ( deleteService.personInFamily( session.user.id, target ) ) {
+            // Cannot delete family because it contains a family member who is the currently logged in user.
+            flash.message = "You are currently logged in as ${session.user.firstNames} ${session.user.lastName}, a member of the family you attempted to delete. This is not allowed."
+            flash.nature = 'FAILURE'
+            redirect controller: "navigate", action: "family", id: target.id
+            
+        } else {
 
-        def countAnswers = 0
-        peeps.each{
-            // This is a horrid way to treat a database!
-            countAnswers += Answer.countByPerson( it )
+            def deleteThis = "FAMILY ${target.name}"
+            def peeps = Person.findAllByFamily( target )
+            def associated = [ "${peeps.size()} Family Members" ]
+
+            def countAnswers = 0
+            peeps.each{
+                // This is a horrid way to treat a database!
+                countAnswers += Answer.countByPerson( it )
+            }
+            associated << "${countAnswers} Answers"
+
+            def token = TokenGenerator.get( )
+            session.deleteType = 'family'
+            session.deleteToken = token
+
+            return [deleteThis: deleteThis, id: target.id, associatedTables: associated, magicToken: token ]
+
         }
-        associated << "${countAnswers} Answers"
 
-        def token = TokenGenerator.get( )
-        session.deleteType = 'family'
-        session.deleteToken = token
 
-        return [deleteThis: deleteThis, id: target.id, associatedTables: associated, magicToken: token ]
     }
 
     // Determine what answers would be lost if a given person were to be
@@ -78,27 +151,67 @@ class DeleteController {
         log.info "${session.user.getLogName()} confirm deletion of person ${target.logName}"
         authorizationService.person( target.id, session )
 
-        def deleteThis = "PERSON ${target.firstNames} ${target.lastName}"
-        def count = Answer.countByPerson( target )
-        def associated = [ "${count} Answers" ]
+        if ( deleteService.personIsPerson( session.user.id, target ) ) {
+            // Cannot delete person because is currently logged in user.
 
-        def das = DomainAuthorization.findAllByPerson( target )
-        count = 0
-        das.each {
-            count++
+            flash.message = "You are currently logged in as ${target.firstNames} ${target.lastName}. You attempted to delete that person (i.e. yourself), which is not allowed."
+            flash.nature = 'FAILURE'
+            redirect controller: "navigate", action: "familymember", id: target.id
+
+        } else {
+
+            def deleteThis = "PERSON ${target.firstNames} ${target.lastName}"
+            def count = Answer.countByPerson( target )
+            def associated = [ "${count} Answers" ]
+
+            def das = DomainAuthorization.findAllByPerson( target )
+            count = 0
+            das.each {
+                count++
+            }
+            if( count ) {
+                associated << "${count} Authorizations (this is technical)"
+            }
+
+            associated << "(not reporting interviewer references!)"
+
+            def token = TokenGenerator.get( )
+            session.deleteType = 'person'
+            session.deleteToken = token
+
+            return [deleteThis: deleteThis, id: target.id, associatedTables: associated, magicToken: token ]
+
         }
-        if( count ) {
-            associated << "${count} Authorizations (this is technical)"
-        }
 
-        associated << "(not reporting interviewer references!)"
-
-        def token = TokenGenerator.get( )
-        session.deleteType = 'person'
-        session.deleteToken = token
-
-        return [deleteThis: deleteThis, id: target.id, associatedTables: associated, magicToken: token ]
+ 
     }
+
+    // Delete a given address. Cascade the deletion to objects associated with the
+    // address.
+    def block( ) {
+        Block target = Block.get( params.long('id') )
+        log.info "${session.user.getLogName()} DELETE block ${target.id} ${target.code}"
+        authorizationService.block( target.id, session )
+
+        if( session.deleteType == 'block' && session.deleteToken == params.magicToken ) {
+            Neighbourhood neighbourhood = target.neighbourhood
+
+            deleteService.block( target )
+
+            session.deleteType = null
+            session.deleteToken = null
+
+            flash.message = "Deleted BLOCK ${target.code}."
+            flash.nature = 'SUCCESS'
+            redirect controller: "navigate", action: "neighbourhood", id: neighbourhood.id
+
+        } else {
+            log.error "${session.user.getLogName()} trickery"
+            throw new Exception('Illogical delete on block')
+        }
+    }
+
+
 
     // Delete a given address. Cascade the deletion to objects associated with the
     // address.
@@ -115,7 +228,7 @@ class DeleteController {
             session.deleteType = null
             session.deleteToken = null
 
-            flash.message = "Deleted ADDRESS ${target.text}"
+            flash.message = "Deleted ADDRESS ${target.text}."
             flash.nature = 'SUCCESS'
             redirect controller: "navigate", action: "block", id: block.id
 
@@ -142,7 +255,7 @@ class DeleteController {
             session.deleteType = null
             session.deleteToken = null
 
-            flash.message = "Deleted FAMILY ${target.name}"
+            flash.message = "Deleted FAMILY ${target.name}."
             flash.nature = 'SUCCESS'
             redirect controller: "navigate", action: "address", id: address.id
 
@@ -167,7 +280,7 @@ class DeleteController {
             session.deleteType = null
             session.deleteToken = null
 
-            flash.message = "Deleted PERSON ${target.firstNames} ${target.lastName}"
+            flash.message = "Deleted PERSON ${target.firstNames} ${target.lastName}."
             flash.nature = 'SUCCESS'
             redirect controller: "navigate", action: "family", id: family.id
 
