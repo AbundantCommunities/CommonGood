@@ -5,11 +5,11 @@ import grails.transaction.Transactional
 @Transactional
 class DeleteService {
 
-    def boolean personInBlock( personId, Block target ) {
+    def boolean personInBlock( Person person, Block target ) {
 
         def addresses = Address.findAllByBlock( target )
         for ( anAddress in addresses ) {
-            if (personInAddress( personId, anAddress )) {
+            if (personInAddress( person, anAddress )) {
                 return true
             }
         }
@@ -17,22 +17,22 @@ class DeleteService {
 
     }
 
-    def boolean personInAddress( personId, Address target ) {
+    def boolean personInAddress( Person person, Address target ) {
 
         def families = Family.findAllByAddress( target )
         for ( aFamily in families ) {
-            if (personInFamily( personId, aFamily )) {
+            if (personInFamily( person, aFamily )) {
                 return true
             }
         }
         return false
     }
 
-    def boolean personInFamily( personId, Family target ) {
+    def boolean personInFamily( Person person, Family target ) {
 
         def members = Person.findAllByFamily( target )
         for ( aMember in members ) {
-            if ( personId == aMember.id ) {
+            if ( person.id == aMember.id ) {
                 return true
             }
         }

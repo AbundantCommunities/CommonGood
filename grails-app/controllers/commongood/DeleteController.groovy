@@ -19,7 +19,7 @@ class DeleteController {
         Block target = Block.get( params.long('id') )
         authorizationService.block( target.id, session )
 
-        if ( deleteService.personInBlock( session.user.id, target ) ) {
+        if ( deleteService.personInBlock( session.user, target ) ) {
             log.warn "${session.user.logName} prevent deletion of own block"
             flash.message = "You cannot delete your own block. That would delete you, too!"
             flash.nature = 'WARNING'
@@ -67,7 +67,7 @@ class DeleteController {
         Address target = Address.get( params.long('id') )
         authorizationService.address( target.id, session )
 
-        if ( deleteService.personInAddress( session.user.id, target ) ) {
+        if ( deleteService.personInAddress( session.user, target ) ) {
             log.warn "${session.user.logName} prevent deletion of own address"
             flash.message = "You cannot delete your own address. That would delete you, too!"
             flash.nature = 'WARNING'
@@ -107,7 +107,7 @@ class DeleteController {
         Family target = Family.get( params.long('id') )
         authorizationService.family( target.id, session )
 
-        if ( deleteService.personInFamily( session.user.id, target ) ) {
+        if ( deleteService.personInFamily( session.user, target ) ) {
             log.warn "${session.user.logName} prevent deletion of own family"
             flash.message = "You cannot delete your own famiy. No way!"
             flash.nature = 'WARNING'
