@@ -17,17 +17,16 @@ class DeleteController {
     // were to be deleted (cascading deletions...).
     def confirmBlock( ) {
         Block target = Block.get( params.long('id') )
-        log.info "${session.user.getLogName()} confirm deletion of block ${target.code}"
         authorizationService.block( target.id, session )
 
         if ( deleteService.personInBlock( session.user.id, target ) ) {
-            // Cannot delete block because it contains an address that contains a family that contains a family member who is the currently logged in user.
-            flash.message = "You are currently logged in as ${session.user.firstNames} ${session.user.lastName}, a member of a family on the block you attempted to delete. This is not allowed."
-            flash.nature = 'FAILURE'
+            log.warn "${session.user.logName} prevent deletion of own block"
+            flash.message = "You cannot delete your own block. That would delete you, too!"
+            flash.nature = 'WARNING'
             redirect controller: "navigate", action: "block", id: target.id
-            
-        } else {
 
+        } else {
+            log.info "${session.user.getLogName()} confirm delete block ${target.code}"
             def deleteThis = "BLOCK ${target.code}"
             def addresses = Address.findAllByBlock( target )
 
@@ -59,26 +58,23 @@ class DeleteController {
             session.deleteToken = token
 
             return [deleteThis: deleteThis, id: target.id, associatedTables: associated, magicToken: token ]
-
         }
-
     }
 
     // Determine what families, people and answers would be lost if a given address
     // were to be deleted (cascading deletions...).
     def confirmAddress( ) {
         Address target = Address.get( params.long('id') )
-        log.info "${session.user.getLogName()} confirm deletion of address ${target.text}"
         authorizationService.address( target.id, session )
 
         if ( deleteService.personInAddress( session.user.id, target ) ) {
-            // Cannot delete address because it contains a family that contains a family member who is the currently logged in user.
-            flash.message = "You are currently logged in as ${session.user.firstNames} ${session.user.lastName}, a member of a family at the address you attempted to delete. This is not allowed."
-            flash.nature = 'FAILURE'
+            log.warn "${session.user.logName} prevent deletion of own address"
+            flash.message = "You cannot delete your own address. That would delete you, too!"
+            flash.nature = 'WARNING'
             redirect controller: "navigate", action: "address", id: target.id
             
         } else {
-
+            log.info "${session.user.getLogName()} confirm delete address ${target.text}"
             def deleteThis = "ADDRESS ${target.text}"
             def families = Family.findAllByAddress( target )
 
@@ -102,26 +98,23 @@ class DeleteController {
             session.deleteToken = token
 
             return [deleteThis: deleteThis, id: target.id, associatedTables: associated, magicToken: token ]
-
         }
-
     }
 
     // Determine what people and answers would be lost if a given family were to be
     // deleted (cascading deletions...).
     def confirmFamily( ) {
         Family target = Family.get( params.long('id') )
-        log.info "${session.user.getLogName()} confirm deletion of family ${target.name}"
         authorizationService.family( target.id, session )
 
         if ( deleteService.personInFamily( session.user.id, target ) ) {
-            // Cannot delete family because it contains a family member who is the currently logged in user.
-            flash.message = "You are currently logged in as ${session.user.firstNames} ${session.user.lastName}, a member of the family you attempted to delete. This is not allowed."
-            flash.nature = 'FAILURE'
+            log.warn "${session.user.logName} prevent deletion of own family"
+            flash.message = "You cannot delete your own famiy. No way!"
+            flash.nature = 'WARNING'
             redirect controller: "navigate", action: "family", id: target.id
             
         } else {
-
+            log.warn "${session.user.getLogName()} confirm delete family ${target.name}"
             def deleteThis = "FAMILY ${target.name}"
             def peeps = Person.findAllByFamily( target )
             def associated = [ "${peeps.size()} Family Members" ]
@@ -138,40 +131,26 @@ class DeleteController {
             session.deleteToken = token
 
             return [deleteThis: deleteThis, id: target.id, associatedTables: associated, magicToken: token ]
-
         }
-
-
     }
 
     // Determine what answers would be lost if a given person were to be
     // deleted (cascading deletion of person's answers).
     def confirmPerson( ) {
         Person target = Person.get( params.long('id') )
-        log.info "${session.user.getLogName()} confirm deletion of person ${target.logName}"
         authorizationService.person( target.id, session )
 
-        if ( deleteService.personIsPerson( session.user.id, target ) ) {
-            // Cannot delete person because is currently logged in user.
-
-            flash.message = "You are currently logged in as ${target.firstNames} ${target.lastName}. You attempted to delete that person (i.e. yourself), which is not allowed."
-            flash.nature = 'FAILURE'
+        if ( session.user.id == target.id ) {
+            log.warn "${session.user.getLogName()} Prevent user deleting self"
+            flash.message = "You want to delete yourself? Not going to happen!"
+            flash.nature = 'WARNING'
             redirect controller: "navigate", action: "familymember", id: target.id
 
         } else {
-
+            log.info "${session.user.logName} confirm delete person ${target.logName}"
             def deleteThis = "PERSON ${target.firstNames} ${target.lastName}"
             def count = Answer.countByPerson( target )
             def associated = [ "${count} Answers" ]
-
-            def das = DomainAuthorization.findAllByPerson( target )
-            count = 0
-            das.each {
-                count++
-            }
-            if( count ) {
-                associated << "${count} Authorizations (this is technical)"
-            }
 
             associated << "(not reporting interviewer references!)"
 
@@ -180,10 +159,7 @@ class DeleteController {
             session.deleteToken = token
 
             return [deleteThis: deleteThis, id: target.id, associatedTables: associated, magicToken: token ]
-
         }
-
- 
     }
 
     // Delete a given address. Cascade the deletion to objects associated with the
@@ -201,7 +177,7 @@ class DeleteController {
             session.deleteType = null
             session.deleteToken = null
 
-            flash.message = "Deleted BLOCK ${target.code}."
+            flash.message = "Deleted BLOCK ${target.displayName}"
             flash.nature = 'SUCCESS'
             redirect controller: "navigate", action: "neighbourhood", id: neighbourhood.id
 
@@ -210,8 +186,6 @@ class DeleteController {
             throw new Exception('Illogical delete on block')
         }
     }
-
-
 
     // Delete a given address. Cascade the deletion to objects associated with the
     // address.
@@ -228,7 +202,7 @@ class DeleteController {
             session.deleteType = null
             session.deleteToken = null
 
-            flash.message = "Deleted ADDRESS ${target.text}."
+            flash.message = "Deleted ADDRESS ${target.text}"
             flash.nature = 'SUCCESS'
             redirect controller: "navigate", action: "block", id: block.id
 
@@ -237,8 +211,6 @@ class DeleteController {
             throw new Exception('Illogical delete on address')
         }
     }
-
-
 
     // Delete a given family. Cascade the deletion to objects associated with the
     // family.
@@ -255,7 +227,7 @@ class DeleteController {
             session.deleteType = null
             session.deleteToken = null
 
-            flash.message = "Deleted FAMILY ${target.name}."
+            flash.message = "Deleted FAMILY ${target.name}"
             flash.nature = 'SUCCESS'
             redirect controller: "navigate", action: "address", id: address.id
 
@@ -280,7 +252,7 @@ class DeleteController {
             session.deleteType = null
             session.deleteToken = null
 
-            flash.message = "Deleted PERSON ${target.firstNames} ${target.lastName}."
+            flash.message = "Deleted PERSON ${target.firstNames} ${target.lastName}"
             flash.nature = 'SUCCESS'
             redirect controller: "navigate", action: "family", id: family.id
 

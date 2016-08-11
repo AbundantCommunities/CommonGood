@@ -32,11 +32,9 @@
                 }
             }
 
-
         </script>
-
-
     </head>
+
     <body>
             <div class="content-section content-container">
                 <div class="content-section-embedded" style="width:460px">
@@ -61,12 +59,6 @@
                         </form>
                         <form id="cancel-form" action="<g:createLink controller='navigate' action='${session.lastNavigationLevel}' id='${session.lastNavigationId}'/>" method="GET">
                         </form>
-
-
-
-
-
-
 
                 </div>
             </div>

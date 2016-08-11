@@ -26,32 +26,21 @@ class DeleteService {
             }
         }
         return false
-
     }
 
     def boolean personInFamily( personId, Family target ) {
 
         def members = Person.findAllByFamily( target )
         for ( aMember in members ) {
-            if (personIsPerson( personId, aMember )) {
+            if ( personId == aMember.id ) {
                 return true
             }
         }
         return false
-
-    }
-
-    def boolean personIsPerson( personId, Person target ) {
-
-        if ( personId == target.id ) {
-            return true
-        } else {
-            return false
-        }
-
     }
 
 
+    // Delete a given block (and its addresses, families, members & answers)
     def block( Block target ) {
         def addresses = Address.findAllByBlock( target )
         addresses.each {
@@ -73,6 +62,7 @@ class DeleteService {
         target.delete( flush:true )
     }
 
+    // Delete a given address (and its families, their members & answers)
     def address( Address target ) {
         def families = Family.findAllByAddress( target )
         families.each {
@@ -82,6 +72,7 @@ class DeleteService {
         target.delete( flush:true )
     }
 
+    // Delete a given family (and its members & answers)
     def family( Family target ) {
         def members = Person.findAllByFamily( target )
         members.each {
@@ -91,6 +82,7 @@ class DeleteService {
         target.delete( flush:true )
     }
 
+    // Delete a given person (and all their answers, etc)
     def person( Person target ) {
 
         def answers = Answer.findAllByPerson( target )
