@@ -16,10 +16,10 @@ class AddressController {
         def afterId = Long.valueOf( params.afterId )
         if( afterId ) {
             def afterFamily = Family.get( afterId )
-            log.info "${session.user.getLogName()} requests move ${family} after ${afterFamily}"
+            log.info "${session.user.logName} requests move ${family} after ${afterFamily}"
             reorderService.address( family, afterFamily )
         } else {
-            log.info "${session.user.getLogName()} requests move ${family} to top"
+            log.info "${session.user.logName} requests move ${family} to top"
             reorderService.address( family )
         }
 
@@ -30,7 +30,7 @@ class AddressController {
     def families( ) {
         def id = Long.valueOf( params.id )
         authorizationService.address( id, session )
-        log.info "${session.user.getLogName()} requests list of families at address/${id}"
+        log.info "${session.user.logName} requests list of families at address/${id}"
 
         def famAddresses = Family.findAll("from Family fam join fam.address addr where addr.id=?", [ id ])
 
@@ -46,7 +46,7 @@ class AddressController {
     // Update an existing Address.
     def save( ) {
         def addressId = params.long('id')
-        log.info "${session.user.getLogName()} update address/${addressId}"
+        log.info "${session.user.logName} update address/${addressId}"
         if( !params.text ) {
             throw new RuntimeException( "address.text is empty [${session.user}]" )
         }
