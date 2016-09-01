@@ -1,5 +1,7 @@
 package commongood
 
+import org.abundantcommunityinitiative.commongood.handy.JsonWriter
+
 class NeighbourhoodController {
     static allowedMethods = [addBlock:'POST']
     def authorizationService
@@ -100,4 +102,24 @@ class NeighbourhoodController {
             throw new RuntimeException("Missing block code")
         }
     }
+
+    // Get a JSON list of blocks for a given neighbourhood
+    def blocks( ) {
+        def id = Long.valueOf( params.id )
+        authorizationService.neighbourhood( id, session )
+        log.info "${session.user.getLogName()} requests list of blocks for neighbourhood/${id}"
+
+        def neighbourhoodBlocks = Block.findAll("from Block blk join blk.neighbourhood neigb where neigb.id=?", [ id ])
+
+        def result = [ ]
+        neighbourhoodBlocks.each {
+            Block blk = it[0]
+            result << [ id:blk.id, code:blk.code, description:blk.description ]
+        }
+
+        render JsonWriter.write( result )
+    }
+
+
+
 }

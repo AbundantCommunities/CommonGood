@@ -1,5 +1,7 @@
 package commongood
 
+import org.abundantcommunityinitiative.commongood.handy.JsonWriter
+
 class BlockController {
     static allowedMethods = [addAddresses:'POST', addConnector:'POST', contactList:'GET', save:'POST']
 
@@ -105,11 +107,62 @@ class BlockController {
         block.code = params.code.trim( )
         block.description = params.description.trim( )
 
-        if( block.code && block.description ) {
+        if( block.code ) {
             block.save( flush:true, failOnError: true )
             redirect controller: "navigate", action: "block", id: blockId
         } else {
             throw new RuntimeException( "Empty code and/or description?" )
         }
     }
+
+    def addBlockConnector ( ) {
+        def blockId = params.long('id')
+        def personId = params.long('pid')
+        //def block = Block.get( blockId )
+        def person = Person.get( personId )
+
+        log.info "${session.user.getLogName()} requests add BC person/${personId} to block/${blockId}"
+
+        authorizationService.block( blockId, session )
+
+        // Find the largest value of orderWithinDomain and go from there...
+        def query = DomainAuthorization.where {
+            domainCode == 'B' && domainKey == blockId
+        }.projections {
+            max('orderWithinDomain')
+        }
+        def lastOrder = query.find() as Integer
+        
+        lastOrder = lastOrder ?: 0
+
+        // The person becomes a BC for his block
+        DomainAuthorization da = new DomainAuthorization( )
+        da.person = person
+        da.domainCode = DomainAuthorization.BLOCK
+        da.domainKey = blockId as Integer
+        da.orderWithinDomain = lastOrder + 100
+        da.save( flush:true, failOnError: true )
+        redirect controller:'navigate', action:'block', id:blockId
+
+
+    }
+
+    // Get a JSON list of addresses for a given block
+    def addresses( ) {
+        def id = Long.valueOf( params.id )
+        authorizationService.block( id, session )
+        log.info "${session.user.getLogName()} requests list of addresses for block/${id}"
+
+        def blockAddresses = Address.findAll("from Address addr join addr.block blk where blk.id=?", [ id ])
+
+        def result = [ ]
+        blockAddresses.each {
+            Address addr = it[0]
+            result << [ id:addr.id, text:addr.text ]
+        }
+
+        render JsonWriter.write( result )
+    }
+
+
 }

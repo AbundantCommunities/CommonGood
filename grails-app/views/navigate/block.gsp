@@ -38,11 +38,6 @@
                     if (code == "") {
                         alert("Please enter a block code.");
                         return false;
-                    } else {
-                        if (description == "") {
-                            alert("Please enter a block description.");
-                            return false;
-                        }
                     }
                     return true;
                 }
@@ -121,36 +116,72 @@
             <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}">
 
                 function presentAddBC() {
-                    if (${navChildren.children.size() > 0}) {
 
-                        var addressesSelect = document.getElementById('addresses-select');
+                    var xmlhttp = new XMLHttpRequest( );
 
-                        if (addressesSelect.options[0].value != 0) {
-                            // Need to add blank disabled option as first option
 
-                            var blankAddress = new Option('',0);
-                            blankAddress.disabled = true;
+                    var url = '<g:createLink controller="address" action="families"/>/'+document.getElementById('addresses-select').value;
 
-                            addressesSelect.insertBefore(blankAddress, addressesSelect.firstChild);
+                    var url = '<g:createLink controller="neighbourhood" action="blocks"/>/${navContext[0].id}';
+                    xmlhttp.onreadystatechange = function( ) {
+                        if( xmlhttp.readyState == 4 /* && xmlhttp.status == 200 */ ) {
+                            var blocks = JSON.parse( xmlhttp.responseText );
+                            buildBlocksSelect( blocks );
+                        }
+                    };
+
+                    xmlhttp.open( "GET", url, true );
+                    xmlhttp.send( );
+
+                    function buildBlocksSelect( blocks ) {
+
+                        var optionToSelect = 0;
+
+                        var blocksSelect = document.getElementById('blocks-select')
+                        blocksSelect.options.length = 0;
+
+                        for (i = 0; i < blocks.length; i++) {
+                            var selectText;
+                            if (blocks[i].description.length > 0) {
+                                selectText = blocks[i].code+' ('+blocks[i].description+')';
+                            } else {
+                                selectText = blocks[i].code;
+                            }
+                            blocksSelect.options[blocksSelect.options.length] = new Option(selectText, blocks[i].id);
+
+                            if (blocks[i].id == ${navSelection.id}) {
+                                optionToSelect = i;
+                            }
                         }
 
+                        blocksSelect.selectedIndex = optionToSelect;
 
-
-                        document.getElementById('addresses-select').selectedIndex = 0;
-                        document.getElementById('select-family').style.display = 'none';
-                        document.getElementById('select-member').style.display = 'none';
-
-                        var pagecontainerDiv = document.getElementById("pagecontainer");
-
-                        // set height of overlay to match height of pagecontainer height
-                        document.getElementById("transparent-overlay").setAttribute("style","height:"+pagecontainerDiv.clientHeight+"px;");
-                        
-                        // show overlay and new-container divs and focus to family name
-                        document.getElementById("transparent-overlay").style.visibility='visible';
-                        document.getElementById("new-bc-container").style.visibility='visible';
-                    } else {
-                        alert('Please add the address, family and family member of the block connector first.');
                     }
+
+                    var addressesSelect = document.getElementById('addresses-select');
+
+                    if (addressesSelect.options[0].value != 0) {
+                        // Need to add blank disabled option as first option
+
+                        var blankAddress = new Option('',0);
+                        blankAddress.disabled = true;
+
+                        addressesSelect.insertBefore(blankAddress, addressesSelect.firstChild);
+                    }
+
+                    document.getElementById('addresses-select').selectedIndex = 0;
+                    document.getElementById('select-family').style.display = 'none';
+                    document.getElementById('select-member').style.display = 'none';
+
+                    var pagecontainerDiv = document.getElementById("pagecontainer");
+
+                    // set height of overlay to match height of pagecontainer height
+                    document.getElementById("transparent-overlay").setAttribute("style","height:"+pagecontainerDiv.clientHeight+"px;");
+                    
+                    // show overlay and new-container divs and focus to family name
+                    document.getElementById("transparent-overlay").style.visibility='visible';
+                    document.getElementById("new-bc-container").style.visibility='visible';
+
                 }
 
 
@@ -158,6 +189,45 @@
                     document.getElementById("new-bc-container").style.visibility='hidden';
                     document.getElementById("transparent-overlay").style.visibility='hidden';
                 }
+
+
+                function blockSelected() {
+
+                    document.getElementById('select-family').style.display = 'none';
+                    document.getElementById('select-member').style.display = 'none';
+
+                    var xmlhttp = new XMLHttpRequest( );
+                    var url = '<g:createLink controller="block" action="addresses"/>/'+document.getElementById('blocks-select').value;
+
+                    xmlhttp.onreadystatechange = function( ) {
+                        if( xmlhttp.readyState == 4 /* && xmlhttp.status == 200 */ ) {
+                            var addresses = JSON.parse( xmlhttp.responseText );
+                            buildAddressesSelect( addresses );
+                        }
+                    };
+
+                    xmlhttp.open( "GET", url, true );
+                    xmlhttp.send( );
+
+                    function buildAddressesSelect( addresses ) {
+                        var addressesSelect = document.getElementById('addresses-select')
+                        addressesSelect.options.length = 0;
+
+                        addressesSelect.options[addressesSelect.options.length] = new Option('', 0);
+                        addressesSelect.options[addressesSelect.options.length-1].disabled = true;
+
+                        for (i = 0; i < addresses.length; i++) {
+                            addressesSelect.options[addressesSelect.options.length] = new Option(addresses[i].text, addresses[i].id);
+                        }
+
+                        document.getElementById('select-address').style.display = 'block';
+
+                    }
+
+                }
+
+
+
 
                 function addressSelected() {
 
@@ -169,44 +239,31 @@
                         addressesSelect.remove(0);
                     }
 
-                    if (addressesSelect.value == -2) {
-                        // User chose "address not in list", so put up alert saying address must be added first
-                        var blankAddress = new Option('',0);
-                        blankAddress.disabled = true;
-
-                        addressesSelect.insertBefore(blankAddress, addressesSelect.firstChild);
-                        addressesSelect.selectedIndex = 0;
-
-                        document.getElementById('select-family').style.display = 'none';
-                        alert("Before adding a block connector, you must add the block connector's address, family and family member to the block.");
-
-                    } else {
-                        var xmlhttp = new XMLHttpRequest( );
-                        var url = '<g:createLink controller="address" action="families"/>/'+document.getElementById('addresses-select').value;
-                        xmlhttp.onreadystatechange = function( ) {
-                            if( xmlhttp.readyState == 4 /* && xmlhttp.status == 200 */ ) {
-                                var families = JSON.parse( xmlhttp.responseText );
-                                buildFamiliesSelect( families );
-                            }
-                        };
-
-                        xmlhttp.open( "GET", url, true );
-                        xmlhttp.send( );
-
-                        function buildFamiliesSelect( families ) {
-                            var familiesSelect = document.getElementById('families-select')
-                            familiesSelect.options.length = 0;
-
-                            familiesSelect.options[familiesSelect.options.length] = new Option('', 0);
-                            familiesSelect.options[familiesSelect.options.length-1].disabled = true;
-
-                            for (i = 0; i < families.length; i++) {
-                                familiesSelect.options[familiesSelect.options.length] = new Option(families[i].name, families[i].id);
-                            }
-
-                            document.getElementById('select-family').style.display = 'block';
-
+                    var xmlhttp = new XMLHttpRequest( );
+                    var url = '<g:createLink controller="address" action="families"/>/'+document.getElementById('addresses-select').value;
+                    xmlhttp.onreadystatechange = function( ) {
+                        if( xmlhttp.readyState == 4 /* && xmlhttp.status == 200 */ ) {
+                            var families = JSON.parse( xmlhttp.responseText );
+                            buildFamiliesSelect( families );
                         }
+                    };
+
+                    xmlhttp.open( "GET", url, true );
+                    xmlhttp.send( );
+
+                    function buildFamiliesSelect( families ) {
+                        var familiesSelect = document.getElementById('families-select')
+                        familiesSelect.options.length = 0;
+
+                        familiesSelect.options[familiesSelect.options.length] = new Option('', 0);
+                        familiesSelect.options[familiesSelect.options.length-1].disabled = true;
+
+                        for (i = 0; i < families.length; i++) {
+                            familiesSelect.options[familiesSelect.options.length] = new Option(families[i].name, families[i].id);
+                        }
+
+                        document.getElementById('select-family').style.display = 'block';
+
                     }
                 }
 
@@ -326,7 +383,7 @@
 
             #button-row-div {
                 position: absolute;
-                top:130px;
+                top:170px;
                 left:20px;
             }
 
@@ -334,27 +391,10 @@
 
                 #new-bc-container {
                     top:140px;
-                    left:260px;
-                    width:420px;
+                    left:200px;
+                    width:540px;
                 }
 
-                #select-address {
-                    position: absolute;
-                    top:35px;
-                    left: 20px;
-                }
-                #select-family {
-                    position: absolute;
-                    top:65px;
-                    left: 20px;
-                    display: none;
-                }
-                #select-member {
-                    position: absolute;
-                    top:95px;
-                    left: 20px;
-                    display: none;
-                }
                 #edit-container {
                     top:90px;
                     left:280px;
@@ -470,33 +510,37 @@
 
             <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}">
 
-                <div id="new-bc-container" class="modal" style="height:165px;">
+                <div id="new-bc-container" class="modal" style="height:205px;">
                     <div class="modal-title">Add Block Connector</div>
-                    <div class="modal-row">Select address of block connector: 
+                    <div id="select-block" class="modal-row">Select block that the Block Connector lives on: 
+                        <select id="blocks-select" onchange="blockSelected();">
+                            <option value=""></option>
+                        </select>
+                    </div>
+                    <div id="select-address" class="modal-row">Select address of Block Connector: 
                         <select id="addresses-select" onchange="addressSelected();">
                             <option value="0"></option>
                             <g:each in="${navChildren.children}" var="child">
                                 <option value="${child.id}">${child.address}</option>
                             </g:each>
-                            <option value="-1"></option>
-                            <option value="-2">Address not listed</option>
                         </select>
                         <script type="text/javascript">
                             document.getElementById('addresses-select').options[0].disabled = true;
                         </script>
 
                     </div>
-                    <div id="select-family" class="modal-row">Select family of block connector: 
+                    <div id="select-family" class="modal-row">Select family of Block Connector: 
                         <select id="families-select" onchange="familySelected();">
                             <option value=""></option>
                         </select>
                     </div>
-                    <form id="new-bc-form" action="<g:createLink controller='person' action='setBlockConnector' />" method="POST">
-                        <div id="select-member" class="modal-row">Select block connector: 
-                            <select id="members-select" name="id" onchange="memberSelected();">
+                    <form id="new-bc-form" action="<g:createLink controller='block' action='addBlockConnector' />" method="POST">
+                        <div id="select-member" class="modal-row">Select Block Connector: 
+                            <select id="members-select" name="pid" onchange="memberSelected();">
                                 <option value=""></option>
                             </select>
                         </div>
+                        <input type="hidden" name="id" value="${navSelection.id}" />
                     </form>
                     <div id="button-row-div">
                         <div class="button-row">
