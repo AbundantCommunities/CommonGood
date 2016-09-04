@@ -30,7 +30,7 @@ class FamilyController {
     def members( ) {
         def id = Long.valueOf( params.id )
         authorizationService.family( id, session )
-        def famAddresses = Person.findAll("from Person p join p.family as f where f.id=?", [ id ])
+        def famAddresses = Person.findAll("from Person p join p.family as f where f.id=? order by p.orderWithinFamily", [ id ])
 
         def result = [ ]
         famAddresses.each {

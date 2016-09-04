@@ -251,6 +251,12 @@
                 <div id="content-actions">
                     <div class="content-action"><a href="#" onclick="presentEditModal()">Edit</a></div>
                     <div class="content-action"><g:link controller="Delete" action="confirmPerson" id="${navSelection.id}">Delete</g:link></div>
+                    <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}">
+                        <div class="content-action"><g:link controller="Move" action="selectDestinationFamily" id="${navSelection.id}">Move</g:link></div>
+                    </g:if>
+                    <g:else>
+                        <div class="content-action"><a href="#" onclick="alert('As a Block Connector, you are not able to move family members. Please ask your Neighbourhood Connector to do this for you.')">Move</a></div>
+                    </g:else>
                 </div>
             </div>
             <div class="content-section">

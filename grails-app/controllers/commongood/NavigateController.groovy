@@ -177,7 +177,12 @@ class NavigateController {
 
         // Questions & Answers
         def qna = [ ]
-        if( theMember.family.getInterviewed() ) {
+
+        // Commented out condition below for the case where a family that has been interviewed has a family member with answers,
+        // and that family member is moved to a family that has not been interviewed. If condition is left in, answers for
+        // the moved family member would disappear.
+
+        //if( theMember.family.getInterviewed() ) {
             def previousQuestion = null
             def theseAnswers = [ ]
             answers.each {
@@ -196,7 +201,7 @@ class NavigateController {
                 // Flush the last set of answers:
                 qna << [ question:previousQuestion.getShortHeader( ), answers:theseAnswers ]
             }
-        }
+        //}
 
         Map result =
         [

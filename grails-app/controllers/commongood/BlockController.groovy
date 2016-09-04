@@ -153,7 +153,7 @@ class BlockController {
         authorizationService.block( id, session )
         log.info "${session.user.getLogName()} requests list of addresses for block/${id}"
 
-        def blockAddresses = Address.findAll("from Address addr join addr.block blk where blk.id=?", [ id ])
+        def blockAddresses = Address.findAll("from Address addr join addr.block blk where blk.id=? order by addr.orderWithinBlock", [ id ])
 
         def result = [ ]
         blockAddresses.each {

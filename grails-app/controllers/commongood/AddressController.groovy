@@ -32,7 +32,7 @@ class AddressController {
         authorizationService.address( id, session )
         log.info "${session.user.logName} requests list of families at address/${id}"
 
-        def famAddresses = Family.findAll("from Family fam join fam.address addr where addr.id=?", [ id ])
+        def famAddresses = Family.findAll("from Family fam join fam.address addr where addr.id=? order by fam.orderWithinAddress", [ id ])
 
         def result = [ ]
         famAddresses.each {

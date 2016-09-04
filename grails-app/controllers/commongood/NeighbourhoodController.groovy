@@ -109,7 +109,7 @@ class NeighbourhoodController {
         authorizationService.neighbourhood( id, session )
         log.info "${session.user.getLogName()} requests list of blocks for neighbourhood/${id}"
 
-        def neighbourhoodBlocks = Block.findAll("from Block blk join blk.neighbourhood neigb where neigb.id=?", [ id ])
+        def neighbourhoodBlocks = Block.findAll("from Block blk join blk.neighbourhood neigb where neigb.id=? order by blk.orderWithinNeighbourhood", [ id ])
 
         def result = [ ]
         neighbourhoodBlocks.each {

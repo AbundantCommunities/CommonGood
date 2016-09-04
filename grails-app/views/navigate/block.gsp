@@ -118,11 +118,8 @@
                 function presentAddBC() {
 
                     var xmlhttp = new XMLHttpRequest( );
-
-
-                    var url = '<g:createLink controller="address" action="families"/>/'+document.getElementById('addresses-select').value;
-
                     var url = '<g:createLink controller="neighbourhood" action="blocks"/>/${navContext[0].id}';
+                    
                     xmlhttp.onreadystatechange = function( ) {
                         if( xmlhttp.readyState == 4 /* && xmlhttp.status == 200 */ ) {
                             var blocks = JSON.parse( xmlhttp.responseText );
