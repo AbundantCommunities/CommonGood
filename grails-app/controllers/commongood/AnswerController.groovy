@@ -11,6 +11,7 @@ class AnswerController {
         if( params.json ) {
             log.info "Anon requests Answer Ranking question/${questionId}"
         } else {
+            // FIXME if user is not logged in this generates a NPE
             log.info "${session.user.logName} requests Answer Ranking question/${questionId}"
         }
         def question = Question.get( questionId )
