@@ -7,7 +7,7 @@ class LameSecurityFilters {
     def filters = {
         all(controller:'*', action:'*') {
             before = {
-                if( controllerName != 'answer' && controllerName != 'login' ) {
+                if( controllerName != 'answer' && controllerName != 'login' && controllerName != 'admin' ) {
                     if( session.user ) {
                         log.debug "In Sensitive context; ${session.user.fullName} is authorized"
                         return true

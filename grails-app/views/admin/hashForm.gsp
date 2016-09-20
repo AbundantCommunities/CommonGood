@@ -8,8 +8,11 @@
     <body>
         <h1>Password Hasher</h1>
         <g:form action="hashPassword">
-            <input type="text" name="password">
-            <g:submitButton name="hash" value="Hash"/>
+            Email Address
+            <input type="text" name="emailAddress"/><br/>
+            Password
+            <input type="text" name="password"/><br/>
+            <g:submitButton name="hash" value="Submit"/>
         </g:form>
     </body>
 </html>
