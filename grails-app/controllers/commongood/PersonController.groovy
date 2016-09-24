@@ -7,11 +7,6 @@ class PersonController {
 
     // Write a new person or update an existing person
     def save( ) {
-        if( 'version' in params ) {
-            println "VERSION = ${params.version}"
-        } else {
-            println "NO VERSION"
-        }
         if( 'id' in params ) {
             // Update an existing person
             Integer personId = params.int('id')
