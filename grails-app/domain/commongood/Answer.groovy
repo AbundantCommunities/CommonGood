@@ -12,6 +12,11 @@ class Answer {
         note defaultValue: "''"
     }
 
+    // ALTER TABLE answer ALTER text TYPE VARCHAR(1000);
+    static constraints = {
+        text( maxSize:1000 )
+    }
+
     Date dateCreated
     Date lastUpdated
 }
