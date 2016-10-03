@@ -51,10 +51,10 @@ class BlockService {
         def query
         if( authorized.forNeighbourhood() ) {
             query = '''SELECT blk.id, blk.code, blk.description, da.person_id, bc.first_names, bc.last_name
-                        FROM block AS blk LEFT OUTER JOIN domain_authorization AS da ON blk.id = da.domain_key
+                        FROM block AS blk\n\
+                            LEFT OUTER JOIN domain_authorization AS da ON ('B'||blk.id) = (da.domain_code||da.domain_key)
                             LEFT OUTER JOIN person AS bc ON da.person_id = bc.id
-                        WHERE (da.domain_code = 'B' OR da.domain_code IS NULL)
-                        AND blk.neighbourhood_id = :queryId
+                        WHERE blk.neighbourhood_id = :queryId
                         ORDER BY blk.order_within_neighbourhood, da.order_within_domain'''
 
         } else {
