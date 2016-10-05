@@ -39,6 +39,7 @@ class MoveController {
         Family familyToMove = Family.get( params.long('id') )
         authorizationService.family( familyToMove.id, session )
 
+        Neighbourhood neighbourhood = Neighbourhood.get ( familyToMove.address.block.neighbourhood.id )
 
         log.info "${session.user.getLogName()} select destination address for moving family ${familyToMove.name} (${familyToMove.id})"
         def moveThis = "FAMILY ${familyToMove.name}"
@@ -47,7 +48,7 @@ class MoveController {
         session.moveType = 'family'
         session.moveToken = token
 
-        return [moveThis: moveThis, id: familyToMove.id, magicToken: token ]
+        return [moveThis: moveThis, nid: neighbourhood.id, id: familyToMove.id, magicToken: token ]
 
     }
 

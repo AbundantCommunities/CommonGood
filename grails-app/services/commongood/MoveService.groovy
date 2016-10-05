@@ -19,7 +19,7 @@ class MoveService {
         def lastOrder = query.find() as Integer
         lastOrder = lastOrder ?: 0
 
-        addressToMove.orderWithinBlock = lastOrder + 100
+        addressToMove.orderWithinBlock = lastOrder + 1
 
         addressToMove.block = destinationBlock
 
@@ -41,7 +41,7 @@ class MoveService {
         def lastOrder = query.find() as Integer
         lastOrder = lastOrder ?: 0
         
-        familyToMove.orderWithinAddress = lastOrder + 100
+        familyToMove.orderWithinAddress = lastOrder + 1
 
         familyToMove.address = destinationAddress
 
@@ -63,7 +63,7 @@ class MoveService {
         def lastOrder = query.find() as Integer
         lastOrder = lastOrder ?: 0
 
-        personToMove.orderWithinFamily = lastOrder + 100
+        personToMove.orderWithinFamily = lastOrder + 1
 
         personToMove.family = destinationFamily
 
