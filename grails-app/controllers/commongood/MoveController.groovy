@@ -21,6 +21,8 @@ class MoveController {
         Address addressToMove = Address.get( params.long('id') )
         authorizationService.address( addressToMove.id, session )
 
+        Neighbourhood neighbourhood = Neighbourhood.get ( addressToMove.block.neighbourhood.id )
+
         log.info "${session.user.getLogName()} select destination block for moving address ${addressToMove.text} (${addressToMove.id})"
         def moveThis = "ADDRESS ${addressToMove.text}"
 
@@ -28,7 +30,7 @@ class MoveController {
         session.moveType = 'address'
         session.moveToken = token
 
-        return [moveThis: moveThis, id: addressToMove.id, magicToken: token ]
+        return [moveThis: moveThis, nid: neighbourhood.id, id: addressToMove.id, magicToken: token ]
 
     }
 
