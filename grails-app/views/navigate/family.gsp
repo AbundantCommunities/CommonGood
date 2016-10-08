@@ -236,7 +236,7 @@
 
                 </g:if>
                 <g:else>
-                    <div class="light-text">no interiview data for family</div>
+                    <div class="light-text">no interview data for family</div>
                 </g:else>
 
 
