@@ -408,7 +408,7 @@
             #bc-section {
                 position: absolute;
                 top:7px;
-                left:400px;
+                left:500px;
             }
 
         </style>
