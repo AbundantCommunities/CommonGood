@@ -424,8 +424,23 @@
                     <div class="content-row-item" style="width:210px;">Description: </div><div class="content-row-item">${navSelection.description}</div>
                 </div>
 
-                <div id="bc-section">
+                <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}">
+                    <div id="content-actions-left-side">
+                        <div class="content-left-action"><g:link controller='block' action='contactList' id='${navSelection.id}'>Contact List</g:link></div>
+                    </div>
 
+                    <div id="content-actions">
+                        <div class="content-action"><a href="#" onclick="presentEditModal();">Edit</a></div>
+                        <div class="content-action"><g:link controller="Delete" action="confirmBlock" id="${navSelection.id}">Delete</g:link></div>
+                    </div>
+                </g:if>
+                <g:elseif test="${authorized.forBlock()==Boolean.TRUE}">
+                    <div id="content-actions" style="left:820px;">
+                        <div class="content-action"><g:link controller='block' action='contactList' id='${navSelection.id}'>Contact List</g:link></div>
+                    </div>
+                </g:elseif>
+
+                <div id="bc-section">
                     <div class="content-heading less-bottom-margin">Block Connector<g:if test="${navSelection.blockConnectors.size() > 1}">s</g:if></div>
                     <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}"><script type="text/javascript">var existingBCs = [];</script></g:if>
                     <g:if test="${navSelection.blockConnectors.size() > 0}">
@@ -452,25 +467,7 @@
                             <div class="small-top-margin"><a href="#" onclick="presentAddBC();">+ Add Block Connector</a></div>
                         </g:else>
                     </g:if>
-
                 </div>
-
-
-                <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}">
-                    <div id="content-actions-left-side">
-                        <div class="content-left-action"><g:link controller='block' action='contactList' id='${navSelection.id}'>Contact List</g:link></div>
-                    </div>
-
-                    <div id="content-actions">
-                        <div class="content-action"><a href="#" onclick="presentEditModal();">Edit</a></div>
-                        <div class="content-action"><g:link controller="Delete" action="confirmBlock" id="${navSelection.id}">Delete</g:link></div>
-                    </div>
-                </g:if>
-                <g:elseif test="${authorized.forBlock()==Boolean.TRUE}">
-                    <div id="content-actions" style="left:820px;">
-                        <div class="content-action"><g:link controller='block' action='contactList' id='${navSelection.id}'>Contact List</g:link></div>
-                    </div>
-                </g:elseif>
 
             </div>
             <div class="content-section">
