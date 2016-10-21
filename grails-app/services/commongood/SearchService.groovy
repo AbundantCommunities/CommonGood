@@ -2,11 +2,14 @@ package commongood
 
 import java.time.Year
 import grails.transaction.Transactional
+import groovy.sql.Sql
 
 @Transactional
 class SearchService {
+    // Grails injects the default DataSource
+    def dataSource
 
-    // Ee use these minimum and maximum ages to keep things clear & simple.
+    // We use these minimum and maximum ages to keep things clear & simple.
     static Integer MIN_AGE = -199
     static Integer MAX_AGE =  199
 
@@ -34,37 +37,43 @@ class SearchService {
         Integer fromYear = Year.now().getValue() - toAge
         Integer toYear = Year.now().getValue() - fromAge
 
-        def searchTerm = "%${q}%".toLowerCase( )
+        String qStr = "%${q.toLowerCase()}%"  // query string
+        String qExp = parseQuery( q )         // query expression
+
+        final Sql sql = new Sql(dataSource)
         def answers
 
         if( session.authorized.forNeighbourhood() ) {
             def neighbourhoodId = session.neighbourhood.id
             log.info "${session.user.logName} search hood ${neighbourhoodId} answers for '${q}', birthYears ${fromYear}:${toYear}"
-            answers = Answer.executeQuery(
-                'SELECT ans.text, ans.wouldAssist, p.id, p.firstNames, p.lastName, q.shortText \
-                 FROM Answer ans, Person p, Question q \
-                 WHERE (LOWER(ans.text) LIKE :q OR LOWER(ans.note) LIKE :q) \
-                 AND ans.person.id = p.id \
-                 AND ans.question.id = q.id \
-                 AND ((p.birthYear >= :fromYear AND p.birthYear <= :toYear) OR p.birthYear = 0) \
-                 AND q.neighbourhood.id = :id \
-                 ORDER BY p.firstNames, p.lastName, p.id',
-                [ q:searchTerm, id:neighbourhoodId, fromYear:fromYear, toYear:toYear ] )
+            def select = 
+                '''SELECT ans.text, ans.would_assist, p.id, p.first_names, p.last_name, q.short_text
+                 FROM Answer ans, Person p, Question q
+                 WHERE ((to_tsvector(ans.text) || to_tsvector(ans.note) @@ to_tsquery( :qExp )) OR LOWER(ans.text) LIKE :qStr OR LOWER(ans.note) LIKE :qStr)
+                 AND ans.person_id = p.id
+                 AND ans.question_id = q.id
+                 AND ((p.birth_year >= :fromYear AND p.birth_year <= :toYear) OR p.birth_year = 0)
+                 AND q.neighbourhood_id = :id
+                 ORDER BY p.first_names, p.last_name, p.id'''
+
+            answers = sql.rows( select, [ qStr:qStr, qExp:qExp, id:neighbourhoodId, fromYear:fromYear, toYear:toYear ] )
+
         } else {
             def blockId = session.block.id
             log.info "${session.user.logName} search block ${blockId} answers for '${q}', birthYears ${fromYear}:${toYear}"
-            answers = Answer.executeQuery(
-                'SELECT ans.text, ans.wouldAssist, p.id, p.firstNames, p.lastName, q.shortText \
-                 FROM Answer ans, Person p, Family f, Address addr, Question q \
-                 WHERE (LOWER(ans.text) LIKE :q OR LOWER(ans.note) LIKE :q) \
-                 AND ans.person.id = p.id \
-                 AND ans.question.id = q.id \
-                 AND p.family.id = f.id \
-                 AND f.address.id = addr.id \
-                 AND ((p.birthYear >= :fromYear AND p.birthYear <= :toYear) OR p.birthYear = 0) \
-                 AND addr.block.id = :id \
-                 ORDER BY p.firstNames, p.lastName, p.id',
-                [ q:searchTerm, id:blockId, fromYear:fromYear, toYear:toYear ] )
+            def select =
+                '''SELECT ans.text, ans.would_assist, p.id, p.first_names, p.last_name, q.short_text
+                 FROM Answer ans, Person p, Family f, Address addr, Question q
+                 WHERE ((to_tsvector(ans.text) || to_tsvector(ans.note) @@ to_tsquery( :qExp )) OR LOWER(ans.text) LIKE :qStr OR LOWER(ans.note) LIKE :qStr)
+                 AND ans.person_id = p.id
+                 AND ans.question_id = q.id 
+                 AND p.family_id = f.id 
+                 AND f.address_id = addr.id 
+                 AND ((p.birth_year >= :fromYear AND p.birth_year <= :toYear) OR p.birth_year = 0) 
+                 AND addr.block_id = :id 
+                 ORDER BY p.first_names, p.last_name, p.id'''
+
+            answers = sql.rows( select, [ qStr:qStr, qExp:qExp, id:blockId, fromYear:fromYear, toYear:toYear ] )
         }
 
         log.info "Found ${answers.size()} answers"
@@ -75,43 +84,49 @@ class SearchService {
         Integer fromYear = Year.now().getValue() - toAge
         Integer toYear = Year.now().getValue() - fromAge
 
-        def searchTerm = "%${q}%".toLowerCase( )
+        String qStr = "%${q.toLowerCase()}%"  // query string
+        String qExp = parseQuery( q )         // query expression
+
+        final Sql sql = new Sql(dataSource)
         def answers
 
         if( session.authorized.forNeighbourhood() ) {
             def neighbourhoodId = session.neighbourhood.id
             log.info "${session.user.logName} search hood ${neighbourhoodId} answers for '${q}', birthYears ${fromYear}:${toYear} with contact info"
 
-            answers = Answer.executeQuery(
-                'SELECT ans.text, ans.wouldAssist, p.id, p.firstNames, p.lastName, q.shortText, \
-                 p.phoneNumber, p.emailAddress, addr.text \
-                 FROM Answer ans, Person p, Family f, Address addr, Question q \
-                 WHERE (LOWER(ans.text) LIKE :q OR LOWER(ans.note) LIKE :q) \
-                 AND ans.person.id = p.id \
-                 AND ans.question.id = q.id \
-                 AND ((p.birthYear >= :fromYear AND p.birthYear <= :toYear) OR p.birthYear = 0) \
-                 AND q.neighbourhood.id = :id \
-                 AND p.family.id = f.id \
-                 AND f.address.id = addr.id \
-                 ORDER BY p.firstNames, p.lastName, p.id',
-                [ q:searchTerm, id:neighbourhoodId, fromYear:fromYear, toYear:toYear ] )
+            def select =
+                '''SELECT ans.text, ans.would_assist, p.id, p.first_names, p.last_name, q.short_text,
+                 p.phone_number, p.email_address, addr.text 
+                 FROM Answer ans, Person p, Family f, Address addr, Question q 
+                 WHERE ((to_tsvector(ans.text) || to_tsvector(ans.note) @@ to_tsquery( :qExp )) OR LOWER(ans.text) LIKE :qStr OR LOWER(ans.note) LIKE :qStr)
+                 AND ans.person_id = p.id 
+                 AND ans.question_id = q.id 
+                 AND ((p.birth_year >= :fromYear AND p.birth_year <= :toYear) OR p.birth_year = 0) 
+                 AND q.neighbourhood_id = :id 
+                 AND p.family_id = f.id 
+                 AND f.address_id = addr.id 
+                 ORDER BY p.first_names, p.last_name, p.id'''
+
+            answers = sql.rows( select, [ qStr:qStr, qExp:qExp, id:neighbourhoodId, fromYear:fromYear, toYear:toYear ] )
+
         } else {
             def blockId = session.block.id
             log.info "${session.user.logName} search block ${blockId} answers for '${q}', birthYears ${fromYear}:${toYear} with contact info"
 
-            answers = Answer.executeQuery(
-                'SELECT ans.text, ans.wouldAssist, p.id, p.firstNames, p.lastName, q.shortText, \
-                 p.phoneNumber, p.emailAddress, addr.text \
-                 FROM Answer ans, Person p, Family f, Address addr, Question q \
-                 WHERE (LOWER(ans.text) LIKE :q OR LOWER(ans.note) LIKE :q) \
-                 AND ans.person.id = p.id \
-                 AND ans.question.id = q.id \
-                 AND p.family.id = f.id \
-                 AND f.address.id = addr.id \
-                 AND ((p.birthYear >= :fromYear AND p.birthYear <= :toYear) OR p.birthYear = 0) \
-                 AND addr.block.id = :id \
-                 ORDER BY p.firstNames, p.lastName, p.id',
-                [ q:searchTerm, id:blockId, fromYear:fromYear, toYear:toYear ] )
+            def select =
+                '''SELECT ans.text, ans.would_assist, p.id, p.first_names, p.last_name, q.short_text,
+                 p.phone_number, p.email_address, addr.text 
+                 FROM Answer ans, Person p, Family f, Address addr, Question q 
+                 WHERE ((to_tsvector(ans.text) || to_tsvector(ans.note) @@ to_tsquery( :qExp )) OR LOWER(ans.text) LIKE :qStr OR LOWER(ans.note) LIKE :qStr)
+                 AND ans.person_id = p.id 
+                 AND ans.question_id = q.id 
+                 AND p.family_id = f.id 
+                 AND f.address_id = addr.id 
+                 AND ((p.birth_year >= :fromYear AND p.birth_year <= :toYear) OR p.birth_year = 0) 
+                 AND addr.block_id = :id 
+                 ORDER BY p.first_names, p.last_name, p.id'''
+
+            answers = sql.rows( select, [ qStr:qStr, qExp:qExp, id:blockId, fromYear:fromYear, toYear:toYear ] )
         }
 
         log.info "Found ${answers.size()} answers"
@@ -193,5 +208,18 @@ class SearchService {
 
         log.info "Found ${peeps.size()} people"
         return peeps
+    }
+
+    // Massage the query parameter (re PostgreSQL full text search)
+    def parseQuery( q ) {
+        if( q.indexOf('&') >= 0 || q.indexOf('|') >= 0 || q.indexOf('!') >= 0 ) {
+            log.info( 'Exotic search!')
+            // Ex: "toy & !truck" searches for "toy" where "truck" is absent
+            return q
+        } else {
+            // Make a query requiring all search terms
+            // Ex: "apple sauce" becomes "apple & sauce"
+            return q.replaceAll( ' ', ' & ' )
+        } 
     }
 }

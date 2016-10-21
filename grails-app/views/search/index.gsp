@@ -37,7 +37,7 @@
                 var returnString = '';
                 if (whichDescription == failedDescription) {
                     if (q.length>0) {
-                        returnString = 'Failed to find exact word/phrase "'+q+'"';
+                        returnString = 'Failed to find "'+q+'"';
                         if (fromAge.length>0 || toAge.length>0) {
                             returnString = returnString+' for family members '+constructAgeDescription(fromAge,toAge);
                         }
