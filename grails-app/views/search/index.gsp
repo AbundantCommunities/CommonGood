@@ -167,23 +167,23 @@
 
                 <g:if test="${answers.size() > 0}">
                     <g:each in="${answers}" var="answer">
-                        <g:if test="${answer[1]}">
-                            aAssistQuestion.push(decodeEntities('${answer[5]}'));
-                            aAssistAnswer.push(decodeEntities('${answer[0]}'));
-                            aAssistFNames.push(decodeEntities('${answer[3]}'));
-                            aAssistLName.push(decodeEntities('${answer[4]}'));
-                            aAssistPhone.push(decodeEntities('${answer[6]}'));
-                            aAssistEmail.push(decodeEntities('${answer[7]}'));
-                            aAssistAddress.push(decodeEntities('${answer[8]}'));
+                        <g:if test="${answer.assist}">
+                            aAssistQuestion.push(decodeEntities('${answer.question}'));
+                            aAssistAnswer.push(decodeEntities('${answer.text}'));
+                            aAssistFNames.push(decodeEntities('${answer.firstNames}'));
+                            aAssistLName.push(decodeEntities('${answer.lastName}'));
+                            aAssistPhone.push(decodeEntities('${answer.phoneNumber}'));
+                            aAssistEmail.push(decodeEntities('${answer.emailAddress}'));
+                            aAssistAddress.push(decodeEntities('${answer.homeAddress}'));
                         </g:if>
                         <g:else>
-                            aQuestion.push(decodeEntities('${answer[5]}'));
-                            aAnswer.push(decodeEntities('${answer[0]}'));
-                            aFNames.push(decodeEntities('${answer[3]}'));
-                            aLName.push(decodeEntities('${answer[4]}'));
-                            aPhone.push(decodeEntities('${answer[6]}'));
-                            aEmail.push(decodeEntities('${answer[7]}'));
-                            aAddress.push(decodeEntities('${answer[8]}'));
+                            aQuestion.push(decodeEntities('${answer.question}'));
+                            aAnswer.push(decodeEntities('${answer.text}'));
+                            aFNames.push(decodeEntities('${answer.firstNames}'));
+                            aLName.push(decodeEntities('${answer.lastName}'));
+                            aPhone.push(decodeEntities('${answer.phoneNumber}'));
+                            aEmail.push(decodeEntities('${answer.emailAddress}'));
+                            aAddress.push(decodeEntities('${answer.homeAddress}'));
                         </g:else>
                     </g:each>
                 </g:if>
@@ -319,17 +319,17 @@
                     <g:each in="${answers}" var="answer">
                         <div class="content-children-row">
                             <g:if test="${contactInfo=='yes'}">
-                                <g:link controller="navigate" action="familymember" id="${answer[2]}"><div class="cell190 <g:if test='${answer[1]}'>bold</g:if>">${answer[3]} ${answer[4]}</div></g:link>
-                                <div class="cell120">${answer[6]}</div>
-                                <div class="cell300"><a href="mailto:${answer[7]}">${answer[7]}</a></div>
-                                <div class="cell250">${answer[8]}</div>
+                                <g:link controller="navigate" action="familymember" id="${answer.pid}"><div class="cell190 <g:if test='${answer.assist}'>bold</g:if>">${answer.firstNames} ${answer.lastName}</div></g:link>
+                                <div class="cell120">${answer.phoneNumber}</div>
+                                <div class="cell300"><a href="mailto:${answer.emailAddress}">${answer.emailAddress}</a></div>
+                                <div class="cell250">${answer.homeAddress}</div>
                             </g:if>
                             <g:else>
                                 <div class="cell550">
-                                    <span class="<g:if test='${answer[1]}'>bold</g:if>">${answer[0]}</span> 
-                                    <span style="font-size:x-small;">(${answer[5]})</span>
+                                    <span class="<g:if test='${answer.assist}'>bold</g:if>">${answer.text}</span> 
+                                    <span style="font-size:x-small;">(${answer.question})</span>
                                 </div>
-                                <g:link controller="navigate" action="familymember" id="${answer[2]}"><div class="cell300">${answer[3]} ${answer[4]}</div></g:link>
+                                <g:link controller="navigate" action="familymember" id="${answer.pid}"><div class="cell300">${answer.firstNames} ${answer.lastName}</div></g:link>
                             </g:else>
                         </div>
                     </g:each>

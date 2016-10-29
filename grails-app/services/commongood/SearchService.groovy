@@ -47,9 +47,10 @@ class SearchService {
             def neighbourhoodId = session.neighbourhood.id
             log.info "${session.user.logName} search hood ${neighbourhoodId} answers for '${q}', birthYears ${fromYear}:${toYear}"
             def select = 
-                '''SELECT ans.text, ans.would_assist, p.id, p.first_names, p.last_name, q.short_text
+                '''SELECT ans.text, ans.would_assist AS assist, ans.note, p.id AS pid, p.first_names AS firstNames, p.last_name AS lastName, q.short_text AS question
                  FROM Answer ans, Person p, Question q
-                 WHERE ((to_tsvector(ans.text) || to_tsvector(ans.note) @@ to_tsquery( :qExp )) OR LOWER(ans.text) LIKE :qStr OR LOWER(ans.note) LIKE :qStr)
+                 WHERE ((TO_TSVECTOR(REGEXP_REPLACE(ans.text,'[.,/,-]',',')) || TO_TSVECTOR(REGEXP_REPLACE(ans.note,'[.,/,-]',',')) @@ TO_TSQUERY( :qExp ))
+                        OR LOWER(ans.text) LIKE :qStr OR LOWER(ans.note) LIKE :qStr)
                  AND ans.person_id = p.id
                  AND ans.question_id = q.id
                  AND ((p.birth_year >= :fromYear AND p.birth_year <= :toYear) OR p.birth_year = 0)
@@ -64,7 +65,8 @@ class SearchService {
             def select =
                 '''SELECT ans.text, ans.would_assist, p.id, p.first_names, p.last_name, q.short_text
                  FROM Answer ans, Person p, Family f, Address addr, Question q
-                 WHERE ((to_tsvector(ans.text) || to_tsvector(ans.note) @@ to_tsquery( :qExp )) OR LOWER(ans.text) LIKE :qStr OR LOWER(ans.note) LIKE :qStr)
+                 WHERE ((TO_TSVECTOR(REGEXP_REPLACE(ans.text,'[.,/,-]',',')) || TO_TSVECTOR(REGEXP_REPLACE(ans.note,'[.,/,-]',',')) @@ TO_TSQUERY( :qExp ))
+                        OR LOWER(ans.text) LIKE :qStr OR LOWER(ans.note) LIKE :qStr)
                  AND ans.person_id = p.id
                  AND ans.question_id = q.id 
                  AND p.family_id = f.id 
@@ -95,10 +97,11 @@ class SearchService {
             log.info "${session.user.logName} search hood ${neighbourhoodId} answers for '${q}', birthYears ${fromYear}:${toYear} with contact info"
 
             def select =
-                '''SELECT ans.text, ans.would_assist, p.id, p.first_names, p.last_name, q.short_text,
-                 p.phone_number, p.email_address, addr.text 
+                '''SELECT ans.text, ans.would_assist AS assist, ans.note, p.id AS pid, p.first_names AS firstNames, p.last_name AS lastName, q.short_text AS question,
+                          p.phone_number AS phoneNumber, p.email_address AS emailAddress, addr.text AS homeAddress
                  FROM Answer ans, Person p, Family f, Address addr, Question q 
-                 WHERE ((to_tsvector(ans.text) || to_tsvector(ans.note) @@ to_tsquery( :qExp )) OR LOWER(ans.text) LIKE :qStr OR LOWER(ans.note) LIKE :qStr)
+                 WHERE ((TO_TSVECTOR(REGEXP_REPLACE(ans.text,'[.,/,-]',',')) || TO_TSVECTOR(REGEXP_REPLACE(ans.note,'[.,/,-]',',')) @@ TO_TSQUERY( :qExp ))
+                        OR LOWER(ans.text) LIKE :qStr OR LOWER(ans.note) LIKE :qStr)
                  AND ans.person_id = p.id 
                  AND ans.question_id = q.id 
                  AND ((p.birth_year >= :fromYear AND p.birth_year <= :toYear) OR p.birth_year = 0) 
@@ -210,16 +213,17 @@ class SearchService {
         return peeps
     }
 
-    // Massage the query parameter (re PostgreSQL full text search)
+    // Massage the query parameter before using PostgreSQL Full Text Search.
     def parseQuery( q ) {
         if( q.indexOf('&') >= 0 || q.indexOf('|') >= 0 || q.indexOf('!') >= 0 ) {
             log.info( 'Exotic search!')
             // Ex: "toy & !truck" searches for "toy" where "truck" is absent
             return q
         } else {
-            // Make a query requiring all search terms
-            // Ex: "apple sauce" becomes "apple & sauce"
-            return q.replaceAll( ' ', ' & ' )
+            // Make a query requiring all search terms; ex: "apple sauce" becomes "apple & sauce".
+            // Experiments show PostgreSQL 9.4 full text search handles '/', '-' and '.' poorly.
+            // Treat those characters like a space.
+            return q.replaceAll( '[\\s,/,.,-]', ' & ' )
         } 
     }
 }

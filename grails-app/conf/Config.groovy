@@ -98,5 +98,7 @@ environments {
 log4j = { root {
         info 'grails.app.controllers.commongood'
         info 'grails.app.controllers.org.abundantcommunityinitiative'
+//        trace 'org.hibernate.type'
+//        debug 'org.hibernate.SQL'
         }
 }
