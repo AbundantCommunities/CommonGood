@@ -4,6 +4,7 @@
     <head>
         <meta name="layout" content="basic">
         <title>CommonGood Search</title>
+        <asset:javascript src="copy2clipboard.js"/>
         <script type="text/javascript">
         
             function showContactInfo() {
@@ -229,9 +230,16 @@
                     body = body+'No one has offered to assist.\n';
                 }
 
-                body = encodeURIComponent(body);
-                var email = 'mailto:?body='+body;
-                document.location.href = email;
+                // body = encodeURIComponent(body);
+                // var email = 'mailto:?body='+body;
+                // document.location.href = email;
+
+                var numRows = 20;
+                var title = 'Email Contact Information';
+                var description = 'CommonGood cannot send email for you, but you can copy the message below to the clipboard, then paste it into a new message that you create the way you normally do.';
+                var copyContentTitle = 'Contact information for search results'
+                presentForCopy('emaildiv',body,numRows,title,description,copyContentTitle);
+
             }
             </g:if>
 
@@ -248,6 +256,17 @@
             }
 
         </script>
+
+        <style type="text/css">
+
+            #emaildiv {
+                top:90px;
+                left:200px;
+                width:540px;
+            }
+
+        </style>
+
     </head>
     <body>
             <div class="content-section">
@@ -337,5 +356,7 @@
                 </g:if>
 
             </div>
+            <div id="transparent-overlay"></div>
+            <div id="emaildiv" class="modal"></div>
     </body>
 </html>
