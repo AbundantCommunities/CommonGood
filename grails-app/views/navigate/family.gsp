@@ -248,8 +248,8 @@
 
             <div class="content-section">
                 <div class="content-heading">Family Members for ${navSelection.levelInHierarchy} ${navSelection.description}&nbsp;&nbsp;<a href="#" onclick="presentNewModal()" style="font-weight:normal;">+ Add New Family Member</a></div>
-                <g:if test="${navChildren.children.size() > 0}">
                 <div id="listWithHandle">
+                <g:if test="${navChildren.children.size() > 0}">
                     <g:each in="${navChildren.children}" var="child">
                         <div id="${child.id}" class="content-children-row">
                             <span class="drag-handle"><asset:image src="reorder-row.png" width="18" height="18" style="vertical-align:middle;"/></span>

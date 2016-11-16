@@ -471,9 +471,9 @@
 
             </div>
             <div class="content-section">
-                <div class="content-heading">Addresses for ${navSelection.levelInHierarchy} ${navSelection.description}&nbsp;&nbsp;<a href="#" onclick="presentNewModal();" style="font-weight:normal;">+ Add New Addresses</a></div>
+                <div class="content-heading">Addresses for ${navSelection.levelInHierarchy} ${navSelection.description}<g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}">&nbsp;&nbsp;<a href="#" onclick="presentNewModal();" style="font-weight:normal;">+ Add New Addresses</a></g:if></div>
+                <div id="listWithHandle">
                 <g:if test="${navChildren.children.size() > 0}">
-                <div <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}">id="listWithHandle"</g:if>>
                     <g:each in="${navChildren.children}" var="child">
                         <div <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}">id="${child.id}"</g:if> class="content-children-row">
                             <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}"><span class="drag-handle"><asset:image src="reorder-row.png" width="18" height="18" style="vertical-align:middle;"/></span></g:if>

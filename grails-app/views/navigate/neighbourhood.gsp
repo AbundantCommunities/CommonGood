@@ -143,13 +143,15 @@
                 </g:if>
             </div>
             <div class="content-section">
+                
                 <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}">
                     <div class="content-heading">${navChildren.childType+'s'} for ${navSelection.levelInHierarchy} ${navSelection.description}&nbsp;&nbsp;<a href="#" onclick="presentNewModal();" style="font-weight:normal;">+ Add New Block</a></div>
                 </g:if>
                 <g:elseif test="${authorized.forBlock()==Boolean.TRUE}">
-                    <div class="content-heading">Your ${navChildren.childType}<g:if test="${navChildren.children.size() > 1}">s</g:if></div>
+                    <div class="content-heading">Your ${navChildren.childType}<g:if test="${navChildren.children.size() > 1}">s</g:if> in ${navSelection.levelInHierarchy} ${navSelection.description}</div>
                 </g:elseif>
-                <div <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}">id="listWithHandle"</g:if>>
+
+                <div id="listWithHandle">
                 <g:if test="${navChildren.children.size() > 0}">
                     <g:each in="${navChildren.children}" var="child">
                         <div <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}">id="${child.id}"</g:if> class="content-children-row">

@@ -4,6 +4,7 @@
     <head>
         <meta name="layout" content="navigate"/>
         <title>CommonGood - Family Member</title>
+        <asset:javascript src="copy2clipboard.js"/>
         <script type="text/javascript">
             function populateEditModal() {
                 document.getElementById('firstNamesInput').value = decodeEntities("${navSelection.firstNames}");
@@ -181,6 +182,16 @@
                 dismissEditAnswerModal();
             }
 
+            function doEmailOne(emailAddress) {
+                if (emailAddress) {
+                    var numRows = 1;
+                    var title = 'Email Person';
+                    var description = 'CommonGood cannot send email for you, but you can copy the email address to the clipboard and then paste to address a new message that you create the way you normally do.';
+                    var copyContentTitle = 'Person email address'
+                    presentForCopy('emaildiv',emailAddress,numRows,title,description,copyContentTitle);
+                }
+            }
+
 
         </script>
         <style type="text/css">
@@ -222,6 +233,12 @@
                 width: 400px;
             }
 
+            #emaildiv {
+                top:90px;
+                left:200px;
+                width:540px;
+            }
+
         </style>
     </head>
 
@@ -239,7 +256,7 @@
                     <div class="content-row-item" style="width:150px;">Birth year: </div><div class="content-row-item"><g:if test="${navSelection.birthYear > 0}">${navSelection.birthYear}</g:if></div>
                 </div>
                 <div class="content-row">
-                    <div class="content-row-item" style="width:150px;">Email address: </div><div class="content-row-item">${navSelection.emailAddress}</div>
+                    <div class="content-row-item" style="width:150px;">Email address: </div><div class="content-row-item"><a href="#" onclick="doEmailOne('${navSelection.emailAddress}');">${navSelection.emailAddress}</a></div>
                 </div>
                 <div class="content-row">
                     <div class="content-row-item" style="width:150px;">Phone number: </div><div class="content-row-item">${navSelection.phoneNumber}</div>
@@ -261,8 +278,8 @@
             </div>
             <div class="content-section">
                 <div class="content-heading">Answers for ${navSelection.description}</div>
-                <g:if test="${questionsAndAnswers.size() > 0}">
                 <div id="listWithHandle">
+                <g:if test="${questionsAndAnswers.size() > 0}">
                     <g:each in="${questionsAndAnswers}" var="qa">
                         <div class="content-children-row">${qa.question}: <g:each in="${qa.answers}" var="answer" status="i"><g:if test="${i>0}">, </g:if><span id="answer_${answer.id}" style="cursor:pointer;color:#B48B6A;" onclick="editAnswer(this);">${answer.text}</span></g:each></div>
                     </g:each>
@@ -273,8 +290,8 @@
                 </div>
                 <div class="content-children-row"></div>
             </div>
-            <div id="transparent-overlay">
-            </div>
+            <div id="transparent-overlay"></div>
+            <div id="emaildiv" class="modal"></div>
             <div id="edit-fm-container" class="modal">
                 <div class="modal-title">Edit Family Member</div>
                 <form id="edit-fm-form" action="<g:createLink controller='person' action='save' />" method="POST">

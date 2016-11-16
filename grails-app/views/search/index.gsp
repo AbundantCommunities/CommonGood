@@ -241,6 +241,19 @@
                 presentForCopy('emaildiv',body,numRows,title,description,copyContentTitle);
 
             }
+
+            function doEmailOne(emailAddress) {
+                if (emailAddress) {
+                    var numRows = 1;
+                    var title = 'Email Person';
+                    var description = 'CommonGood cannot send email for you, but you can copy the email address to the clipboard and then paste to address a new message that you create the way you normally do.';
+                    var copyContentTitle = 'Person email address'
+                    presentForCopy('emaildiv',emailAddress,numRows,title,description,copyContentTitle);
+                }
+            }
+
+
+
             </g:if>
 
             window.onload = function onWindowLoad() {
@@ -320,7 +333,7 @@
                             <g:if test="${contactInfo=='yes'}">
                                 <div class="cell190"><g:link controller="navigate" action="familymember" id="${person[0]}">${person[1]} ${person[2]}</g:link></div>
                                 <div class="cell120">${person[3]}</div>
-                                <div class="cell300"><a href="mailto:${person[4]}">${person[4]}</a></div>
+                                <div class="cell300"><a href="#" onclick="doEmailOne('${person[4]}');">${person[4]}</a></div>
                                 <div class="cell250">${person[5]}</div>
                             </g:if>
                             <g:else>
@@ -340,7 +353,7 @@
                             <g:if test="${contactInfo=='yes'}">
                                 <g:link controller="navigate" action="familymember" id="${answer.pid}"><div class="cell190 <g:if test='${answer.assist}'>bold</g:if>">${answer.firstNames} ${answer.lastName}</div></g:link>
                                 <div class="cell120">${answer.phoneNumber}</div>
-                                <div class="cell300"><a href="mailto:${answer.emailAddress}">${answer.emailAddress}</a></div>
+                                <div class="cell300"><a href="#" onclick="doEmailOne('${answer.emailAddress}');">${answer.emailAddress}</a></div>
                                 <div class="cell250">${answer.homeAddress}</div>
                             </g:if>
                             <g:else>
