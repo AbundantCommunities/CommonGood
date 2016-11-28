@@ -14,6 +14,7 @@ class DomainAuthorization {
     String domainCode // A, N, B → Application Administrator, NeighbourHood Connector, Block Connector
     Integer orderWithinDomain
     Long domainKey // domainCode: A means domainKey is null, N means key is neighbourhood.id, B means block.id
+    Boolean write
 
     Date dateCreated
     Date lastUpdated

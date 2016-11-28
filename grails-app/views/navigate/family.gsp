@@ -192,7 +192,9 @@
                 </div>
                 <div id="content-actions">
                     <div class="content-action"><a href="#" onclick="presentEditModal()">Edit</a></div>
-                    <div class="content-action"><g:link controller="Delete" action="confirmFamily" id="${navSelection.id}">Delete</g:link></div>
+                    <g:if test="${authorized.canWrite()==Boolean.TRUE}">
+                        <div class="content-action"><g:link controller="Delete" action="confirmFamily" id="${navSelection.id}">Delete</g:link></div>
+                    </g:if>
                     <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}">
                         <div class="content-action"><g:link controller="Move" action="selectDestinationAddress" id="${navSelection.id}">Move</g:link></div>
                     </g:if>

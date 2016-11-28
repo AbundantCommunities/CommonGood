@@ -5,7 +5,6 @@ import org.abundantcommunityinitiative.commongood.Authorization
 
 @Transactional
 class DomainAuthorizationService {
-
     /*
      * Remove a given person+block pairing from DomainAuthorization
      */
@@ -31,13 +30,13 @@ class DomainAuthorizationService {
      * then we return authorization for that neighbourhood. If we don't find an 'N'
      * then we select one of the DA rows.
      * 
-     * We here you excliaming, "ONE of the DA rows"?! Yes, we are not yet prepared
+     * We hear you excliaming, "ONE of the DA rows"?! Yes, we are not yet prepared
      * to handle multiple 'B' domainCodes for one person (unless that person has an
      * 'N' DA).
      * 
      * Lastly, we do not return the selected DomainAuthorization (DA). Instead, we
      * transform the DA into an instance of org.abundantcommunityinitiative.commongood.Authorization.
-     * That class is a bit more useful for authorzation HTTP requests.
+     * That class is a bit more useful for authorizing HTTP requests.
      */
     def getForPerson( person ) {
         log.info "Get Authorization for ${person.logName}"
@@ -66,14 +65,14 @@ class DomainAuthorizationService {
 
             if( bestDA ) {
                 if( bestDA.domainCode == DomainAuthorization.NEIGHBOURHOOD ) {
-                    return Authorization.getForNeighbourhood( bestDA.domainKey )
+                    return Authorization.getForNeighbourhood( bestDA.domainKey, bestDA.write )
                 } else {
-                    return Authorization.getForBlock( bestDA.domainKey )
+                    return Authorization.getForBlock( bestDA.domainKey, bestDA.write )
                 }
             }
         }
 
-        // Failed to find a valid DomainAuthorization for person.
+        log.warn "No valid DA for ${person.logName}"
         return null
     }
 
