@@ -10,7 +10,7 @@ class FamilyController {
     def reorder( ) {
         def person = Person.get( Long.valueOf( params.personId ) )
         def family = person.family
-        authorizationService.family( family.id, session )
+        authorizationService.familyWrite( family.id, session )
 
         def afterId = Long.valueOf( params.afterId )
         if( afterId ) {
@@ -29,7 +29,7 @@ class FamilyController {
     // JSON call -- used by Add Block Connector
     def members( ) {
         def id = Long.valueOf( params.id )
-        authorizationService.family( id, session )
+        authorizationService.familyRead( id, session )
         def famAddresses = Person.findAll("from Person p join p.family as f where f.id=? order by p.orderWithinFamily", [ id ])
 
         def result = [ ]
@@ -48,7 +48,7 @@ class FamilyController {
             // The request wants us to change an existing family.
             // We will not change the family's address.
             def familyId = Long.valueOf( params.id )
-            authorizationService.family( familyId, session )
+            authorizationService.familyWrite( familyId, session )
             log.info "${session.user.getLogName()} requests save changes for family/${familyId}"
 
             family = Family.get( familyId )
@@ -62,7 +62,7 @@ class FamilyController {
             // We need to get the family's address from the request.
             family = new Family( )
             def addressId = Long.valueOf( params.addressId )
-            authorizationService.address( addressId, session )
+            authorizationService.addressWrite( addressId, session )
             log.info "${session.user.getLogName()} requests add a family to address/${addressId}"
 
             family.address = Address.get( addressId )

@@ -19,7 +19,7 @@ class NavigateController {
 
     def neighbourhood( ) {
         Integer hoodId = Integer.valueOf( params.id )
-        authorizationService.neighbourhood( hoodId, session )
+        authorizationService.neighbourhoodRead( hoodId, session )
         log.info "${session.user.getLogName()} to neighbourhood/${hoodId}"
         Neighbourhood theHood = Neighbourhood.where{ id == hoodId }.get( )
         List questions = Question.where{ neighbourhood.id == hoodId }.list( sort:'orderWithinQuestionnaire', order:'asc' )
@@ -44,7 +44,7 @@ class NavigateController {
 
     def block( ) {
         def blockId = Long.valueOf( params.id )
-        authorizationService.block( blockId, session )
+        authorizationService.blockRead( blockId, session )
         log.info "${session.user.getLogName()} to block/${blockId}"
         Block theBlock = Block.get( blockId )
         def blockConnectors = domainAuthorizationService.getBlockConnectors( blockId )
@@ -73,7 +73,7 @@ class NavigateController {
 
     def address( ) {
         Integer addressId = Integer.valueOf( params.id )
-        authorizationService.address( addressId, session )
+        authorizationService.addressWrite( addressId, session )
         log.info "${session.user.getLogName()} to address/${addressId}"
         Address theAddress = Address.where{ id == addressId }.get( )
         List families = Family.where{ address.id == addressId }.list( sort:'orderWithinAddress', order:'asc' )
@@ -113,7 +113,7 @@ class NavigateController {
     def family( ) {
         Person interviewer // Block Connector
         Integer familyId = Integer.valueOf( params.id )
-        authorizationService.family( familyId, session )
+        authorizationService.familyRead( familyId, session )
         log.info "${session.user.getLogName()} to family/${familyId}"
         Family theFamily = Family.get( familyId )
 
@@ -159,7 +159,7 @@ class NavigateController {
     // Lower case M because of the way our GSP constructs navigation URLs
     def familymember( ) {
         Long memberId = Long.valueOf( params.id )
-        authorizationService.person( memberId, session )
+        authorizationService.personRead( memberId, session )
         log.info "${session.user.getLogName()} to familyMember/${memberId}"
 
         /* The result of the following query looks like:

@@ -10,7 +10,7 @@ class NeighbourhoodController {
     def reorder( ) {
         def block = Block.get( Long.valueOf( params.blockId ) )
         def nhood = block.neighbourhood
-        authorizationService.neighbourhood( nhood.id, session )
+        authorizationService.neighbourhoodWrite( nhood.id, session )
 
         def afterId = Long.valueOf( params.afterId )
         if( afterId ) {
@@ -30,7 +30,7 @@ class NeighbourhoodController {
         // This def and call to our authorizationService accomplishes very little
         // but without it, the code appears to lack authorization enforcement...
         def neighbourhoodId = session.neighbourhood.id
-        authorizationService.neighbourhood( neighbourhoodId, session )
+        authorizationService.neighbourhoodRead( neighbourhoodId, session )
         log.info "${session.user.getLogName()} requests Block Connector Contact List for neighbourhood/${neighbourhoodId}"
 
         String query = '''SELECT blk.id,
@@ -73,7 +73,7 @@ class NeighbourhoodController {
     def addBlock( ) {
         def neighbourhoodId = params.long('id')
         log.info "${session.user.getLogName()} requests addBlock for neighbourhood/${neighbourhoodId}"
-        authorizationService.neighbourhood( neighbourhoodId, session )
+        authorizationService.neighbourhoodWrite( neighbourhoodId, session )
         def neighbourhood = Neighbourhood.get( neighbourhoodId )
 
         def block = new Block( )
@@ -106,7 +106,7 @@ class NeighbourhoodController {
     // Get a JSON list of blocks for a given neighbourhood
     def blocks( ) {
         def id = Long.valueOf( params.id )
-        authorizationService.neighbourhood( id, session )
+        authorizationService.neighbourhoodRead( id, session )
         log.info "${session.user.getLogName()} requests list of blocks for neighbourhood/${id}"
 
         def neighbourhoodBlocks = Block.findAll("from Block blk join blk.neighbourhood neigb where neigb.id=? order by blk.orderWithinNeighbourhood", [ id ])

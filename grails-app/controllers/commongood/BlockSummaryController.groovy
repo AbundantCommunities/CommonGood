@@ -9,7 +9,7 @@ class BlockSummaryController {
 
     def index() {
         def hoodId = session.neighbourhood.id
-        authorizationService.neighbourhood( hoodId, session )
+        authorizationService.neighbourhoodRead( hoodId, session )
 
         log.info "${session.user.getLogName()} Block Summary for neighbourhood/${hoodId}"
         // Eschew GORM; let's kick it ol' school...

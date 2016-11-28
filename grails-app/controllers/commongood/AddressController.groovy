@@ -11,7 +11,7 @@ class AddressController {
     def reorder( ) {
         def family = Family.get( Long.valueOf( params.familyId ) )
         def address = family.address
-        authorizationService.address( address.id, session )
+        authorizationService.addressWrite( address.id, session )
 
         def afterId = Long.valueOf( params.afterId )
         if( afterId ) {
@@ -29,7 +29,7 @@ class AddressController {
     // Get a JSON list of families at a given address
     def families( ) {
         def id = Long.valueOf( params.id )
-        authorizationService.address( id, session )
+        authorizationService.addressRead( id, session )
         log.info "${session.user.logName} requests list of families at address/${id}"
 
         def famAddresses = Family.findAll("from Family fam join fam.address addr where addr.id=? order by fam.orderWithinAddress", [ id ])
@@ -50,7 +50,7 @@ class AddressController {
         if( !params.text ) {
             throw new RuntimeException( "address.text is empty [${session.user}]" )
         }
-        authorizationService.address( addressId, session )
+        authorizationService.addressWrite( addressId, session )
         addressService.update( params )
 
         redirect controller:'navigate', action:'address', id:addressId

@@ -31,7 +31,7 @@ class AnswerController {
     def delete( ) {
         def answerId = Long.parseLong( params.id )
         log.info "${session.user.logName} requests delete answer/${answerId}"
-        authorizationService.answer( answerId, session )
+        authorizationService.answerWrite( answerId, session )
         def answer = Answer.get( answerId )
         def person = answer.person
         answer.delete(flush: true)
@@ -42,7 +42,7 @@ class AnswerController {
     def get( ) {
         def answerId = Long.parseLong( params.id )
         log.info "${session.user.logName} requests get answer/${answerId}"
-        authorizationService.answer( answerId, session )
+        authorizationService.answerRead( answerId, session )
         Answer answer = Answer.get( answerId )
         def result = [ id: answer.id, text: answer.text,
                 wouldAssist: answer.wouldAssist,
@@ -56,7 +56,7 @@ class AnswerController {
     def save( ) {
         def answerId =  params.long('id')
         log.info "${session.user.logName} save answer/${answerId}"
-        authorizationService.answer( answerId, session )
+        authorizationService.answerWrite( answerId, session )
         Answer answer = Answer.get( answerId )
         answer.text = params.text
         answer.wouldAssist = ('wouldAssist' in params)
@@ -75,7 +75,7 @@ class AnswerController {
         */
         Long familyId = Long.parseLong( params.familyId )
         log.info "${session.user.logName} requests save interview for family/${familyId}"
-        authorizationService.family( familyId, session )
+        authorizationService.familyWrite( familyId, session )
         Family family = Family.get( familyId )
 
         params.each{ param, value ->

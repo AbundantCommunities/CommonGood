@@ -16,7 +16,7 @@ class PermuteAnswersController {
     def questionCode() {
         def questionId =  Long.valueOf( params.id )
         def neighbourhood = Question.get( questionId ).neighbourhood
-        authorizationService.neighbourhood( neighbourhood.id, session )
+        authorizationService.neighbourhoodRead( neighbourhood.id, session )
 
         def permutations = [ ]
         List answers = Answer.executeQuery( "select text from Answer a where a.question.id = ?", [questionId] ).each {

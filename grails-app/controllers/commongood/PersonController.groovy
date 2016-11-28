@@ -10,14 +10,14 @@ class PersonController {
         if( 'id' in params ) {
             // Update an existing person
             Integer personId = params.int('id')
-            authorizationService.person( personId, session )
+            authorizationService.personWrite( personId, session )
             log.info "${session.user.getLogName()} SAVE changes to person/${personId}"
             personService.update( personId, params )
             redirect controller:'navigate', action:'familymember', id:personId
         } else {
             // Create a new person
             def familyId = params.int('familyId')
-            authorizationService.family( familyId, session )
+            authorizationService.familyWrite( familyId, session )
             log.info "${session.user.getLogName()} ADD person to family/${familyId}"
             personService.insert( familyId, params )
             redirect controller:'navigate', action:'family', id:familyId

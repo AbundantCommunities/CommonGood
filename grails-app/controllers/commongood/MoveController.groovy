@@ -14,12 +14,11 @@ class MoveController {
         render ""
     }
 
-
     // Prompt user to select block to move address to.
     def selectDestinationBlock( ) {
 
         Address addressToMove = Address.get( params.long('id') )
-        authorizationService.address( addressToMove.id, session )
+        authorizationService.addressWrite( addressToMove.id, session )
 
         Neighbourhood neighbourhood = Neighbourhood.get ( addressToMove.block.neighbourhood.id )
 
@@ -39,7 +38,7 @@ class MoveController {
     def selectDestinationAddress( ) {
 
         Family familyToMove = Family.get( params.long('id') )
-        authorizationService.family( familyToMove.id, session )
+        authorizationService.familyWrite( familyToMove.id, session )
 
         Neighbourhood neighbourhood = Neighbourhood.get ( familyToMove.address.block.neighbourhood.id )
 
@@ -59,7 +58,7 @@ class MoveController {
     def selectDestinationFamily( ) {
 
         Person personToMove = Person.get( params.long('id') )
-        authorizationService.person( personToMove.id, session )
+        authorizationService.personWrite( personToMove.id, session )
 
         Neighbourhood neighbourhood = Neighbourhood.get ( personToMove.family.address.block.neighbourhood.id )
 
@@ -82,8 +81,8 @@ class MoveController {
 
         log.info "${session.user.getLogName()} MOVE address ${addressToMove.text} (${addressToMove.id}) to block ${destinationBlock.code} (${destinationBlock.id})"
 
-        authorizationService.address( addressToMove.id, session )
-        authorizationService.block( destinationBlock.id, session )
+        authorizationService.addressWrite( addressToMove.id, session )
+        authorizationService.blockWrite( destinationBlock.id, session )
 
         if( session.moveType == 'address' && session.moveToken == params.magicToken ) {
 
@@ -110,8 +109,8 @@ class MoveController {
 
         log.info "${session.user.getLogName()} MOVE family ${familyToMove.name} (${familyToMove.id}) to address ${destinationAddress.text} (${destinationAddress.id})"
 
-        authorizationService.family( familyToMove.id, session )
-        authorizationService.address( destinationAddress.id, session )
+        authorizationService.familyWrite( familyToMove.id, session )
+        authorizationService.addressWrite( destinationAddress.id, session )
 
         if( session.moveType == 'family' && session.moveToken == params.magicToken ) {
 
@@ -138,8 +137,8 @@ class MoveController {
 
         log.info "${session.user.getLogName()} MOVE person ${personToMove.logName} (${personToMove.id}) to family ${destinationFamily.name} (${destinationFamily.id})"
 
-        authorizationService.person( personToMove.id, session )
-        authorizationService.family( destinationFamily.id, session )
+        authorizationService.personWrite( personToMove.id, session )
+        authorizationService.familyWrite( destinationFamily.id, session )
 
         if( session.moveType == 'person' && session.moveToken == params.magicToken ) {
 

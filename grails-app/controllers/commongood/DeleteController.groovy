@@ -17,7 +17,7 @@ class DeleteController {
     // were to be deleted (cascading deletions...).
     def confirmBlock( ) {
         Block target = Block.get( params.long('id') )
-        authorizationService.block( target.id, session )
+        authorizationService.blockWrite( target.id, session )
 
         if ( deleteService.personInBlock( session.user, target ) ) {
             log.warn "${session.user.logName} prevent deletion of own block"
@@ -65,7 +65,7 @@ class DeleteController {
     // were to be deleted (cascading deletions...).
     def confirmAddress( ) {
         Address target = Address.get( params.long('id') )
-        authorizationService.address( target.id, session )
+        authorizationService.addressWrite( target.id, session )
 
         if ( deleteService.personInAddress( session.user, target ) ) {
             log.warn "${session.user.logName} prevent deletion of own address"
@@ -105,7 +105,7 @@ class DeleteController {
     // deleted (cascading deletions...).
     def confirmFamily( ) {
         Family target = Family.get( params.long('id') )
-        authorizationService.family( target.id, session )
+        authorizationService.familyWrite( target.id, session )
 
         if ( deleteService.personInFamily( session.user, target ) ) {
             log.warn "${session.user.logName} prevent deletion of own family"
@@ -138,7 +138,7 @@ class DeleteController {
     // deleted (cascading deletion of person's answers).
     def confirmPerson( ) {
         Person target = Person.get( params.long('id') )
-        authorizationService.person( target.id, session )
+        authorizationService.personWrite( target.id, session )
 
         if ( session.user.id == target.id ) {
             log.warn "${session.user.getLogName()} Prevent user deleting self"
@@ -167,7 +167,7 @@ class DeleteController {
     def block( ) {
         Block target = Block.get( params.long('id') )
         log.info "${session.user.getLogName()} DELETE block ${target.id} ${target.code}"
-        authorizationService.block( target.id, session )
+        authorizationService.blockWrite( target.id, session )
 
         if( session.deleteType == 'block' && session.deleteToken == params.magicToken ) {
             Neighbourhood neighbourhood = target.neighbourhood
@@ -192,7 +192,7 @@ class DeleteController {
     def address( ) {
         Address target = Address.get( params.long('id') )
         log.info "${session.user.getLogName()} DELETE address ${target.id} ${target.text}"
-        authorizationService.address( target.id, session )
+        authorizationService.addressWrite( target.id, session )
 
         if( session.deleteType == 'address' && session.deleteToken == params.magicToken ) {
             Block block = target.block
@@ -217,7 +217,7 @@ class DeleteController {
     def family( ) {
         Family target = Family.get( params.long('id') )
         log.info "${session.user.getLogName()} DELETE family ${target.id} ${target.name}"
-        authorizationService.family( target.id, session )
+        authorizationService.familyWrite( target.id, session )
 
         if( session.deleteType == 'family' && session.deleteToken == params.magicToken ) {
             Address address = target.address
@@ -242,7 +242,7 @@ class DeleteController {
     def person( ) {
         Person target = Person.get( params.long('id') )
         log.info "${session.user.getLogName()} DELETE person ${target.logName}"
-        authorizationService.person( target.id, session )
+        authorizationService.personWrite( target.id, session )
 
         if( session.deleteType == 'person' && session.deleteToken == params.magicToken ) {
             Family family = target.family

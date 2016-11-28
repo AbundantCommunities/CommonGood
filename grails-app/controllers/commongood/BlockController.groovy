@@ -12,7 +12,7 @@ class BlockController {
     def reorder( ) {
         def address = Address.get( Long.valueOf( params.addressId ) )
         def block = address.block
-        authorizationService.block( block.id, session )
+        authorizationService.blockWrite( block.id, session )
 
         def afterId = Long.valueOf( params.afterId )
         if( afterId ) {
@@ -34,7 +34,7 @@ class BlockController {
     def addAddresses( ) {
         def blockId = Long.parseLong( params.id )
         log.info "${session.user.getLogName()} requests add address(es) block/${blockId}"
-        authorizationService.block( blockId, session )
+        authorizationService.blockWrite( blockId, session )
         def thisBlock = Block.get( blockId )
 
         // Let's find the largest value of order_within_block and go from there...
@@ -68,7 +68,7 @@ class BlockController {
 
     def contactList() {
         def blockId = Long.parseLong( params.id )
-        authorizationService.block( blockId, session )
+        authorizationService.blockRead( blockId, session )
 
         def block = Block.get( blockId )
         log.info "${session.user.getLogName()} requests Contact List for block/${blockId}"
@@ -101,7 +101,7 @@ class BlockController {
     def save( ) {
         def blockId = params.long('id')
         log.info "${session.user.getLogName()} requests save change to block/${blockId}"
-        authorizationService.block( blockId, session )
+        authorizationService.blockWrite( blockId, session )
         def block = Block.get( blockId )
 
         block.code = params.code.trim( )
@@ -123,7 +123,7 @@ class BlockController {
 
         log.info "${session.user.getLogName()} requests add BC person/${personId} to block/${blockId}"
 
-        authorizationService.block( blockId, session )
+        authorizationService.blockWrite( blockId, session )
 
         // Find the largest value of orderWithinDomain and go from there...
         def query = DomainAuthorization.where {
@@ -150,7 +150,7 @@ class BlockController {
     // Get a JSON list of addresses for a given block
     def addresses( ) {
         def id = Long.valueOf( params.id )
-        authorizationService.block( id, session )
+        authorizationService.blockRead( id, session )
         log.info "${session.user.getLogName()} requests list of addresses for block/${id}"
 
         def blockAddresses = Address.findAll("from Address addr join addr.block blk where blk.id=? order by addr.orderWithinBlock", [ id ])

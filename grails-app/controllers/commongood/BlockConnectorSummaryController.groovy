@@ -6,7 +6,7 @@ class BlockConnectorSummaryController {
         // This def and call to our authorizationService accomplishes very little
         // but without it, the code appears to lack authorization enforcement...
         def hoodId = session.neighbourhood.id
-        authorizationService.neighbourhood( hoodId, session )
+        authorizationService.neighbourhoodRead( hoodId, session )
 
         String query = "\
             select fam.interviewer.firstNames, fam.interviewer.lastName, fam.interviewer.emailAddress, fam.interviewer.phoneNumber, \
