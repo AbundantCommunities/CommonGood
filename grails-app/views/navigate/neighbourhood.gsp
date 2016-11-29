@@ -7,6 +7,7 @@
         <script type="text/javascript">
 
             <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}">
+                <g:if test="${authorized.canWrite()==Boolean.TRUE}">
 
                 function presentNewModal() {
                     var pagecontainerDiv = document.getElementById("pagecontainer");
@@ -31,20 +32,6 @@
                 }
 
                 
-
-                function orderOk(order) {
-                    if (order.length == 0) {
-                        return false;
-                    } else {
-                        for (i=0; i<order.length; i++) {
-                            if ('0123456789'.indexOf(order.substr(i,1)) < 0) {
-                                return false;
-                            }
-                        }
-                    }
-                    return true;
-                }
-
                 function blockIsValid(code,description) {
                     if (code == "") {
                         alert("Please enter a code for the new block.");
@@ -65,9 +52,7 @@
                         document.getElementById('new-form').submit();
                     }
                 }
-
-
-
+                </g:if>
 
                 function presentSelectQuestionModal() {
                     var pagecontainerDiv = document.getElementById("pagecontainer");
@@ -103,13 +88,17 @@
 
         <style type="text/css">
 
-            <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}">
+            <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE && authorized.canWrite()==Boolean.TRUE}">
 
                 #new-container {
                     top:90px;
                     left:280px;
                     width:370px;
                 }
+
+            </g:if>
+
+            <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}">
 
                 #select-question-container {
                     top:100px;
@@ -120,6 +109,7 @@
             </g:if>
 
         </style>
+
     </head>
     <body>
             <div class="content-section" style="height:80px;">
@@ -129,6 +119,7 @@
                 </div>
 
                 <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}">
+                    <g:if test="${authorized.canWrite()==Boolean.TRUE}">
                     <div id="content-actions-left-side">
                         <div class="content-left-action"><g:link controller="blockSummary" action="index">Block Summary</g:link></div>
                         <div class="content-left-action"><g:link controller="neighbourhood" action="blockConnectors">Block Connector Contact List</g:link></div>
@@ -140,12 +131,20 @@
                         <div class="content-action"><a href="#" onclick="alert('not yet implemented');">Delete</a></div>
                         <div class="content-action">&nbsp;</div>
                     </div>
+                    </g:if>
+                    <g:else>
+                    <div id="content-actions" style="left:710px;">
+                        <div class="content-left-action"><g:link controller="blockSummary" action="index">Block Summary</g:link></div>
+                        <div class="content-left-action"><g:link controller="neighbourhood" action="blockConnectors">Block Connector Contact List</g:link></div>
+                        <div class="content-left-action"><a href="#" onclick="presentSelectQuestionModal();">Answer Ranking</a></div>
+                    </div>
+                    </g:else>
                 </g:if>
             </div>
             <div class="content-section">
                 
                 <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}">
-                    <div class="content-heading">${navChildren.childType+'s'} for ${navSelection.levelInHierarchy} ${navSelection.description}&nbsp;&nbsp;<a href="#" onclick="presentNewModal();" style="font-weight:normal;">+ Add New Block</a></div>
+                    <div class="content-heading">${navChildren.childType+'s'} for ${navSelection.levelInHierarchy} ${navSelection.description}  <g:if test="${authorized.canWrite()==Boolean.TRUE}">&nbsp;&nbsp;<a href="#" onclick="presentNewModal();" style="font-weight:normal;">+ Add New Block</a></g:if></div>
                 </g:if>
                 <g:elseif test="${authorized.forBlock()==Boolean.TRUE}">
                     <div class="content-heading">Your ${navChildren.childType}<g:if test="${navChildren.children.size() > 1}">s</g:if> in ${navSelection.levelInHierarchy} ${navSelection.description}</div>
@@ -154,8 +153,8 @@
                 <div id="listWithHandle">
                 <g:if test="${navChildren.children.size() > 0}">
                     <g:each in="${navChildren.children}" var="child">
-                        <div <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}">id="${child.id}"</g:if> class="content-children-row">
-                            <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}"><span class="drag-handle"><asset:image src="reorder-row.png" width="18" height="18" style="vertical-align:middle;"/></span></g:if>
+                        <div <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE && authorized.canWrite()==Boolean.TRUE}">id="${child.id}"</g:if> class="content-children-row">
+                            <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE && authorized.canWrite()==Boolean.TRUE}"><span class="drag-handle"><asset:image src="reorder-row.png" width="18" height="18" style="vertical-align:middle;"/></span></g:if>
                             <g:link controller="Navigate" action="${navChildren.childType.toLowerCase()}" id="${child.id}">${child.code}<g:if test="${child.description.size()>0}"> - ${child.description}</g:if></g:link>:
                             <g:if test="${child.connectors.size()>0}">
                                 <g:each in="${child.connectors}" var="bc" status="i">
@@ -182,41 +181,41 @@
             <div id="transparent-overlay">
             </div>
 
+            <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE && authorized.canWrite()==Boolean.TRUE}">
+            <div id="new-container" class="modal">
+                <div class="modal-title">New Block</div>
+                <form id="new-form" action="<g:createLink controller='Neighbourhood' action='addBlock' />" method="POST">
+                    <input type="hidden" name="id" value="${navSelection.id}" />
+                    <div class="modal-row">Block code: <input id="blockCodeInput" type="text" name="code" value=""/></div>
+                    <div class="modal-row">Block description: <input id="blockDescriptionInput" type="text" name="description" value=""/></div>
+                </form>
+                <div class="button-row">
+                    <div class="button" onclick="JavaScript:dismissNewModal();">Cancel</div>
+                    <div class="button-spacer"></div>
+                    <div class="button bold" onclick="JavaScript:saveBlock();">Save</div>
+                </div>
+            </div>
+            </g:if>
 
             <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}">
-                <div id="new-container" class="modal">
-                    <div class="modal-title">New Block</div>
-                    <form id="new-form" action="<g:createLink controller='Neighbourhood' action='addBlock' />" method="POST">
-                        <input type="hidden" name="id" value="${navSelection.id}" />
-                        <div class="modal-row">Block code: <input id="blockCodeInput" type="text" name="code" value=""/></div>
-                        <div class="modal-row">Block description: <input id="blockDescriptionInput" type="text" name="description" value=""/></div>
-                    </form>
-                    <div class="button-row">
-                        <div class="button" onclick="JavaScript:dismissNewModal();">Cancel</div>
-                        <div class="button-spacer"></div>
-                        <div class="button bold" onclick="JavaScript:saveBlock();">Save</div>
+            <div id="select-question-container" class="modal">
+                <div class="modal-title">Select Question for Answer Ranking</div>
+                <form id="select-question-form" action="<g:createLink controller='answer' action='frequencies'/>" method="get">
+                    <input id="inputId" type="hidden" name="id" value="${navSelection.questions?navSelection.questions[0].id:''}" />
+                    <div class="modal-row">Question: 
+                        <select id="questionsSelect">
+                            <g:each in="${navSelection.questions}" var="question">
+                                <option value="${question.id}">${question.code}: ${question.shortText}</option>
+                            </g:each>
+                        </select>
                     </div>
+                </form>
+                <div class="button-row">
+                    <div class="button" onclick="JavaScript:dismissSelectQuestionModal();">Cancel</div>
+                    <div class="button-spacer"></div>
+                    <div class="button bold" onclick="JavaScript:generateAnswerRankingReport();">Generate Report</div>
                 </div>
-
-
-                <div id="select-question-container" class="modal">
-                    <div class="modal-title">Select Question for Answer Ranking</div>
-                    <form id="select-question-form" action="<g:createLink controller='answer' action='frequencies'/>" method="get">
-                        <input id="inputId" type="hidden" name="id" value="${navSelection.questions?navSelection.questions[0].id:''}" />
-                        <div class="modal-row">Question: 
-                            <select id="questionsSelect">
-                                <g:each in="${navSelection.questions}" var="question">
-                                    <option value="${question.id}">${question.code}: ${question.shortText}</option>
-                                </g:each>
-                            </select>
-                        </div>
-                    </form>
-                    <div class="button-row">
-                        <div class="button" onclick="JavaScript:dismissSelectQuestionModal();">Cancel</div>
-                        <div class="button-spacer"></div>
-                        <div class="button bold" onclick="JavaScript:generateAnswerRankingReport();">Generate Report</div>
-                    </div>
-                </div>
+            </div>
             </g:if>
     </body>
 </html>

@@ -5,7 +5,7 @@
         <meta name="layout" content="navigate"/>
         <title>CommonGood - Family</title>
         <script type="text/javascript">
-
+            <g:if test="${authorized.canWrite()==Boolean.TRUE}">
             function populateEditModal() {
                 document.getElementById('familyNameInput').value = decodeEntities("${navSelection.description}");
 
@@ -153,6 +153,7 @@
                 document.getElementById('present-interview-form').submit();
 
             }
+            </g:if>
 
             window.onload = function onWindowLoad() {
                 <g:each in="${navSelection.possibleInterviewers}" var="possibleInterviewer">
@@ -164,15 +165,16 @@
 
         </script>
         <style type="text/css">
-
+            <g:if test="${authorized.canWrite()==Boolean.TRUE}">
+            #familyNoteInput {
+                width: 95%;
+            }
             #edit-container {
                 top:90px;
                 left:300px;
                 width:330px;
             }
-            #familyNoteInput {
-                width: 95%;
-            }
+            </g:if>
             #new-container {
                 top:90px;
                 left:260px;
@@ -190,11 +192,10 @@
                 <div class="content-row">
                     <div class="content-row-item" style="width:160px;">Note: </div><div class="content-row-item"><textarea cols="60" rows="5" style="color: #222222;" disabled>${navSelection.note}</textarea></div>
                 </div>
+                <g:if test="${authorized.canWrite()==Boolean.TRUE}">
                 <div id="content-actions">
                     <div class="content-action"><a href="#" onclick="presentEditModal()">Edit</a></div>
-                    <g:if test="${authorized.canWrite()==Boolean.TRUE}">
-                        <div class="content-action"><g:link controller="Delete" action="confirmFamily" id="${navSelection.id}">Delete</g:link></div>
-                    </g:if>
+                    <div class="content-action"><g:link controller="Delete" action="confirmFamily" id="${navSelection.id}">Delete</g:link></div>
                     <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}">
                         <div class="content-action"><g:link controller="Move" action="selectDestinationAddress" id="${navSelection.id}">Move</g:link></div>
                     </g:if>
@@ -202,9 +203,10 @@
                         <div class="content-action"><a href="#" onclick="alert('As a Block Connector, you are not able to move families. Please ask your Neighbourhood Connector to do this for you.')">Move</a></div>
                     </g:else>
                 </div>
+                </g:if>
             </div>
             <div class="content-section">
-                <div class="content-heading">Interview&nbsp;&nbsp;<a href="#" onclick="presentInterviewForm()" style="font-weight:normal;">+ Enter Interview Data</a></div>
+                <div class="content-heading">Interview<g:if test="${authorized.canWrite()==Boolean.TRUE}">&nbsp;&nbsp;<a href="#" onclick="presentInterviewForm()" style="font-weight:normal;">+ Enter Interview Data</a></g:if></div>
 
                 <g:if test="${navSelection.interviewed}">
 
@@ -249,12 +251,12 @@
             </div>
 
             <div class="content-section">
-                <div class="content-heading">Family Members for ${navSelection.levelInHierarchy} ${navSelection.description}&nbsp;&nbsp;<a href="#" onclick="presentNewModal()" style="font-weight:normal;">+ Add New Family Member</a></div>
+                <div class="content-heading">Family Members for ${navSelection.levelInHierarchy} ${navSelection.description}<g:if test="${authorized.canWrite()==Boolean.TRUE}">&nbsp;&nbsp;<a href="#" onclick="presentNewModal()" style="font-weight:normal;">+ Add New Family Member</a></g:if></div>
                 <div id="listWithHandle">
                 <g:if test="${navChildren.children.size() > 0}">
                     <g:each in="${navChildren.children}" var="child">
-                        <div id="${child.id}" class="content-children-row">
-                            <span class="drag-handle"><asset:image src="reorder-row.png" width="18" height="18" style="vertical-align:middle;"/></span>
+                        <div <g:if test="${authorized.canWrite()==Boolean.TRUE}">id="${child.id}"</g:if> class="content-children-row">
+                            <g:if test="${authorized.canWrite()==Boolean.TRUE}"><span class="drag-handle"><asset:image src="reorder-row.png" width="18" height="18" style="vertical-align:middle;"/></span></g:if>
                             <g:link controller='navigate' action='${navChildren.childType.toLowerCase()}' id='${child.id}'>${child.name}</g:link>
                         </div>
                     </g:each>
@@ -271,6 +273,7 @@
             </div>
             <div id="transparent-overlay">
             </div>
+            <g:if test="${authorized.canWrite()==Boolean.TRUE}">
             <div id="edit-container" class="modal">
                 <div class="modal-title">Edit Family</div>
                 <form id="edit-form" action="<g:createLink controller='family' action='save' />" method="post">
@@ -302,5 +305,6 @@
                     <div class="button bold" onclick="JavaScript:saveFamilyMember();">Save</div>
                 </div>
             </div>
+            </g:if>
     </body>
 </html>

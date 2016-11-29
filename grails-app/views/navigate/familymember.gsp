@@ -6,6 +6,7 @@
         <title>CommonGood - Family Member</title>
         <asset:javascript src="copy2clipboard.js"/>
         <script type="text/javascript">
+            <g:if test="${authorized.canWrite()==Boolean.TRUE}">
             function populateEditModal() {
                 document.getElementById('firstNamesInput').value = decodeEntities("${navSelection.firstNames}");
                 document.getElementById('lastNameInput').value = decodeEntities("${navSelection.lastName}");
@@ -24,7 +25,6 @@
                 var decodedNote = encodedNote.split('|').join('\n');
                 document.getElementById('noteInput').value = decodeEntities(decodedNote);
             }
-
 
             function presentEditModal() {
                 var pagecontainerDiv = document.getElementById("pagecontainer");
@@ -105,6 +105,7 @@
                     document.getElementById("edit-fm-form").submit();
                 }
             }
+            </g:if>
 
             function editAnswer(element) {
 
@@ -143,8 +144,10 @@
                     document.getElementById("transparent-overlay").setAttribute("style","height:"+pagecontainerDiv.clientHeight+"px;");
                     document.getElementById("transparent-overlay").style.visibility='visible';
                     document.getElementById("edit-answer-container").style.visibility='visible';
+                    <g:if test="${authorized.canWrite()==Boolean.TRUE}">
                     document.getElementById("answer-text-input").focus();
                     document.getElementById("answer-text-input").select();
+                    </g:if>
 
                 }
 
@@ -155,6 +158,7 @@
                 document.getElementById("transparent-overlay").style.visibility='hidden';
             }
 
+            <g:if test="${authorized.canWrite()==Boolean.TRUE}">
             function answerIsValid(answerText) {
                 if (answerText != '') {
                     return true;
@@ -176,7 +180,7 @@
                 dismissEditAnswerModal();
                 document.getElementById('delete-answer-form').submit();
             }
-
+            </g:if>
 
             function cancelEditAnswer() {
                 dismissEditAnswerModal();
@@ -265,6 +269,7 @@
                     <div class="content-row-item" style="width:150px;">Note: </div><div class="content-row-item"><textarea cols="60" rows="5" style="color: #222222;" disabled>${navSelection.note}</textarea></div>
                 </div>
 
+                <g:if test="${authorized.canWrite()==Boolean.TRUE}">
                 <div id="content-actions">
                     <div class="content-action"><a href="#" onclick="presentEditModal()">Edit</a></div>
                     <div class="content-action"><g:link controller="Delete" action="confirmPerson" id="${navSelection.id}">Delete</g:link></div>
@@ -275,6 +280,7 @@
                         <div class="content-action"><a href="#" onclick="alert('As a Block Connector, you are not able to move family members. Please ask your Neighbourhood Connector to do this for you.')">Move</a></div>
                     </g:else>
                 </div>
+                </g:if>
             </div>
             <div class="content-section">
                 <div class="content-heading">Answers for ${navSelection.description}</div>
@@ -292,6 +298,7 @@
             </div>
             <div id="transparent-overlay"></div>
             <div id="emaildiv" class="modal"></div>
+            <g:if test="${authorized.canWrite()==Boolean.TRUE}">
             <div id="edit-fm-container" class="modal">
                 <div class="modal-title">Edit Family Member</div>
                 <form id="edit-fm-form" action="<g:createLink controller='person' action='save' />" method="POST">
@@ -310,22 +317,25 @@
                     <div class="button bold" onclick="JavaScript:saveFamilyMember();">Save</div>
                 </div>
             </div>
+            </g:if>
             <div id="edit-answer-container" class="modal">
                 <div class="modal-title">Edit Answer</div>
                 <form id="edit-answer-form" action="<g:createLink controller='answer' action='save' />" method="POST">
                     <input id="answer-id-input" type="hidden" name="id" value="" />
                     <div id="question-div"></div>
-                    <div id="answer-input-div"><input id="answer-text-input" name="text" type="text" size="45"/></div>
-                    <div id="would-assist-div"><input id="would-assist-input" name="wouldAssist" type="checkbox" /> Would assist</div>
+                    <div id="answer-input-div"><input id="answer-text-input" name="text" type="text" size="45" <g:if test="${!authorized.canWrite()==Boolean.TRUE}">disabled</g:if>/></div>
+                    <div id="would-assist-div"><input id="would-assist-input" name="wouldAssist" type="checkbox" <g:if test="${!authorized.canWrite()==Boolean.TRUE}">disabled</g:if>/> Would assist</div>
                     <div id="answer-note-title-div">Note:</div>
-                    <div id="answer-note-input-div"><input id="answer-note-input" name="note" type="text" size="45"/></div>
+                    <div id="answer-note-input-div"><input id="answer-note-input" name="note" type="text" size="45" <g:if test="${!authorized.canWrite()==Boolean.TRUE}">disabled</g:if>/></div>
                 </form>
                 <div>&nbsp;</div>
                 <div class="button-row">
-                    <div class="button" onclick="JavaScript:cancelEditAnswer();">Cancel</div>
+                    <div class="button" onclick="JavaScript:cancelEditAnswer();"><g:if test="${authorized.canWrite()==Boolean.TRUE}">Cancel</g:if><g:else>Done</g:else></div>
+                    <g:if test="${authorized.canWrite()==Boolean.TRUE}">
                     <div class="button-spacer"></div>
                     <div class="button bold" onclick="JavaScript:saveAnswer();">Save</div>
                     <div class="button" style="float:right;" onclick="JavaScript:deleteAnswer();">Delete Answer</div>
+                    </g:if>
                 </div>
                 <form id="delete-answer-form" action="<g:createLink controller='answer' action='delete' />" method="POST">
                     <input id="delete-answer-id-input" type="hidden" name="id" value="" />

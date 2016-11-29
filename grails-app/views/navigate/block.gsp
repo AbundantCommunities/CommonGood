@@ -6,6 +6,7 @@
         <title>CommonGood - Block</title>
         <script type="text/javascript">
 
+            <g:if test="${authorized.canWrite()==Boolean.TRUE}">
             <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}">
 
                 function populateEditModal() {
@@ -352,7 +353,7 @@
                 }
 
             </g:if>
-
+            </g:if>
 
             window.onload = function onWindowLoad() {
                 // Need to set height of block detail section based on current number of block connectors and NC vs BC authorization.
@@ -384,6 +385,7 @@
                 left:20px;
             }
 
+            <g:if test="${authorized.canWrite()==Boolean.TRUE}">
             <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}">
 
                 #new-bc-container {
@@ -405,6 +407,7 @@
                 left:260px;
                 width:420px;
             }
+            </g:if>
             #bc-section {
                 position: absolute;
                 top:7px;
@@ -424,7 +427,7 @@
                     <div class="content-row-item" style="width:210px;">Description: </div><div class="content-row-item">${navSelection.description}</div>
                 </div>
 
-                <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}">
+                <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE && authorized.canWrite()==Boolean.TRUE}">
                     <div id="content-actions-left-side">
                         <div class="content-left-action"><g:link controller='block' action='contactList' id='${navSelection.id}'>Contact List</g:link></div>
                     </div>
@@ -434,19 +437,19 @@
                         <div class="content-action"><g:link controller="Delete" action="confirmBlock" id="${navSelection.id}">Delete</g:link></div>
                     </div>
                 </g:if>
-                <g:elseif test="${authorized.forBlock()==Boolean.TRUE}">
+                <g:else>
                     <div id="content-actions" style="left:820px;">
                         <div class="content-action"><g:link controller='block' action='contactList' id='${navSelection.id}'>Contact List</g:link></div>
                     </div>
-                </g:elseif>
+                </g:else>
 
                 <div id="bc-section">
                     <div class="content-heading less-bottom-margin">Block Connector<g:if test="${navSelection.blockConnectors.size() > 1}">s</g:if></div>
                     <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}"><script type="text/javascript">var existingBCs = [];</script></g:if>
                     <g:if test="${navSelection.blockConnectors.size() > 0}">
                         <g:each in="${navSelection.blockConnectors}" var="bc" status="i">
-                            <div style="height:20px;"><g:link controller='Navigate' action='familymember' id='${bc.id}'>${bc.fullName}</g:link><g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}"> <span style="font-size:smaller;">(<a id="revoke|${bc.id}|${navSelection.id}" href="#" onclick="revokeBC(this);">revoke</a>)</span></g:if></div>
-                            <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}"><script type="text/javascript">existingBCs.push(${bc.id});</script></g:if>
+                            <div style="height:20px;"><g:link controller='Navigate' action='familymember' id='${bc.id}'>${bc.fullName}</g:link><g:if test="${authorized.forNeighbourhood()==Boolean.TRUE && authorized.canWrite()==Boolean.TRUE}"> <span style="font-size:smaller;">(<a id="revoke|${bc.id}|${navSelection.id}" href="#" onclick="revokeBC(this);">revoke</a>)</span></g:if></div>
+                            <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE && authorized.canWrite()==Boolean.TRUE}"><script type="text/javascript">existingBCs.push(${bc.id});</script></g:if>
                         </g:each>
                         <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}">
                             <form id="revoke-form" action="<g:createLink controller='authorization' action='deauthorizeBlockConnector'/>" method="POST">
@@ -459,7 +462,7 @@
                         <div class="bc light-text" >no assigned block connector</div>
                     </g:else>
 
-                    <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}">
+                    <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE && authorized.canWrite()==Boolean.TRUE}">
                         <g:if test="${navSelection.blockConnectors.size() > 0}">
                             <div class="small-top-margin"><a href="#" onclick="presentAddBC();">+ Add Another Block Connector</a></div>
                         </g:if>
@@ -471,12 +474,12 @@
 
             </div>
             <div class="content-section">
-                <div class="content-heading">Addresses for ${navSelection.levelInHierarchy} ${navSelection.description}<g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}">&nbsp;&nbsp;<a href="#" onclick="presentNewModal();" style="font-weight:normal;">+ Add New Addresses</a></g:if></div>
+                <div class="content-heading">Addresses for ${navSelection.levelInHierarchy} ${navSelection.description}<g:if test="${authorized.forNeighbourhood()==Boolean.TRUE && authorized.canWrite()==Boolean.TRUE}">&nbsp;&nbsp;<a href="#" onclick="presentNewModal();" style="font-weight:normal;">+ Add New Addresses</a></g:if></div>
                 <div id="listWithHandle">
                 <g:if test="${navChildren.children.size() > 0}">
                     <g:each in="${navChildren.children}" var="child">
-                        <div <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}">id="${child.id}"</g:if> class="content-children-row">
-                            <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}"><span class="drag-handle"><asset:image src="reorder-row.png" width="18" height="18" style="vertical-align:middle;"/></span></g:if>
+                        <div <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE && authorized.canWrite()==Boolean.TRUE}">id="${child.id}"</g:if> class="content-children-row">
+                            <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE && authorized.canWrite()==Boolean.TRUE}"><span class="drag-handle"><asset:image src="reorder-row.png" width="18" height="18" style="vertical-align:middle;"/></span></g:if>
                             <g:link controller='Navigate' action='${navChildren.childType.toLowerCase()}' id='${child.id}'>${child.address}</g:link>:
                             <g:if test="${child.families.size()>0}">
                             <g:each in="${child.families}" var="family" status="i">
@@ -502,6 +505,7 @@
             <div id="transparent-overlay">
             </div>
 
+            <g:if test="${authorized.canWrite()==Boolean.TRUE}">
             <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}">
 
                 <div id="new-bc-container" class="modal" style="height:205px;">
@@ -574,6 +578,6 @@
                     <div class="button bold" onclick="JavaScript:addAddresses();">Save</div>
                 </div>
             </div>
-
+            </g:if>
     </body>
 </html>

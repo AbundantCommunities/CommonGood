@@ -141,6 +141,7 @@ class BlockController {
         da.domainCode = DomainAuthorization.BLOCK
         da.domainKey = blockId as Integer
         da.orderWithinDomain = lastOrder + 100
+        da.write = true
         da.save( flush:true, failOnError: true )
         redirect controller:'navigate', action:'block', id:blockId
 

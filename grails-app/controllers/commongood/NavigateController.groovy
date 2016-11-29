@@ -73,7 +73,7 @@ class NavigateController {
 
     def address( ) {
         Integer addressId = Integer.valueOf( params.id )
-        authorizationService.addressWrite( addressId, session )
+        authorizationService.addressRead( addressId, session )
         log.info "${session.user.getLogName()} to address/${addressId}"
         Address theAddress = Address.where{ id == addressId }.get( )
         List families = Family.where{ address.id == addressId }.list( sort:'orderWithinAddress', order:'asc' )
