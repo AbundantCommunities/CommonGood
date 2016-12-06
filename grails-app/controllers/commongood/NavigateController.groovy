@@ -216,9 +216,9 @@ class NavigateController {
 
             navSelection:[ levelInHierarchy: 'Family Member', id:memberId, description:theMember.fullName,
                             firstNames:theMember.firstNames, lastName:theMember.lastName,
-                            birthYear:theMember.birthYear, emailAddress:theMember.emailAddress,
-                            phoneNumber:theMember.phoneNumber, orderWithinFamily:theMember.orderWithinFamily,
-                            note:theMember.note, version:theMember.version ],
+                            birthYear:theMember.birthYear, birthYearIsEstimated: theMember.birthYearIsEstimated,
+                            emailAddress:theMember.emailAddress, phoneNumber:theMember.phoneNumber,
+                            orderWithinFamily:theMember.orderWithinFamily, note:theMember.note, version:theMember.version ],
             
             questionsAndAnswers: qna
         ]

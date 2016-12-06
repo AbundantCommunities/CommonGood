@@ -16,6 +16,7 @@ class PersonService {
         person.firstNames = params.firstNames
         person.lastName = params.lastName
         person.birthYear = Integer.valueOf( params.birthYear?:'0' )
+        person.birthYearIsEstimated = ('birthYearIsEstimated' in params)
         person.emailAddress = params.emailAddress
         person.phoneNumber = params.phoneNumber
         person.note = params.note
@@ -32,6 +33,7 @@ class PersonService {
         person.firstNames = params.firstNames
         person.lastName = params.lastName
         person.birthYear = Integer.valueOf( params.birthYear?:'0' )
+        person.birthYearIsEstimated = ('birthYearIsEstimated' in params)
         person.emailAddress = params.emailAddress
         person.phoneNumber = params.phoneNumber
         person.note = params.note

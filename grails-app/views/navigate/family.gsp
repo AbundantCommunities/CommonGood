@@ -63,6 +63,7 @@
                 document.getElementById("firstNamesInput").value = "";
                 document.getElementById("lastNameInput").value = "";
                 document.getElementById("birthYearInput").value = "";
+                document.getElementById("birthYearIsEstimatedInput").checked = false;
                 document.getElementById("emailAddressInput").value = "";
                 document.getElementById("phoneNumberInput").value = "";
                 document.getElementById("familyMemberNoteInput").value = "";
@@ -90,12 +91,38 @@
                 return true;
             }
 
-            function yearOk(year) {
-                var pattern = /^$|^(19|20)\d{2}$/;
-                return pattern.test(year);
+            function yearRegExp() {
+                return /^$|^(19|20)\d{2}$/;
             }
 
-            function familyMemberIsValid (firstNames, lastName, birthYear, email, note) {
+            function isNumber(n) {
+              return !isNaN(parseFloat(n)) && isFinite(n);
+            }
+
+            function yearAgeOk(yearAge) {
+                var yearPattern = yearRegExp();
+
+                if (!yearPattern.test(yearAge)) {
+                    if (!(isNumber(yearAge) && yearAge>=0 && yearAge<=130)) {
+                        return false;
+                    }
+                } else {
+                    // Pattern is okay so we know a year was entered. Need to make sure it's not greater than current year.
+                    <g:set var="currentYear" value="${new Date().getYear()+1900}"/>
+                    if (yearAge > ${currentYear}) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+
+            function isYear(yearOrAge) {
+                var yearPattern = yearRegExp();
+                return yearPattern.test(yearOrAge);
+            }
+
+
+            function familyMemberIsValid (firstNames, lastName, birthYearOrAge, email, note) {
                 if (firstNames == "") {
                     alert("Please enter a first name for the new family member.");
                     return false;
@@ -104,8 +131,8 @@
                         alert("Please enter a last name for the new family member.");
                         return false;
                     } else {
-                        if (!yearOk(birthYear)) {
-                            alert("Please enter a valid birth year (YYYY) or leave it blank.");
+                        if (!yearAgeOk(birthYearOrAge)) {
+                            alert("Please enter a valid birth year (YYYY) or age, or leave it blank. If you do not know the peron's age, consider entering an estimate and checking the 'estimated' check box.");
                             return false;
                         } else {
                             if (!emailOk(email)) {
@@ -127,20 +154,28 @@
                 // Validate new family
                 var firstNames = document.getElementById("firstNamesInput").value.trim();
                 var lastName = document.getElementById("lastNameInput").value.trim();
-                var birthYear = document.getElementById("birthYearInput").value.trim();
+                var birthYearOrAge = document.getElementById("birthYearInput").value.trim();
                 var email = document.getElementById("emailAddressInput").value.trim();
                 var note = document.getElementById("familyMemberNoteInput").value.trim();
-                if (familyMemberIsValid(firstNames, lastName, birthYear, email, note)) {
+                if (familyMemberIsValid(firstNames, lastName, birthYearOrAge, email, note)) {
                     dismissNewModal();
                     // trim all values
                     document.getElementById("firstNamesInput").value = firstNames;
                     document.getElementById("lastNameInput").value = lastName;
-                    document.getElementById('birthYearInput').value = birthYear;
+                    document.getElementById('birthYearInput').value = birthYearOrAge;
                     document.getElementById("emailAddressInput").value = email;
                     document.getElementById("familyMemberNoteInput").value = note;
                     // check if birth year blank. if yes, set it to '0'.
                     if (document.getElementById('birthYearInput').value.length == 0) {
                         document.getElementById('birthYearInput').value = '0';
+                        document.getElementById('birthYearIsEstimatedInput').checked = false;
+                    } else {
+                        // If age entered, calculate birth year.
+                        if (!isYear(birthYearOrAge)) {
+                            <g:set var="currentYear" value="${new Date().getYear()+1900}"/>
+                            birthYearOrAge = (${currentYear} - birthYearOrAge);
+                            document.getElementById('birthYearInput').value = birthYearOrAge;
+                        }
                     }
                     document.getElementById("new-form").submit();
                 }
@@ -294,7 +329,7 @@
                     <input type="hidden" name="familyId" value="${navSelection.id}" />
                     <div class="modal-row">First names: <input id="firstNamesInput" type="text" name="firstNames" value=""/></div>
                     <div class="modal-row">Last name: <input id="lastNameInput" type="text" name="lastName" value=""/></div>
-                    <div class="modal-row">Birth year: <input id="birthYearInput" type="text" name="birthYear" value="" placeholder="YYYY"/></div>
+                    <div class="modal-row">Enter birth year or age: <input id="birthYearInput" type="text" name="birthYear" size="8" value="" /> <input id="birthYearIsEstimatedInput" type="checkbox" name="birthYearIsEstimated" />estimated</div>
                     <div class="modal-row">Email address: <input id="emailAddressInput" class="email-style" type="email" name="emailAddress" value="" size="40"/></div>
                     <div class="modal-row">Phone number: <input id="phoneNumberInput" type="text" name="phoneNumber" value=""/></div>
                     <div class="modal-row">Note: <br/><textarea id="familyMemberNoteInput" class="note-style" name="note" cols=56 rows=4></textarea></div>
