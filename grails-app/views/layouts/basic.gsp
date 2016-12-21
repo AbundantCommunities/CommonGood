@@ -42,12 +42,6 @@
             <div id="aci-logo-line">
                 <asset:image src="aci-logo.png" width="80" height="78"/>
                 <div id="welcome-line">Welcome ${session.user.firstNames} ${session.user.lastName} <span id="sign-out"><g:link controller="logout">log out</g:link></span></div>
-                <g:if test="${session.authorized.forNeighbourhood()==Boolean.TRUE}">
-                    <div id="role-line">Neighbourhood Connector for ${session.neighbourhood.name}</div>
-                </g:if>
-                <g:elseif test="${session.authorized.forBlock()==Boolean.TRUE}">
-                    <div id="role-line">Block Connector in ${session.neighbourhood.name}</div>
-                </g:elseif>
                 <div id="advanced-search"><g:link controller="search" action="form">advanced search</g:link></div>
                 <g:link controller="navigate" action="${session.lastNavigationLevel}" id="${session.lastNavigationId}"><div id="browse-button">Browse</div></g:link>
                 <form id="search-form" action="<g:createLink controller='search' />" method="get">
