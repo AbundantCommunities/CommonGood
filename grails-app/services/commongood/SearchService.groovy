@@ -53,7 +53,7 @@ class SearchService {
                         OR LOWER(ans.text) LIKE :qStr OR LOWER(ans.note) LIKE :qStr)
                  AND ans.person_id = p.id
                  AND ans.question_id = q.id
-                 AND ((p.birth_year >= :fromYear AND p.birth_year <= :toYear) OR p.birth_year = 0)
+                 AND p.birth_year >= :fromYear AND p.birth_year <= :toYear
                  AND q.neighbourhood_id = :id
                  ORDER BY p.first_names, p.last_name, p.id'''
 
@@ -71,7 +71,7 @@ class SearchService {
                  AND ans.question_id = q.id 
                  AND p.family_id = f.id 
                  AND f.address_id = addr.id 
-                 AND ((p.birth_year >= :fromYear AND p.birth_year <= :toYear) OR p.birth_year = 0) 
+                 AND p.birth_year >= :fromYear AND p.birth_year <= :toYear
                  AND addr.block_id = :id 
                  ORDER BY p.first_names, p.last_name, p.id'''
 
@@ -104,7 +104,7 @@ class SearchService {
                         OR LOWER(ans.text) LIKE :qStr OR LOWER(ans.note) LIKE :qStr)
                  AND ans.person_id = p.id 
                  AND ans.question_id = q.id 
-                 AND ((p.birth_year >= :fromYear AND p.birth_year <= :toYear) OR p.birth_year = 0) 
+                 AND p.birth_year >= :fromYear AND p.birth_year <= :toYear
                  AND q.neighbourhood_id = :id 
                  AND p.family_id = f.id 
                  AND f.address_id = addr.id 
@@ -126,7 +126,7 @@ class SearchService {
                  AND ans.question_id = q.id 
                  AND p.family_id = f.id 
                  AND f.address_id = addr.id 
-                 AND ((p.birth_year >= :fromYear AND p.birth_year <= :toYear) OR p.birth_year = 0) 
+                 AND p.birth_year >= :fromYear AND p.birth_year <= :toYear
                  AND addr.block_id = :id 
                  ORDER BY p.first_names, p.last_name, p.id'''
 
@@ -153,7 +153,7 @@ class SearchService {
              from Person p join p.family f join f.address a \
              where (lower(a.text) like :q or lower(a.note) like :q or lower(f.name) like :q or lower(f.note) like :q \
              or lower(p.firstNames) like :q or lower(p.lastName) like :q or lower(p.phoneNumber) like :q or lower(p.emailAddress) like :q \
-             or lower(p.note) like :q) AND ((p.birthYear >= :fromYear AND p.birthYear <= :toYear) OR p.birthYear = 0) \
+             or lower(p.note) like :q) AND p.birthYear >= :fromYear AND p.birthYear <= :toYear \
              and a.block.neighbourhood.id = :id order by p.firstNames, p.lastName, p.id',
             [ q:searchTerm, id:neighbourhoodId, fromYear:fromYear, toYear:toYear ] )
 
@@ -166,7 +166,7 @@ class SearchService {
              from Person p join p.family f join f.address a \
              where (lower(a.text) like :q or lower(a.note) like :q or lower(f.name) like :q or lower(f.note) like :q \
              or lower(p.firstNames) like :q or lower(p.lastName) like :q or lower(p.phoneNumber) like :q or lower(p.emailAddress) like :q \
-             or lower(p.note) like :q) AND ((p.birthYear >= :fromYear AND p.birthYear <= :toYear) OR p.birthYear = 0) \
+             or lower(p.note) like :q) AND p.birthYear >= :fromYear AND p.birthYear <= :toYear \
              and a.block.id = :id \
              order by p.firstNames, p.lastName, p.id',
             [ q:searchTerm, id:blockId, fromYear:fromYear, toYear:toYear ] )
@@ -192,7 +192,7 @@ class SearchService {
                  from Person p join p.family f join f.address a \
                  where (LOWER(a.text) like :q OR LOWER(a.note) like :q OR LOWER(f.name) like :q OR LOWER(f.note) like :q \
                  OR LOWER(p.firstNames) like :q OR LOWER(p.lastName) like :q OR LOWER(p.phoneNumber) like :q OR LOWER(p.emailAddress) like :q \
-                 OR LOWER(p.note) like :q) AND ((p.birthYear >= :fromYear AND p.birthYear <= :toYear) OR p.birthYear = 0) \
+                 OR LOWER(p.note) like :q) AND p.birthYear >= :fromYear AND p.birthYear <= :toYear \
                  and a.block.neighbourhood.id = :id order by p.firstNames, p.lastName, p.id',
                 [ q:searchTerm, id:neighbourhoodId, fromYear:fromYear, toYear:toYear ] )
         } else {
@@ -204,7 +204,7 @@ class SearchService {
                  from Person p join p.family f join f.address a \
                  where (LOWER(a.text) like :q OR LOWER(a.note) like :q OR LOWER(f.name) like :q OR LOWER(f.note) like :q \
                  OR LOWER(p.firstNames) like :q OR LOWER(p.lastName) like :q OR LOWER(p.phoneNumber) like :q OR LOWER(p.emailAddress) like :q \
-                 OR LOWER(p.note) like :q) AND ((p.birthYear >= :fromYear AND p.birthYear <= :toYear) OR p.birthYear = 0) \
+                 OR LOWER(p.note) like :q) AND p.birthYear >= :fromYear AND p.birthYear <= :toYear \
                  AND a.block.id = :id \
                  order by p.firstNames, p.lastName, p.id',
                 [ q:searchTerm, id:blockId, fromYear:fromYear, toYear:toYear ] )
