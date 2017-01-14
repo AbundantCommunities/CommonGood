@@ -37,24 +37,24 @@ class SearchService {
         Integer fromYear = Year.now().getValue() - toAge
         Integer toYear = Year.now().getValue() - fromAge
 
-        String qStr = "%${q.toLowerCase()}%"  // query string
-        String qExp = parseQuery( q )         // query expression
+        String qStr = simpleQuery( q )    // for simple string search
+        String qExp = fullTextQuery( q )  // for Postgres Full Text Search
 
         final Sql sql = new Sql(dataSource)
         def answers
 
         if( session.authorized.forNeighbourhood() ) {
             def neighbourhoodId = session.neighbourhood.id
-            log.info "${session.user.logName} search hood ${neighbourhoodId} answers for '${q}', birthYears ${fromYear}:${toYear}"
+            log.info "${session.user.logName} search hood ${neighbourhoodId} answers for '${qExp}', birthYears ${fromYear}:${toYear}"
             def select = 
                 '''SELECT ans.text, ans.would_assist AS assist, ans.note, p.id AS pid, p.first_names AS firstNames, p.last_name AS lastName, q.short_text AS question
                  FROM Answer ans, Person p, Question q
                  WHERE ((TO_TSVECTOR(REGEXP_REPLACE(ans.text,'[.,/,-]',',')) || TO_TSVECTOR(REGEXP_REPLACE(ans.note,'[.,/,-]',',')) @@ TO_TSQUERY( :qExp ))
                         OR LOWER(ans.text) LIKE :qStr OR LOWER(ans.note) LIKE :qStr)
                  AND ans.person_id = p.id
-                 AND ans.question_id = q.id
-                 AND p.birth_year >= :fromYear AND p.birth_year <= :toYear
-                 AND q.neighbourhood_id = :id
+                 AND ans.question_id = q.id ''' +
+                ageSelectionSQL( fromYear, toYear ) +
+                ''' AND q.neighbourhood_id = :id
                  ORDER BY p.first_names, p.last_name, p.id'''
 
             answers = sql.rows( select, [ qStr:qStr, qExp:qExp, id:neighbourhoodId, fromYear:fromYear, toYear:toYear ] )
@@ -70,9 +70,9 @@ class SearchService {
                  AND ans.person_id = p.id
                  AND ans.question_id = q.id 
                  AND p.family_id = f.id 
-                 AND f.address_id = addr.id 
-                 AND p.birth_year >= :fromYear AND p.birth_year <= :toYear
-                 AND addr.block_id = :id 
+                 AND f.address_id = addr.id ''' +
+                 ageSelectionSQL( fromYear, toYear ) +
+                 ''' AND addr.block_id = :id 
                  ORDER BY p.first_names, p.last_name, p.id'''
 
             answers = sql.rows( select, [ qStr:qStr, qExp:qExp, id:blockId, fromYear:fromYear, toYear:toYear ] )
@@ -86,8 +86,8 @@ class SearchService {
         Integer fromYear = Year.now().getValue() - toAge
         Integer toYear = Year.now().getValue() - fromAge
 
-        String qStr = "%${q.toLowerCase()}%"  // query string
-        String qExp = parseQuery( q )         // query expression
+        String qStr = simpleQuery( q )    // for simple string search
+        String qExp = fullTextQuery( q )  // for Postgres Full Text Search
 
         final Sql sql = new Sql(dataSource)
         def answers
@@ -103,9 +103,9 @@ class SearchService {
                  WHERE ((TO_TSVECTOR(REGEXP_REPLACE(ans.text,'[.,/,-]',',')) || TO_TSVECTOR(REGEXP_REPLACE(ans.note,'[.,/,-]',',')) @@ TO_TSQUERY( :qExp ))
                         OR LOWER(ans.text) LIKE :qStr OR LOWER(ans.note) LIKE :qStr)
                  AND ans.person_id = p.id 
-                 AND ans.question_id = q.id 
-                 AND p.birth_year >= :fromYear AND p.birth_year <= :toYear
-                 AND q.neighbourhood_id = :id 
+                 AND ans.question_id = q.id ''' +
+                 ageSelectionSQL( fromYear, toYear ) +
+                 ''' AND q.neighbourhood_id = :id 
                  AND p.family_id = f.id 
                  AND f.address_id = addr.id 
                  ORDER BY p.first_names, p.last_name, p.id'''
@@ -125,9 +125,9 @@ class SearchService {
                  AND ans.person_id = p.id 
                  AND ans.question_id = q.id 
                  AND p.family_id = f.id 
-                 AND f.address_id = addr.id 
-                 AND p.birth_year >= :fromYear AND p.birth_year <= :toYear
-                 AND addr.block_id = :id 
+                 AND f.address_id = addr.id ''' +
+                 ageSelectionSQL( fromYear, toYear ) +
+                 ''' AND addr.block_id = :id 
                  ORDER BY p.first_names, p.last_name, p.id'''
 
             answers = sql.rows( select, [ qStr:qStr, qExp:qExp, id:blockId, fromYear:fromYear, toYear:toYear ] )
@@ -138,10 +138,14 @@ class SearchService {
     }
 
     def people( session, q, fromAge, toAge ) {
+        peopleWithContactInfo( session, q, fromAge, toAge )
+    }
+
+    def peopleWithContactInfo( session, q, fromAge, toAge ) {
         Integer fromYear = Year.now().getValue() - toAge
         Integer toYear = Year.now().getValue() - fromAge
 
-        def searchTerm = "%${q}%".toLowerCase( )
+        def searchTerm = simpleQuery( q )
         def peeps
 
         if( session.authorized.forNeighbourhood() ) {
@@ -149,63 +153,26 @@ class SearchService {
             log.info "${session.user.logName} search hood ${neighbourhoodId} people for '${q}', birthYears ${fromYear}:${toYear}"
 
             peeps = Person.executeQuery(
-            'select p.id, p.firstNames, p.lastName \
-             from Person p join p.family f join f.address a \
-             where (lower(a.text) like :q or lower(a.note) like :q or lower(f.name) like :q or lower(f.note) like :q \
-             or lower(p.firstNames) like :q or lower(p.lastName) like :q or lower(p.phoneNumber) like :q or lower(p.emailAddress) like :q \
-             or lower(p.note) like :q) AND p.birthYear >= :fromYear AND p.birthYear <= :toYear \
-             and a.block.neighbourhood.id = :id order by p.firstNames, p.lastName, p.id',
-            [ q:searchTerm, id:neighbourhoodId, fromYear:fromYear, toYear:toYear ] )
-
+                'select p.id, p.firstNames, p.lastName, p.phoneNumber, p.emailAddress, a.text \
+                 from Person p join p.family f join f.address a \
+                 where (LOWER(a.text) like :q OR LOWER(a.note) like :q OR LOWER(f.name) like :q OR LOWER(f.note) like :q \
+                 OR LOWER(p.firstNames) like :q OR LOWER(p.lastName) like :q OR LOWER(p.phoneNumber) like :q OR LOWER(p.emailAddress) like :q \
+                 OR LOWER(p.note) like :q) ' +
+                 ageSelectionHQL( fromYear, toYear ) +
+                 ' and a.block.neighbourhood.id = :id order by p.firstNames, p.lastName, p.id',
+                [ q:searchTerm, id:neighbourhoodId, fromYear:fromYear, toYear:toYear ] )
         } else {
             def blockId = session.block.id
             log.info "${session.user.logName} search block ${blockId} people for '${q}', birthYears ${fromYear}:${toYear}"
 
             peeps = Person.executeQuery(
-            'select p.id, p.firstNames, p.lastName \
-             from Person p join p.family f join f.address a \
-             where (lower(a.text) like :q or lower(a.note) like :q or lower(f.name) like :q or lower(f.note) like :q \
-             or lower(p.firstNames) like :q or lower(p.lastName) like :q or lower(p.phoneNumber) like :q or lower(p.emailAddress) like :q \
-             or lower(p.note) like :q) AND p.birthYear >= :fromYear AND p.birthYear <= :toYear \
-             and a.block.id = :id \
-             order by p.firstNames, p.lastName, p.id',
-            [ q:searchTerm, id:blockId, fromYear:fromYear, toYear:toYear ] )
-        }
-
-        log.info "Found ${peeps.size()} people"
-        return peeps
-    }
-
-    def peopleWithContactInfo( session, q, fromAge, toAge ) {
-        Integer fromYear = Year.now().getValue() - toAge
-        Integer toYear = Year.now().getValue() - fromAge
-
-        def searchTerm = "%${q}%".toLowerCase( )
-        def peeps
-
-        if( session.authorized.forNeighbourhood() ) {
-            def neighbourhoodId = session.neighbourhood.id
-            log.info "${session.user.logName} search hood ${neighbourhoodId} people for '${q}', birthYears ${fromYear}:${toYear} with contact info"
-
-            peeps = Person.executeQuery(
                 'select p.id, p.firstNames, p.lastName, p.phoneNumber, p.emailAddress, a.text \
                  from Person p join p.family f join f.address a \
                  where (LOWER(a.text) like :q OR LOWER(a.note) like :q OR LOWER(f.name) like :q OR LOWER(f.note) like :q \
                  OR LOWER(p.firstNames) like :q OR LOWER(p.lastName) like :q OR LOWER(p.phoneNumber) like :q OR LOWER(p.emailAddress) like :q \
-                 OR LOWER(p.note) like :q) AND p.birthYear >= :fromYear AND p.birthYear <= :toYear \
-                 and a.block.neighbourhood.id = :id order by p.firstNames, p.lastName, p.id',
-                [ q:searchTerm, id:neighbourhoodId, fromYear:fromYear, toYear:toYear ] )
-        } else {
-            def blockId = session.block.id
-            log.info "${session.user.logName} search block ${blockId} people for '${q}', birthYears ${fromYear}:${toYear} with contact info"
-
-            peeps = Person.executeQuery(
-                'select p.id, p.firstNames, p.lastName, p.phoneNumber, p.emailAddress, a.text \
-                 from Person p join p.family f join f.address a \
-                 where (LOWER(a.text) like :q OR LOWER(a.note) like :q OR LOWER(f.name) like :q OR LOWER(f.note) like :q \
-                 OR LOWER(p.firstNames) like :q OR LOWER(p.lastName) like :q OR LOWER(p.phoneNumber) like :q OR LOWER(p.emailAddress) like :q \
-                 OR LOWER(p.note) like :q) AND p.birthYear >= :fromYear AND p.birthYear <= :toYear \
-                 AND a.block.id = :id \
+                 OR LOWER(p.note) like :q) ' +
+                 ageSelectionHQL( fromYear, toYear ) +
+                 ' AND a.block.id = :id \
                  order by p.firstNames, p.lastName, p.id',
                 [ q:searchTerm, id:blockId, fromYear:fromYear, toYear:toYear ] )
         }
@@ -214,8 +181,13 @@ class SearchService {
         return peeps
     }
 
-    // Massage the query parameter before using PostgreSQL Full Text Search.
-    def parseQuery( q ) {
+    def simpleQuery( q ) {
+        // Used with SELECT ... WHERE field LIKE simpleQuery
+        "%${q.trim().toLowerCase()}%"
+    }
+
+    def fullTextQuery( q ) {
+        // used with Postgres Full Text Search.
         if( q.indexOf('&') >= 0 || q.indexOf('|') >= 0 || q.indexOf('!') >= 0 ) {
             log.info( 'Exotic search!')
             // Ex: "toy & !truck" searches for "toy" where "truck" is absent
@@ -224,7 +196,53 @@ class SearchService {
             // Make a query requiring all search terms; ex: "apple sauce" becomes "apple & sauce".
             // Experiments show PostgreSQL 9.4 full text search handles '/', '-' and '.' poorly.
             // Treat those characters like a space.
-            return q.replaceAll( '[\\s,/,.,-]', ' & ' )
+            return q.trim().replaceAll( '[\\s,/,.,-]', ' ' ).replaceAll(' +', ' & ')
         } 
+    }
+
+    def ageSelectionSQL( fromYear, toYear ) {
+        // We deployed a bug to production in version 1.10.
+        // This is our urgent, ugly but simple fix.
+        if( fromYear < 1850 ) {
+            if( toYear > 2200 ) {
+                println "NO FROM OR TO YEAR"
+//              return 'AND p.birth_year != :fromYear AND p.birth_year != :toYear'
+                return ''
+            } else {
+                println "TO YEAR is ${toYear}"
+                return 'AND p.birth_year != 0 AND p.birth_year <= :toYear'
+            }
+        } else {
+            if( toYear > 2200 ) {
+                println "FROM YEAR is ${fromYear}"
+                return 'AND p.birth_year >= :fromYear'
+            } else {
+                println "FROM YEAR is ${fromYear} and TO YEAR is ${toYear}"
+                return 'AND p.birth_year >= :fromYear AND p.birth_year <= :toYear'
+            }
+        }
+    }
+
+    def ageSelectionHQL( fromYear, toYear ) {
+        // We deployed a bug to production in version 1.10.
+        // This is our urgent, ugly but simple fix.
+        // BOTH :fromYear and :toYear MUST be in the return value.
+        if( fromYear < 1850 ) {
+            if( toYear > 2200 ) {
+                println "NO FROM OR TO YEAR"
+                return 'AND p.birthYear != :fromYear AND p.birthYear != :toYear'
+            } else {
+                println "TO YEAR is ${toYear}"
+                return 'AND p.birthYear != 0 AND p.birthYear != :fromYear AND p.birthYear <= :toYear'
+            }
+        } else {
+            if( toYear > 2200 ) {
+                println "FROM YEAR is ${fromYear}"
+                return 'AND p.birthYear >= :fromYear AND p.birthYear != :toYear'
+            } else {
+                println "FROM YEAR is ${fromYear} and TO YEAR is ${toYear}"
+                return 'AND p.birthYear >= :fromYear AND p.birthYear <= :toYear'
+            }
+        }
     }
 }
