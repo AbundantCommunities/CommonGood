@@ -34,6 +34,6 @@ class AdminController {
         Hasher hasher = new Hasher(spec)
         String res = hasher.create(params.password.toCharArray())
         log.info("Hashed password for ${params.emailAddress} = ${res}")
-        render "Thanks!<br/>Please email Howard, <b>howardlawrence@shaw.ca</b>, saying you submitted your password."
+        render "You CANNOT log in yet!<br/>Please email Howard, <b>howardlawrence@shaw.ca</b>, saying you submitted your password."
     }
 }
