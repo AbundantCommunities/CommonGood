@@ -21,12 +21,13 @@ class NavigateController {
         Integer hoodId = Integer.valueOf( params.id )
         authorizationService.neighbourhoodRead( hoodId, session )
         log.info "${session.user.getLogName()} to neighbourhood/${hoodId}"
-        Neighbourhood theHood = Neighbourhood.where{ id == hoodId }.get( )
+        Neighbourhood theHood = Neighbourhood.get( hoodId )
         List questions = Question.where{ neighbourhood.id == hoodId }.list( sort:'orderWithinQuestionnaire', order:'asc' )
         List blocks = blockService.getForNeighbourhood( session.authorized )
         Map result =
             [
             authorized: session.authorized,
+            anonymousRequests: AnonymousRequest.countByNeighbourhood(theHood),
             navContext: [ ],
 
             navSelection: [ levelInHierarchy:'Neighbourhood', id:hoodId,
@@ -52,6 +53,7 @@ class NavigateController {
         Map result =
             [
             authorized: session.authorized,
+            anonymousRequests: AnonymousRequest.countByNeighbourhood(theBlock.neighbourhood),
             navContext:
                 [
                     [level:'Neighbourhood', id: theBlock.neighbourhood.id, description: theBlock.neighbourhood.name]
@@ -90,6 +92,7 @@ class NavigateController {
         Map result =
             [
             authorized: session.authorized,
+            anonymousRequests: AnonymousRequest.countByNeighbourhood(theAddress.block.neighbourhood),
             navContext:
                 [
                     [id: theAddress.block.neighbourhood.id, level: 'Neighbourhood', description: theAddress.block.neighbourhood.name],
@@ -131,6 +134,7 @@ class NavigateController {
         Map result =
             [
             authorized: session.authorized,
+            anonymousRequests: AnonymousRequest.countByNeighbourhood(theFamily.address.block.neighbourhood),
             navContext:
                 [
                     [id: theFamily.address.block.neighbourhood.id, level: 'Neighbourhood', description: theFamily.address.block.neighbourhood.name],
@@ -206,6 +210,7 @@ class NavigateController {
         Map result =
         [
             authorized: session.authorized,
+            anonymousRequests: AnonymousRequest.countByNeighbourhood(theMember.family.address.block.neighbourhood),
             navContext:
             [
                 [id: theMember.family.address.block.neighbourhood.id, level: 'Neighbourhood', description: theMember.family.address.block.neighbourhood.name],

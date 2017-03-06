@@ -1,5 +1,7 @@
 package commongood
 
+import org.abundantcommunityinitiative.commongood.handy.JsonWriter
+
 class AnonymousController {
 
     // http://localhost:8080/CommonGood/anonymous/hello?neighbourhoodId=203&requestContext=activities&requestReference=bowling&residentName=Marco&emailAddress=marco@gmail.com&homeAddress=9301+93+St&phoneNumber=123-456-7890&comment=Sign+me+up
@@ -8,6 +10,24 @@ class AnonymousController {
                 "reqRef=${params.requestReference}, name=${params.residentName}, email=${params.emailAddress}, " +
                 " addr=${params.homeAddress}, phone=${params.phoneNumber}, comment=${params.comment}"
 
-        render "howdie, neighbour"
+        def result
+        def hood = Neighbourhood.get( params.long('neighbourhoodId') )
+        if( hood.acceptAnonymousRequests ) {
+            def ar = new AnonymousRequest( )
+            ar.neighbourhood = hood
+            ar.residentName = params.residentName
+            ar.emailAddress = params.emailAddress
+            ar.homeAddress = params.homeAddress
+            ar.phoneNumber = params.phoneNumber
+            ar.comment = params.comment
+            ar.ipAddress = '1.2.3.4'
+            ar.requestContext = params.requestContext
+            ar.requestReference = params.request.reference
+            ar.save( flush:true, failOnError: true )
+            result = [ status: 0 ]
+        } else {
+            result = [ status: 1 ]
+        }
+        render JsonWriter.write( result )
     }
 }
