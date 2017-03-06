@@ -12,22 +12,29 @@ class AnonymousController {
 
         def result
         def hood = Neighbourhood.get( params.long('neighbourhoodId') )
-        if( hood.acceptAnonymousRequests ) {
-            def ar = new AnonymousRequest( )
-            ar.neighbourhood = hood
-            ar.residentName = params.residentName
-            ar.emailAddress = params.emailAddress
-            ar.homeAddress = params.homeAddress
-            ar.phoneNumber = params.phoneNumber
-            ar.comment = params.comment
-            ar.ipAddress = '1.2.3.4'
-            ar.requestContext = params.requestContext
-            ar.requestReference = params.request.reference
-            ar.save( flush:true, failOnError: true )
-            result = [ status: 0 ]
+
+        if( hood ) {
+            if( hood.acceptAnonymousRequests ) {
+                def ar = new AnonymousRequest( )
+                ar.neighbourhood = hood
+                ar.residentName = params.residentName
+                ar.emailAddress = params.emailAddress
+                ar.homeAddress = params.homeAddress
+                ar.phoneNumber = params.phoneNumber
+                ar.comment = params.comment
+                ar.ipAddress = '1.2.3.4'
+                ar.requestContext = params.requestContext
+                ar.requestReference = params.requestReference
+                ar.save( flush:true, failOnError: true )
+                result = [ status: 0, text: 'Success' ]
+            } else {
+                result = [ status: 1, text: 'Neighbourhood refuses anonymous requests' ]
+            }
         } else {
-            result = [ status: 1 ]
+            // No such neighbourhood
+            result = [ status : 2, text: 'No such neighbourhood' ]
         }
+
         render JsonWriter.write( result )
     }
 }
