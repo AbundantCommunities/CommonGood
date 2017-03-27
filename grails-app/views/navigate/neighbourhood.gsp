@@ -112,7 +112,7 @@
 
     </head>
     <body>
-            <div class="content-section" style="height:80px;">
+            <div class="content-section" style="height:100px;">
                 <div class="content-heading">${navSelection.levelInHierarchy}</div>
                 <div class="content-row">
                     <div class="content-row-item" style="width:55px;">Name: </div><div class="content-row-item">${navSelection.description}</div>
@@ -121,6 +121,7 @@
                 <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}">
                     <g:if test="${authorized.canWrite()==Boolean.TRUE}">
                     <div id="content-actions-left-side">
+                        <div class="content-left-action"><g:link controller="anonymousRequest" action="inbox">Public Inbox (${anonymousRequests})</g:link></div>
                         <div class="content-left-action"><g:link controller="blockSummary" action="index">Block Summary</g:link></div>
                         <div class="content-left-action"><g:link controller="neighbourhood" action="blockConnectors">Block Connector Contact List</g:link></div>
                         <div class="content-left-action"><a href="#" onclick="presentSelectQuestionModal();">Answer Ranking</a></div>
@@ -130,10 +131,12 @@
                         <div class="content-action"><a href="#" onclick="alert('not yet implemented');">Edit</a></div>
                         <div class="content-action"><a href="#" onclick="alert('not yet implemented');">Delete</a></div>
                         <div class="content-action">&nbsp;</div>
+                        <div class="content-action">&nbsp;</div>
                     </div>
                     </g:if>
                     <g:else>
                     <div id="content-actions" style="left:710px;">
+                        <div class="content-left-action"><g:link controller="anonymousRequest" action="inbox">Public Inbox (${anonymousRequests})</g:link></div>
                         <div class="content-left-action"><g:link controller="blockSummary" action="index">Block Summary</g:link></div>
                         <div class="content-left-action"><g:link controller="neighbourhood" action="blockConnectors">Block Connector Contact List</g:link></div>
                         <div class="content-left-action"><a href="#" onclick="presentSelectQuestionModal();">Answer Ranking</a></div>

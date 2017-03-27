@@ -38,6 +38,24 @@
         <g:layoutHead/>
     </head>
     <body>
+        <g:if test="${flash.message}">
+
+            <g:if test="${flash.nature=='SUCCESS'}">
+                <g:set var="natureClass" value="flashsuccess" scope="request" />
+            </g:if>
+            <g:elseif test="${flash.nature=='WARNING'}">
+                <g:set var="natureClass" value="flashwarning" scope="request" />
+            </g:elseif>
+            <g:elseif test="${flash.nature=='FAILURE'}">
+                <g:set var="natureClass" value="flashfailure" scope="request" />
+            </g:elseif>
+
+            <div class="flashcontainer ${natureClass}">
+                <div class="flashcontent">
+                    <div>${flash.message}</div>
+                </div>
+            </div>
+        </g:if>
         <div id="pagecontainer">
             <div id="aci-logo-line">
                 <asset:image src="aci-logo.png" width="80" height="78"/>
