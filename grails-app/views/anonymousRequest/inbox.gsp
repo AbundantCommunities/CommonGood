@@ -138,7 +138,9 @@
                 </g:if>
                 <div class="content-row bold">
                     <g:if test="${authorized.canWrite()==Boolean.TRUE}">
+                    <g:if test="${requests.size()>0}">
                     <div class="cell20"><input id="headerDeleteCheckbox" type="checkbox" name="" value="" onclick="javascript:selectAllClicked();"/></div>
+                    </g:if>
                     </g:if>
                     <div class="cell100">Date</div>
                     <div class="cell80">Time</div>
@@ -162,8 +164,7 @@
                 </g:if>
                 <g:else>
                     <div class="content-children-row">
-                    <div class="cell20"></div>
-                        <div class="cell100 light-text">no messages</div>
+                    <div class="cell100 light-text">no messages</div>
                     </div>
                 </g:else>
                 <div class="content-children-row"></div>
