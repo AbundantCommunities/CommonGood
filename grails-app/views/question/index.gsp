@@ -30,7 +30,11 @@
 
             function dateOk(date) {
                 var pattern = /^$|^(19|20)\d{2}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/;
-                return pattern.test(date);
+                if (date.length > 0) {
+                    return pattern.test(date);
+                } else {
+                    return false;
+                }
             }
 
             function interviewDataOkay(initialInterviewDate) {

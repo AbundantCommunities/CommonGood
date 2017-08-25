@@ -142,11 +142,11 @@
                     <div class="cell20"><input id="headerDeleteCheckbox" type="checkbox" name="" value="" onclick="javascript:selectAllClicked();"/></div>
                     </g:if>
                     </g:if>
-                    <div class="cell100">Date</div>
-                    <div class="cell80">Time</div>
+                    <div class="cell100">Date/Time</div>
                     <div class="cell170">Neighbour</div>
                     <div class="cell130">Context</div>
-                    <div class="cell350">Message</div>
+                    <div class="cell130">Reference</div>
+                    <div class="cell300">Message</div>
                 </div>
                 <g:if test="${requests.size()>0}">
                 <g:each in="${requests}" var="request" status="row">
@@ -154,11 +154,11 @@
                         <g:if test="${authorized.canWrite()==Boolean.TRUE}">
                         <div class="cell20"><input id="request${row}" class="deleteCheckbox" type="checkbox" name="${request.id}" value="" onclick="javascript:checkboxClicked();"/></div>
                         </g:if>
-                        <div class="cell100"><g:formatDate format="yyyy-MM-dd" date="${request.dateCreated}" /></div>
-                        <div class="cell80"><g:formatDate date="${request.dateCreated}" type="time" style="SHORT" /></div>
+                        <div class="cell100"><g:formatDate format="yyyy-MM-dd" date="${request.dateCreated}" /><br><g:formatDate date="${request.dateCreated}" type="time" style="SHORT" /></div>
                         <div class="cell170">${request.residentName}<g:if test="${request.homeAddress.trim().size()>0}"><br>${request.homeAddress}</g:if><g:if test="${request.phoneNumber.trim().size()>0}"><br>${request.phoneNumber}</g:if><g:if test="${request.emailAddress.trim().size()>0}"><br>${request.emailAddress}</g:if></div>
                         <div class="cell130">${request.requestContext}</div>
-                        <div class="cell350">${request.comment}</div>
+                        <div class="cell130">${request.requestReference}</div>
+                        <div class="cell300">${request.comment}</div>
                     </div>
                 </g:each>
                 </g:if>
