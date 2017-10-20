@@ -121,7 +121,7 @@
                 <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}">
                     <g:if test="${authorized.canWrite()==Boolean.TRUE}">
                     <div id="content-actions-left-side">
-                        <div class="content-left-action"><g:link controller="anonymousRequest" action="inbox">Public Inbox (${anonymousRequests})</g:link></div>
+                        <div class="content-left-action"><g:link controller="anonymousRequest" action="inbox">Connect Me Inbox (${anonymousRequests})</g:link></div>
                         <div class="content-left-action"><g:link controller="blockSummary" action="index">Block Summary</g:link></div>
                         <div class="content-left-action"><g:link controller="neighbourhood" action="blockConnectors">Block Connector Contact List</g:link></div>
                         <div class="content-left-action"><a href="#" onclick="presentSelectQuestionModal();">Answer Ranking</a></div>

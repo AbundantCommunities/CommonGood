@@ -122,7 +122,7 @@
     </head>
     <body>
             <div id="inbox" class="content-section">
-                <div style="margin-top:-15px;"><h3>Public Inbox for ${session.neighbourhood.name}</h3></div>
+                <div style="margin-top:-15px;"><h3>Connect Me Inbox for ${session.neighbourhood.name}</h3></div>
                 <div id="inboxHeader" style="display:block;">
                     <div style="margin-top:-10px;"><h4>Number of messages in inbox: ${requests.size()}</h4></div>
                     <g:if test="${authorized.canWrite()==Boolean.TRUE}">
