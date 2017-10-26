@@ -112,7 +112,7 @@ function CGSubmitRequest(row) {
 	    }
 
 		if (residentName != "") {
-			if (emailAddress != "" || phoneNumber != "") {
+			if (emailAddress != "" || phoneNumber != "" || homeAddress != "") {
 				if (emailOk(emailAddress)) {
 					return true;
 				} else {
