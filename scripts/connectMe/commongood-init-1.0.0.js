@@ -40,7 +40,7 @@ var CGDoneButtonText = "Done";
 
 // Text for validation errors.
 var CGNameIsBlankErrorText = "Oops, please enter your name.";
-var CGMissingDataErrorText = "Oops, please enter your email or phone so we can contact you.";
+var CGMissingDataErrorText = "Oops, please enter your email, phone or address so we can contact you.";
 var CGInvalidEmailErrorText = "Oops, the email address you entered is invalid.";
 
 // Text for submit response.
