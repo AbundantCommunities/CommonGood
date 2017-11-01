@@ -1,6 +1,26 @@
 package commongood
 
+/**
+ * Handle user requests for resetting her password.
+ */
+
 class PasswordController {
+
+    def authenticateService
+
+    def index( ) {
+        if( authenticateService.isAuthenticated(session) ) {
+            // Makes no sense to ask for this form if you are logged in
+            log.warn "User ${session.user.logName} asked for password reset form but is logged in"
+            
+            // TODO Convoluted way to take user to her normal landing page
+            redirect controller:'login'
+        } else {
+            // User is not authenticated. Makes sense for user to request form to request password reset
+            log.debug "Request for password reset form"
+        }
+    }
+
 /*
 ALL ACTIONS SHOULD
     allow anonymous requests
