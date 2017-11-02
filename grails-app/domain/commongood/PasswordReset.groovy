@@ -9,4 +9,8 @@ class PasswordReset {
 
     Date dateCreated
     Date lastUpdated
+    
+    def getLogString( ) {
+        return "PasswordReset ${id} ${emailAddress}"
+    }
 }

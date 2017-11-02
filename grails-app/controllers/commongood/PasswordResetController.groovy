@@ -4,40 +4,51 @@ package commongood
  * Handle user requests for resetting her password.
  */
 
-class PasswordController {
+class PasswordResetController {
 
     def authenticateService
+    def passwordResetService
+
+/*
+ALL ACTIONS SHOULD
+    allow anonymous requests
+    Barf if user is logged in
+ */
 
     def index( ) {
         if( authenticateService.isAuthenticated(session) ) {
             // Makes no sense to ask for this form if you are logged in
             log.warn "User ${session.user.logName} asked for password reset form but is logged in"
             
-            // TODO Convoluted way to take user to her normal landing page
+            // TODO Take user to her normal landing page in a less convoluted way
             redirect controller:'login'
         } else {
             // User is not authenticated. Makes sense for user to request form to request password reset
-            log.debug "Request for password reset form"
+            log.info "Request for password reset form"
+        }
+    }
+
+    def requestEmail( ) {
+        String emailAddress = params.emailAddress
+        def reset = passwordResetService.requestEmail( emailAddress )
+        if( reset ) {
+            // It is reasonable to send a password reset email to the address
+            // Also: the service has created a new reset token
+            log.info "Will email ${reset}"
+            // send email with link like https://app.aci.org/password/getNew?token=F362DCA6890E958.....
+            [
+                emailAddress: emailAddress,
+                expires: reset.expiryTime
+            ]
+        } else {
+            log.info "Rejecting request for ${emailAddress}"
+            redirect action:'index'
         }
     }
 
 /*
-ALL ACTIONS SHOULD
-    allow anonymous requests
-    Barf if user is logged in
-index simply renders reset password form with
-    (if we came from requestReset with a warning then MUST display email address in appropriate control)
-    Email Address (ideally would display the same email address as the login page)
-    Submit button (perhaps "Request Password Reset"?)
-    submits to the requestReset closure
-requestReset
-    (note the following 3 checks are also performed in reset action)
-    is the email address on file?
-    if so, is app_user true?
-    if so, is there a DA record?
+requestEmail
     IF ALL OKAY THEN
-        create PasswordReset row
-        send email with link like https://app.aci.org/password/getNew?token=F362DCA6890E958.....
         the GSP displays
             text about checking email for you@someplace.ca
             you have X hours
