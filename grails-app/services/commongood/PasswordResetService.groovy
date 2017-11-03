@@ -5,28 +5,32 @@ import grails.transaction.Transactional
 @Transactional
 class PasswordResetService {
 
-    // Return null if emailAddress is suspect else return a PasswordReset object.
-    def requestEmail( String emailAddress ) {
-        if( emailAddress.length() > 10 ) {
-            println "email address is longer than 10"
-            println "SHOULD CREATE RESET ROW"
+    // Return a PasswordReset but null if emailAddress fails our tests
+    PasswordReset requestEmail( String emailAddress ) {
+        if( validateEmailAddress(emailAddress) ) {
+            println "SHOULD WRITE RESET to DATABASE"
+            println "SHOULD SEND EMAIL to MAILGUN"
             def reset = new PasswordReset( token:"randomHexString", emailAddress:emailAddress,
-                            expiryTime:new Date(), expired:false, successful:false )
+                            expiryTime:new Date(), state:"Active" )
             return reset
         } else {
-            println "email address is short"
             return null
         }
     }
 
     def validateEmailAddress( String emailAddress ) {
-        if( !addrOnFile ) {
+        def person = Person.findByEmailAddress( emailAddress )
+        if( !person ) {
+            log.warn "No person with email address = ${emailAddress}"
             return false
         }
-        if( !appUser ) {
+        if( !person.appUser ) {
+            log.warn "${person} is not an appUser"
             return false
         }
-        if( !daRow ) {
+        def da = DomainAuthorization.findByPerson( person )
+        if( !da ) {
+            log.warn "${person} has no DomainAuthorization"
             return false
         }
         return true
@@ -50,7 +54,7 @@ class PasswordResetService {
 
     def reset( String emailAddress, String password ) {
         if( validateEmailAddress(emailAddress) ) {
-            // hash & store in person row
+            // Store the hash of the pwd in person row
         }
     }
 }

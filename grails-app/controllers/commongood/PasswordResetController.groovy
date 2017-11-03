@@ -1,61 +1,51 @@
 package commongood
 
-/**
- * Handle user requests for resetting her password.
- */
-
 class PasswordResetController {
 
     def authenticateService
     def passwordResetService
 
-/*
-ALL ACTIONS SHOULD
-    allow anonymous requests
-    Barf if user is logged in
- */
-
     def index( ) {
         if( authenticateService.isAuthenticated(session) ) {
-            // Makes no sense to ask for this form if you are logged in
-            log.warn "User ${session.user.logName} asked for password reset form but is logged in"
-            
-            // TODO Take user to her normal landing page in a less convoluted way
-            redirect controller:'login'
+            log.info "User ${session.user.logName} is logged in and asked for password reset form!"
         } else {
-            // User is not authenticated. Makes sense for user to request form to request password reset
-            log.info "Request for password reset form"
+            log.info "Anonymous request for password reset form"
         }
     }
 
     def requestEmail( ) {
         String emailAddress = params.emailAddress
-        def reset = passwordResetService.requestEmail( emailAddress )
-        if( reset ) {
-            // It is reasonable to send a password reset email to the address
-            // Also: the service has created a new reset token
-            log.info "Will email ${reset}"
-            // send email with link like https://app.aci.org/password/getNew?token=F362DCA6890E958.....
-            [
-                emailAddress: emailAddress,
-                expires: reset.expiryTime
-            ]
-        } else {
-            log.info "Rejecting request for ${emailAddress}"
+        if( !goodEmailAddressFormat(emailAddress) ) {
+            log.info "Invalid email address format: ${emailAddress}"
+            flash.message = "The format of this email address is bad: ${emailAddress}"
+            flash.nature = 'WARNING'
             redirect action:'index'
+        } else {
+            def reset = passwordResetService.requestEmail( emailAddress )
+            if( reset ) {
+                // The address passed our database checks.
+                // Also: the service has created a new reset token
+                // and the service sent the reset email
+                log.info "Emailed ${reset.logString}"
+                [
+                    emailAddress: emailAddress,
+                    expires: reset.expiryTime
+                ]
+            } else {
+                log.info "Rejecting request for ${emailAddress}; failed database checks"
+                flash.message = "Cannot send a password reset to ${emailAddress}"
+                flash.nature = 'WARNING'
+                redirect action:'index'
+            }
         }
     }
 
+    Boolean goodEmailAddressFormat( String address ) {
+        println "WE SHOULD DO A BETTER JOB OF CHECKING EMAIL FORMAT(??)"
+        def atSign = address.indexOf( "@" )
+        return atSign > 0
+    }
 /*
-requestEmail
-    IF ALL OKAY THEN
-        the GSP displays
-            text about checking email for you@someplace.ca
-            you have X hours
-            Close tab button
-    ELSE
-        display the index form with warning msg: Email address is not valid
-    ENDIF
 getNew
     The user has clicked on the URL we sent in the email (we hope)
     fetch the PasswordReset row

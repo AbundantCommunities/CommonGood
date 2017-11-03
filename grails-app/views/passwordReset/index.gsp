@@ -9,6 +9,10 @@
 <body>
     <h1>Request a password reset email</h1>
 
+    <g:if test="${flash.message}">
+        <p>[${flash.nature}] ${flash.message}</p>
+    </g:if>
+
     <form action="<g:createLink action='requestEmail'/>" method="POST">
         <div>Email address <input type="text" name="emailAddress" /></div>
     </form>
