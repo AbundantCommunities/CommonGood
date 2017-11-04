@@ -10,31 +10,37 @@ class PasswordResetService {
         if( validateEmailAddress(emailAddress) ) {
             println "SHOULD WRITE RESET to DATABASE"
             println "SHOULD SEND EMAIL to MAILGUN"
+            Date expiresAt
+            use( groovy.time.TimeCategory ) {
+                expiresAt = 6.hours.from.now
+            }
             def reset = new PasswordReset( token:"randomHexString", emailAddress:emailAddress,
-                            expiryTime:new Date(), state:"Active" )
+                            expiryTime:expiresAt, state:"Active" )
             return reset
         } else {
             return null
         }
     }
 
-    PasswordReset get( String token ) {
+    Tuple2 get( String token ) {
         def reset = PasswordReset.findByToken( token )
         if( reset ) {
             if( reset.state.equals("Active") ) {
                 if( reset.expiryTime ) {
                     log.info "Retrieved ${reset.logString} okay"
-                    return reset
+                    return new Tuple2( "okay", reset )
                 } else {
                     log.warn "${reset.logString} is stale"
+                    return new Tuple2( "stale", reset )
                 }
             } else {
                 log.warn "${reset.logString} is not active"
+                return new Tuple2( "inactive", reset )
             }
         } else {
             log.warn "This is ODD. Password reset token not on file: ${token}"
+            return new Tuple2( "nof", new PasswordReset() ) // Can't put a null in a Tuple2
         }
-        return null
     }
 
     def validateEmailAddress( String emailAddress ) {

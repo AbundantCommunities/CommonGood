@@ -49,8 +49,16 @@ class PasswordResetController {
     // The user has clicked on the URL we sent in the email (hopefully!)
     def getNew( ) {
         String token = params.token
-        PasswordReset reset = passwordResetService.get( token )
-        [ reset: reset ]
+        def ( String quality, PasswordReset reset ) = passwordResetService.get( token )
+        if( quality.equals("okay") ) {
+            session.passwordReset = reset
+        } else {
+            session.passwordReset = null
+        }
+        [
+            quality: quality,
+            reset: reset
+        ]
     }
 /*
 getNew

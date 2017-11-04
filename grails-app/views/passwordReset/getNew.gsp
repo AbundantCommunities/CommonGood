@@ -7,11 +7,11 @@
 </head>
 
 <body>
-    <g:if test="${!reset}">
-        <h1>Bad token</h1>
-    </g:if>
-    <g:if test="${reset}">
+    <g:if test="${quality.equals('okay')}">
         <h1>Enter new password</h1>
+    </g:if>
+    <g:if test="${!quality.equals('okay')}">
+        <h1>Oops ${quality}</h1>
     </g:if>
 </body>
 </html>

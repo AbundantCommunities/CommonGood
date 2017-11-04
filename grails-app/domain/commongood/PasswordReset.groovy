@@ -15,6 +15,6 @@ KILLED the administrator or the application retired it for some "logical reason"
     Date lastUpdated
     
     def getLogString( ) {
-        return "PasswordReset ${id} ${state} ${emailAddress}"
+        return "PasswordReset ${id} ${state} ${expiryTime} ${emailAddress}"
     }
 }
