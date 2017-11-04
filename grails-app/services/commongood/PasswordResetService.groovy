@@ -27,7 +27,6 @@ class PasswordResetService {
         if( reset ) {
             if( reset.state.equals("Active") ) {
                 if( reset.expiryTime ) {
-                    log.info "Retrieved ${reset.logString} okay"
                     return new Tuple2( "okay", reset )
                 } else {
                     log.warn "${reset.logString} is stale"
@@ -61,9 +60,10 @@ class PasswordResetService {
         return true
     }
 
-    def reset( String emailAddress, String password ) {
-        if( validateEmailAddress(emailAddress) ) {
-            // Store the hash of the pwd in person row
+    def reset( PasswordReset reset, String password ) {
+        if( validateEmailAddress(reset.emailAddress) ) {
+            println "MUST HASH ${password} and SAVE IT"
+            log.info "We should change the password for ${reset}"
         }
     }
 }

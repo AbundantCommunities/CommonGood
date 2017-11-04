@@ -51,6 +51,7 @@ class PasswordResetController {
         String token = params.token
         def ( String quality, PasswordReset reset ) = passwordResetService.get( token )
         if( quality.equals("okay") ) {
+            log.info "Retrieved good ${reset.logString}"
             session.passwordReset = reset
         } else {
             session.passwordReset = null
@@ -98,4 +99,19 @@ reset
         goto getNew with a yellow "you did a whoopsie" message
     endif
 */
+    def reset( ) {
+        def pwd1 = params.password1
+        def pwd2 = params.password2
+        def reset = session.passwordReset
+        if( !pwd1.equals(pwd2) ) {
+            log.info "User submitted 2 different passwords for ${reset}"
+            flash.message = "Those two passwords are not the same"
+            flash.nature = 'WARNING'
+            redirect action:'getNew', params:[token:reset.token]
+        } else {
+            // update the person row
+            log.info "User submitted 2 identical passwords for ${reset.logString}"
+            passwordResetService.reset( reset, pwd1 )
+        }
+    }
 }
