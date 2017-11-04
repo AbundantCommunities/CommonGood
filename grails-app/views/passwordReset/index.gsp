@@ -13,7 +13,7 @@
         <p>[${flash.nature}] ${flash.message}</p>
     </g:if>
 
-    <form action="<g:createLink action='requestEmail'/>" method="POST">
+    <form action="<g:createLink action='sendEmail'/>" method="POST">
         <div>Email address <input type="text" name="emailAddress" /></div>
     </form>
 

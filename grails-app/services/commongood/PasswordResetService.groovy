@@ -5,10 +5,10 @@ import grails.transaction.Transactional
 @Transactional
 class PasswordResetService {
 
-    // Return a PasswordReset but null if emailAddress fails our tests
-    PasswordReset requestEmail( String emailAddress ) {
-        if( validateEmailAddress(emailAddress) ) {
-            println "SHOULD WRITE RESET to DATABASE"
+    // Send a reset email and return a new PasswordReset
+    // (but no email and return null if emailAddress fails database tests)
+    PasswordReset sendEmail( String emailAddress ) {
+        if( emailAddressIsOkay(emailAddress) ) {
             println "SHOULD SEND EMAIL to MAILGUN"
             Date expiresAt
             use( groovy.time.TimeCategory ) {
@@ -16,45 +16,48 @@ class PasswordResetService {
             }
             def reset = new PasswordReset( token:"randomHexString", emailAddress:emailAddress,
                             expiryTime:expiresAt, state:"Active" )
+            reset.save( flush:true, failOnError: true )
             return reset
         } else {
             return null
         }
     }
 
+    // Find the random token in the PasswordReset table
     Tuple2 get( String token ) {
+        // TODO Probably should index PasswordReset table by token
         def reset = PasswordReset.findByToken( token )
         if( reset ) {
             if( reset.state.equals("Active") ) {
-                if( reset.expiryTime ) {
+                if( new Date() < reset.expiryTime ) {
                     return new Tuple2( "okay", reset )
                 } else {
-                    log.warn "${reset.logString} is stale"
+                    log.info "${reset.moniker} is stale"
                     return new Tuple2( "stale", reset )
                 }
             } else {
-                log.warn "${reset.logString} is not active"
+                log.info "${reset.moniker} is not active"
                 return new Tuple2( "inactive", reset )
             }
         } else {
-            log.warn "This is ODD. Password reset token not on file: ${token}"
+            log.warn "UNEXPECTED: Password reset token not on file: ${token}"
             return new Tuple2( "nof", new PasswordReset() ) // Can't put a null in a Tuple2
         }
     }
 
-    def validateEmailAddress( String emailAddress ) {
+    def emailAddressIsOkay( String emailAddress ) {
         def person = Person.findByEmailAddress( emailAddress )
         if( !person ) {
-            log.warn "No person with email address = ${emailAddress}"
+            log.warn "No person with email address ${emailAddress}"
             return false
         }
         if( !person.appUser ) {
-            log.warn "${person} is not an appUser"
+            log.warn "${person.getLogName} is not an appUser"
             return false
         }
         def da = DomainAuthorization.findByPerson( person )
         if( !da ) {
-            log.warn "${person} has no DomainAuthorization"
+            log.warn "${person.logName} has no DomainAuthorization"
             return false
         }
         return true
@@ -63,7 +66,7 @@ class PasswordResetService {
     def reset( PasswordReset reset, String password ) {
         if( validateEmailAddress(reset.emailAddress) ) {
             println "MUST HASH ${password} and SAVE IT"
-            log.info "We should change the password for ${reset}"
+            log.info "We should change the password for ${reset.moniker}"
         }
     }
 }

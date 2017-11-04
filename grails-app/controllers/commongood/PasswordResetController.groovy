@@ -13,45 +13,40 @@ class PasswordResetController {
         }
     }
 
-    def requestEmail( ) {
+    // The user submitted an emailAddress
+    def sendEmail( ) {
+        // We do very little to assess the email address's format.
+        // If it's in the database then we've already decided the format is good.
         String emailAddress = params.emailAddress
-        if( !goodEmailAddressFormat(emailAddress) ) {
-            log.info "Invalid email address format: ${emailAddress}"
-            flash.message = "The format of this email address is bad: ${emailAddress}"
-            flash.nature = 'WARNING'
-            redirect action:'index'
-        } else {
-            def reset = passwordResetService.requestEmail( emailAddress )
+        if( emailAddress.indexOf( "@" ) > 0 ) {
+            // If the service likes the emailAddress it will make a new PasswordReset and
+            // send a reset email that references the PasswordReset.
+            def reset = passwordResetService.sendEmail( emailAddress )
             if( reset ) {
-                // The address passed our database checks.
-                // Also: the service has created a new reset token
-                // and the service sent the reset email
-                log.info "Emailed ${reset.logString}"
+                log.info "Emailed ${reset.moniker}"
                 [
-                    emailAddress: emailAddress,
-                    expires: reset.expiryTime
+                    reset: reset
                 ]
             } else {
-                log.info "Rejecting request for ${emailAddress}; failed database checks"
-                flash.message = "Cannot send a password reset to ${emailAddress}"
+                log.info "Rejecting reset password request for ${emailAddress}"
+                flash.message = "We cannot email a password reset to ${emailAddress}"
                 flash.nature = 'WARNING'
                 redirect action:'index'
             }
+        } else {
+            log.info "Bad email address format: ${emailAddress}"
+            flash.message = "The format of this email address is bad: ${emailAddress}"
+            flash.nature = 'WARNING'
+            redirect action:'index'
         }
     }
 
-    Boolean goodEmailAddressFormat( String address ) {
-        println "WE SHOULD DO A BETTER JOB OF CHECKING EMAIL FORMAT!??"
-        def atSign = address.indexOf( "@" )
-        return atSign > 0
-    }
-
-    // The user has clicked on the URL we sent in the email (hopefully!)
+    // The user has clicked on the URL we sent in the email (or someone is tricksy!)
     def getNew( ) {
         String token = params.token
         def ( String quality, PasswordReset reset ) = passwordResetService.get( token )
         if( quality.equals("okay") ) {
-            log.info "Retrieved good ${reset.logString}"
+            log.info "Retrieved good ${reset.moniker}"
             session.passwordReset = reset
         } else {
             session.passwordReset = null
@@ -110,7 +105,7 @@ reset
             redirect action:'getNew', params:[token:reset.token]
         } else {
             // update the person row
-            log.info "User submitted 2 identical passwords for ${reset.logString}"
+            log.info "User submitted 2 identical passwords for ${reset.moniker}"
             passwordResetService.reset( reset, pwd1 )
         }
     }
