@@ -18,6 +18,25 @@ class PasswordResetService {
         }
     }
 
+    PasswordReset get( String token ) {
+        def reset = PasswordReset.findByToken( token )
+        if( reset ) {
+            if( reset.state.equals("Active") ) {
+                if( reset.expiryTime ) {
+                    log.info "Retrieved ${reset.logString} okay"
+                    return reset
+                } else {
+                    log.warn "${reset.logString} is stale"
+                }
+            } else {
+                log.warn "${reset.logString} is not active"
+            }
+        } else {
+            log.warn "This is ODD. Password reset token not on file: ${token}"
+        }
+        return null
+    }
+
     def validateEmailAddress( String emailAddress ) {
         def person = Person.findByEmailAddress( emailAddress )
         if( !person ) {
@@ -35,22 +54,6 @@ class PasswordResetService {
         }
         return true
     }
-    /*
-    These 3 checks are required in both the requestEmail and reset actions
-    is the email address on file?
-    if so, is app_user true?
-    if so, is there a DA record?
-    IF ALL OKAY THEN
-        create PasswordReset row
-        send email with link like https://app.aci.org/password/getNew?token=F362DCA6890E958.....
-        the GSP displays
-            text about checking email for you@someplace.ca
-            you have X hours
-            Close tab button
-    ELSE
-        display the index form with warning msg: Email address is not valid
-    ENDIF
-*/
 
     def reset( String emailAddress, String password ) {
         if( validateEmailAddress(emailAddress) ) {

@@ -41,13 +41,19 @@ class PasswordResetController {
     }
 
     Boolean goodEmailAddressFormat( String address ) {
-        println "WE SHOULD DO A BETTER JOB OF CHECKING EMAIL FORMAT(??)"
+        println "WE SHOULD DO A BETTER JOB OF CHECKING EMAIL FORMAT!??"
         def atSign = address.indexOf( "@" )
         return atSign > 0
     }
+
+    // The user has clicked on the URL we sent in the email (hopefully!)
+    def getNew( ) {
+        String token = params.token
+        PasswordReset reset = passwordResetService.get( token )
+        [ reset: reset ]
+    }
 /*
 getNew
-    The user has clicked on the URL we sent in the email (we hope)
     fetch the PasswordReset row
     if nof then
         go to index form with yellow msg: "not a valid reset request (too old?)"
@@ -66,9 +72,10 @@ getNew
         reset.gsp says "WTF?!"
     endif
     store token in session
-    reset.gsp offers
+    getNew.gsp offers
         two password controls
         submit buttom which posts to reset action
+
 reset
     get the token from session (if not there then blow up)
     do the same validity checks as getNew
