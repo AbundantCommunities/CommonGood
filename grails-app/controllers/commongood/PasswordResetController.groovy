@@ -98,15 +98,26 @@ reset
         def pwd1 = params.password1
         def pwd2 = params.password2
         def reset = session.passwordReset
-        if( !pwd1.equals(pwd2) ) {
+        println "Retrieved reset from session: ${reset}"
+        // TODO Explore session.passwordReset no longer attached to Hibernate session
+        if( pwd1.equals(pwd2) ) {
+            // update the person row
+            log.info "User submitted 2 identical passwords for ${reset.moniker}"
+            if( passwordResetService.reset(reset,pwd1) ) {
+                log.info "Password successfully reset for ${reset}"
+                [
+                    reset: reset
+                ]
+            } else {
+                flash.message = "We're sorry; we failed to reset your password"
+                flash.nature = 'WARNING'
+                redirect action:'getNew', params:[token:reset.token]
+            }
+        } else {
             log.info "User submitted 2 different passwords for ${reset}"
             flash.message = "Those two passwords are not the same"
             flash.nature = 'WARNING'
             redirect action:'getNew', params:[token:reset.token]
-        } else {
-            // update the person row
-            log.info "User submitted 2 identical passwords for ${reset.moniker}"
-            passwordResetService.reset( reset, pwd1 )
         }
     }
 }
