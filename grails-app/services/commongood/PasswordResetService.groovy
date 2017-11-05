@@ -1,9 +1,12 @@
 package commongood
 
 import grails.transaction.Transactional
+import com.cognish.password.FreshRandomness
 
 @Transactional
 class PasswordResetService {
+
+    FreshRandomness fresher = new FreshRandomness( )
 
     // Send a reset email and return a new PasswordReset
     // (but no email and return null if emailAddress fails database tests)
@@ -14,7 +17,10 @@ class PasswordResetService {
             use( groovy.time.TimeCategory ) {
                 expiresAt = 6.hours.from.now
             }
-            def reset = new PasswordReset( token:"randomHexString", emailAddress:emailAddress,
+            byte[] randy = new byte[32]
+            fresher.get( randy )
+            def token = randy.encodeHex().toString()
+            def reset = new PasswordReset( token:token, emailAddress:emailAddress,
                             expiryTime:expiresAt, state:"Active" )
             reset.save( flush:true, failOnError: true )
             return reset
