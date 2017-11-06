@@ -2,8 +2,6 @@ package commongood
 
 import grails.transaction.Transactional
 
-//import org.apache.xml.resolver.CatalogManager
-
 // For generating random tokens
 import com.cognish.password.FreshRandomness
 import com.cognish.password.HashSpec
@@ -13,20 +11,23 @@ import com.cognish.password.Hasher
 import static groovyx.net.http.HttpBuilder.configure
 import static groovyx.net.http.ContentTypes.JSON
 import groovyx.net.http.*
-import static groovy.json.JsonOutput.prettyPrint
 
 @Transactional
 class PasswordResetService {
 
     FreshRandomness fresher = new FreshRandomness( )
-    static private String EmailDomainName = System.getenv("CG_EMAIL_DOMAIN")
-    static private String EmailPrivateKey = System.getenv("CG_EMAIL_PRIVATE_KEY")
+
+    static private String emailDomainName = System.getenv("CG_EMAIL_DOMAIN")
+    static private String emailPrivateKey = System.getenv("CG_EMAIL_PRIVATE_KEY")
     static {
-        // ALSO: throw exception if those environment variables are not found
-        println "\n~~~~~~~~~~~~~~~~~~  REMOVE THIS CODE!  ~~~~~~~~~~~~~~~~~~"
-        println "EmailDomainName = ${EmailDomainName}"
-        println "EmailPrivateKey = ${EmailPrivateKey}"
-        println "~~~~~~~~~~~~~~~~~~  REMOVE THIS CODE!  ~~~~~~~~~~~~~~~~~~\n"
+        if( emailDomainName && emailPrivateKey ) {
+            println "\n~~~~~~~~~~~~~~~~~~  SECURITY RISK!  ~~~~~~~~~~~~~~~~~~"
+            println "EmailDomainName = ${emailDomainName}"
+            println "EmailPrivateKey = ${emailPrivateKey}"
+            println "\n~~~~~~~~~~~~~~~~~~  SECURITY RISK!  ~~~~~~~~~~~~~~~~~~"
+        } else {
+            throw new RuntimeException("Missing environment variable(s) CG_EMAIL_DOMAIN and/or CG_EMAIL_PRIVATE_KEY")
+        }
     }
 
     // Send a reset email and return a new PasswordReset
@@ -34,19 +35,20 @@ class PasswordResetService {
     PasswordReset sendEmail( String emailAddress ) {
         Person person = emailAddressIsOkay( emailAddress )
         if( person ) {
-            println "SHOULD SEND EMAIL to MAILGUN"
             Date expiresAt
             use( groovy.time.TimeCategory ) {
                 expiresAt = 6.hours.from.now
             }
+
             byte[] randy = new byte[32]
             fresher.get( randy )
             def token = randy.encodeHex().toString()
+
             def reset = new PasswordReset( token:token, emailAddress:emailAddress,
                             expiryTime:expiresAt, state:"Active" )
             reset.save( flush:true, failOnError: true )
 
-            sendEmail( emailAddress, token )
+            sendToMailGun( person, token )
             return reset
         } else {
             return null
@@ -62,11 +64,11 @@ class PasswordResetService {
                 if( new Date() < reset.expiryTime ) {
                     return new Tuple2( "okay", reset )
                 } else {
-                    log.info "${reset.moniker} is stale"
+                    log.info "${reset} is stale"
                     return new Tuple2( "stale", reset )
                 }
             } else {
-                log.info "${reset.moniker} is not active"
+                log.info "${reset} is not active"
                 return new Tuple2( "inactive", reset )
             }
         } else {
@@ -95,7 +97,7 @@ class PasswordResetService {
             log.info "Changed the password for ${person.logName}"
             return true
         } else {
-            log.warn "SOMEHOW password reset's email address no longer on file ${reset.moniker}"
+            log.warn "SOMEHOW password reset's email address no longer on file ${reset}"
             return false
         }
     }
@@ -118,25 +120,32 @@ class PasswordResetService {
         return person
     }
 
-    def sendEmail( String address, String token ) {
-        log.info "Send password reset email to ${address} with token ${token}"
+    private sendToMailGun( Person person, String token ) {
+        log.info "Send password reset email to ${person.logName} with token ${token}"
         def result = configure {
             // request.uri is the only required property, though other global and client configurations may be configured
             request.uri = "https://api.mailgun.net"
             request.contentType = JSON[0]
-            request.auth.digest 'api', "${EmailPrivateKey}"
+            request.auth.digest 'api', "${emailPrivateKey}"
         }.post {
-            request.uri.path = "/v3/${EmailDomainName}/messages"
-            request.body = [from: "CommonGood NO REPLY<no-reply@${EmailDomainName}>",
-                to:address,
+            request.uri.path = "/v3/${emailDomainName}/messages"
+            request.body = [from: "NO REPLY<no-reply@${emailDomainName}>",
+                to:person.emailAddress,
                 subject: "CommonGood Password Reset",
-                text: "You go, boy! http://localhost:8080/CommonGood/passwordReset/getNew?token=${token}"]
+                text:
+"""Hi ${person.fullName}
+
+Someone (hopefully you!) submitted your email address, in order to change your CommonGood password.
+
+To reset your password click here: http://localhost:8080/CommonGood/passwordReset/getNew?token=${token}
+
+Happy neighbouring!
+"""]
             request.contentType = 'application/x-www-form-urlencoded'
             request.encoder 'application/x-www-form-urlencoded', NativeHandlers.Encoders.&form
-            log.info "MailGun request: ${request}"
         }
 
-        println "Response: ${result}"
+        log.info "MailGun result: ${result}"
     }
 
     def hashPassword( String password ) {

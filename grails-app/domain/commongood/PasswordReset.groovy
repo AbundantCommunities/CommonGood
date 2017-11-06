@@ -14,7 +14,7 @@ KILLED the administrator or the application retired it for some "logical reason"
     Date dateCreated
     Date lastUpdated
 
-    def getMoniker( ) {
+    String toString( ) {
         // Useful for writing to log files
         return "PasswordReset ${id} ${state} ${expiryTime} ${emailAddress}"
     }
