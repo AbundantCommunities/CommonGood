@@ -1,14 +1,33 @@
 package commongood
 
 import grails.transaction.Transactional
+
+//import org.apache.xml.resolver.CatalogManager
+
+// For generating random tokens
 import com.cognish.password.FreshRandomness
 import com.cognish.password.HashSpec
 import com.cognish.password.Hasher
+
+// For emailing via MailGun
+import static groovyx.net.http.HttpBuilder.configure
+import static groovyx.net.http.ContentTypes.JSON
+import groovyx.net.http.*
+import static groovy.json.JsonOutput.prettyPrint
 
 @Transactional
 class PasswordResetService {
 
     FreshRandomness fresher = new FreshRandomness( )
+    static private String EmailDomainName = System.getenv("CG_EMAIL_DOMAIN")
+    static private String EmailPrivateKey = System.getenv("CG_EMAIL_PRIVATE_KEY")
+    static {
+        // ALSO: throw exception if those environment variables are not found
+        println "\n~~~~~~~~~~~~~~~~~~  REMOVE THIS CODE!  ~~~~~~~~~~~~~~~~~~"
+        println "EmailDomainName = ${EmailDomainName}"
+        println "EmailPrivateKey = ${EmailPrivateKey}"
+        println "~~~~~~~~~~~~~~~~~~  REMOVE THIS CODE!  ~~~~~~~~~~~~~~~~~~\n"
+    }
 
     // Send a reset email and return a new PasswordReset
     // (but no email and return null if emailAddress fails database tests)
@@ -26,6 +45,8 @@ class PasswordResetService {
             def reset = new PasswordReset( token:token, emailAddress:emailAddress,
                             expiryTime:expiresAt, state:"Active" )
             reset.save( flush:true, failOnError: true )
+
+            sendEmail( emailAddress, token )
             return reset
         } else {
             return null
@@ -49,27 +70,10 @@ class PasswordResetService {
                 return new Tuple2( "inactive", reset )
             }
         } else {
+            // Worried this may be an attack, but maybe super old reset email
             log.warn "UNEXPECTED: Password reset token not on file: ${token}"
             return new Tuple2( "nof", new PasswordReset() ) // Can't put a null in a Tuple2
         }
-    }
-
-    private Person emailAddressIsOkay( String emailAddress ) {
-        def person = Person.findByEmailAddress( emailAddress )
-        if( !person ) {
-            log.warn "No person with email address ${emailAddress}"
-            return null
-        }
-        if( !person.appUser ) {
-            log.warn "${person.logName} is not an appUser"
-            return null
-        }
-        def da = DomainAuthorization.findByPerson( person )
-        if( !da ) {
-            log.warn "${person.logName} has no DomainAuthorization"
-            return null
-        }
-        return person
     }
 
     def reset( PasswordReset reset, String password ) {
@@ -94,6 +98,45 @@ class PasswordResetService {
             log.warn "SOMEHOW password reset's email address no longer on file ${reset.moniker}"
             return false
         }
+    }
+
+    private Person emailAddressIsOkay( String emailAddress ) {
+        def person = Person.findByEmailAddress( emailAddress )
+        if( !person ) {
+            log.warn "No person with email address ${emailAddress}"
+            return null
+        }
+        if( !person.appUser ) {
+            log.warn "${person.logName} is not an appUser"
+            return null
+        }
+        def da = DomainAuthorization.findByPerson( person )
+        if( !da ) {
+            log.warn "${person.logName} has no DomainAuthorization"
+            return null
+        }
+        return person
+    }
+
+    def sendEmail( String address, String token ) {
+        log.info "Send password reset email to ${address} with token ${token}"
+        def result = configure {
+            // request.uri is the only required property, though other global and client configurations may be configured
+            request.uri = "https://api.mailgun.net"
+            request.contentType = JSON[0]
+            request.auth.digest 'api', "${EmailPrivateKey}"
+        }.post {
+            request.uri.path = "/v3/${EmailDomainName}/messages"
+            request.body = [from: "CommonGood NO REPLY<no-reply@${EmailDomainName}>",
+                to:address,
+                subject: "CommonGood Password Reset",
+                text: "You go, boy! http://localhost:8080/CommonGood/passwordReset/getNew?token=${token}"]
+            request.contentType = 'application/x-www-form-urlencoded'
+            request.encoder 'application/x-www-form-urlencoded', NativeHandlers.Encoders.&form
+            log.info "MailGun request: ${request}"
+        }
+
+        println "Response: ${result}"
     }
 
     def hashPassword( String password ) {
