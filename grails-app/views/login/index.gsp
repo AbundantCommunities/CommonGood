@@ -118,7 +118,7 @@
                     <div>Password <input id="pwHidden" type="password" name="hiddenPassword" value="" onKeyPress="checkEnter(event);"/><input id="pwShown" type="text" name="shownPassword" value="" style="display:none;" onKeyPress="checkEnter(event);"/>&nbsp;<a id="showHideButton" href="#" onclick="showHidePw();">show</a></div>
                     <input id="submitPassword" type="hidden" name="password" value=""/>
                 </form>
-                <div><input id="rememberCheckbox" type="checkbox" name="remember" value="remember email address" /> remember email address</div>
+                <div><a href="passwordReset">forgot password</a>&nbsp;&nbsp;&nbsp;&nbsp;<input id="rememberCheckbox" type="checkbox" name="remember" value="remember email address" /> remember email address</div>
                 <div class="no-bottom-space"><a href="#" onclick="doSubmit();">Login</a></div>
                 
                 <div class="red-text no-top-space"><g:if test="${flash.message}">${flash.message}</g:if><g:else>&nbsp;</g:else></div>

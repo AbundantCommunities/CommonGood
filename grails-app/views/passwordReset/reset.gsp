@@ -1,11 +1,15 @@
-<%@ page contentType="text/html;charset=UTF-8" %>
+<!DOCTYPE html>
 
 <html>
     <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="layout" content="session"/>
         <title>CommonGood Reset Password</title>
     </head>
     <body>
-        <h1>Probably changed your password :-)</h1>
+        <div id="content-detail">
+            <div>Password Reset:</div>
+            <div>You have successfully changed your password.</div>
+            <div>Go to <a href="../login">Login</a></div>
+        </div>
     </body>
 </html>

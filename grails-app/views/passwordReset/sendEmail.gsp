@@ -1,13 +1,17 @@
-<%@ page contentType="text/html;charset=UTF-8" %>
+<!DOCTYPE html>
 
 <html>
     <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>CommonGood Sent Password Reset Email</title>
+        <meta name="layout" content="session"/>
+        <title>CommonGood Reset Password</title>
     </head>
     <body>
-        <h1>We sent a Password Reset Email</h1>
-        <p>Sent it to ${reset.emailAddress}</p>
-        <p>It expires ${reset.expiryTime}</p>
+        <div id="content-detail">
+            <div>Password Reset:</div>
+            <div>A message has been sent to email address:</div>
+            <div>${reset.emailAddress}</div>
+            <div>Please follow the instructions in the message to reset your password.</div>
+            <div>You must do this before ${reset.expiryTime}.</div>
+        </div>
     </body>
 </html>
