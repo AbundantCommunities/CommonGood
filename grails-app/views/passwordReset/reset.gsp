@@ -7,7 +7,7 @@
     </head>
     <body>
         <div id="content-detail">
-            <div>Password Reset:</div>
+            <div>Reset Password:</div>
             <div>You have successfully changed your password.</div>
             <div>Go to <a href="../login">Login</a></div>
         </div>

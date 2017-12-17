@@ -103,7 +103,7 @@
     </head>
     <body>
             <div id="content-detail">
-                <div>Password Reset:</div>
+                <div>Reset Password:</div>
                 <g:if test="${quality.equals('okay')}">
                     <div>You have requested to reset your password.</div>
                     <div>Enter your new password below (twice), then click Set Password.</div>
