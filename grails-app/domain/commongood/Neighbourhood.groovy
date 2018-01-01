@@ -20,4 +20,8 @@ class Neighbourhood {
     static constraints = {
         logo nullable: true
     }
+    
+    public String toString( ) {
+        return "Neighbourhood ${name}"
+    }
 }

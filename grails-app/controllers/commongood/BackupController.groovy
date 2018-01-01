@@ -1,12 +1,17 @@
 package commongood
 
 class BackupController {
+    def authorizationService
     def backupService
 
     def index( ) {
-        log.info "Extract neighbourhood ${params.id}"
-        backupService.extractNeighbourhood( params.long('id') )
-        log.info "Finished neighbourhood ${params.id}"
-        render "Done"
+        def nh = session.neighbourhood
+        authorizationService.neighbourhoodRead( nh.id, session )
+        log.info "Extract backup for ${nh}"
+        def rows = backupService.extractNeighbourhood( nh.id )
+        log.info "Finished ${nh}"
+        [
+            rows: rows
+        ]
     }
 }
