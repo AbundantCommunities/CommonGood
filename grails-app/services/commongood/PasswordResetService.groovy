@@ -15,6 +15,17 @@ import groovyx.net.http.*
 @Transactional
 class PasswordResetService {
 
+    def grailsApplication
+
+    def getAbsoluteURL( String path ) {
+        // path should begin with the slash character, like "/myController/myAction"
+        def g = grailsApplication.mainContext.getBean('org.codehaus.groovy.grails.plugins.web.taglib.ApplicationTagLib')
+        def absoluteURL = g.createLink( absolute:true, uri:path )
+        println ".... ABSOLUTE URL: ${absoluteURL}"
+        return absoluteURL
+    }
+
+    // For hashing new password
     FreshRandomness fresher = new FreshRandomness( )
 
     static private String emailDomainName = System.getenv("CG_EMAIL_DOMAIN")
@@ -128,6 +139,8 @@ class PasswordResetService {
             request.contentType = JSON[0]
             request.auth.digest 'api', "${emailPrivateKey}"
         }.post {
+            def resetURL = getAbsoluteURL( "/passwordReset/getNew?token=${token}" )
+            log.info "Email will link to ${resetURL}"
             request.uri.path = "/v3/${emailDomainName}/messages"
             request.body = [from: "NO REPLY<no-reply@${emailDomainName}>",
                 to:person.emailAddress,
@@ -137,7 +150,7 @@ class PasswordResetService {
 
 Someone (hopefully you!) submitted your email address, in order to change your CommonGood password.
 
-To reset your password click here: http://localhost:8080/CommonGood/passwordReset/getNew?token=${token}
+To reset your password click here: ${resetURL}
 
 Happy neighbouring!
 """]
