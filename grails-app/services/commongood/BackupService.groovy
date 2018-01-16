@@ -73,8 +73,9 @@ class BackupService {
     def wrap( String text ) {
         // Replace apostrophe character (') with two apostrophes ('').
         // That is the SQL standard for embedding apostrophe within a string literal.
-        // Also, enclose the result in apostrophes.
-        def escaped = text.replace( "'", "''" )
+        // Replace ASCII Carriage Return + Line Feed with \n.
+        // Finally, enclose the entire string in apostrophes.
+        def escaped = text.replace( "'", "''" ).replace( "\r\n", '\\n' )
         return "'${escaped}'"
     }
 }
