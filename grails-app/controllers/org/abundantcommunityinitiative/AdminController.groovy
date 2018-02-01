@@ -22,18 +22,4 @@ class AdminController {
             people:people, questions:questions, answers:answers
         ]
     }
-
-    def hashForm( ) {
-        log.debug( 'Someone requested our hash form' )
-    }
-
-    def hashPassword( ) {
-        // Neat thing is: one can change the parameters here without affecting
-        // the existing password hashes.
-        HashSpec spec = new HashSpec("PBKDF2WithHmacSHA512", 75000, 64, 256)
-        Hasher hasher = new Hasher(spec)
-        String res = hasher.create(params.password.toCharArray())
-        log.info("Hashed password for ${params.emailAddress} = ${res}")
-        render "You CANNOT log in yet!<br/>Please email Howard, <b>howardlawrence@shaw.ca</b>, saying you submitted your password."
-    }
 }
