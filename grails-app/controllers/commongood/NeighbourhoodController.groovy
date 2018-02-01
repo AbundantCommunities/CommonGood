@@ -1,5 +1,6 @@
 package commongood
 
+import org.abundantcommunityinitiative.commongood.handy.LogAid
 import org.abundantcommunityinitiative.commongood.handy.JsonWriter
 
 class NeighbourhoodController {
@@ -15,10 +16,10 @@ class NeighbourhoodController {
         def afterId = Long.valueOf( params.afterId )
         if( afterId ) {
             def afterBlock = Block.get( afterId )
-            log.info "${session.user.getLogName()} requests move ${block} after ${afterBlock}"
+            log.info "${LogAid.who(session)} requests move ${block} after ${afterBlock}"
             reorderService.neighbourhood( block, afterBlock )
         } else {
-            log.info "${session.user.getLogName()} requests move ${block} to top"
+            log.info "${LogAid.who(session)} requests move ${block} to top"
             reorderService.neighbourhood( block )
         }
 
@@ -31,7 +32,7 @@ class NeighbourhoodController {
         // but without it, the code appears to lack authorization enforcement...
         def neighbourhoodId = session.neighbourhood.id
         authorizationService.neighbourhoodRead( neighbourhoodId, session )
-        log.info "${session.user.getLogName()} requests Block Connector Contact List for neighbourhood/${neighbourhoodId}"
+        log.info "${LogAid.who(session)} requests Block Connector Contact List for neighbourhood/${neighbourhoodId}"
 
         String query = '''SELECT blk.id,
                                 blk.code,
@@ -72,7 +73,7 @@ class NeighbourhoodController {
 
     def addBlock( ) {
         def neighbourhoodId = params.long('id')
-        log.info "${session.user.getLogName()} requests addBlock for neighbourhood/${neighbourhoodId}"
+        log.info "${LogAid.who(session)} requests addBlock for neighbourhood/${neighbourhoodId}"
         authorizationService.neighbourhoodWrite( neighbourhoodId, session )
         def neighbourhood = Neighbourhood.get( neighbourhoodId )
 
@@ -107,7 +108,7 @@ class NeighbourhoodController {
     def blocks( ) {
         def id = Long.valueOf( params.id )
         authorizationService.neighbourhoodRead( id, session )
-        log.info "${session.user.getLogName()} requests list of blocks for neighbourhood/${id}"
+        log.info "${LogAid.who(session)} requests list of blocks for neighbourhood/${id}"
 
         def neighbourhoodBlocks = Block.findAll("from Block blk join blk.neighbourhood neigb where neigb.id=? order by blk.orderWithinNeighbourhood", [ id ])
 

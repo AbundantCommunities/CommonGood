@@ -1,5 +1,7 @@
 package commongood
 
+import org.abundantcommunityinitiative.commongood.handy.LogAid
+
 /*
 We handle GET requests that navigate to some part of our data's "natural hierarchy".
 */
@@ -20,7 +22,7 @@ class NavigateController {
     def neighbourhood( ) {
         Integer hoodId = Integer.valueOf( params.id )
         authorizationService.neighbourhoodRead( hoodId, session )
-        log.info "${session.user.getLogName()} to neighbourhood/${hoodId}"
+        log.info "${LogAid.who(session)} to neighbourhood/${hoodId}"
         Neighbourhood theHood = Neighbourhood.get( hoodId )
         List questions = Question.where{ neighbourhood.id == hoodId }.list( sort:'orderWithinQuestionnaire', order:'asc' )
         List blocks = blockService.getForNeighbourhood( session.authorized )
@@ -46,7 +48,7 @@ class NavigateController {
     def block( ) {
         def blockId = Long.valueOf( params.id )
         authorizationService.blockRead( blockId, session )
-        log.info "${session.user.getLogName()} to block/${blockId}"
+        log.info "${LogAid.who(session)} to block/${blockId}"
         Block theBlock = Block.get( blockId )
         def blockConnectors = domainAuthorizationService.getBlockConnectors( blockId )
 
@@ -76,7 +78,7 @@ class NavigateController {
     def address( ) {
         Integer addressId = Integer.valueOf( params.id )
         authorizationService.addressRead( addressId, session )
-        log.info "${session.user.getLogName()} to address/${addressId}"
+        log.info "${LogAid.who(session)} to address/${addressId}"
         Address theAddress = Address.where{ id == addressId }.get( )
         List families = Family.where{ address.id == addressId }.list( sort:'orderWithinAddress', order:'asc' )
         families = families.collect{
@@ -117,7 +119,7 @@ class NavigateController {
         Person interviewer // Block Connector
         Integer familyId = Integer.valueOf( params.id )
         authorizationService.familyRead( familyId, session )
-        log.info "${session.user.getLogName()} to family/${familyId}"
+        log.info "${LogAid.who(session)} to family/${familyId}"
         Family theFamily = Family.get( familyId )
 
         List members = Person.where{ family.id == familyId }.list( sort:'orderWithinFamily', order:'asc' )
@@ -164,7 +166,7 @@ class NavigateController {
     def familymember( ) {
         Long memberId = Long.valueOf( params.id )
         authorizationService.personRead( memberId, session )
-        log.info "${session.user.getLogName()} to familyMember/${memberId}"
+        log.info "${LogAid.who(session)} to familyMember/${memberId}"
 
         /* The result of the following query looks like:
 //        [ [commongood.Answer : 54, commongood.Person : 7, commongood.Question : 12],
