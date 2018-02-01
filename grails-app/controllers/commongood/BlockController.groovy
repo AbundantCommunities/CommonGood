@@ -1,5 +1,6 @@
 package commongood
 
+import org.abundantcommunityinitiative.commongood.handy.LogAid
 import org.abundantcommunityinitiative.commongood.handy.JsonWriter
 
 class BlockController {
@@ -17,10 +18,10 @@ class BlockController {
         def afterId = Long.valueOf( params.afterId )
         if( afterId ) {
             def afterAddress = Address.get( afterId )
-            log.info "${session.user.getLogName()} requests move ${address} after ${afterAddress}"
+            log.info "${LogAid.who(session)} requests move ${address} after ${afterAddress}"
             reorderService.block( address, afterAddress )
         } else {
-            log.info "${session.user.getLogName()} requests move ${address} to top"
+            log.info "${LogAid.who(session)} requests move ${address} to top"
             reorderService.block( address )
         }
 
@@ -33,7 +34,7 @@ class BlockController {
      */
     def addAddresses( ) {
         def blockId = Long.parseLong( params.id )
-        log.info "${session.user.getLogName()} requests add address(es) block/${blockId}"
+        log.info "${LogAid.who(session)} requests add address(es) block/${blockId}"
         authorizationService.blockWrite( blockId, session )
         def thisBlock = Block.get( blockId )
 
@@ -71,7 +72,7 @@ class BlockController {
         authorizationService.blockRead( blockId, session )
 
         def block = Block.get( blockId )
-        log.info "${session.user.getLogName()} requests Contact List for block/${blockId}"
+        log.info "${LogAid.who(session)} requests Contact List for block/${blockId}"
         def connectors = domainAuthorizationService.getBlockConnectors( blockId )
 
         def blockPeople = Person.findAll(
@@ -100,7 +101,7 @@ class BlockController {
 
     def save( ) {
         def blockId = params.long('id')
-        log.info "${session.user.getLogName()} requests save change to block/${blockId}"
+        log.info "${LogAid.who(session)} requests save change to block/${blockId}"
         authorizationService.blockWrite( blockId, session )
         def block = Block.get( blockId )
 
@@ -121,7 +122,7 @@ class BlockController {
         //def block = Block.get( blockId )
         def person = Person.get( personId )
 
-        log.info "${session.user.getLogName()} requests add BC person/${personId} to block/${blockId}"
+        log.info "${LogAid.who(session)} requests add BC person/${personId} to block/${blockId}"
 
         authorizationService.blockWrite( blockId, session )
 
@@ -152,7 +153,7 @@ class BlockController {
     def addresses( ) {
         def id = Long.valueOf( params.id )
         authorizationService.blockRead( id, session )
-        log.info "${session.user.getLogName()} requests list of addresses for block/${id}"
+        log.info "${LogAid.who(session)} requests list of addresses for block/${id}"
 
         def blockAddresses = Address.findAll("from Address addr join addr.block blk where blk.id=? order by addr.orderWithinBlock", [ id ])
 
