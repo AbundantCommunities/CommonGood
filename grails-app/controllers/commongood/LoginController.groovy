@@ -1,6 +1,7 @@
 package commongood
 
 import org.abundantcommunityinitiative.commongood.Authorization
+import org.abundantcommunityinitiative.commongood.handy.LogAid
 
 class LoginController {
     static allowedMethods = [index:'GET', authenticate:'POST']
@@ -26,7 +27,7 @@ class LoginController {
     // is currently authenticated (currently  "logged in"). 
     def isAuthenticated( ) {
         if( authenticateService.isAuthenticated(session) ) {
-            log.debug "${session.user.getLogName()} is authenticated"
+            log.debug "${LogAid.who(session)} is authenticated"
             render 'true'
         } else {
             log.info( 'Not authenticated')

@@ -1,5 +1,7 @@
 package commongood
 
+import org.abundantcommunityinitiative.commongood.handy.LogAid
+
 import groovy.sql.Sql
 
 class BlockSummaryController {
@@ -11,7 +13,7 @@ class BlockSummaryController {
         def hoodId = session.neighbourhood.id
         authorizationService.neighbourhoodRead( hoodId, session )
 
-        log.info "${session.user.getLogName()} Block Summary for neighbourhood/${hoodId}"
+        log.info "${LogAid.who(session)} Block Summary for neighbourhood/${hoodId}"
         // Eschew GORM; let's kick it ol' school...
         def query = '''SELECT blk.id AS blockId,
                             blk.code,

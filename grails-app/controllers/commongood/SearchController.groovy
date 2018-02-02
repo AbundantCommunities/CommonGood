@@ -1,5 +1,7 @@
 package commongood
 
+import org.abundantcommunityinitiative.commongood.handy.LogAid
+
 class SearchController {
 
     def searchService
@@ -7,7 +9,7 @@ class SearchController {
     def mapService
 
     def form( ) {
-        log.debug "${session.user.getLogName()} ${session.authorized} asked for search form"
+        log.debug "${LogAid.who(session)} ${session.authorized} asked for search form"
         [
             authorized: session.authorized
         ]
@@ -25,7 +27,7 @@ class SearchController {
     def index() {
         // No need to ask AuthorizationService about permission.
         // SearchService limits results to NH or Block of signed in user.
-        log.info "${session.user.getLogName()} ${session.authorized} searching for '${params.q}'"
+        log.info "${LogAid.who(session)} ${session.authorized} searching for '${params.q}'"
         def contactInfo = params.boolean('contactInfo')
         def fromAge = params.int('fromAge')
         def toAge = params.int('toAge')

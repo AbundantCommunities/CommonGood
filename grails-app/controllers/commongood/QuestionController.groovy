@@ -1,5 +1,7 @@
 package commongood
 
+import org.abundantcommunityinitiative.commongood.handy.LogAid
+
 class QuestionController {
 
     def domainAuthorizationService
@@ -11,7 +13,7 @@ class QuestionController {
      */
     def index( ) {
         def familyId = Long.parseLong( params.familyId )
-        log.info "${session.user.getLogName()} requests an interview form for family/${familyId}"
+        log.info "${LogAid.who(session)} requests an interview form for family/${familyId}"
         authorizationService.familyWrite( familyId, session )
         Family family = Family.get( familyId )
 
