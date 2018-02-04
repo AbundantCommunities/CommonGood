@@ -1,5 +1,6 @@
 package commongood
 
+import org.abundantcommunityinitiative.commongood.handy.LogAid
 import org.abundantcommunityinitiative.commongood.handy.JsonWriter
 
 class FamilyController {
@@ -15,10 +16,10 @@ class FamilyController {
         def afterId = Long.valueOf( params.afterId )
         if( afterId ) {
             def afterPerson = Person.get( afterId )
-            log.info "${session.user.getLogName()} requests move ${person} after ${afterPerson}"
+            log.info "${LogAid.who(session)} requests move ${person} after ${afterPerson}"
             reorderService.family( person, afterPerson )
         } else {
-            log.info "${session.user.getLogName()} requests move ${person} to top"
+            log.info "${LogAid.who(session)} requests move ${person} to top"
             reorderService.family( person )
         }
 
@@ -49,7 +50,7 @@ class FamilyController {
             // We will not change the family's address.
             def familyId = Long.valueOf( params.id )
             authorizationService.familyWrite( familyId, session )
-            log.info "${session.user.getLogName()} requests save changes for family/${familyId}"
+            log.info "${LogAid.who(session)} requests save changes for family/${familyId}"
 
             family = Family.get( familyId )
             family.name = params.familyName
@@ -63,7 +64,7 @@ class FamilyController {
             family = new Family( )
             def addressId = Long.valueOf( params.addressId )
             authorizationService.addressWrite( addressId, session )
-            log.info "${session.user.getLogName()} requests add a family to address/${addressId}"
+            log.info "${LogAid.who(session)} requests add a family to address/${addressId}"
 
             family.address = Address.get( addressId )
             family.name = params.familyName

@@ -1,5 +1,6 @@
 package commongood
 
+import org.abundantcommunityinitiative.commongood.handy.LogAid
 import org.abundantcommunityinitiative.commongood.handy.TokenGenerator
 
 class DeleteController {
@@ -26,7 +27,7 @@ class DeleteController {
             redirect controller: "navigate", action: "block", id: target.id
 
         } else {
-            log.info "${session.user.getLogName()} confirm delete block ${target.code}"
+            log.info "${LogAid.who(session)} confirm delete block ${target.code}"
             def deleteThis = "BLOCK ${target.code}"
             def addresses = Address.findAllByBlock( target )
 
@@ -74,7 +75,7 @@ class DeleteController {
             redirect controller: "navigate", action: "address", id: target.id
             
         } else {
-            log.info "${session.user.getLogName()} confirm delete address ${target.text}"
+            log.info "${LogAid.who(session)} confirm delete address ${target.text}"
             def deleteThis = "ADDRESS ${target.text}"
             def families = Family.findAllByAddress( target )
 
@@ -114,7 +115,7 @@ class DeleteController {
             redirect controller: "navigate", action: "family", id: target.id
             
         } else {
-            log.warn "${session.user.getLogName()} confirm delete family ${target.name}"
+            log.warn "${LogAid.who(session)} confirm delete family ${target.name}"
             def deleteThis = "FAMILY ${target.name}"
             def peeps = Person.findAllByFamily( target )
             def associated = [ "${peeps.size()} Family Members" ]
@@ -141,7 +142,7 @@ class DeleteController {
         authorizationService.personWrite( target.id, session )
 
         if ( session.user.id == target.id ) {
-            log.warn "${session.user.getLogName()} Prevent user deleting self"
+            log.warn "${LogAid.who(session)} Prevent user deleting self"
             flash.message = "You want to delete yourself? Not going to happen!"
             flash.nature = 'WARNING'
             redirect controller: "navigate", action: "familymember", id: target.id
@@ -162,11 +163,11 @@ class DeleteController {
         }
     }
 
-    // Delete a given address. Cascade the deletion to objects associated with the
+    // Delete a given block. Cascade the deletion to objects associated with the
     // address.
     def block( ) {
         Block target = Block.get( params.long('id') )
-        log.info "${session.user.getLogName()} DELETE block ${target.id} ${target.code}"
+        log.info "${LogAid.who(session)} DELETE block ${target.id} ${target.code}"
         authorizationService.blockWrite( target.id, session )
 
         if( session.deleteType == 'block' && session.deleteToken == params.magicToken ) {
@@ -182,7 +183,7 @@ class DeleteController {
             redirect controller: "navigate", action: "neighbourhood", id: neighbourhood.id
 
         } else {
-            log.error "${session.user.getLogName()} trickery"
+            log.error "${LogAid.who(session)} trickery"
             throw new Exception('Illogical delete on block')
         }
     }
@@ -191,7 +192,7 @@ class DeleteController {
     // address.
     def address( ) {
         Address target = Address.get( params.long('id') )
-        log.info "${session.user.getLogName()} DELETE address ${target.id} ${target.text}"
+        log.info "${LogAid.who(session)} DELETE address ${target.id} ${target.text}"
         authorizationService.addressWrite( target.id, session )
 
         if( session.deleteType == 'address' && session.deleteToken == params.magicToken ) {
@@ -207,7 +208,7 @@ class DeleteController {
             redirect controller: "navigate", action: "block", id: block.id
 
         } else {
-            log.error "${session.user.getLogName()} trickery"
+            log.error "${LogAid.who(session)} trickery"
             throw new Exception('Illogical delete on address')
         }
     }
@@ -216,7 +217,7 @@ class DeleteController {
     // family.
     def family( ) {
         Family target = Family.get( params.long('id') )
-        log.info "${session.user.getLogName()} DELETE family ${target.id} ${target.name}"
+        log.info "${LogAid.who(session)} DELETE family ${target.id} ${target.name}"
         authorizationService.familyWrite( target.id, session )
 
         if( session.deleteType == 'family' && session.deleteToken == params.magicToken ) {
@@ -232,7 +233,7 @@ class DeleteController {
             redirect controller: "navigate", action: "address", id: address.id
 
         } else {
-            log.error "${session.user.getLogName()} trickery"
+            log.error "${LogAid.who(session)} trickery"
             throw new Exception('Illogical delete on family')
         }
     }
@@ -241,7 +242,7 @@ class DeleteController {
     // person.
     def person( ) {
         Person target = Person.get( params.long('id') )
-        log.info "${session.user.getLogName()} DELETE person ${target.logName}"
+        log.info "${LogAid.who(session)} DELETE person ${target.logName}"
         authorizationService.personWrite( target.id, session )
 
         if( session.deleteType == 'person' && session.deleteToken == params.magicToken ) {
@@ -257,7 +258,7 @@ class DeleteController {
             redirect controller: "navigate", action: "family", id: family.id
 
         } else {
-            log.error "${session.user.getLogName()} trickery"
+            log.error "${LogAid.who(session)} trickery"
             throw new Exception('Illogical delete on person')
         }
     }

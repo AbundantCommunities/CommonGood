@@ -1,5 +1,7 @@
 package commongood
 
+import org.abundantcommunityinitiative.commongood.handy.LogAid
+
 class PersonController {
     static allowedMethods = [save:'POST', setBlockConnector:'POST']
     def authorizationService
@@ -11,14 +13,14 @@ class PersonController {
             // Update an existing person
             Integer personId = params.int('id')
             authorizationService.personWrite( personId, session )
-            log.info "${session.user.getLogName()} SAVE changes to person/${personId}"
+            log.info "${LogAid.who(session)} SAVE changes to person/${personId}"
             personService.update( personId, params )
             redirect controller:'navigate', action:'familymember', id:personId
         } else {
             // Create a new person
             def familyId = params.int('familyId')
             authorizationService.familyWrite( familyId, session )
-            log.info "${session.user.getLogName()} ADD person to family/${familyId}"
+            log.info "${LogAid.who(session)} ADD person to family/${familyId}"
             personService.insert( familyId, params )
             redirect controller:'navigate', action:'family', id:familyId
         }
