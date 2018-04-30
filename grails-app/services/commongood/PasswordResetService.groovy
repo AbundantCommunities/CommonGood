@@ -66,7 +66,9 @@ class PasswordResetService {
         }
     }
 
-    // Find the random token in the PasswordReset table
+    // Find the random token in the PasswordReset table. The Tuple2 we return has
+    // (1) a string code indicating how well we did fetching the token and 
+    // (2) the PasswordReset we found.
     Tuple2 get( String token ) {
         // TODO Probably should index PasswordReset table by token
         def reset = PasswordReset.findByToken( token )

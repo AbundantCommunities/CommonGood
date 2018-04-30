@@ -41,7 +41,11 @@ class PasswordResetController {
         }
     }
 
-    // The user has clicked on the URL we sent in the email (or someone is tricksy!)
+    //                      CAREFUL!
+    // In PasswordResetService's sendToMailGun method we build a URL that we
+    // place in an email; the URL POINTS TO THIS CONTROLLER ACTION.
+    //
+    // The user has clicked on the URL we sent in the email (OR someone is tricksy!)
     def getNew( ) {
         String token = params.token
         def ( String quality, PasswordReset reset ) = passwordResetService.get( token )
