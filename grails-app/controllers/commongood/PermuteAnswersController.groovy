@@ -13,6 +13,33 @@ class PermuteAnswersController {
     def authorizationService
     def permuteService
 
+    /*
+     * Get the permutations for all answers, regardless of their question.
+    */
+    def index( ) {
+        Neighbourhood neighbourhood= session.neighbourhood
+        if( neighbourhood ) {
+            // Yes, this is redundant, but let's follow the form
+            // (authorization is such an important feature!)
+            authorizationService.neighbourhoodRead( neighbourhood.id, session )
+            def permutations = [ ]
+
+            List answers = Answer.executeQuery( "SELECT text FROM Answer a WHERE a.question.neighbourhood.id = ?", [neighbourhood.id] ).each {
+                permuteService.permute( it ).each {
+                    if( !(it in permutations) ) {
+                        permutations << it
+                    }
+                }
+            }
+            [ result: permutations.sort() ]
+        } else {
+            throw new Exception( 'Authorization failure' )
+        }
+    }
+
+    /*
+     * Get the permutations for the answers belonging to a given question.
+    */
     def questionCode() {
         def questionId =  Long.valueOf( params.id )
         def neighbourhood = Question.get( questionId ).neighbourhood
