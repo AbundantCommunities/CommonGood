@@ -24,15 +24,27 @@ class PermuteAnswersController {
             authorizationService.neighbourhoodRead( neighbourhood.id, session )
             def permutations = [ ]
 
-            List answers = Answer.executeQuery( "SELECT text FROM Answer a WHERE a.question.neighbourhood.id = ?", [neighbourhood.id] ).each {
-                permuteService.permute( it ).each {
-                    if( !(it in permutations) ) {
-                        permutations << it
+            List answers = Answer.executeQuery(
+                    """SELECT a.id, a.text, q.shortText, p.firstNames, p.lastName
+                       FROM Answer a, Question q, Person p
+                       WHERE a.question.neighbourhood.id = ? AND a.person = p AND a.question = q""",
+                    [neighbourhood.id] ).each {
+
+                    def answerId = it[0]
+                    def answerText = it[1]
+                    def shortQuestion = it[2]
+                    def personName = it[3] + " " + it[4]
+
+                    permuteService.permute( answerText ).each {
+                        def fullLine = [ answerId:answerId, permutedText:it, shortQuestion:shortQuestion, personName:personName ]
+                        permutations << fullLine
                     }
-                }
             }
-            [ result: permutations.sort() ]
+            Comparator comparePerms = { a, b -> a.permutedText == b.permutedText ? 0 : (a.permutedText < b.permutedText ? -1 : 1) }
+            permutations.sort(comparePerms)
+            [ result: permutations ]
         } else {
+            // Looks like no one is logged in.
             throw new Exception( 'Authorization failure' )
         }
     }
