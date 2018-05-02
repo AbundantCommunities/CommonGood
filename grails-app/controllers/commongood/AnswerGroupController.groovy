@@ -1,8 +1,8 @@
 package commongood
 
-class PermuteAnswersController {
+class AnswerGroupController {
     def authorizationService
-    def permuteService
+    def answerGroupService
 
     /*
      * Get the permutations for all ungrouped answers
@@ -14,7 +14,7 @@ class PermuteAnswersController {
             // Yes, this is redundant, but let's follow the form
             // (authorization is such an important feature!)
             authorizationService.neighbourhoodRead( neighbourhood.id, session )
-            def permutations = permuteService.neighbourhood( neighbourhood )
+            def permutations = answerGroupService.neighbourhood( neighbourhood )
             [ result: permutations ]
         } else {
             // Looks like no one is logged in.
@@ -35,7 +35,7 @@ class PermuteAnswersController {
                 answerKeys << Integer.valueOf( answerId )
             }
         }
-        permuteService.group( answerKeys )
+        answerGroupService.group( answerKeys )
         redirect action:'index'
     }
 }

@@ -3,7 +3,7 @@ package commongood
 import grails.transaction.Transactional
 
 //@Transactional
-class PermuteService {
+class AnswerGroupService {
 
     def tooCommon = ['a', 'and', 'as', 'at', 'by', 'fewer', 'for', 'in', 'is',
             'less', 'like', 'more', 'no', 'of', 'on', 'or', 'out', 'the', 'to', 'with']
