@@ -27,15 +27,24 @@ class AnswerGroupController {
      * place answers with keys 1234, 4455 and 88 into the same AnswerGroup.
     */
     def group() {
-        def answerKeys = [ ]
-        params.keySet().each {
-            if( it.startsWith("check") ) {
-                // the characters following "check" are the answer id
-                def answerId = it.substring(5)
-                answerKeys << Integer.valueOf( answerId )
+        Neighbourhood neighbourhood= session.neighbourhood
+        if( neighbourhood ) {
+            // Yes, this is redundant, but let's follow the form
+            // (authorization is such an important feature!)
+            authorizationService.neighbourhoodRead( neighbourhood.id, session )
+            def answerKeys = [ ]
+            params.keySet().each {
+                if( it.startsWith("check") ) {
+                    // the characters following "check" are the answer id
+                    def answerId = it.substring(5)
+                    answerKeys << Integer.valueOf( answerId )
+                }
             }
+            def answersAndGroups = answerGroupService.group( neighbourhood, answerKeys )
+            [ result: answersAndGroups ]
+        } else {
+            // Looks like no one is logged in.
+            throw new Exception( 'Authorization failure' )
         }
-        answerGroupService.group( answerKeys )
-        redirect action:'index'
     }
 }

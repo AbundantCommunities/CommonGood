@@ -54,33 +54,56 @@ class AnswerGroupService {
     def neighbourhood( Neighbourhood neighbourhood ) {
         def permutations = [ ]
 
-        List answers = Answer.executeQuery(
-                """SELECT a.id, a.text, q.shortText, p.firstNames, p.lastName
-                   FROM Answer a, Question q, Person p
-                   WHERE a.question.neighbourhood.id = ? AND a.person = p AND a.question = q
-                   AND a.answerGroup IS NULL""",
-                [neighbourhood.id] ).each {
+        Answer.executeQuery(
+            """SELECT a.id, a.text, q.shortText, p.firstNames, p.lastName
+               FROM Answer a, Question q, Person p
+               WHERE a.question.neighbourhood.id = ? AND a.person = p AND a.question = q
+               AND a.answerGroup IS NULL""",
+            [neighbourhood.id] ).each {
 
-                def answerId = it[0]
-                def answerText = it[1]
-                def shortQuestion = it[2]
-                def personName = it[3] + " " + it[4]
+            def answerId = it[0]
+            def answerText = it[1]
+            def shortQuestion = it[2]
+            def personName = it[3] + " " + it[4]
 
-                permuteText( answerText ).each {
-                    // The fullLine dictionaries we create will be compared by comparePerms (below)
-                    def fullLine = [ answerId:answerId, permutedText:it, shortQuestion:shortQuestion, personName:personName ]
-                    permutations << fullLine
-                }
+            permuteText( answerText ).each {
+                // The fullLine dictionaries we create will be compared by comparePerms (below)
+                def fullLine = [ answerId:answerId, permutedText:it, shortQuestion:shortQuestion, personName:personName ]
+                permutations << fullLine
+            }
         }
 
-        // When sort compare two fillLine dictionaries...
+        // When sort compares two fillLine dictionaries it will use this closure
         Comparator comparePerms = { a, b -> a.permutedText == b.permutedText ? 0 : (a.permutedText < b.permutedText ? -1 : 1) }
 
         permutations.sort( comparePerms )
         return permutations
     }
     
-    def group( answerIds ) {
+    def group( neighbourhood, answerIds ) {
         println "User wants answers ${answerIds} in the same group"
+
+        // First, get the ungrouped answers the user has selected
+        def answers = [ ]
+        Answer.executeQuery(
+            """SELECT a.id, a.text
+               FROM Answer a
+               WHERE a.question.neighbourhood.id = ?
+               AND a.id IN (2781, 2487, 2789)""",
+            [neighbourhood.id] ).each {
+                answers << [ id:it[0], text:it[1] ]
+            }
+
+        // Second, get all of the neighbourhood's AnswerGroups
+        def groups = [ ]
+        AnswerGroup.executeQuery(
+            """SELECT id, name
+               FROM AnswerGroup
+               WHERE neighbourhood.id = ?\n\
+               ORDER BY name""",
+            [neighbourhood.id] ).each {
+                groups << [ id:it[0], name:it[1] ]
+            }
+        return [ answers:answers, groups:groups ]
     }
 }
