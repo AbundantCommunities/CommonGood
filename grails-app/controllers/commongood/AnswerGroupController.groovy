@@ -8,13 +8,13 @@ class AnswerGroupController {
      * Get the permutations for all ungrouped answers
      * (regardless of their question).
     */
-    def index( ) {
+    def getUngroupedAnswers( ) {
         Neighbourhood neighbourhood= session.neighbourhood
         if( neighbourhood ) {
             // Yes, this is redundant, but let's follow the form
             // (authorization is such an important feature!)
             authorizationService.neighbourhoodRead( neighbourhood.id, session )
-            def permutations = answerGroupService.neighbourhood( neighbourhood )
+            def permutations = answerGroupService.getUngroupedAnswers( neighbourhood )
             [ result: permutations ]
         } else {
             // Looks like no one is logged in.
@@ -26,7 +26,7 @@ class AnswerGroupController {
      * Parameters like check1234, check4455, check88 mean the user wants to
      * place answers with keys 1234, 4455 and 88 into the same AnswerGroup.
     */
-    def group() {
+    def getGroupsForAnswers() {
         Neighbourhood neighbourhood= session.neighbourhood
         if( neighbourhood ) {
             // Yes, this is redundant, but let's follow the form
@@ -40,7 +40,7 @@ class AnswerGroupController {
                     answerKeys << Integer.valueOf( answerId )
                 }
             }
-            def answersAndGroups = answerGroupService.group( neighbourhood, answerKeys )
+            def answersAndGroups = answerGroupService.getGroupsForAnswers( neighbourhood, answerKeys )
             [ result: answersAndGroups ]
         } else {
             // Looks like no one is logged in.
@@ -48,7 +48,7 @@ class AnswerGroupController {
         }
     }
 
-    def putInGroup() {
+    def putAnswersInGroup() {
         Neighbourhood neighbourhood= session.neighbourhood
         if( neighbourhood ) {
             // Yes, this is redundant, but let's follow the form
@@ -64,7 +64,7 @@ class AnswerGroupController {
                 answerKeys += Integer.valueOf(it)
             }
 
-            answerGroupService.putInGroup( neighbourhood, answerKeys, groupId )
+            answerGroupService.putAnswersInGroup( neighbourhood, answerKeys, groupId )
             redirect action: 'index'
         } else {
             // Looks like no one is logged in.

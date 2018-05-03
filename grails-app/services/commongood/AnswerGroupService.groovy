@@ -17,7 +17,7 @@ class AnswerGroupService {
      * 
      * The logic knows to ignore words like 'to', 'and', 'a', etc.
     */
-    def permuteText( text ) {
+    private permuteText( text ) {
         text = text.toLowerCase( )
         def words = text.tokenize(' ')
 
@@ -51,7 +51,7 @@ class AnswerGroupService {
         }
     }
 
-    def neighbourhood( Neighbourhood neighbourhood ) {
+    def getUngroupedAnswers( Neighbourhood neighbourhood ) {
         def permutations = [ ]
 
         Answer.executeQuery(
@@ -80,7 +80,7 @@ class AnswerGroupService {
         return permutations
     }
 
-    def group( neighbourhood, answerIds ) {
+    def getGroupsForAnswers( neighbourhood, answerIds ) {
         println "User wants answers ${answerIds} in the same group"
 
         // Transform the answerIds from a list to a string like
@@ -117,7 +117,7 @@ class AnswerGroupService {
         return [ answerIds:idsInString, answers:answers, groups:groups ]
     }
 
-    def putInGroup( Neighbourhood neighbourhood, Integer[] answerIds, Integer groupId ) {
+    def putAnswersInGroup( Neighbourhood neighbourhood, Integer[] answerIds, Integer groupId ) {
         println "User wants answers ${answerIds} put in group ${groupId}"
         AnswerGroup group = AnswerGroup.get( groupId )
         answerIds.each{

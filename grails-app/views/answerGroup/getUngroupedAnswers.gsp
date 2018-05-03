@@ -7,7 +7,7 @@
     </head>
     <body>
         <h1>Ungrouped Answers</h1>
-        <form action="<g:createLink action='group' />" method="POST">
+        <form action="<g:createLink action='getGroupsForAnswers' />" method="POST">
         <button type="submit" value="GROUP">Group</button>
         <table>
             <tr>

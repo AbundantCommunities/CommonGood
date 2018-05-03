@@ -14,7 +14,7 @@
         </g:each>
 
         <h2>Groups</h2>
-        <form action="<g:createLink action='putInGroup' />" method="POST">
+        <form action="<g:createLink action='putAnswersInGroup' />" method="POST">
             <button type="submit" value="PUT">Put Into Group</button>
             <input type="text" hidden name="answerIds" value="${result.answerIds}"><br/>
             <g:each in="${result.groups}" var="group">
