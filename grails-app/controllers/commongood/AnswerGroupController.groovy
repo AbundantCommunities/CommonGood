@@ -58,8 +58,8 @@ class AnswerGroupController {
     def putAnswersInGroup() {
         Neighbourhood neighbourhood= session.neighbourhood
         if( neighbourhood ) {
-            // Yes, this is redundant, but let's follow the form
-            // (authorization is such an important feature!)
+            // We are STRICT! Every call to an action should check in with
+            // our authorization service.
             authorizationService.neighbourhoodRead( neighbourhood.id, session )
 
             String[] answerIds = params.answerIds.split(',')

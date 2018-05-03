@@ -9,10 +9,10 @@ class LameSecurityFilters {
             before = {
                 if( controllerName != 'passwordReset' && controllerName != 'answer' && controllerName != 'login' && controllerName != 'admin' && controllerName != 'anonymous') {
                     if( session.user ) {
-                        log.debug "In Sensitive context; ${session.user.fullName} is authorized"
+                        log.debug "In Sensitive Context; ${session.user.fullName} is authenticated"
                         return true
                     } else {
-                        log.warn "In Sensitive context; unauthenticated user"
+                        log.warn "In Sensitive Context; user is NOT authenticated"
                         redirect controller: 'login'
                         return false
                     }

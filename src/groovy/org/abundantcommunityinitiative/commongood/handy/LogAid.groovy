@@ -5,7 +5,7 @@ import commongood.Person
 
 /**
  * We often want to identify the user and her neighbourhood in something like
- * log.info "LogAid.whoThat(session) just did xyz"
+ * log.info "LogAid.who(session) just did xyz"
  */
 class LogAid {
     static String who( session ) {
