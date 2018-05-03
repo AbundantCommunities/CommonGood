@@ -81,7 +81,6 @@ class AnswerGroupService {
     }
 
     def getGroupsForAnswers( neighbourhood, answerIds ) {
-        println "User wants answers ${answerIds} in the same group"
 
         // Transform the answerIds from a list to a string like
         // "1234,6677,101".
@@ -118,11 +117,9 @@ class AnswerGroupService {
     }
 
     def putAnswersInGroup( Neighbourhood neighbourhood, Integer[] answerIds, Integer groupId ) {
-        println "User wants answers ${answerIds} put in group ${groupId}"
         AnswerGroup group = AnswerGroup.get( groupId )
         answerIds.each{
             Answer answer = Answer.get( it )
-            println "UPDATE answer ${answer.id}:${answer.text} to group ${group.id}:${group.name}"
             answer.answerGroup = group
             answer.save( )
         }

@@ -33,15 +33,22 @@ class AnswerGroupController {
             // (authorization is such an important feature!)
             authorizationService.neighbourhoodRead( neighbourhood.id, session )
             def answerKeys = [ ]
+            
+            // One answer can appear many times in a permuted index.
+            // The user may have selected the same answer more than once
+            // but keySet() returns only unique values.
             params.keySet().each {
                 if( it.startsWith("check") ) {
                     // the characters following "check" are the answer id
-                    def answerId = it.substring(5)
-                    answerKeys << Integer.valueOf( answerId )
+                    answerKeys << Integer.valueOf( it.substring(5) )
                 }
             }
-            def answersAndGroups = answerGroupService.getGroupsForAnswers( neighbourhood, answerKeys )
-            [ result: answersAndGroups ]
+            if( answerKeys ) {
+                def answersAndGroups = answerGroupService.getGroupsForAnswers( neighbourhood, answerKeys )
+                [ result: answersAndGroups ]
+            } else {
+                throw new Exception("Should flash yellow: no answers selected")
+            }
         } else {
             // Looks like no one is logged in.
             throw new Exception( 'Authorization failure' )
@@ -57,7 +64,6 @@ class AnswerGroupController {
 
             String[] answerIds = params.answerIds.split(',')
             Integer groupId = params.int('groupId')
-            println "The Strong[] of answer ids is ${answerIds}"
 
             Integer[] answerKeys = [ ]
             answerIds.each{
@@ -65,7 +71,7 @@ class AnswerGroupController {
             }
 
             answerGroupService.putAnswersInGroup( neighbourhood, answerKeys, groupId )
-            redirect action: 'index'
+            redirect action: 'getUngroupedAnswers'
         } else {
             // Looks like no one is logged in.
             throw new Exception( 'Authorization failure' )
