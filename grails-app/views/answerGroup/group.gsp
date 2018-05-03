@@ -14,8 +14,12 @@
         </g:each>
 
         <h2>Groups</h2>
-        <g:each in="${result.groups}" var="group">
-            ${group.name}<br/>
-        </g:each>
+        <form action="<g:createLink action='putInGroup' />" method="POST">
+            <button type="submit" value="PUT">Put Into Group</button>
+            <input type="text" hidden name="answerIds" value="${result.answerIds}"><br/>
+            <g:each in="${result.groups}" var="group">
+                <input type="radio" name="groupId" value="${group.id}">${group.name}<br/>
+            </g:each>
+        </form>
     </body>
 </html>

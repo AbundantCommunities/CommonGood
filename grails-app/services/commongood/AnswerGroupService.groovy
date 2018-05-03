@@ -79,17 +79,27 @@ class AnswerGroupService {
         permutations.sort( comparePerms )
         return permutations
     }
-    
+
     def group( neighbourhood, answerIds ) {
         println "User wants answers ${answerIds} in the same group"
 
-        // First, get the ungrouped answers the user has selected
+        // Transform the answerIds from a list to a string like
+        // "1234,6677,101".
+        String idsInString = ""
+        answerIds.each{
+            if( idsInString ) {
+                idsInString = "${idsInString},${it}"
+            } else {
+                idsInString = "${it}"
+            }
+        }
+        // Get the ungrouped answers the user has selected
         def answers = [ ]
         Answer.executeQuery(
             """SELECT a.id, a.text
                FROM Answer a
                WHERE a.question.neighbourhood.id = ?
-               AND a.id IN (2781, 2487, 2789)""",
+               AND a.id IN (${idsInString})""",
             [neighbourhood.id] ).each {
                 answers << [ id:it[0], text:it[1] ]
             }
@@ -104,6 +114,17 @@ class AnswerGroupService {
             [neighbourhood.id] ).each {
                 groups << [ id:it[0], name:it[1] ]
             }
-        return [ answers:answers, groups:groups ]
+        return [ answerIds:idsInString, answers:answers, groups:groups ]
+    }
+
+    def putInGroup( Neighbourhood neighbourhood, Integer[] answerIds, Integer groupId ) {
+        println "User wants answers ${answerIds} put in group ${groupId}"
+        AnswerGroup group = AnswerGroup.get( groupId )
+        answerIds.each{
+            Answer answer = Answer.get( it )
+            println "UPDATE answer ${answer.id}:${answer.text} to group ${group.id}:${group.name}"
+            answer.answerGroup = group
+            answer.save( )
+        }
     }
 }

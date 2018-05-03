@@ -47,4 +47,28 @@ class AnswerGroupController {
             throw new Exception( 'Authorization failure' )
         }
     }
+
+    def putInGroup() {
+        Neighbourhood neighbourhood= session.neighbourhood
+        if( neighbourhood ) {
+            // Yes, this is redundant, but let's follow the form
+            // (authorization is such an important feature!)
+            authorizationService.neighbourhoodRead( neighbourhood.id, session )
+
+            String[] answerIds = params.answerIds.split(',')
+            Integer groupId = params.int('groupId')
+            println "The Strong[] of answer ids is ${answerIds}"
+
+            Integer[] answerKeys = [ ]
+            answerIds.each{
+                answerKeys += Integer.valueOf(it)
+            }
+
+            answerGroupService.putInGroup( neighbourhood, answerKeys, groupId )
+            redirect action: 'index'
+        } else {
+            // Looks like no one is logged in.
+            throw new Exception( 'Authorization failure' )
+        }
+    }
 }
