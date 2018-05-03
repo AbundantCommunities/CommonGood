@@ -5,15 +5,19 @@ class AnswerGroupController {
     def answerGroupService
 
     /*
-     * Get the permutations for all ungrouped answers
-     * (regardless of their question).
-    */
+     * Get the permutations for all ungrouped answers, regardless of question.
+     *
+     * Security Statement: we ensure the user is authorized to read the
+     * neighbourhood's data. We rely on answerGroupService to select only
+     * answers, questions and people that belong to neighbourhood.
+     */
     def getUngroupedAnswers( ) {
         Neighbourhood neighbourhood= session.neighbourhood
         if( neighbourhood ) {
             // We are STRICT! Every call to an action should check in with
             // our authorization service.
             authorizationService.neighbourhoodRead( neighbourhood.id, session )
+
             def permutations = answerGroupService.getUngroupedAnswers( neighbourhood )
             [ result: permutations ]
         } else {
@@ -23,9 +27,13 @@ class AnswerGroupController {
     }
 
     /*
-     * Parameters like check1234, check4455, check88 mean the user wants to
-     * place answers with keys 1234, 4455 and 88 into the same AnswerGroup.
+     * Parameters like cga-1234, cga-4455, cga-88 mean the user wants to
+     * place answers with keys 1234, 4455 and 88 into an AnswerGroup they will choose.
      * (The way checkbox inputs work, non-checked items do not appear in params.)
+     * 
+     * Security Statement: we ensure the user is authorized to read the
+     * neighbourhood's data. We rely on answerGroupService to select only
+     * answers and answer groups that belong to neighbourhood.
     */
     def getGroupsForAnswers() {
         Neighbourhood neighbourhood= session.neighbourhood
@@ -61,6 +69,14 @@ class AnswerGroupController {
         }
     }
 
+    /*
+     * Parameter answerIds is a string listing answer ids, like "123,5566,42".
+     * groupId is the id of the AnswerGroup into which the answers will be placed.
+     * 
+     * Security Statement: we ensure the user is authorized to read the
+     * neighbourhood's data. We rely on answerGroupService to ensure the answer
+     * ids and the AnswerGroup belongs to neighbourhood.
+    */
     def putAnswersInGroup() {
         Neighbourhood neighbourhood= session.neighbourhood
         if( neighbourhood ) {

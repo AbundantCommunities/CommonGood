@@ -51,13 +51,22 @@ class AnswerGroupService {
         }
     }
 
+    /**
+     * Get the neighbourhood's ungrouped answers as a permuted index.
+     * 
+     * Security Statement: we rely on the controller to ensure the user is
+     * authorized to read any data owned by neighbourhood. We ensure the
+     * questions we select belong to neighbourhood. We ensure the answers
+     * we select belong to those questions. We ensure the people we select
+     * belng to those answers.
+     */
     def getUngroupedAnswers( Neighbourhood neighbourhood ) {
         def permutations = [ ]
 
         Answer.executeQuery(
             """SELECT a.id, a.text, q.shortText, p.firstNames, p.lastName
                FROM Answer a, Question q, Person p
-               WHERE a.question.neighbourhood.id = ? AND a.person = p AND a.question = q
+               WHERE a.person = p AND a.question = q AND q.neighbourhood.id = ?
                AND a.answerGroup IS NULL""",
             [neighbourhood.id] ).each {
 
@@ -67,7 +76,8 @@ class AnswerGroupService {
             def personName = it[3] + " " + it[4]
 
             permuteText( answerText ).each {
-                // The fullLine dictionaries we create will be compared by comparePerms (below)
+                // Each it is a permutation of answerText.
+                // The fullLine dictionaries we create will be compared by comparePerms (below).
                 def fullLine = [ answerId:answerId, permutedText:it, shortQuestion:shortQuestion, personName:personName ]
                 permutations << fullLine
             }
@@ -81,7 +91,12 @@ class AnswerGroupService {
     }
 
     /**
-     * answerIds is an ArrayList of Integer answer ids
+     * answerIds is an ArrayList of Integer answer ids.
+     * 
+     * Security Statement: we rely on the controller to ensure the user is
+     * authorized to read any data owned by neighbourhood. We ensure the
+     * answers and answer groups we select belong to neighbourhood.
+     * We ensure the people we select belong to the answers.
      */
     def getGroupsForAnswers( Neighbourhood neighbourhood, answerIds ) {
 
@@ -112,7 +127,7 @@ class AnswerGroupService {
         AnswerGroup.executeQuery(
             """SELECT id, name
                FROM AnswerGroup
-               WHERE neighbourhood.id = ?\n\
+               WHERE neighbourhood.id = ?
                ORDER BY name""",
             [neighbourhood.id] ).each {
                 groups << [ id:it[0], name:it[1] ]
@@ -120,13 +135,28 @@ class AnswerGroupService {
         return [ answerIds:idsInString, answers:answers, groups:groups ]
     }
 
+    /**
+     * Assign answers to an AnswerGroup.
+     * 
+     * Security Statement: we rely on the controller to ensure the user is
+     * authorized to read any data owned by neighbourhood. We ensure the
+     * answers we update and the AnswerGroup we read belong to neighbourhood.
+     */
     def putAnswersInGroup( Neighbourhood neighbourhood, Integer[] answerIds, Integer groupId ) {
         AnswerGroup group = AnswerGroup.get( groupId )
         if( group ) {
-            answerIds.each{
-                Answer answer = Answer.get( it )
-                answer.answerGroup = group
-                answer.save( )
+            if( group.neighbourhood.id==neighbourhood.id ) {
+                answerIds.each{
+                    Answer answer = Answer.get( it )
+                    if( answer.question.neighbourhood.id == neighbourhood.id ) {
+                        answer.answerGroup = group
+                        answer.save( )
+                    } else {
+                        throw new Exception( "Authorization failure" )
+                    }
+                }
+            } else {
+                throw new Exception( "Authorization failure" )
             }
         } else {
             throw new Exception("Failed to retrieve AnswerGroup")
