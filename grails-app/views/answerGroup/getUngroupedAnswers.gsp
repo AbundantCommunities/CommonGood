@@ -15,7 +15,7 @@
             </tr>
             <g:each in="${result}" var="permutation">
                 <tr>
-                    <td><input type="checkbox" name="check${permutation.answerId}"/></td>
+                    <td><input type="checkbox" name="cga-${permutation.answerId}"/></td>
                     <td>${permutation.permutedText}</td>
                     <td>${permutation.shortQuestion}</td>
                     <td>${permutation.personName}</td>

@@ -80,7 +80,10 @@ class AnswerGroupService {
         return permutations
     }
 
-    def getGroupsForAnswers( neighbourhood, answerIds ) {
+    /**
+     * answerIds is an ArrayList of Integer answer ids
+     */
+    def getGroupsForAnswers( Neighbourhood neighbourhood, answerIds ) {
 
         // Transform the answerIds from a list to a string like
         // "1234,6677,101".
@@ -93,6 +96,7 @@ class AnswerGroupService {
             }
         }
         // Get the ungrouped answers the user has selected
+        // Our QUERY PREVENTS selecting another neighbourhood's answers !!
         def answers = [ ]
         Answer.executeQuery(
             """SELECT a.id, a.text
@@ -118,10 +122,14 @@ class AnswerGroupService {
 
     def putAnswersInGroup( Neighbourhood neighbourhood, Integer[] answerIds, Integer groupId ) {
         AnswerGroup group = AnswerGroup.get( groupId )
-        answerIds.each{
-            Answer answer = Answer.get( it )
-            answer.answerGroup = group
-            answer.save( )
+        if( group ) {
+            answerIds.each{
+                Answer answer = Answer.get( it )
+                answer.answerGroup = group
+                answer.save( )
+            }
+        } else {
+            throw new Exception("Failed to retrieve AnswerGroup")
         }
     }
 }

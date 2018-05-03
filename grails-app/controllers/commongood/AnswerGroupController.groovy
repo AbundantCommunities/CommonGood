@@ -11,13 +11,13 @@ class AnswerGroupController {
     def getUngroupedAnswers( ) {
         Neighbourhood neighbourhood= session.neighbourhood
         if( neighbourhood ) {
-            // Yes, this is redundant, but let's follow the form
-            // (authorization is such an important feature!)
+            // We are STRICT! Every call to an action should check in with
+            // our authorization service.
             authorizationService.neighbourhoodRead( neighbourhood.id, session )
             def permutations = answerGroupService.getUngroupedAnswers( neighbourhood )
             [ result: permutations ]
         } else {
-            // Looks like no one is logged in.
+            // This is very bad. How did our filter allow this?
             throw new Exception( 'Authorization failure' )
         }
     }
@@ -25,32 +25,38 @@ class AnswerGroupController {
     /*
      * Parameters like check1234, check4455, check88 mean the user wants to
      * place answers with keys 1234, 4455 and 88 into the same AnswerGroup.
+     * (The way checkbox inputs work, non-checked items do not appear in params.)
     */
     def getGroupsForAnswers() {
         Neighbourhood neighbourhood= session.neighbourhood
         if( neighbourhood ) {
-            // Yes, this is redundant, but let's follow the form
-            // (authorization is such an important feature!)
+            // We are STRICT! Every call to an action should check in with
+            // our authorization service.
             authorizationService.neighbourhoodRead( neighbourhood.id, session )
             def answerKeys = [ ]
             
             // One answer can appear many times in a permuted index.
             // The user may have selected the same answer more than once
             // but keySet() returns only unique values.
+            // Also significant: only checked items are in params.
             params.keySet().each {
-                if( it.startsWith("check") ) {
+                // In our form, we appended answer id to "cha-"
+                if( it.startsWith("cga-") ) {
                     // the characters following "check" are the answer id
-                    answerKeys << Integer.valueOf( it.substring(5) )
+                    answerKeys << Integer.valueOf( it.substring(4) )
                 }
             }
+
             if( answerKeys ) {
                 def answersAndGroups = answerGroupService.getGroupsForAnswers( neighbourhood, answerKeys )
                 [ result: answersAndGroups ]
             } else {
-                throw new Exception("Should flash yellow: no answers selected")
+                flash.message = "You did not select any answers"
+                flash.nature = 'WARNING'
+                redirect action:'getUngroupedAnswers'
             }
         } else {
-            // Looks like no one is logged in.
+            // This is very bad. How did our filter allow this?
             throw new Exception( 'Authorization failure' )
         }
     }
@@ -62,18 +68,25 @@ class AnswerGroupController {
             // our authorization service.
             authorizationService.neighbourhoodRead( neighbourhood.id, session )
 
-            String[] answerIds = params.answerIds.split(',')
+            String[] answerIdStrings = params.answerIds.split(',')
             Integer groupId = params.int('groupId')
 
-            Integer[] answerKeys = [ ]
-            answerIds.each{
-                answerKeys += Integer.valueOf(it)
+            Integer[] answerIds = [ ]
+            answerIdStrings.each{
+                answerIds += Integer.valueOf( it )
             }
 
-            answerGroupService.putAnswersInGroup( neighbourhood, answerKeys, groupId )
-            redirect action: 'getUngroupedAnswers'
+            if( answerIds.size() ) {
+                answerGroupService.putAnswersInGroup( neighbourhood, answerIds, groupId )
+                flash.message = "We put ${answerIds.size()} answers in the group you selected"
+                flash.nature = 'SUCCESS'
+                redirect action: 'getUngroupedAnswers'
+            } else {
+                // This should not have gotten this far with zero answers selected
+                throw new Exception( 'No answers to group?!' )
+            }
         } else {
-            // Looks like no one is logged in.
+            // This is very bad. How did our filter allow this?
             throw new Exception( 'Authorization failure' )
         }
     }
