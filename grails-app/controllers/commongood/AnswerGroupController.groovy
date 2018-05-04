@@ -4,6 +4,21 @@ class AnswerGroupController {
     def authorizationService
     def answerGroupService
 
+    def index( ) {
+        Neighbourhood neighbourhood= session.neighbourhood
+        if( neighbourhood ) {
+            // We are STRICT! Every call to an action should check in with
+            // our authorization service.
+            authorizationService.neighbourhoodRead( neighbourhood.id, session )
+
+            def groups = answerGroupService.getGroups( neighbourhood )
+            [ result: groups ]
+        } else {
+            // This is very bad. How did our filter allow this?
+            throw new Exception( 'Authorization failure' )
+        }
+    }
+
     /*
      * Get the permutations for all ungrouped answers, regardless of question.
      *
@@ -101,6 +116,21 @@ class AnswerGroupController {
                 // This should not have gotten this far with zero answers selected
                 throw new Exception( 'No answers to group?!' )
             }
+        } else {
+            // This is very bad. How did our filter allow this?
+            throw new Exception( 'Authorization failure' )
+        }
+    }
+
+    def getAnswers( ) {
+        Neighbourhood neighbourhood= session.neighbourhood
+        if( neighbourhood ) {
+            // We are STRICT! Every call to an action should check in with
+            // our authorization service.
+            authorizationService.neighbourhoodRead( neighbourhood.id, session )
+
+            def answers = answerGroupService.getAnswers( neighbourhood, params.long('id') )
+            [ result: answers ]
         } else {
             // This is very bad. How did our filter allow this?
             throw new Exception( 'Authorization failure' )

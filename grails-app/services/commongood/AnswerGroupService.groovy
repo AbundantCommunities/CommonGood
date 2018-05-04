@@ -159,7 +159,53 @@ class AnswerGroupService {
                 throw new Exception( "Authorization failure" )
             }
         } else {
+            // Perhaps the GUI did not force user to select a group?
+            // Perhaps the group was deleted on another page??
             throw new Exception("Failed to retrieve AnswerGroup")
+        }
+    }
+
+    /**
+     * Get the neighbourhood's AnswerGroups, sorted by name.
+     * 
+     * Security Statement: we rely on the controller to ensure the user is
+     * authorized to read any data owned by neighbourhood
+     */
+    def getGroups( Neighbourhood neighbourhood ) {
+        def groups = [ ]
+        AnswerGroup.executeQuery(
+            """SELECT id, name
+               FROM AnswerGroup
+               WHERE neighbourhood.id = ?
+               ORDER by name""",
+            [neighbourhood.id] ).each {
+
+            def id = it[0]
+            def name = it[1]
+            groups << [ id:id, name:name ]
+        }
+        return groups
+    }
+
+    def getAnswers( Neighbourhood neighbourhood, groupId ) {
+
+        // Get the ungrouped answers the user has selected
+        // Our QUERY PREVENTS selecting another neighbourhood's answers
+        def answers = [ ]
+        Answer.executeQuery(
+            """SELECT a.id, a.text
+               FROM AnswerGroup g, Answer a
+               WHERE g.id = ? AND g.neighbourhood.id = ? AND a.answerGroup = g
+               ORDER BY a.text""",
+            [groupId, neighbourhood.id] ).each {
+                answers << [ id:it[0], text:it[1] ]
+            }
+
+        def group = AnswerGroup.get( groupId )
+        if( group.neighbourhood.id == neighbourhood.id ) {
+            return [ group:group, answers:answers ]
+        } else {
+            throw new Exception( "Authorization failure" )
         }
     }
 }
