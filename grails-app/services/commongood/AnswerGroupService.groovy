@@ -1,6 +1,7 @@
 package commongood
 
 import grails.transaction.Transactional
+import org.abundantcommunityinitiative.commongood.handy.UnneighbourlyException
 
 //@Transactional
 class AnswerGroupService {
@@ -152,16 +153,16 @@ class AnswerGroupService {
                         answer.answerGroup = group
                         answer.save( )
                     } else {
-                        throw new Exception( "Authorization failure" )
+                        throw new UnneighbourlyException( )
                     }
                 }
             } else {
-                throw new Exception( "Authorization failure" )
+                throw new UnneighbourlyException( )
             }
         } else {
             // Perhaps the GUI did not force user to select a group?
             // Perhaps the group was deleted on another page??
-            throw new Exception("Failed to retrieve AnswerGroup")
+            throw new RuntimeException("Failed to retrieve AnswerGroup")
         }
     }
 
@@ -205,7 +206,7 @@ class AnswerGroupService {
         if( group.neighbourhood.id == neighbourhood.id ) {
             return [ group:group, answers:answers ]
         } else {
-            throw new Exception( "Authorization failure" )
+            throw new UnneighbourlyException( )
         }
     }
 }
