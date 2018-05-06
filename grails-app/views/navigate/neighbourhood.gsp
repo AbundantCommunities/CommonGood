@@ -129,7 +129,6 @@
 
                     <div id="content-actions">
                         <div class="content-action"><a href="#" onclick="alert('not yet implemented');">Edit</a></div>
-                        <div class="content-action"><a href="#" onclick="alert('not yet implemented');">Delete</a></div>
                         <div class="content-action">&nbsp;</div>
                         <div class="content-action">&nbsp;</div>
                     </div>
