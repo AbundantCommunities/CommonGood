@@ -12,6 +12,7 @@ class AnswerGroupController {
             // We are STRICT! Every call to an action should check in with
             // our authorization service.
             authorizationService.neighbourhoodRead( neighbourhood.id, session )
+            log.info("Get answer groups for ${neighbourhood}")
 
             def groups = answerGroupService.getGroups( neighbourhood )
             [ result: groups ]
@@ -34,6 +35,7 @@ class AnswerGroupController {
             // We are STRICT! Every call to an action should check in with
             // our authorization service.
             authorizationService.neighbourhoodRead( neighbourhood.id, session )
+            log.info("Get ungrouped answers for ${neighbourhood}")
 
             def permutations = answerGroupService.getUngroupedAnswers( neighbourhood )
             [ result: permutations ]
@@ -58,6 +60,7 @@ class AnswerGroupController {
             // We are STRICT! Every call to an action should check in with
             // our authorization service.
             authorizationService.neighbourhoodRead( neighbourhood.id, session )
+            log.info("Get all groups for chosen answers for ${neighbourhood}")
             def answerKeys = [ ]
             
             // One answer can appear many times in a permuted index.
@@ -88,7 +91,10 @@ class AnswerGroupController {
 
     /*
      * Parameter answerIds is a string listing answer ids, like "123,5566,42".
-     * groupId is the id of the AnswerGroup into which the answers will be placed.
+     * 
+     * Either groupId is defined (the id of the AnswerGroup into which the
+     * answers should be placed) or newGroupName is defined (make a new AnswerGroup
+     * and place the answers into it).
      * 
      * Security Statement: we ensure the user is authorized to read the
      * neighbourhood's data. We rely on answerGroupService to ensure the answer
@@ -102,21 +108,39 @@ class AnswerGroupController {
             authorizationService.neighbourhoodRead( neighbourhood.id, session )
 
             String[] answerIdStrings = params.answerIds.split(',')
-            Integer groupId = params.int('groupId')
-
             Integer[] answerIds = [ ]
             answerIdStrings.each{
                 answerIds += Integer.valueOf( it )
             }
 
-            if( answerIds.size() ) {
-                answerGroupService.putAnswersInGroup( neighbourhood, answerIds, groupId )
-                flash.message = "We put ${answerIds.size()} answers in the group you selected"
-                flash.nature = 'SUCCESS'
-                redirect action: 'getUngroupedAnswers'
+            if( answerIds.size() == 0 ) {
+                // Should not have gotten this far with zero answers selected
+                throw new RuntimeException( 'No answers to group' )
+            }
+
+            Integer groupId = params.int('groupId')
+            String newGroupName = params.newGroupName
+
+            if( groupId ) {
+                if( newGroupName ) {
+                    throw new Exception("Both an existing group and a new group")
+                } else {
+                    log.info "Add answers ${answerIdStrings} to existing group ${groupId}"
+                    answerGroupService.putAnswersInOldGroup( neighbourhood, answerIds, groupId )
+                    flash.message = "We put ${answerIds.size()} answers in the group you selected"
+                    flash.nature = 'SUCCESS'
+                    redirect action: 'getUngroupedAnswers'
+                }
             } else {
-                // This should not have gotten this far with zero answers selected
-                throw new RuntimeException( 'No answers to group?!' )
+                if( newGroupName ) {
+                    log.info "Add answers $answerIdStrings to new group ${newGroupName}"
+                    answerGroupService.putAnswersInNewGroup( neighbourhood, answerIds, newGroupName )
+                    flash.message = "We put ${answerIds.size()} answers in new group ${newGroupName}"
+                    flash.nature = 'SUCCESS'
+                    redirect action: 'getUngroupedAnswers'
+                } else {
+                    throw new Exception("Neither an existing group nor a new group")
+                }
             }
         } else {
             // This is very bad. How did our filter allow this?
@@ -130,8 +154,10 @@ class AnswerGroupController {
             // We are STRICT! Every call to an action should check in with
             // our authorization service.
             authorizationService.neighbourhoodRead( neighbourhood.id, session )
+            Long groupId = params.long('id')
+            log.info("Get answers belonging to answer Ggroup ${groupId}")
 
-            def answers = answerGroupService.getAnswers( neighbourhood, params.long('id') )
+            def answers = answerGroupService.getAnswers( neighbourhood, groupId )
             [ result: answers ]
         } else {
             // This is very bad. How did our filter allow this?

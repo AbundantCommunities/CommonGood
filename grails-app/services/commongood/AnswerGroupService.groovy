@@ -137,13 +137,13 @@ class AnswerGroupService {
     }
 
     /**
-     * Assign answers to an AnswerGroup.
+     * Assign answers to an existing AnswerGroup.
      * 
      * Security Statement: we rely on the controller to ensure the user is
      * authorized to read any data owned by neighbourhood. We ensure the
      * answers we update and the AnswerGroup we read belong to neighbourhood.
      */
-    def putAnswersInGroup( Neighbourhood neighbourhood, Integer[] answerIds, Integer groupId ) {
+    def putAnswersInOldGroup( Neighbourhood neighbourhood, Integer[] answerIds, Integer groupId ) {
         AnswerGroup group = AnswerGroup.get( groupId )
         if( group ) {
             if( group.neighbourhood.id==neighbourhood.id ) {
@@ -163,6 +163,29 @@ class AnswerGroupService {
             // Perhaps the GUI did not force user to select a group?
             // Perhaps the group was deleted on another page??
             throw new RuntimeException("Failed to retrieve AnswerGroup")
+        }
+    }
+
+    /**
+     * Make a new AnswerGroup and then Assign answers to it.
+     * 
+     * Security Statement: we rely on the controller to ensure the user is
+     * authorized to read any data owned by neighbourhood. We ensure the
+     * answers we update and the AnswerGroup we read belong to neighbourhood.
+     */
+    def putAnswersInNewGroup( Neighbourhood neighbourhood, Integer[] answerIds, String newGroupName ) {
+
+        AnswerGroup group = new AnswerGroup( neighbourhood:neighbourhood, name:newGroupName )
+        group.save( )
+
+        answerIds.each{
+            Answer answer = Answer.get( it )
+            if( answer.question.neighbourhood.id == neighbourhood.id ) {
+                answer.answerGroup = group
+                answer.save( )
+            } else {
+                throw new UnneighbourlyException( )
+            }
         }
     }
 

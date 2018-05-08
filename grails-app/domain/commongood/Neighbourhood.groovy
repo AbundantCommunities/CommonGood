@@ -32,6 +32,6 @@ class Neighbourhood {
     }
     
     public String toString( ) {
-        return "Neighbourhood ${name}"
+        return "NH ${id} ${name}"
     }
 }
