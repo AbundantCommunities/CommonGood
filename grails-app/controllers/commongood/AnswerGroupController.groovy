@@ -155,10 +155,30 @@ class AnswerGroupController {
             // our authorization service.
             authorizationService.neighbourhoodRead( neighbourhood.id, session )
             Long groupId = params.long('id')
-            log.info("Get answers belonging to answer Ggroup ${groupId}")
+            log.info("Get answers belonging to group ${groupId}")
 
             def answers = answerGroupService.getAnswers( neighbourhood, groupId )
             [ result: answers ]
+        } else {
+            // This is very bad. How did our filter allow this?
+            throw new UnneighbourlyException( )
+        }
+    }
+
+    def removeAnswer( ) {
+        Neighbourhood neighbourhood= session.neighbourhood
+        if( neighbourhood ) {
+            // We are STRICT! Every call to an action should check in with
+            // our authorization service.
+            authorizationService.neighbourhoodRead( neighbourhood.id, session )
+            Long answerId = params.long('id')
+            log.info("Remove answer ${answerId} from its group")
+
+            // Null if answer was not in a group
+            AnswerGroup group = answerGroupService.removeAnswer( neighbourhood, answerId )
+            flash.message = "We removed answer ${answerId} from ${group}"
+            flash.nature = 'SUCCESS'
+            redirect action:'getAnswers', id:group.id
         } else {
             // This is very bad. How did our filter allow this?
             throw new UnneighbourlyException( )

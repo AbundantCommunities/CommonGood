@@ -8,7 +8,7 @@
     <body>
         <h1>Answers Grouped under "${result.group.name}"</h1>
         <g:each in="${result.answers}" var="answer">
-            ${answer.text}<br/>
+            <a href ="<g:createLink action='removeAnswer' id='${answer.id}'/>">${answer.text}</a><br/>
         </g:each>
     </body>
 </html>

@@ -232,4 +232,27 @@ class AnswerGroupService {
             throw new UnneighbourlyException( )
         }
     }
+
+    def removeAnswer( Neighbourhood neighbourhood, Long answerId ) {
+
+        Answer answer = Answer.get( answerId )
+        if( answer ) {
+            AnswerGroup group = answer.answerGroup
+            if( group ) {
+                if( group.neighbourhood.id == neighbourhood.id ) {
+                    log.info "Removing ${answer} from group ${group}"
+                    answer.answerGroup = null
+                    answer.save( )
+                    return group
+                } else {
+                    throw new UnneighbourlyException( )
+                }
+            } else {
+                log.warn "Cannot remove answer from null group"
+                return null
+            }
+        } else {
+            throw new Exception("No such answer id ${answerId}")
+        }
+    }
 }
