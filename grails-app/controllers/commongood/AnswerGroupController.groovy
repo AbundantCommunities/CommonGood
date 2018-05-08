@@ -1,5 +1,7 @@
 package commongood
 
+import org.abundantcommunityinitiative.commongood.handy.UnneighbourlyException
+
 class AnswerGroupController {
     def authorizationService
     def answerGroupService
@@ -15,7 +17,7 @@ class AnswerGroupController {
             [ result: groups ]
         } else {
             // This is very bad. How did our filter allow this?
-            throw new Exception( 'Authorization failure' )
+            throw new UnneighbourlyException( )
         }
     }
 
@@ -37,7 +39,7 @@ class AnswerGroupController {
             [ result: permutations ]
         } else {
             // This is very bad. How did our filter allow this?
-            throw new Exception( 'Authorization failure' )
+            throw new UnneighbourlyException( )
         }
     }
 
@@ -80,7 +82,7 @@ class AnswerGroupController {
             }
         } else {
             // This is very bad. How did our filter allow this?
-            throw new Exception( 'Authorization failure' )
+            throw new UnneighbourlyException( )
         }
     }
 
@@ -114,11 +116,11 @@ class AnswerGroupController {
                 redirect action: 'getUngroupedAnswers'
             } else {
                 // This should not have gotten this far with zero answers selected
-                throw new Exception( 'No answers to group?!' )
+                throw new RuntimeException( 'No answers to group?!' )
             }
         } else {
             // This is very bad. How did our filter allow this?
-            throw new Exception( 'Authorization failure' )
+            throw new UnneighbourlyException( )
         }
     }
 
@@ -133,7 +135,7 @@ class AnswerGroupController {
             [ result: answers ]
         } else {
             // This is very bad. How did our filter allow this?
-            throw new Exception( 'Authorization failure' )
+            throw new UnneighbourlyException( )
         }
     }
 }

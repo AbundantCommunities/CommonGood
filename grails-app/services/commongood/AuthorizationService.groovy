@@ -1,27 +1,28 @@
 package commongood
 
 import grails.transaction.Transactional
+import org.abundantcommunityinitiative.commongood.handy.UnneighbourlyException
 
+/**
+ * We rely on our our servlet Filters to ensure that requests come from
+ * authenticated users. However, if the filters fail to do that, then
+ * the "checking methods" below should "blow up" when they try to access
+ * session.neighbourhood or session.block when the user is not authorized
+ * to access the specified neighbourhood or block.
+ */
 @Transactional
 class AuthorizationService {
 
-    // We rely on our our Grails Filters to ensure that requests come from
-    // authenticated users. However, if the filters fail to do that, then
-    // the "checking methods" below should "blow up" when they try to access
-    // session.neighbourhood or session.block; that would be a good thing.
-
-    // This shouldn't happen. Immediately stop user from accessing a specific
-    // layer of the data hierarchy.
+    // Immediately stop user from reading a specific layer of the data hierarchy.
     def preventLayer( layer, id, session ) {
-        log.warn "Authorization failure: prevent access of ${layer}:${id} by ${session.user.logName}"
-        throw new Exception( 'Authorization failure' )
+        log.warn "AUTHORIZATION FAILURE: prevent reading from ${layer}:${id} by ${session.user.logName}"
+        throw new UnneighbourlyException( )
     }
 
-    // This shouldn't happen. Immediately stop user from accessing a specific
-    // layer of the data hierarchy.
+    // Immediately stop user from writing to a specific layer of the data hierarchy.
     def preventWrite( layer, id, session ) {
-        log.warn "Authorization failure: prevent change of ${layer}:${id} by ${session.user.logName}"
-        throw new Exception( 'Authorization failure' )
+        log.warn "AUTHORIZATION FAILURE: prevent writing to ${layer}:${id} by ${session.user.logName}"
+        throw new UnneighbourlyException( )
     }
 
     // Quietly exits if user is authorized to change neighbourhood whose PK is id,

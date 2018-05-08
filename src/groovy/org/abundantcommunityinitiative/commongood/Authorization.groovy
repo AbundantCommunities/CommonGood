@@ -2,15 +2,11 @@ package org.abundantcommunityinitiative.commongood
 
 /**
  * Specifies what data the application user is authorized to access and whether
- * or not she can change the data.
- *
- * "What data" the user may access is specified by two values
- * 1. authorized to access an entire Neighbourhood's data or merely a Block's data.
- * 2. the primary key of the Neighbourhood or Block.
+ * or not she can change (WRITE) the data.
  */
 class Authorization {
-    boolean neighbourhood = false
-    Long domainKey
+    boolean neighbourhood = false // Authorized for a n'hood or a block?
+    Long domainKey  // The id of the neighbourhood or the block
     boolean write
 
     static Authorization getForNeighbourhood( id, write ) {
