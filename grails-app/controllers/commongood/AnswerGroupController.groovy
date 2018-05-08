@@ -13,9 +13,10 @@ class AnswerGroupController {
             // our authorization service.
             authorizationService.neighbourhoodRead( neighbourhood.id, session )
             log.info("Get answer groups for ${neighbourhood}")
+            def count = answerGroupService.countUngrouped( neighbourhood )
 
             def groups = answerGroupService.getGroups( neighbourhood )
-            [ result: groups ]
+            [ ungroupedAnswerCount:count, groups: groups ]
         } else {
             // This is very bad. How did our filter allow this?
             throw new UnneighbourlyException( )

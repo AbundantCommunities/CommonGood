@@ -52,6 +52,19 @@ class AnswerGroupService {
         }
     }
 
+    def countUngrouped( Neighbourhood neighbourhood ) {
+        Long count
+        Answer.executeQuery(
+            """SELECT COUNT(*)
+               FROM Answer a, Question q
+               WHERE a.question = q AND q.neighbourhood.id = ?
+               AND a.answerGroup IS NULL""",
+            [neighbourhood.id] ).each {
+                count = it
+        }
+        return count
+    }
+
     /**
      * Get the neighbourhood's ungrouped answers as a permuted index.
      * 

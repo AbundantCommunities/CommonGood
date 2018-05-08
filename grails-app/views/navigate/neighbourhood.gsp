@@ -125,6 +125,9 @@
                         <div class="content-left-action"><g:link controller="blockSummary" action="index">Block Summary</g:link></div>
                         <div class="content-left-action"><g:link controller="neighbourhood" action="blockConnectors">Block Connector Contact List</g:link></div>
                         <div class="content-left-action"><a href="#" onclick="presentSelectQuestionModal();">Answer Ranking</a></div>
+                        <g:if test="${session.neighbourhood.featureFlags.contains('groups')==Boolean.TRUE}">
+                            <div class="content-left-action"><g:link controller="answerGroup">Manage Answer Groups</g:link></div>
+                        </g:if>
                     </div>
 
                     <div id="content-actions">

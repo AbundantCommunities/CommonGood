@@ -3,6 +3,7 @@ package commongood
 class Neighbourhood {
     String name
     String Logo // Not sure how we will store this image
+    String featureFlags // like "featureA featureK featureW"
 
     Boolean acceptAnonymousRequests
     Boolean emailAnonymousRequests
@@ -17,6 +18,7 @@ class Neighbourhood {
     static hasMany = [ blocks:Block ]
 
     static mapping = {
+        featureFlags defaultValue: "''"
         acceptAnonymousRequests defaultValue: "TRUE"
         emailAnonymousRequests defaultValue: "TRUE"
         centreLatitude  defaultValue: 0.0
