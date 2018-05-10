@@ -6,10 +6,10 @@ import spock.lang.Specification
 /**
  * See the API for {@link grails.test.mixin.services.ServiceUnitTestMixin} for usage instructions
  */
-@TestFor(PermuteService)
+@TestFor(AnswerGroupService)
 class PermuteServiceSpec extends Specification {
 
-    def permuteService = new PermuteService( )
+    def permuteService = new AnswerGroupService( )
 
     void "text begins with a common word"() {
         given: 'input begins with one of our declared common words'

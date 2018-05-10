@@ -2,6 +2,7 @@
 
 <html>
     <head>
+        <meta name="layout" content="basic">
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Put Answers into Group</title>
     </head>

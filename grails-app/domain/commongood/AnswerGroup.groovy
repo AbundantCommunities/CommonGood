@@ -8,6 +8,6 @@ class AnswerGroup {
     static hasMany = [ answers:Answer ]
 
     static constraints = {
-        name( maxSize:30 )
+        name maxSize:30, unique:['neighbourhood']
     }
 }

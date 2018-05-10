@@ -2,6 +2,7 @@
 
 <html>
     <head>
+        <meta name="layout" content="basic">
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Answer Group Management</title>
     </head>

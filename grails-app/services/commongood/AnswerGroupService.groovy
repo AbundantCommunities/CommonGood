@@ -177,6 +177,7 @@ class AnswerGroupService {
             // Perhaps the group was deleted on another page??
             throw new RuntimeException("Failed to retrieve AnswerGroup")
         }
+        return group
     }
 
     /**
@@ -189,17 +190,26 @@ class AnswerGroupService {
     def putAnswersInNewGroup( Neighbourhood neighbourhood, Integer[] answerIds, String newGroupName ) {
 
         AnswerGroup group = new AnswerGroup( neighbourhood:neighbourhood, name:newGroupName )
+        log.info "Creating new answer group: ${group}"
         group.save( )
+
+        if( group.hasErrors() ) {
+            // The only error we are aware of is duplicate name (within a neighbourhood).
+            // Unbelievably hard to detect the cause of the error :-(
+            log.warn "Failed to create new answer group. Is ${newGroupName} a duplicate name?"
+            return null
+        }
 
         answerIds.each{
             Answer answer = Answer.get( it )
             if( answer.question.neighbourhood.id == neighbourhood.id ) {
                 answer.answerGroup = group
-                answer.save( )
+                answer.save( failOnError: true )
             } else {
                 throw new UnneighbourlyException( )
             }
         }
+        return group
     }
 
     /**

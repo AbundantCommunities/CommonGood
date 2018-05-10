@@ -121,23 +121,29 @@ class AnswerGroupController {
 
             Integer groupId = params.int('groupId')
             String newGroupName = params.newGroupName
+            AnswerGroup group
 
             if( groupId ) {
                 if( newGroupName ) {
                     throw new Exception("Both an existing group and a new group")
                 } else {
                     log.info "Add answers ${answerIdStrings} to existing group ${groupId}"
-                    answerGroupService.putAnswersInOldGroup( neighbourhood, answerIds, groupId )
-                    flash.message = "We put ${answerIds.size()} answers in the group you selected"
+                    group = answerGroupService.putAnswersInOldGroup( neighbourhood, answerIds, groupId )
+                    flash.message = "We put ${answerIds.size()} answers in the ${group.name} group"
                     flash.nature = 'SUCCESS'
                     redirect action: 'getUngroupedAnswers'
                 }
             } else {
                 if( newGroupName ) {
                     log.info "Add answers $answerIdStrings to new group ${newGroupName}"
-                    answerGroupService.putAnswersInNewGroup( neighbourhood, answerIds, newGroupName )
-                    flash.message = "We put ${answerIds.size()} answers in new group ${newGroupName}"
-                    flash.nature = 'SUCCESS'
+                    group = answerGroupService.putAnswersInNewGroup( neighbourhood, answerIds, newGroupName )
+                    if( group ) {
+                        flash.message = "We put ${answerIds.size()} answers in new group ${newGroupName}"
+                        flash.nature = 'SUCCESS'
+                    } else {
+                        flash.message = "Failed to make new group ${newGroupName}. Is that a duplicate?"
+                        flash.nature = 'WARNING'
+                    }
                     redirect action: 'getUngroupedAnswers'
                 } else {
                     throw new Exception("Neither an existing group nor a new group")
@@ -177,7 +183,7 @@ class AnswerGroupController {
 
             // Null if answer was not in a group
             AnswerGroup group = answerGroupService.removeAnswer( neighbourhood, answerId )
-            flash.message = "We removed answer ${answerId} from ${group}"
+            flash.message = "We removed answer ${answerId} from the ${group.name} group"
             flash.nature = 'SUCCESS'
             redirect action:'getAnswers', id:group.id
         } else {
