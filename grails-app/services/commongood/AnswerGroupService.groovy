@@ -256,6 +256,14 @@ class AnswerGroupService {
         }
     }
 
+    /**
+     * For a given answer id, remove it from its answer group. If the answer
+     * has no group, we quietly log that fact.
+     * 
+     * Security Statement: We ensure the answer belongs to neighbourhood.
+     * We rely on the controller to ensure the user is authorized to read
+     * neighbourhood's data.
+     */
     def removeAnswer( Neighbourhood neighbourhood, Long answerId ) {
 
         Answer answer = Answer.get( answerId )
@@ -265,7 +273,7 @@ class AnswerGroupService {
                 if( group.neighbourhood.id == neighbourhood.id ) {
                     log.info "Removing ${answer} from group ${group}"
                     answer.answerGroup = null
-                    answer.save( )
+                    answer.save( failOnError: true )
                     return group
                 } else {
                     throw new UnneighbourlyException( )

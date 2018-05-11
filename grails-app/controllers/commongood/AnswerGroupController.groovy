@@ -155,6 +155,9 @@ class AnswerGroupController {
         }
     }
 
+    /**
+     * Get all of the answers belonging to a given answer group id.
+     */
     def getAnswers( ) {
         Neighbourhood neighbourhood= session.neighbourhood
         if( neighbourhood ) {
@@ -172,6 +175,9 @@ class AnswerGroupController {
         }
     }
 
+    /**
+     * Remove a given answer from its answer group.
+     */
     def removeAnswer( ) {
         Neighbourhood neighbourhood= session.neighbourhood
         if( neighbourhood ) {
