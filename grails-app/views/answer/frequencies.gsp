@@ -13,7 +13,7 @@
     </head>
     <body>
             <div class="content-section">
-                <div style="margin-top:-10px;"><h3>Answer Ranking for Question ${question.code}: ${question.text}</h2></div>
+                <div style="margin-top:-10px;"><h3>Answer Ranking for Question ${question.code}: ${question.text}</h3></div>
                 <div class="content-row bold">
                     <div class="cell450">Answer</div>
                     <div class="cell150"># Occurrences</div>
