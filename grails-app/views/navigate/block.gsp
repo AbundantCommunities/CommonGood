@@ -430,6 +430,7 @@
                 <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE && authorized.canWrite()==Boolean.TRUE}">
                     <div id="content-actions-left-side">
                         <div class="content-left-action"><g:link controller='block' action='contactList' id='${navSelection.id}'>Contact List</g:link></div>
+                        <div class="content-left-action">&nbsp;</div>
                     </div>
 
                     <div id="content-actions">

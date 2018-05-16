@@ -112,7 +112,7 @@
 
     </head>
     <body>
-            <div class="content-section" style="height:100px;">
+            <div class="content-section" style="height:115px;">
                 <div class="content-heading">${navSelection.levelInHierarchy}</div>
                 <div class="content-row">
                     <div class="content-row-item" style="width:55px;">Name: </div><div class="content-row-item">${navSelection.description}</div>
@@ -132,8 +132,6 @@
 
                     <div id="content-actions">
                         <div class="content-action"><a href="#" onclick="alert('not yet implemented');">Edit</a></div>
-                        <div class="content-action">&nbsp;</div>
-                        <div class="content-action">&nbsp;</div>
                     </div>
                     </g:if>
                     <g:else>
