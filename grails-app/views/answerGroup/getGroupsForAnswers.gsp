@@ -3,7 +3,6 @@
 <html>
     <head>
         <meta name="layout" content="basic">
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Put Answers into Group</title>
 
         <script type="text/javascript">
@@ -72,11 +71,6 @@
 
                 <div>Create a new group or select an existing group, then click "Put in Group."</div>
 
-                <div class="button-row" style="margin-top:10px;">
-                    <g:link><div class="button">Cancel</div></g:link>
-                    <div class="button-spacer"></div>
-                    <a href="#"><div class="button bold" onclick="doGrouping();">Put in Group</div></a>
-                </div>
 
 
 
@@ -96,6 +90,13 @@
             </g:each>
             <div class="content-children-row"></div>
         </form>
+        <div class="button-row" style="margin-top:10px;">
+            <g:link><div class="button">Cancel</div></g:link>
+            <div class="button-spacer"></div>
+            <a href="#"><div class="button bold" onclick="doGrouping();">Put in Group</div></a>
+        </div>
+        <div>&nbsp;</div>
+
         </div>
     </body>
 </html>
