@@ -164,7 +164,7 @@ class AnswerGroupService {
                     Answer answer = Answer.get( it )
                     if( answer.question.neighbourhood.id == neighbourhood.id ) {
                         answer.answerGroup = group
-                        answer.save( )
+                        answer.save( failOnError: true )
                     } else {
                         throw new UnneighbourlyException( )
                     }
@@ -191,7 +191,7 @@ class AnswerGroupService {
 
         AnswerGroup group = new AnswerGroup( neighbourhood:neighbourhood, name:newGroupName )
         log.info "Creating new answer group: ${group}"
-        group.save( )
+        group.save( failOnError: true )
 
         if( group.hasErrors() ) {
             // The only error we are aware of is duplicate name (within a neighbourhood).
