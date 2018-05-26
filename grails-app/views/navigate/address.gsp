@@ -37,11 +37,18 @@
                 if (addressText == "") {
                     alert("Please enter an address.");
                     return false;
-                } else {
-                    if (note.indexOf('|') > -1) {
-                        alert("Notes cannot contain the '|' character. Please use a different character");
-                        return false;
-                    }
+                }
+                if (addressText.length > 255) {
+                    alert("The address you enter cannot exceed 255 characters in length.");
+                    return false;
+                }
+                if (note.length > 255) {
+                    alert("The note you enter cannot exceed 255 characters in length.");
+                    return false;
+                }
+                if (note.indexOf('|') > -1) {
+                    alert("Notes cannot contain the '|' character. Please use a different character");
+                    return false;
                 }
                 return true;
             }
@@ -89,11 +96,18 @@
                 if (familyName == "") {
                     alert("Please enter a family name for the new family.");
                     return false;
-                } else {
-                    if (note.indexOf('|') > -1) {
-                        alert("Notes cannot contain the '|' character. Please use a different character");
-                        return false;
-                    }
+                }
+                if (familyName.length > 255) {
+                    alert("The family name you enter cannot exceed 255 characters in length.");
+                    return false;
+                }
+                if (note.length > 255) {
+                    alert("The note you enter cannot exceed 255 characters in length.");
+                    return false;
+                }
+                if (note.indexOf('|') > -1) {
+                    alert("Notes cannot contain the '|' character. Please use a different character");
+                    return false;
                 }
                 return true;
             }

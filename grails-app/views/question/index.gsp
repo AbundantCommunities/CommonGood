@@ -37,11 +37,36 @@
                 }
             }
 
+
+            function answersOkay(answers) {
+                var answersArray = answers.split(String.fromCharCode(10));
+                if (answersArray.length > 0) {
+                    var i;
+                    for (i=0;i<answersArray.length;i++) {
+                        if (answersArray[i].length > 1000) {
+                            return false;
+                        }
+                    }
+                }
+                return true;
+            }
+
             function interviewDataOkay(initialInterviewDate) {
                 if (!dateOk(initialInterviewDate)) {
                     alert('Please enter a value for initial interview date in the format YYYY-MM-DD.');
                     return false;
                 }
+
+                var i, j;
+                for (i=0; i<${questions.size()}; i++) {
+                    for (j=0; j<${members.size()}; j++) {
+                        if (!answersOkay(document.getElementById('answers-textarea-'+i+j).value)) {
+                            alert("An answer you've entered for question "+i+" for family member "+j+" exceeds the maximum of 1,000 characters.");
+                            return false;
+                        }
+                    }
+                }
+
                 return true;
             }
 
@@ -55,7 +80,7 @@
                 }
             }
 
-                        // Initialize array to hold ids for possible interviewers.
+            // Initialize array to hold ids for possible interviewers.
             var possibleInterviewers = [ ];
 
             window.onload = function onWindowLoad() {

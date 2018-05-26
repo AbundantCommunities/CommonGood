@@ -51,8 +51,12 @@
 
             function emailOk(email) {
                 if (email.length > 0) {
-                    var re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-                    return re.test(email);
+                    if (email.length <= 255) {
+                        var re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+                        return re.test(email);
+                    } else {
+                        return false;
+                    }
                 }
                 return true;
             }
@@ -87,30 +91,42 @@
                 return yearPattern.test(yearOrAge);
             }
 
-            function familyMemberIsValid (firstNames, lastName, birthYearOrAge, email, note) {
+            function familyMemberIsValid (firstNames, lastName, birthYearOrAge, email, phoneNumber, note) {
                 if (firstNames == "") {
                     alert("Please enter a first name for the new family member.");
                     return false;
-                } else {
-                    if (lastName == "") {
-                        alert("Please enter a last name for the new family member.");
-                        return false;
-                    } else {
-                        if (!yearAgeOk(birthYearOrAge)) {
-                            alert("Please enter a valid birth year (YYYY) or age, or leave it blank. If you do not know the peron's age, consider entering an estimate and checking the 'estimated' check box.");
-                            return false;
-                        } else {
-                            if (!emailOk(email)) {
-                                alert("Please enter a valid email address or leave it blank.");
-                                return false;
-                            } else {
-                                if (note.indexOf('|') > -1) {
-                                    alert("Notes cannot contain the '|' character. Please use a different character.");
-                                    return false;
-                                }
-                            }
-                        }
-                    }
+                }
+                if (firstNames.length > 255) {
+                    alert("The first name(s) you enter cannot exceed 255 characters in length.");
+                    return false;
+                }
+                if (lastName == "") {
+                    alert("Please enter a last name for the new family member.");
+                    return false;
+                }
+                if (lastName.length > 255) {
+                    alert("The last name you enter cannot exceed 255 characters in length.");
+                    return false;
+                }
+                if (!yearAgeOk(birthYearOrAge)) {
+                    alert("Please enter a valid birth year (YYYY) or age, or leave it blank. If you do not know the peron's age, consider entering an estimate and checking the 'estimated' check box.");
+                    return false;
+                }
+                if (!emailOk(email)) {
+                    alert("Please enter a valid email address or leave it blank.");
+                    return false;
+                }
+                if (phoneNumber.length > 255) {
+                    alert("The phone number you enter cannot exceed 255 characters in length.");
+                    return false;
+                }
+                if (note.length > 255) {
+                    alert("The note you enter cannot exceed 255 characters in length.");
+                    return false;
+                }
+                if (note.indexOf('|') > -1) {
+                    alert("Notes cannot contain the '|' character. Please use a different character.");
+                    return false;
                 }
                 return true;
             }
@@ -121,14 +137,16 @@
                 var lastName = document.getElementById("lastNameInput").value.trim();
                 var birthYearOrAge = document.getElementById("birthYearInput").value.trim();
                 var email = document.getElementById("emailAddressInput").value.trim();
+                var phoneNumber = document.getElementById("phoneNumberInput").value.trim();
                 var note = document.getElementById("noteInput").value.trim();
-                if (familyMemberIsValid(firstNames, lastName, birthYearOrAge, email, note)) {
+                if (familyMemberIsValid(firstNames, lastName, birthYearOrAge, email, phoneNumber, note)) {
                     dismissEditModal();
                     // trim all values
                     document.getElementById("firstNamesInput").value = firstNames;
                     document.getElementById("lastNameInput").value = lastName;
                     document.getElementById('birthYearInput').value = birthYearOrAge;
                     document.getElementById("emailAddressInput").value = email;
+                    document.getElementById("phoneNumberInput").value = phoneNumber;
                     document.getElementById("noteInput").value = note;
                     // check if birth year blank. if yes, set it to '0'.
                     if (document.getElementById('birthYearInput').value.length == 0) {

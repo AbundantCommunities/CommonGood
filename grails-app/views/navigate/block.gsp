@@ -37,11 +37,20 @@
 
                 function blockIsValid(code,description) {
                     if (code == "") {
-                        alert("Please enter a block code.");
+                        alert("Please enter a code for the new block.");
+                        return false;
+                    }
+                    if (code.length > 255) {
+                        alert("The block code cannot exceed 255 characters in length.");
+                        return false;
+                    }
+                    if (description.length > 255) {
+                        alert("The block description cannot exceed 255 characters in length.");
                         return false;
                     }
                     return true;
                 }
+
 
                 function saveBlock() {
                     var blockCode = document.getElementById('blockCodeInput').value.trim();
@@ -107,8 +116,12 @@
 
                 // make sure at least one line (address).
                 if (addresses.length > 0) {
-                    document.getElementById('addressesInput').value = addresses;
-                    document.getElementById("new-form").submit();
+                    if (addresses.length <= 255) {
+                        document.getElementById('addressesInput').value = addresses;
+                        document.getElementById("new-form").submit();
+                    } else {
+                        alert('The total length of the addresses you enter cannot exceed 255 characters.');
+                    }
                 } else {
                     alert('Please enter at least one address.');
                 }

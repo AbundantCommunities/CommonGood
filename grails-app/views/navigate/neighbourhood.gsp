@@ -37,6 +37,14 @@
                         alert("Please enter a code for the new block.");
                         return false;
                     }
+                    if (code.length > 255) {
+                        alert("The block code cannot exceed 255 characters in length.");
+                        return false;
+                    }
+                    if (description.length > 255) {
+                        alert("The block description cannot exceed 255 characters in length.");
+                        return false;
+                    }
                     return true;
                 }
 
