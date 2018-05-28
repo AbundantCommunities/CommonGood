@@ -64,9 +64,9 @@
     </head>
     <body>
             <div class="content-section">
-                <div id="button-div" style="position:fixed;top:110px;left:930px">
-                <div id="group-button" onclick="groupAnswers();">Group</div>
-                <g:link><div id="cancel-button">Cancel</div></g:link>
+                <div id="button-div" style="position:fixed;top:110px;left:917px">
+                    <div id="group-button" onclick="groupAnswers();">Group</div>
+                    <g:link><div id="cancel-button">Cancel</div></g:link>
                 </div>
                 <div style="margin-top:-10px;"><h3>Ungrouped Answers</h3></div>
 

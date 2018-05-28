@@ -72,30 +72,26 @@
                 <div>Create a new group or select an existing group, then click "Put in Group."</div>
 
 
+                <form id="group-form" action="<g:createLink action='putAnswersInGroup' />" method="POST">
+                    <input type="text" hidden name="answerIds" value="${result.answerIds}"><br/>
 
+                    <div class="content-children-row" style="vertical-align:middle;">
+                        <div class="cell20"><input id="new-group" type="radio" name="groupId" value="" onclick="newGroupRadioSelected();"/></div><div class="cell100"><input id="new-group-input" type="text" name="newGroupName" placeholder="New Group Name" disabled/></div>
+                    </div>
 
-
-
-        <form id="group-form" action="<g:createLink action='putAnswersInGroup' />" method="POST">
-            <input type="text" hidden name="answerIds" value="${result.answerIds}"><br/>
-
-            <div class="content-children-row" style="vertical-align:middle;">
-                <div class="cell20"><input id="new-group" type="radio" name="groupId" value="" onclick="newGroupRadioSelected();"/></div><div class="cell100"><input id="new-group-input" type="text" name="newGroupName" placeholder="New Group Name" disabled/></div>
-            </div>
-
-            <g:each in="${result.groups}" var="group" status="i">
-            <div class="content-children-row">
-                <div class="cell20"><input id="group${i}" type="radio" name="groupId" value="${group.id}" onclick="groupRadioClicked();"/></div><div class="cell100">${group.name}</div>
-            </div>
-            </g:each>
-            <div class="content-children-row"></div>
-        </form>
-        <div class="button-row" style="margin-top:10px;">
-            <g:link><div class="button">Cancel</div></g:link>
-            <div class="button-spacer"></div>
-            <a href="#"><div class="button bold" onclick="doGrouping();">Put in Group</div></a>
-        </div>
-        <div>&nbsp;</div>
+                    <g:each in="${result.groups}" var="group" status="i">
+                    <div class="content-children-row">
+                        <div class="cell20"><input id="group${i}" type="radio" name="groupId" value="${group.id}" onclick="groupRadioClicked();"/></div><div class="cell100">${group.name}</div>
+                    </div>
+                    </g:each>
+                    <div class="content-children-row"></div>
+                </form>
+                <div class="button-row" style="margin-top:10px;">
+                    <g:link><div class="button">Cancel</div></g:link>
+                    <div class="button-spacer"></div>
+                    <a href="#"><div class="button bold" onclick="doGrouping();">Put in Group</div></a>
+                </div>
+                <div>&nbsp;</div>
 
         </div>
     </body>
