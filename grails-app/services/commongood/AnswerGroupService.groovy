@@ -7,7 +7,8 @@ import org.abundantcommunityinitiative.commongood.handy.UnneighbourlyException
 class AnswerGroupService {
 
     def tooCommon = ['a', 'and', 'as', 'at', 'by', 'fewer', 'for', 'in', 'is',
-            'less', 'like', 'more', 'no', 'of', 'on', 'or', 'out', 'the', 'to', 'with']
+            'less', 'like', 'more', 'no', 'of', 'on', 'or', 'out', 'the', 'to', 'with',
+            '&', '(', '-', '--', '+' ]
 
     /**
      * Permute in the sense of "permuted index". For example, given the input text
@@ -16,10 +17,10 @@ class AnswerGroupService {
      *    'bake bread, learn to'
      *    'bread, learn to bake'
      * 
-     * The logic knows to ignore words like 'to', 'and', 'a', etc.
+     * The logic knows to ignore strings like 'to', 'and', 'a', '&', etc.
     */
     private permuteText( text ) {
-        text = text.toLowerCase( )
+        text = text.trim( ).toLowerCase( )
         def words = text.tokenize(' ')
 
         if( words.size() <= 1 ) {
