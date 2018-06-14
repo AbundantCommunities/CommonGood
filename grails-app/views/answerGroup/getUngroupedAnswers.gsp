@@ -92,7 +92,7 @@
 
                 <g:each in="${result}" var="permutation">
                     <div class="content-children-row">
-                        <div class="cell20" style="height:18px;overflow:auto;"><input type="checkbox" name="cga-${permutation.answerId}"/></div>
+                        <div class="cell20"><input type="checkbox" name="cga-${permutation.answerId}"/></div>
                         <div class="cell500">${permutation.permutedText}</div>
                         <div class="cell190">${permutation.shortQuestion}</div>
                         <div class="cell170">${permutation.personName}</div>
