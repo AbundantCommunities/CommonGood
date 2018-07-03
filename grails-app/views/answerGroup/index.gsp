@@ -7,6 +7,12 @@
     </head>
     <body>
             <div class="content-section">
+                    <div>&nbsp;</div>
+                    <div style="margin-top:-10px;"><h3>New Answer Ranking Report!</h3></div>
+                        <g:link action="rank">View</g:link><br/>
+                    <div>&nbsp;</div>
+                    <div>&nbsp;</div>
+
                     <div style="margin-top:-10px;"><h3>Manage Answer Groups</h3></div>
                     <g:if test="${ungroupedAnswerCount>1}">
                     <div>You have ${ungroupedAnswerCount} answers that are not grouped.</div>

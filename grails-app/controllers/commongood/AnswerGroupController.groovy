@@ -3,11 +3,27 @@ package commongood
 import org.abundantcommunityinitiative.commongood.handy.UnneighbourlyException
 
 class AnswerGroupController {
+
     def authorizationService
     def answerGroupService
 
+    def rank( ) {
+        def neighbourhood= session.neighbourhood
+        if( neighbourhood ) {
+            // We are STRICT! Every call to an action should check in with
+            // our authorization service.
+            authorizationService.neighbourhoodRead( neighbourhood.id, session )
+            log.info("Get answer group rankings for ${neighbourhood}")
+            def groups = answerGroupService.rank( neighbourhood.id )
+            [ groups: groups ]
+        } else {
+            // This is very bad. How did our filter allow this?
+            throw new UnneighbourlyException( )
+        }
+    }
+
     def index( ) {
-        Neighbourhood neighbourhood= session.neighbourhood
+        def neighbourhood= session.neighbourhood
         if( neighbourhood ) {
             // We are STRICT! Every call to an action should check in with
             // our authorization service.
@@ -31,7 +47,7 @@ class AnswerGroupController {
      * answers, questions and people that belong to neighbourhood.
      */
     def getUngroupedAnswers( ) {
-        Neighbourhood neighbourhood= session.neighbourhood
+        def neighbourhood= session.neighbourhood
         if( neighbourhood ) {
             // We are STRICT! Every call to an action should check in with
             // our authorization service.
@@ -56,7 +72,7 @@ class AnswerGroupController {
      * answers and answer groups that belong to neighbourhood.
     */
     def getGroupsForAnswers() {
-        Neighbourhood neighbourhood= session.neighbourhood
+        def neighbourhood= session.neighbourhood
         if( neighbourhood ) {
             // We are STRICT! Every call to an action should check in with
             // our authorization service.
@@ -102,7 +118,7 @@ class AnswerGroupController {
      * ids and the AnswerGroup belongs to neighbourhood.
     */
     def putAnswersInGroup() {
-        Neighbourhood neighbourhood= session.neighbourhood
+        def neighbourhood= session.neighbourhood
         if( neighbourhood ) {
             // We are STRICT! Every call to an action should check in with
             // our authorization service.
@@ -159,7 +175,7 @@ class AnswerGroupController {
      * Get all of the answers belonging to a given answer group id.
      */
     def getAnswers( ) {
-        Neighbourhood neighbourhood= session.neighbourhood
+        def neighbourhood= session.neighbourhood
         if( neighbourhood ) {
             // We are STRICT! Every call to an action should check in with
             // our authorization service.
@@ -179,7 +195,7 @@ class AnswerGroupController {
      * Remove a given answer from its answer group.
      */
     def removeAnswer( ) {
-        Neighbourhood neighbourhood= session.neighbourhood
+        def neighbourhood= session.neighbourhood
         if( neighbourhood ) {
             // We are STRICT! Every call to an action should check in with
             // our authorization service.

@@ -3,6 +3,7 @@ package commongood
 import org.abundantcommunityinitiative.commongood.handy.JsonWriter
 
 class AnswerController {
+
     static allowedMethods = [frequencies:'GET', get:'GET', save:'POST', saveInterview:'POST']
     def authorizationService
 

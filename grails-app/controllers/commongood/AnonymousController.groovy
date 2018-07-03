@@ -5,7 +5,6 @@ import org.abundantcommunityinitiative.commongood.handy.JsonWriter
 class AnonymousController {
     static allowedMethods = [hello:'POST']
 
-    // http://localhost:8080/CommonGood/anonymous/hello?neighbourhoodId=203&requestContext=activities&requestReference=bowling&residentName=Marco&emailAddress=marco@gmail.com&homeAddress=9301+93+St&phoneNumber=123-456-7890&comment=Sign+me+up
     def hello( ) {
         log.info "Anon says hoodId=${params.neighbourhoodId}, reqCtx=${params.requestContext}, " +
                 "reqRef=${params.requestReference}, name=${params.residentName}, email=${params.emailAddress}, " +
@@ -23,7 +22,7 @@ class AnonymousController {
                 ar.homeAddress = params.homeAddress
                 ar.phoneNumber = params.phoneNumber
                 ar.comment = params.comment
-                // write code to get ip address
+                // TODO Record user's IP address
                 ar.ipAddress = '1.2.3.4'
                 ar.requestContext = params.requestContext
                 ar.requestReference = params.requestReference

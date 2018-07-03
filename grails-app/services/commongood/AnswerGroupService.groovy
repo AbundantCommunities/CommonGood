@@ -2,9 +2,13 @@ package commongood
 
 import grails.transaction.Transactional
 import org.abundantcommunityinitiative.commongood.handy.UnneighbourlyException
+import groovy.sql.Sql
 
-//@Transactional
+@Transactional
 class AnswerGroupService {
+
+    // Grails injects the default DataSource
+    def dataSource
 
     def tooCommon = ['a', 'and', 'as', 'at', 'by', 'fewer', 'for', 'in', 'is',
             'less', 'like', 'more', 'no', 'of', 'on', 'or', 'out', 'the', 'to', 'with',
@@ -51,6 +55,31 @@ class AnswerGroupService {
             }
             return permutations
         }
+    }
+
+    def rank( Long neighbourhoodId ) {
+        // GORM can do outer joins but who wants that much pain!
+        def query =
+            '''SELECT
+                TRIM(LOWER(COALESCE(g.name,a.text))) AS theText,
+                COUNT(*) AS resultCount
+                FROM answer AS a
+                    LEFT OUTER JOIN answer_group AS g ON a.answer_group_id = g.id,
+                    question AS q
+                WHERE a.question_id = q.id
+                AND   q.neighbourhood_id = :neighbourhoodId
+                GROUP BY theText
+                ORDER BY resultCount DESC'''
+
+        final Sql sql = new Sql(dataSource)
+        def rawGroups = sql.rows( query, [neighbourhoodId:neighbourhoodId] )
+        log.info("Found ${rawGroups.size()} answer groups (including ungrouped answers)")
+
+        def groups = [ ]
+        rawGroups.each{
+            groups << [ name:it[0], count:it[1] ]
+        }
+        return groups
     }
 
     def countUngrouped( Neighbourhood neighbourhood ) {
