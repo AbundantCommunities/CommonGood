@@ -102,13 +102,13 @@
             <div id="transparent-overlay"></div>
 
             <div id="confirm-container" class="modal">
-                <div class="modal-title">Delete Confirmation</div>
+                <div class="modal-title">Remove From Group Confirmation</div>
                 <div>&nbsp;</div>
                 <div id="confirm-text-div">Are you sure you would like to delete the answer from the group?</div>
                 <div class="button-row">
                     <div class="button" onclick="JavaScript:dismissConfirmModal();">Cancel</div>
                     <div class="button-spacer"></div>
-                    <div class="button bold" onclick="JavaScript:deleteAnswer();">Delete</div>
+                    <div class="button bold" onclick="JavaScript:deleteAnswer();">Remove</div>
                 </div>
             </div>
 

@@ -14,24 +14,17 @@
             }
 
 
-
-            window.onload = function onWindowLoad() {
-                <g:if test="${flash.message}">
-                document.getElementById("button-div").style.top = "210px";
-                </g:if>
-            }
-
         </script>
 
         <style type="text/css">
 
             #group-button {
-                position: absolute;
-                left:90px;
+                left:50px;
                 height: 22px;
                 width: 80px;
                 font-weight: bold;
                 color: #B48B6A;
+                margin-top:10px;
                 padding-top: 4px;
                 text-align: center;
                 border: solid;
@@ -45,11 +38,13 @@
 
 
             #cancel-button {
-                position: absolute;
+                left:20px;
                 height: 22px;
                 width: 80px;
                 color: #B48B6A;
                 padding-top: 4px;
+                margin-left:5px;
+                margin-top:10px;
                 text-align: center;
                 border: solid;
                 border-radius: 5px;
@@ -59,21 +54,31 @@
                 background-color:#FFFFFF;
             }
 
+            div.sticky {
+                position: -webkit-sticky;
+                position: sticky;
+                margin-top:-30px;
+                top: 0;
+                margin-bottom:10px;
+            }
+
+
         </style>
 
     </head>
     <body>
             <div class="content-section">
-                <div id="button-div" style="position:fixed;top:110px;left:917px">
-                    <div id="group-button" onclick="groupAnswers();">Group</div>
-                    <g:link><div id="cancel-button">Cancel</div></g:link>
-                </div>
                 <div style="margin-top:-10px;"><h3>Ungrouped Answers</h3></div>
 
                 <div>To assist in identifying related answers, answers with more than one term may appear more than once in the list below.</div>
                 <div>&nbsp;</div>
                 <div>Select answers you would like to group then click the Group button.</div>
-                <div>&nbsp;</div>
+
+                <div class="sticky">
+                    <div style="display:inline-block;width:730px;"></div>
+                    <div id="group-button" style="display:inline-block;" onclick="groupAnswers();">Group</div>
+                    <g:link><div id="cancel-button" style="display:inline-block;">Cancel</div></g:link>
+                </div>
 
                 <div class="content-row bold">
                     <div class="cell20"></div>
