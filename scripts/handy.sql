@@ -4,24 +4,7 @@ UPDATE person SET hashed_password =
 'PBKDF2WithHmacSHA512|75000|64|256|o6auh3NPvmO/E5uLDV2AGxyDj7J6pBtc+kFrAUVt8QbKc40sx8w9/qpnh3x1V1HxgHhNXCrpuPmADqQiY8DX5w==|QK1tbv8gYSgcq6zddVFHI6XaVYKb5K9SAGuC4jHuOes=';
 */
 
-/*
-CREATE USER myapp PASSWORD 'sloj92GOM';
-CREATE DATABASE thehoods WITH OWNER myapp;
-DROP DATABASE thehoods;
-*/
-
-/* These delete statements are in the right order...
-DELETE FROM answer;
-UPDATE family SET interviewer_id = NULL;
-DELETE FROM domain_authorization;
-DELETE FROM person;
-DELETE FROM family;
-DELETE FROM address;
-DELETE FROM block;
-DELETE FROM question;
-DELETE FROM neighbourhood;
-DELETE FROM this_installation;
-
+/* Force "next primary key" to some value
 ALTER SEQUENCE hibernate_sequence RESTART WITH 7000;
 */
 

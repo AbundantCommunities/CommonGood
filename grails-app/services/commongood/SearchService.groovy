@@ -48,8 +48,8 @@ class SearchService {
             log.info "${session.user.logName} search hood ${neighbourhoodId} answers for '${qExp}', birthYears ${fromYear}:${toYear}"
             def select = 
                 '''SELECT ans.text, ans.would_assist AS assist, ans.note, p.id AS pid, p.first_names AS firstNames, p.last_name AS lastName, q.short_text AS question
-                 FROM Answer ans, Person p, Question q
-                 WHERE ((TO_TSVECTOR(REGEXP_REPLACE(ans.text,'[.,/,-]',',')) || TO_TSVECTOR(REGEXP_REPLACE(ans.note,'[.,/,-]',',')) @@ TO_TSQUERY( :qExp ))
+                 FROM Answer ans LEFT OUTER JOIN answer_group grp ON ans.answer_group_id = grp.id, Person p, Question q
+                 WHERE ((TO_TSVECTOR(REGEXP_REPLACE(ans.text,'[.,/,-]',',')) || TO_TSVECTOR(REGEXP_REPLACE(ans.note,'[.,/,-]',',')) || TO_TSVECTOR(REGEXP_REPLACE(COALESCE(grp.name,''),'[.,/,-]',',')) @@ TO_TSQUERY( :qExp ))
                         OR LOWER(ans.text) LIKE :qStr OR LOWER(ans.note) LIKE :qStr)
                  AND ans.person_id = p.id
                  AND ans.question_id = q.id ''' +
