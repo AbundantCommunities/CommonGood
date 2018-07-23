@@ -37,7 +37,7 @@
             }
 
 
-            #cancel-button {
+            #done-button {
                 left:20px;
                 height: 22px;
                 width: 80px;
@@ -77,7 +77,7 @@
                 <div class="sticky">
                     <div style="display:inline-block;width:730px;"></div>
                     <div id="group-button" style="display:inline-block;" onclick="groupAnswers();">Group</div>
-                    <g:link><div id="cancel-button" style="display:inline-block;">Cancel</div></g:link>
+                    <g:link><div id="done-button" style="display:inline-block;">Done</div></g:link>
                 </div>
 
                 <div class="content-row bold">
@@ -88,12 +88,7 @@
                 </div>
 
 
-
-
-
                 <form id="group-form" action="<g:createLink action='getGroupsForAnswers' />" method="POST">
-
-
 
                 <g:each in="${result}" var="permutation">
                     <div class="content-children-row">

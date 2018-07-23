@@ -76,12 +76,14 @@
                     <input type="text" hidden name="answerIds" value="${result.answerIds}"><br/>
 
                     <div class="content-children-row" style="vertical-align:middle;">
-                        <div class="cell20"><input id="new-group" type="radio" name="groupId" value="" onclick="newGroupRadioSelected();"/></div><div class="cell100"><input id="new-group-input" type="text" name="newGroupName" placeholder="New Group Name" disabled/></div>
+                        <div class="cell20"><input id="new-group" type="radio" name="groupId" value="" onclick="newGroupRadioSelected();"/></div>
+                        <div class="cell550"><input id="new-group-input" type="text" name="newGroupName" maxlength="30" placeholder="New Group Name" disabled/></div>
                     </div>
 
                     <g:each in="${result.groups}" var="group" status="i">
                     <div class="content-children-row">
-                        <div class="cell20"><input id="group${i}" type="radio" name="groupId" value="${group.id}" onclick="groupRadioClicked();"/></div><div class="cell100">${group.name}</div>
+                        <div class="cell20"><input id="group${i}" type="radio" name="groupId" value="${group.id}" onclick="groupRadioClicked();"/></div>
+                        <div class="cell550">${group.name}</div>
                     </div>
                     </g:each>
                     <div class="content-children-row"></div>
