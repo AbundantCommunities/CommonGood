@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" %>
+<!DOCTYPE html>
 
 <html>
     <head>
@@ -9,8 +9,49 @@
 
         <script type="text/javascript">
 
+            var checkboxInputDivs = [];
+            var selectDivs = [];
+            var answers = [];
+
+
             function groupAnswers() {
                 document.getElementById('group-form').submit();
+            }
+
+
+
+            function selectClicked(whichIndex) {
+                var theAnswer = answers[whichIndex];
+                var startIndex = whichIndex;
+                var endIndex = whichIndex;
+                while (endIndex+1 < answers.length && answers[endIndex+1]==theAnswer) {
+                    endIndex++;
+                }
+
+                for (var i=startIndex; i<=endIndex; i++) {
+                    checkboxInputDivs[i].checked=true;
+                }
+            }
+
+
+            window.onload = function onWindowLoad() {
+
+                var lastAnswer = "";
+
+                for (i=0;i<checkboxInputDivs.length;i++) {
+
+                    if (answers[i] != lastAnswer) {
+                        // Now a different answer. Check if next answer is the same.
+                        if (i+1 < checkboxInputDivs.length) {
+                            if (answers[i] == answers[i+1]) {
+                                // next answer is the same, so inject 'select same' link
+                                document.getElementById('sd-'+i).innerHTML = '<a href="javascript:void(0)" onclick="selectClicked('+i+');">select<br/>same</a>';
+                            }
+                        }
+                    }
+
+                    lastAnswer = answers[i];
+                }
             }
 
 
@@ -82,20 +123,42 @@
 
                 <div class="content-row bold">
                     <div class="cell20"></div>
-                    <div class="cell500">Answer</div>
+                    <div class="cell40"></div>
+                    <div class="cell450">Answer</div>
                     <div class="cell190">Question</div>
                     <div class="cell170">Person</div>
                 </div>
 
-
                 <form id="group-form" action="<g:createLink action='getGroupsForAnswers' />" method="POST">
 
-                <g:each in="${result}" var="permutation">
-                    <div class="content-children-row">
-                        <div class="cell20"><input type="checkbox" name="cga-${permutation.answerId}"/></div>
-                        <div class="cell500">${permutation.permutedText}</div>
+                <script type="text/javascript">
+                    var divBgColorIsGray = true;
+                    var currentAnswer = "";
+                </script>
+
+                <g:each in="${result}" var="permutation" status="i">
+                    <script type="text/javascript">
+                        if (currentAnswer != '${permutation.permutedText}') {
+                            divBgColorIsGray = !divBgColorIsGray;
+                        }
+                        currentAnswer = '${permutation.permutedText}';
+                        if (divBgColorIsGray) {
+                            document.write('<div class="content-children-row" style="background-color:#ebf2f2">');
+                        } else {
+                            document.write('<div class="content-children-row">');
+                        }
+                    </script>
+
+                        <div class="cell20"><input id="cb-${i}" type="checkbox" name="cga-${permutation.answerId}"/></div>
+                        <div id="sd-${i}" class="cell40" style="font-size:10px;"></div>
+                        <div id="ad-${i}" class="cell450">${permutation.permutedText}</div>
                         <div class="cell190">${permutation.shortQuestion}</div>
                         <div class="cell170">${permutation.personName}</div>
+                        <script type="text/javascript">
+                            checkboxInputDivs[${i}]=document.getElementById('cb-${i}');
+                            selectDivs[${i}]=document.getElementById('sd-${i}');
+                            answers[${i}]="${permutation.permutedText}";
+                        </script>
                     </div>
                 </g:each>
                 </form>
