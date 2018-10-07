@@ -24,12 +24,35 @@
                 var theAnswer = answers[whichIndex];
                 var startIndex = whichIndex;
                 var endIndex = whichIndex;
+
+                var allSelected = true;
+                var allDeselected = true;
+
+                if (checkboxInputDivs[startIndex].checked) {
+                    allDeselected = false;
+                } else {
+                    allSelected = false;
+                }
+                
                 while (endIndex+1 < answers.length && answers[endIndex+1]==theAnswer) {
                     endIndex++;
+                    if (checkboxInputDivs[endIndex].checked) {
+                        allDeselected = false;
+                    } else {
+                        allSelected = false;
+                    }
+                }
+
+                var newCheckedValue = false;
+
+                if (allSelected) {
+                    newCheckedValue = false;
+                } else {
+                    newCheckedValue = true;
                 }
 
                 for (var i=startIndex; i<=endIndex; i++) {
-                    checkboxInputDivs[i].checked=true;
+                    checkboxInputDivs[i].checked=newCheckedValue;
                 }
             }
 
