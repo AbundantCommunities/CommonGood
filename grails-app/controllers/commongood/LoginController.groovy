@@ -11,6 +11,8 @@ class LoginController {
     def domainAuthorizationService
 
     def index( ) {
+        response.setHeader("Strict-Transport-Security", "max-age=86400")
+
         // Tomcat's default 30 minute timeout is too brief.
         // Force it to several hours; later we might make it configurable.
         session.setMaxInactiveInterval( 6 * 3600 )
