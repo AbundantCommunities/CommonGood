@@ -1,5 +1,5 @@
 /*
-2018.4.6, CG v1.12.1
+2018.11.21, CG v1.13.1
 
 One way to create a new Neighbourhood.
 
@@ -13,6 +13,17 @@ Insert a new row with the following statement.
 */
 INSERT INTO neighbourhood( id, version, date_created, last_updated, logo, name, accept_anonymous_requests, email_anonymous_requests )
 VALUES ( 88888, 0, CURRENT_DATE, CURRENT_DATE, null, 'Wakanda Community', TRUE, TRUE );
+
+/* Pick some unused PKs for questions...
+*/
+INSERT INTO question( id, version, code, date_created, last_updated, neighbourhood_id, order_within_questionnaire, text, short_text )
+VALUES( 1, 0, '1', CURRENT_DATE, CURRENT_DATE, 88888, 100, 'What is your vision for our neighbourhood?', 'Vision?');
+
+INSERT INTO question( id, version, code, date_created, last_updated, neighbourhood_id, order_within_questionnaire, text, short_text )
+VALUES( 2, 0, '2', CURRENT_DATE, CURRENT_DATE, 88888, 200, 'What interests or activities would you enjoy participating in with neighbours?', 'Participate?');
+
+INSERT INTO question( id, version, code, date_created, last_updated, neighbourhood_id, order_within_questionnaire, text, short_text )
+VALUES( 3, 0, '3', CURRENT_DATE, CURRENT_DATE, 88888, 300, 'What skills, abilities or experiences would you be willing to share with neighbours?', 'Share?');
 
 /*  Move the new block from Bedford to the new neighbourhood.
 */
