@@ -32,10 +32,7 @@ class PasswordResetService {
     static private String emailPrivateKey = System.getenv("CG_EMAIL_PRIVATE_KEY")
     static {
         if( emailDomainName && emailPrivateKey ) {
-            println "\n~~~~~~~~~~~~~~~~~~  SECURITY RISK!  ~~~~~~~~~~~~~~~~~~"
-            println "EmailDomainName = ${emailDomainName}"
-            println "EmailPrivateKey = ${emailPrivateKey}"
-            println "\n~~~~~~~~~~~~~~~~~~  SECURITY RISK!  ~~~~~~~~~~~~~~~~~~"
+            println "Picked up CG_EMAIL_DOMAIN = ${emailDomainName}"
         } else {
             throw new RuntimeException("Missing environment variable(s) CG_EMAIL_DOMAIN and/or CG_EMAIL_PRIVATE_KEY")
         }
