@@ -17,7 +17,6 @@
         <p>We asked neighbours these questions. Select one to see the answers!</p>
         <br/>
         <g:each in="${questions}" var="question">
-            <p><a>${}</a>
             <g:link action="answers" id="${question.id}">${question.text}</g:link>
             </p>
         </g:each>
