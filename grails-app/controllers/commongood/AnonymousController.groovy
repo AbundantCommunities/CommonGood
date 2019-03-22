@@ -4,6 +4,7 @@ import org.abundantcommunityinitiative.commongood.handy.JsonWriter
 
 class AnonymousController {
     static allowedMethods = [hello:'POST']
+    def anonymousService
 
     def hello( ) {
         log.info "Anon says hoodId=${params.neighbourhoodId}, reqCtx=${params.requestContext}, " +
@@ -37,5 +38,23 @@ class AnonymousController {
         }
 
         render JsonWriter.write( result )
+    }
+    
+    def questions( ) {
+        Long neighbourhoodId = params.long('id')
+        def results = anonymousService.getQuestions( neighbourhoodId )
+        if( results ) {
+            log.info "Got questions for ${results.neighbourhood}"
+            results
+        } else {
+            log.warn "Failed to get neighbourhood id ${neighbourhoodId}"
+        }
+    }
+    
+    def answers( ) {
+        Long questionId = params.long('id')
+        [
+            question: Question.get( questionId )
+        ]
     }
 }
