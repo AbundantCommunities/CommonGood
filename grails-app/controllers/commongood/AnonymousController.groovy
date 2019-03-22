@@ -47,7 +47,7 @@ class AnonymousController {
             log.info "Got questions for ${results.neighbourhood}"
             results
         } else {
-            log.warn "Failed to get neighbourhood id ${neighbourhoodId}"
+            log.warn "Cannot process neighbourhood id ${neighbourhoodId}"
         }
     }
     

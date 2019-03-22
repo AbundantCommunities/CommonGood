@@ -17,10 +17,18 @@ class AnonymousService {
     def getQuestions( Long neighbourhoodId ) {
         def hood = Neighbourhood.get( neighbourhoodId )
         if( hood ) {
-            [
-                neighbourhood: hood,
-                questions: Question.findAllByNeighbourhood( hood,  [sort: 'orderWithinQuestionnaire'] )
-            ]
+            if( hood.featureFlags.contains('disclose') ) {
+                [
+                    neighbourhood: hood,
+                    questions: Question.findAllByNeighbourhood( hood,  [sort: 'orderWithinQuestionnaire'] )
+                ]
+            } else {
+                log.warn "Won't disclose questions of " + hood
+                return null
+            }
+        } else {
+            log.warn "Invalid neighbourhood id: ${neighbourhoodId}"
+            return null
         }
     }
 }
