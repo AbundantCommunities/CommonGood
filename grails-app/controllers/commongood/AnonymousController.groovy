@@ -54,6 +54,7 @@ class AnonymousController {
     def answers( ) {
         Long questionId = params.long('id')
         [
+            // simple, because we rely on Javacript in the GSP!
             question: Question.get( questionId )
         ]
     }
