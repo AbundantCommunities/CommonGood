@@ -6,7 +6,7 @@ class Person {
     String lastName
     Integer birthYear
     Boolean birthYearIsEstimated
-    String emailAddress
+    String emailAddress  // in a perfect world, would be unique in database
     String phoneNumber
     String note
     Integer orderWithinFamily
@@ -41,6 +41,8 @@ class Person {
     }
 
     static constraints = {
+        // we allowed dup email addresses in the early years...
+        // ...too bad, because enforcing uniqueness is preferable.
         hashedPassword nullable: true, size: 1..900
         birthYearIsEstimated defaultValue: "FALSE", nullable: true
     }
