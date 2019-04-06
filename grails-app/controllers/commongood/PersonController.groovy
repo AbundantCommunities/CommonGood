@@ -14,12 +14,13 @@ class PersonController {
             Integer personId = params.int('id')
             authorizationService.personWrite( personId, session )
             log.info "${LogAid.who(session)} SAVE changes to person/${personId}"
-            if( personService.update(personId,params) ) {
-                flash.message = "We updated that person"
+            Person thePerson = personService.update( personId, params )
+            if( thePerson ) {
+                flash.message = "We saved your changes to ${thePerson.fullName}"
                 flash.nature = 'SUCCESS'
             } else {
-                // UI should prevent dup email address
-                flash.message = "FAILED to update person (duplicate email address?)"
+                // UI should prevent us from getting this far
+                flash.message = "FAILED to save your changes becuase: duplicate email address"
                 flash.nature = 'WARNING'
             }
             redirect controller:'navigate', action:'familymember', id:personId
@@ -28,12 +29,13 @@ class PersonController {
             def familyId = params.int('familyId')
             authorizationService.familyWrite( familyId, session )
             log.info "${LogAid.who(session)} ADD person to family/${familyId}"
-            if( personService.insert(familyId,params) ) {
-                flash.message = "We added that person to the database"
+            Person thePerson = personService.insert(familyId,params)
+            if( thePerson ) {
+                flash.message = "We added ${thePerson.fullName} to the database"
                 flash.nature = 'SUCCESS'
             } else {
                 // UI should prevent dup email address
-                flash.message = "FAILED to save that person (duplicate email address?)"
+                flash.message = "FAILED to add new person to database: duplicate email address"
                 flash.nature = 'WARNING'
             }
             redirect controller:'navigate', action:'family', id:familyId
