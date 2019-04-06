@@ -5,8 +5,9 @@ class Neighbourhood {
     String Logo // Not sure how we will store this image
     String featureFlags // like "featureA featureK featureW"
 
-    Boolean acceptAnonymousRequests
+    Boolean acceptAnonymousRequests // allow Connect Me requests?
     Boolean emailAnonymousRequests
+    String disclosureKey // disclose anonymous info on our public pages?
 
     // The centre of this neighbourhood
     BigDecimal centreLatitude  // in degrees; negative is south of equator
@@ -32,7 +33,16 @@ class Neighbourhood {
         centreLatitude  nullable: true, scale: 5
         centreLongitude nullable: true, scale: 5
     }
-    
+
+    public void createDisclosureKey( ) {
+        if( disclosureKey ) {
+            throw new RuntimeException("Disclosure key exists")
+        } else {
+            // Create string of 40 random hex digits
+            disclosureKey = org.abundantcommunityinitiative.commongood.handy.TokenGenerator.get( 40 )
+        }
+        
+    }
     public String toString( ) {
         return "NH ${id} ${name}"
     }
