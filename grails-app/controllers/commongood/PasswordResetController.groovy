@@ -17,7 +17,7 @@ class PasswordResetController {
     def sendEmail( ) {
         // We do very little to assess the email address's format.
         // If it's in the database then we've already decided the format is good.
-        String emailAddress = params.emailAddress
+        String emailAddress = params.emailAddress.trim( )
         if( emailAddress.indexOf( "@" ) > 0 ) {
             // If the service likes the emailAddress it will make a new PasswordReset and
             // send a reset email that references the PasswordReset.
@@ -62,8 +62,8 @@ class PasswordResetController {
     }
 
     def reset( ) {
-        def pwd1 = params.password1
-        def pwd2 = params.password2
+        def pwd1 = params.password1.trim( )
+        def pwd2 = params.password2.trim( )
         def reset = session.passwordReset
         println "Retrieved reset from session: ${reset}"
         // TODO Explore session.passwordReset no longer attached to Hibernate session

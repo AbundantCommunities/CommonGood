@@ -40,6 +40,9 @@ class LoginController {
     def authenticate( ) {
         session.user = null
         session.neighbourhood = null
+        params.emailAddress = params.emailAddress.trim( )
+        params.password = params.password.trim( )
+
         log.info("Authenticate ${params.emailAddress}")
 
         def user = authenticateService.check( params.emailAddress, params.password )
