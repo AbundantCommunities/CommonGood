@@ -216,7 +216,7 @@
                                 <div><input id="toAgeInput" type="text" name="toAge" value="" onKeyUp="checkAdvancedEnter(event);" size="10"/><span id="toValidImg" style="display:none;">&nbsp;<asset:image style="vertical-align:middle;" src="invalid.png" width="16px" height="16px" /></span></div>
                             </div>
                         </div>
-                        <input type="hidden" name="contactInfo" value="no"/>
+                        <input type="hidden" name="contactInfo" value="yes"/>
                     </form>
                     <div id="searchDescription" style="font-size:smaller;margin-bottom:15px;margin-top:15px;min-height:30px;"></div>
                     <div class="button bold" onclick="doAdvancedSearch();">Search</div>

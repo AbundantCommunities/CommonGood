@@ -65,7 +65,7 @@
                 <form id="search-form" action="<g:createLink controller='search' />" method="get">
                     <div id="search"><asset:image id="search-image" src="search.png" width="18" height="18"/>
                         <input id="search-criteria" type="text" placeholder="search" name="q" value="" onKeyPress="checkEnter(event);"/>
-                        <input type="hidden" name="contactInfo" value="no"/>
+                        <input type="hidden" name="contactInfo" value="yes"/>
                     </div>
                 </form>
             </div>

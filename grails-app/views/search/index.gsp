@@ -7,10 +7,37 @@
         <asset:javascript src="copy2clipboard.js"/>
         <script type="text/javascript">
         
+            var people = [];
+            var answers = [];
+
             function showContactInfo() {
-                document.getElementById('show-contact-form').submit();
+                var allContactInfoElements = document.getElementsByClassName('contactInfo');
+                var allSearchResultsElements = document.getElementsByClassName('searchResults');
+
+                for (i=0;i<allSearchResultsElements.length;i++) {
+                    allSearchResultsElements[i].style.display = 'none';
+                }
+
+                for (i=0;i<allContactInfoElements.length;i++) {
+                    allContactInfoElements[i].style.display = '';
+                }
+
+                // document.getElementById('show-contact-form').submit();
             }
             function showSearchResults() {
+                var allContactInfoElements = document.getElementsByClassName('contactInfo');
+                var allSearchResultsElements = document.getElementsByClassName('searchResults');
+
+                for (i=0;i<allSearchResultsElements.length;i++) {
+                    allSearchResultsElements[i].style.display = '';
+                }
+
+                for (i=0;i<allContactInfoElements.length;i++) {
+                    allContactInfoElements[i].style.display = 'none';
+                }
+
+
+
                 document.getElementById('show-search-form').submit();
             }
 
@@ -93,6 +120,7 @@
 
             <g:if test="${contactInfo=='yes'}">
             function constructLine(fNames,lName,phone,email,address) {
+
                 var lineIsClean = true;
                 var constructedLine = '';
 
@@ -132,107 +160,49 @@
                 return constructedLine;
             }
 
+
             function emailList() {
 
-                var pFNames = [];
-                var pLName = [];
-                var pPhone = [];
-                var pEmail = [];
-                var pAddress = [];
-
-                var aQuestion = [];
-                var aAnswer = [];
-                var aFNames = []
-                var aLName = [];
-                var aPhone = []
-                var aEmail = [];
-                var aAddress = [];
-
-                var aAssistQuestion = [];
-                var aAssistAnswer = [];
-                var aAssistFNames = [];
-                var aAssistLName = [];
-                var aAssistPhone = [];
-                var aAssistEmail = [];
-                var aAssistAddress = [];
-
-                <g:if test="${people.size() > 0}">
-                    <g:each in="${people}" var="person">
-                        pFNames.push(decodeEntities('${person[1]}'));
-                        pLName.push(decodeEntities('${person[2]}'));
-                        pPhone.push(decodeEntities('${person[3]}'));
-                        pEmail.push(decodeEntities('${person[4]}'));
-                        pAddress.push(decodeEntities('${person[5]}'));
-                    </g:each>
-                </g:if>
-
-                <g:if test="${answers.size() > 0}">
-                    <g:each in="${answers}" var="answer">
-                        <g:if test="${answer.assist}">
-                            aAssistQuestion.push(decodeEntities('${answer.question}'));
-                            aAssistAnswer.push(decodeEntities('${answer.text}'));
-                            aAssistFNames.push(decodeEntities('${answer.firstNames}'));
-                            aAssistLName.push(decodeEntities('${answer.lastName}'));
-                            aAssistPhone.push(decodeEntities('${answer.phoneNumber}'));
-                            aAssistEmail.push(decodeEntities('${answer.emailAddress}'));
-                            aAssistAddress.push(decodeEntities('${answer.homeAddress}'));
-                        </g:if>
-                        <g:else>
-                            aQuestion.push(decodeEntities('${answer.question}'));
-                            aAnswer.push(decodeEntities('${answer.text}'));
-                            aFNames.push(decodeEntities('${answer.firstNames}'));
-                            aLName.push(decodeEntities('${answer.lastName}'));
-                            aPhone.push(decodeEntities('${answer.phoneNumber}'));
-                            aEmail.push(decodeEntities('${answer.emailAddress}'));
-                            aAddress.push(decodeEntities('${answer.homeAddress}'));
-                        </g:else>
-                    </g:each>
-                </g:if>
-
-                var lineIsClean;
+                var wouldAssistBody = 'Those who would assist:\n\n';
+                var atLeastOneAssist = false;
                 var body = '\n\n\n\n-----------------------------------------------------------\nSearch results from CommonGood:\n\n';
 
-                if (pLName.length>0) {
+                if (people.length>0) {
                     body = body+constructQueryDescription(peopleDescription,'${q}','${fromAge}','${toAge}',${people.size()},${answers.size()});
                     body = body+'\n\n';
-                    for (i=0; i<pLName.length;i++) {
-                        body = body+constructLine(pFNames[i],pLName[i],pPhone[i],pEmail[i],pAddress[i]);
+                    for (i=0; i<people.length;i++) {
+                        body = body+constructLine(people[i].firstNames,people[i].lastName,people[i].phoneNumber,people[i].emailAddress,people[i].homeAddress);
                     }
                     body = body+'\n';
                 }
 
-                if (${answers.size()}>0) {
-                    if (pLName.length>0) {
+                if (answers.length>0) {
+                    if (people.length>0) {
                         body = body+'\n';
                     }
                     body = body+constructQueryDescription(answersDescription,'${q}','${fromAge}','${toAge}',${people.size()},${answers.size()});
                     body = body+':\n\n';
                 }
 
-                if (aLName.length>0) {
-                    for (i=0;i<aLName.length;i++) {
-                        body = body+'Answer: '+aAnswer[i]+' (Question: '+aQuestion[i]+')\n';
-                        body = body+constructLine(aFNames[i],aLName[i],aPhone[i],aEmail[i],aAddress[i]);
-                        body = body+'\n';
+                if (answers.length>0) {
+                    for (i=0;i<answers.length;i++) {
+                        if (!answers[i].assist) {
+                            body = body+'Answer: '+answers[i].answer+' (Question: '+answers[i].question+')\n';
+                            body = body+constructLine(answers[i].firstNames,answers[i].lastName,answers[i].phoneNumber,answers[i].emailAddress,answers[i].homeAddress)+'\n';
+                        } else {
+                            atLeastOneAssist = true;
+                            wouldAssistBody = wouldAssistBody+'Answer: '+answers[i].answer+' (Question: '+answers[i].question+')\n';
+                            wouldAssistBody = wouldAssistBody+constructLine(answers[i].firstNames,answers[i].lastName,answers[i].phoneNumber,answers[i].emailAddress,answers[i].homeAddress)+'\n';
+                        }
                     }
-                }
 
-                if (aAssistLName.length>0) {
-                    body = body+'Those who would assist:\n\n';
-                    for (i=0;i<aAssistLName.length;i++) {
-                        body = body+'Answer: '+aAssistAnswer[i]+' (Question: '+aAssistQuestion[i]+')\n';
-                        body = body+constructLine(aAssistFNames[i],aAssistLName[i],aAssistPhone[i],aAssistEmail[i],aAssistAddress[i]);
-                        body = body+'\n';
+                    if (atLeastOneAssist) {
+                        body = body+wouldAssistBody;
+                    } else {
+                        body = body+'No one has offered to assist.\n';
                     }
-                }
 
-                if (aLName.length>0&&aAssistLName.length==0) {
-                    body = body+'No one has offered to assist.\n';
                 }
-
-                // body = encodeURIComponent(body);
-                // var email = 'mailto:?body='+body;
-                // document.location.href = email;
 
                 var numRows = 20;
                 var title = 'Email Contact Information';
@@ -241,6 +211,7 @@
                 presentForCopy('emaildiv',body,numRows,title,description,copyContentTitle);
 
             }
+
 
             function doEmailOne(emailAddress) {
                 if (emailAddress) {
@@ -252,6 +223,96 @@
                 }
             }
 
+
+            function downloadSupported() {
+                var a = document.createElement('a');
+                return typeof a.download != "undefined";
+            }
+
+
+            function csvFriendlyValue(value) {
+
+                var friendlyValue = value;
+
+                // .includes() not supported in some browsers that otherwise support CommonGood's download search results feature.
+                // Using .indexOf instead.
+                if (friendlyValue.indexOf(",")>=0 || friendlyValue.indexOf('"')>=0 || friendlyValue.indexOf('\n')>=0 || friendlyValue.indexOf('\r')>=0 || friendlyValue.indexOf('\r\n')>=0) {
+                    if (friendlyValue.indexOf('"')>=0) {
+                        friendlyValue = friendlyValue.replace(/"/g,'""');
+                    }
+                    friendlyValue = '"'+friendlyValue+'"';
+                }
+
+                return friendlyValue;
+
+            }
+
+
+            function doDownload() {
+                if (downloadSupported) {
+                    if (people.length > 0 || answers.length > 0) {
+                        
+                        var filename = 'CG search results.csv';
+
+                        var content;
+
+                        if (answers.length>0) {
+                            content = "Question,Answer,Name,Phone,Email,Address\n";
+                        } else {
+                            content = "Name,Phone,Email,Address\n";
+                        }
+                        if (people.length > 0) {
+                            for (i=0;i<people.length;i++) {
+                                if (answers.length>0) {
+                                    content = content + ",,";
+                                }
+                                content = content+csvFriendlyValue(people[i].firstNames)+" "
+                                    +csvFriendlyValue(people[i].lastName)+","
+                                    +csvFriendlyValue(people[i].phoneNumber)+","
+                                    +csvFriendlyValue(people[i].emailAddress)+","
+                                    +csvFriendlyValue(people[i].homeAddress)+"\n";
+                            }
+                        }
+
+                        if (answers.length > 0) {
+                            for (i=0;i<answers.length;i++) {
+                                content = content+csvFriendlyValue(answers[i].question)+","
+                                    +csvFriendlyValue(answers[i].answer)+","
+                                    +csvFriendlyValue(answers[i].firstNames)+" "
+                                    +csvFriendlyValue(answers[i].lastName)+","
+                                    +csvFriendlyValue(answers[i].phoneNumber)+","
+                                    +csvFriendlyValue(answers[i].emailAddress)+","
+                                    +csvFriendlyValue(answers[i].homeAddress)+"\n";
+                            }
+                        }
+
+                        try {
+
+                            var element = document.createElement('a');
+                            element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(content));
+                            element.setAttribute('download', filename);
+                            element.style.display = 'none';
+                            element.innerHTML = 'hello world';
+                            document.body.appendChild(element);
+
+                            element.click();
+
+                            document.body.removeChild(element);
+
+                        } catch (e) {
+                            alert("Your browser does not support CommonGood's download feature. Please upgrade your browser and try again.");
+                        }
+
+                    } else {
+                        alert('There are no search results to download.');
+                    }
+
+
+
+                } else {
+                    alert("Your browser does not support CommonGood's download feature. Please upgrade your browser and try again.")
+                }
+            }
 
 
             </g:if>
@@ -287,37 +348,15 @@
                 <div style="width:910px;">
                     <div class="content-heading" style="display:inline-block;">&nbsp;</div>
                     <g:if test="${people.size()>0 || answers.size()>0}">
-                        <g:if test="${contactInfo=='yes'}">
-                            <div style="display:inline-block;float:right;"><span style="font-weight:bold;">Show:</span>  <a href="#" onclick="showSearchResults();">Search Results</a> | Contact Info</div>
-                            <form id="show-search-form" action="<g:createLink controller='search' />" method="get">
-                                <input id="show-contact-criteria" type="hidden" name="q" value="${q}" />
-                                <input type="hidden" name="contactInfo" value="no"/>
-                                <input type="hidden" name="fromAge" value="${fromAge}"/>
-                                <input type="hidden" name="toAge" value="${toAge}"/>
-                            </form>
-                        </g:if>
-                        <g:else>
-                            <div style="display:inline-block;float:right;"><span style="font-weight:bold;">Show:</span>  Search Results | <a href="#" onclick="showContactInfo();">Contact Info</a></div>
-                            <form id="show-contact-form" action="<g:createLink controller='search' />" method="get">
-                                <input id="show-contact-criteria" type="hidden" name="q" value="${q}" />
-                                <input type="hidden" name="contactInfo" value="yes"/>
-                                <input type="hidden" name="fromAge" value="${fromAge}"/>
-                                <input type="hidden" name="toAge" value="${toAge}"/>
-                            </form>
-                        </g:else>
+                        <div class="contactInfo" style="display:none;float:right;"><span style="font-weight:bold;">Show:</span>  <a href="Javascript:showSearchResults();">Search Results</a> | Contact Info</div>
+                        <div class="searchResults" style="display:inline-block;float:right;"><span style="font-weight:bold;">Show:</span>  Search Results | <a href="Javascript:showContactInfo();">Contact Info</a></div>
                     </g:if>
                 </div>
 
                 <g:if test="${people.size()>0 || answers.size()>0}">
-                    <g:if test="${contactInfo=='yes'}">
-                        <div style="width:910px;">
-                            <div style="display:inline-block;float:right;"><a href="#" onclick="emailList();">Email Contact List</a></div>
-                        </div>
-                    </g:if>
-                </g:if>
-
-                <g:if test="${people.size()>0 || answers.size()>0}">
-                    <div style="width:910px;">&nbsp;</div>
+                    <div style="width:910px;">
+                        <div style="display:inline-block;float:right;"><span><a href="JavaScript:emailList();">Email Contact List</a> | </span><a href='JavaScript:doDownload();'>Download Results</a></div>
+                    </div>
                 </g:if>
 
                 <g:if test="${people.size() == 0 && answers.size() == 0}">
@@ -329,16 +368,20 @@
                         <h4 id="peopleQueryDescription"></h4>
                     </div>
                     <g:each in="${people}" var="person">
-                        <div class="content-children-row">
-                            <g:if test="${contactInfo=='yes'}">
-                                <div class="cell190"><g:link controller="navigate" action="familymember" id="${person[0]}">${person[1]} ${person[2]}</g:link></div>
-                                <div class="cell120">${person[3]}</div>
-                                <div class="cell300"><a href="#" onclick="doEmailOne('${person[4]}');">${person[4]}</a></div>
-                                <div class="cell250">${person[5]}</div>
-                            </g:if>
-                            <g:else>
+                        <script type="text/javascript">
+                            var aPerson = {firstNames:decodeEntities('${person[1]}'), lastName:decodeEntities('${person[2]}'), phoneNumber:decodeEntities('${person[3]}'), emailAddress:decodeEntities('${person[4]}'), homeAddress:decodeEntities('${person[5]}')};
+                            people.push(aPerson);
+                        </script>
+                        <div class="content-children-row contactInfo" style="display:none;">
+                            <div class="cell190 name"><g:link controller="navigate" action="familymember" id="${person[0]}">${person[1]} ${person[2]}</g:link></div>
+                            <div class="cell120 phone">${person[3]}</div>
+                            <div class="cell300 email"><a href="#" onclick="doEmailOne('${person[4]}');">${person[4]}</a></div>
+                            <div class="cell250 address">${person[5]}</div>
+                        </div>
+                        <div class="content-children-row searchResults" >
+                            <div>
                                 <g:link controller="navigate" action="familymember" id="${person[0]}">${person[1]} ${person[2]}</g:link>
-                            </g:else>
+                            </div>
                         </div>
                     </g:each>
                     <div class="content-children-row" style="height:5px;"></div>
@@ -349,20 +392,22 @@
                         <h4><span id="answersQueryDescription"></span> <span style="font-weight:normal;">(<span style="font-weight:bold;">bold</span> = would assist):</span></h4>
                     </div>
                     <g:each in="${answers}" var="answer">
-                        <div class="content-children-row">
-                            <g:if test="${contactInfo=='yes'}">
-                                <g:link controller="navigate" action="familymember" id="${answer.pid}"><div class="cell190 <g:if test='${answer.assist}'>bold</g:if>">${answer.firstNames} ${answer.lastName}</div></g:link>
-                                <div class="cell120">${answer.phoneNumber}</div>
-                                <div class="cell300"><a href="#" onclick="doEmailOne('${answer.emailAddress}');">${answer.emailAddress}</a></div>
-                                <div class="cell250">${answer.homeAddress}</div>
-                            </g:if>
-                            <g:else>
-                                <div class="cell550">
-                                    <span class="<g:if test='${answer.assist}'>bold</g:if>">${answer.text}</span> 
-                                    <span style="font-size:x-small;">(${answer.question})</span>
-                                </div>
-                                <g:link controller="navigate" action="familymember" id="${answer.pid}"><div class="cell300">${answer.firstNames} ${answer.lastName}</div></g:link>
-                            </g:else>
+                        <script type="text/javascript">
+                            var anAnswer = {question:decodeEntities('${answer.question}'), answer:decodeEntities('${answer.text}'), firstNames:decodeEntities('${answer.firstNames}'), lastName:decodeEntities('${answer.lastName}'), phoneNumber:decodeEntities('${answer.phoneNumber}'), emailAddress:decodeEntities('${answer.emailAddress}'), homeAddress:decodeEntities('${answer.homeAddress}'), assist:${answer.assist}};
+                            answers.push(anAnswer);
+                        </script>
+                        <div class="content-children-row contactInfo" style="display:none;">
+                            <g:link controller="navigate" action="familymember" id="${answer.pid}"><div class="cell190 name <g:if test='${answer.assist}'>bold</g:if>">${answer.firstNames} ${answer.lastName}</div></g:link>
+                            <div class="cell120 phone">${answer.phoneNumber}</div>
+                            <div class="cell300 email"><a href="#" onclick="doEmailOne('${answer.emailAddress}');">${answer.emailAddress}</a></div>
+                            <div class="cell250 address">${answer.homeAddress}</div>
+                        </div>
+                        <div class="content-children-row searchResults" >
+                            <div class="cell550">
+                                <span class="<g:if test='${answer.assist}'>bold</g:if>">${answer.text}</span> 
+                                <span style="font-size:x-small;">(${answer.question})</span>
+                            </div>
+                            <g:link controller="navigate" action="familymember" id="${answer.pid}"><div class="cell300">${answer.firstNames} ${answer.lastName}</div></g:link>
                         </div>
                     </g:each>
                     <div class="content-children-row" style="height:5px;"></div>
