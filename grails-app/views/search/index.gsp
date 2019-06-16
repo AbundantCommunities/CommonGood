@@ -252,7 +252,7 @@
                 if (downloadSupported) {
                     if (people.length > 0 || answers.length > 0) {
                         
-                        var filename = 'CG search results.csv';
+                        var filename = 'CommonGood Search Results.csv';
 
                         var content;
 
@@ -300,17 +300,15 @@
                             document.body.removeChild(element);
 
                         } catch (e) {
-                            alert("Your browser does not support CommonGood's download feature. Please upgrade your browser and try again.");
+                            alert("Your browser does not support CommonGood's download feature. Try https://updatemybrowser.org.");
                         }
 
                     } else {
                         alert('There are no search results to download.');
                     }
 
-
-
                 } else {
-                    alert("Your browser does not support CommonGood's download feature. Please upgrade your browser and try again.")
+                    alert("Your browser does not support CommonGood's download feature.  Try https://updatemybrowser.org.")
                 }
             }
 
