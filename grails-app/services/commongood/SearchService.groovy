@@ -205,8 +205,6 @@ class SearchService {
         // This is our urgent, ugly but simple fix.
         if( fromYear < 1850 ) {
             if( toYear > 2200 ) {
-                println "NO FROM OR TO YEAR"
-//              return 'AND p.birth_year != :fromYear AND p.birth_year != :toYear'
                 return ''
             } else {
                 println "TO YEAR is ${toYear}"
@@ -229,7 +227,6 @@ class SearchService {
         // BOTH :fromYear and :toYear MUST be in the return value.
         if( fromYear < 1850 ) {
             if( toYear > 2200 ) {
-                println "NO FROM OR TO YEAR"
                 return 'AND p.birthYear != :fromYear AND p.birthYear != :toYear'
             } else {
                 println "TO YEAR is ${toYear}"
