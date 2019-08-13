@@ -48,7 +48,7 @@
                         if ((/[a-z]/.test(pw)) && (/[0-9]/.test(pw))) {
                             return true;
                         } else {
-                            alert('A password of that length must have at least one lower case letter and one number.');
+                            alert('A password of that length must have at least one lowercase letter and one number.');
                         }
                     } else {
                         alert('A password must have at least 8 characters.');
