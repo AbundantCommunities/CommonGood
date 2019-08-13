@@ -39,17 +39,35 @@
                 currentlyHidden = !currentlyHidden;
             }
 
+
+            function pwOkay(pw) {
+                if (pw.length >= 16) {
+                    return true;
+                } else {
+                    if (pw.length>=8) {
+                        if ((/[a-z]/.test(pw)) && (/[0-9]/.test(pw))) {
+                            return true;
+                        } else {
+                            alert('A password of that length must have at least one lower case letter and one number.');
+                        }
+                    } else {
+                        alert('A password must have at least 8 characters.');
+                    }
+                }
+                return false;
+            }
+
+
             function passwordsOkay(pw1, pw2) {
-                if (pw1 == pw2) {
-                    if ((pw1.length >= 6)) {
+                // First check if pw1 is valid
+                if (pwOkay(pw1)) {
+                    // If pw1 okay, make sure pw1 and pw2 match.
+                    if (pw1 == pw2) {
                         return true;
                     } else {
-                        alert ("Your password must be at least 6 characters in length.");
+                        alert ("You must enter your new password twice. The passwords you entered do not match.");
                         return false;
                     }
-                } else {
-                    alert ("You must enter your new password twice. The passwords you entered do not match.");
-                    return false;
                 }
             }
 

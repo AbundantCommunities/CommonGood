@@ -95,7 +95,7 @@
                 <div>Reset Password:</div>
                 <div>To reset your password, start by entering the email address you use to login, then click Submit.</div>
                 <form id="reset-form" onsubmit="return false;" action="<g:createLink action='sendEmail'/>" method="POST">
-                    <div style="height:30px;">Email address: <input id="emailAddressInput" type="text" name="emailAddress" value="" onKeyPress="checkEnter(event);"/></div>
+                    <div style="height:30px;">Email address: <input id="emailAddressInput" type="email" name="emailAddress" value="" onKeyPress="checkEnter(event);"/></div>
                 </form>
                 <div id="submit-div" class="no-bottom-space" style="display:block;"><a href="#" onclick="doSubmit();">Submit</a></div>
                 <div id="wait-div" class="no-bottom-space" style="display:none;">Please wait ...</div>

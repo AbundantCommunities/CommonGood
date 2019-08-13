@@ -60,6 +60,19 @@
                 currentlyHidden = !currentlyHidden;
             }
 
+
+            function emailOk(email) {
+                if (email.length > 0) {
+                    if (email.length <= 255) {
+                        var re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+                        return re.test(email);
+                    } else {
+                        return false;
+                    }
+                }
+                return true;
+            }
+            
             function doSubmit() {
 
                 var expirationDate = new Date ();
@@ -81,7 +94,11 @@
                     document.cookie="email="+document.getElementById('emailAddressInput').value+";expires="+expirationDate+";";
                 }
 
-                document.getElementById('loginForm').submit();
+                if (emailOk(document.getElementById('emailAddressInput').value)) {
+                    document.getElementById('loginForm').submit();
+                } else {
+                    alert('That email address is invalid.');
+                }
             }
 
 
@@ -114,7 +131,7 @@
             <div id="content-detail">
                 <div>Login to CommonGood:</div>
                 <form id="loginForm" action="<g:createLink action='authenticate'/>" method="post">
-                    <div>Email address <input id="emailAddressInput" type="text" name="emailAddress" value="" onKeyPress="checkEnter(event);"/></div>
+                    <div>Email address <input id="emailAddressInput" type="email" name="emailAddress" value="" onKeyPress="checkEnter(event);"/></div>
                     <div>Password <input id="pwHidden" type="password" name="hiddenPassword" value="" onKeyPress="checkEnter(event);"/><input id="pwShown" type="text" name="shownPassword" value="" style="display:none;" onKeyPress="checkEnter(event);"/>&nbsp;<a id="showHideButton" href="#" onclick="showHidePw();">show</a></div>
                     <input id="submitPassword" type="hidden" name="password" value=""/>
                 </form>
