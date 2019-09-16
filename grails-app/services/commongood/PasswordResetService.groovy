@@ -23,7 +23,9 @@ class PasswordResetService {
         // path should begin with the slash character, like "/myController/myAction"
         def g = grailsApplication.mainContext.getBean('org.codehaus.groovy.grails.plugins.web.taglib.ApplicationTagLib')
         def absoluteURL = g.createLink( absolute:true, uri:path )
-        println ".... ABSOLUTE URL: ${absoluteURL}"
+        if( absoluteURL.startsWith('http:') ) {
+            absoluteURL = 'https' + absoluteURL.substring(4)
+        }
         return absoluteURL
     }
 

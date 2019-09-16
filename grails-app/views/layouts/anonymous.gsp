@@ -18,7 +18,7 @@
 </head>
 
 <body>
-    <div id="grailsLogo" role="banner"><a href="http://www.abundantcommunityinitiative.org/"><asset:image src="aci-logo-colour.png" alt="ACI Canada"/></a>
+    <div id="grailsLogo" role="banner"><a href="https://www.abundantcommunityinitiative.org/"><asset:image src="aci-logo-colour.png" alt="ACI Canada"/></a>
         CommonGood, a service of Abundant Community Initiative Canada
     </div>
     <g:layoutBody/>
