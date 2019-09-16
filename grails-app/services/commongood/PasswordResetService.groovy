@@ -7,7 +7,9 @@ import com.cognish.password.FreshRandomness
 import com.cognish.password.HashSpec
 import com.cognish.password.Hasher
 
-// For emailing via MailGun
+// For emailing via MailGun, using HttpBuilder-NG
+// As of June, 2019, using lib/http-builder-ng-core-1.0.2.jar
+// For testing, try scripts/SendEmail.groovy
 import static groovyx.net.http.HttpBuilder.configure
 import static groovyx.net.http.ContentTypes.JSON
 import groovyx.net.http.*
