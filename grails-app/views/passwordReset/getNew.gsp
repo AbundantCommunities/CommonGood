@@ -48,7 +48,7 @@
                         if ((/[a-z]/.test(pw)) && (/[0-9]/.test(pw))) {
                             return true;
                         } else {
-                            alert('A password of that length must have at least one lowercase letter and one number.');
+                            alert('A password of that length must have at least one lowercase letter and one digit.');
                         }
                     } else {
                         alert('A password must have at least 8 characters.');
@@ -140,17 +140,14 @@
                 </g:if>
                 <g:if test="${quality.equals('stale')}">
                     <div>You have requested to reset your password, but your request has expired.</div>
-                    <div>To reset your password again, click 'forgot password' on the CommonGood Login page then submit your email address.</div>
                     <div>Go to <a href="../login">Login</a></div>
                 </g:if>
                 <g:if test="${quality.equals('inactive')}">
                     <div>You have requested to reset your password, but your request has already been used.</div>
-                    <div>To reset your password again, go to the Login page and click 'forgot password', then submit your email address.</div>
                     <div>Go to <a href="../login">Login</a></div>
                 </g:if>
                 <g:if test="${quality.equals('nof')}">
                     <div>You have requested to reset your password, but your request cannot be processed.</div>
-                    <div>To try again, go to the Login page and click 'forgot password', then submit your email address.</div>
                     <div>Go to <a href="../login">Login</a></div>
                 </g:if>
             </div>
