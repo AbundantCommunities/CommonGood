@@ -1,8 +1,6 @@
 package org.abundantcommunityinitiative
 
 import commongood.*
-import com.cognish.password.HashSpec
-import com.cognish.password.Hasher
 
 class AdminController {
 
