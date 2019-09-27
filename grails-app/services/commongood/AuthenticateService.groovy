@@ -1,7 +1,7 @@
 package commongood
 
-import com.cognish.password.HashSpec
-import com.cognish.password.Hasher
+import org.abundantcommunityinitiative.commongood.HashSpec
+import org.abundantcommunityinitiative.commongood.Hasher
 import grails.transaction.Transactional
 
 @Transactional

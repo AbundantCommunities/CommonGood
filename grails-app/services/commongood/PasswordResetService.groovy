@@ -3,9 +3,9 @@ package commongood
 import grails.transaction.Transactional
 
 // For generating random tokens
-import com.cognish.password.FreshRandomness
-import com.cognish.password.HashSpec
-import com.cognish.password.Hasher
+import org.abundantcommunityinitiative.commongood.FreshRandomness
+import org.abundantcommunityinitiative.commongood.HashSpec
+import org.abundantcommunityinitiative.commongood.Hasher
 
 // For emailing via MailGun, using HttpBuilder-NG
 // As of June, 2019, using lib/http-builder-ng-core-1.0.2.jar
