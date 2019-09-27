@@ -2,7 +2,7 @@ package commongood
 
 class Neighbourhood {
     String name
-    String Logo // Not sure how we will store this image
+    String logo // Not sure how we will store this image
     String featureFlags // like "featureA featureK featureW"
 
     Boolean acceptAnonymousRequests // allow Connect Me requests?
