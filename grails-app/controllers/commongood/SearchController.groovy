@@ -6,21 +6,11 @@ class SearchController {
 
     def searchService
     def authorizationService
-    def mapService
 
     def form( ) {
         log.debug "${LogAid.who(session)} ${session.authorized} asked for search form"
         [
             authorized: session.authorized
-        ]
-    }
-
-    def map() {
-        def nhood = session.neighbourhood
-        authorizationService.neighbourhoodRead( nhood.id, session )
-        [
-            q: params.q,
-            answersByBlock: mapService.answers( nhood, params.q )
         ]
     }
 

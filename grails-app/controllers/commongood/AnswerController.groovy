@@ -19,7 +19,7 @@ class AnswerController {
 
         // Result is like [[biking,17],[dancing,4], ...]
         def freqs = Answer.executeQuery(
-                'select trim(lower(a.text)), count(a) as ca from Answer as a where a.question.id=:qId group by trim(lower(a.text)) order by ca desc',
+                'SELECT TRIM(LOWER(a.text)) AS ans, COUNT(a) AS ca FROM Answer AS a WHERE a.question.id=:qId GROUP BY TRIM(LOWER(a.text)) order by ca desc, TRIM(LOWER(a.text))',
                 [qId:questionId] )
 
         if( params.json ) {
