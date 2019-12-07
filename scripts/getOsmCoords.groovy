@@ -1,13 +1,13 @@
-@Grab('io.github.http-builder-ng:http-builder-ng-okhttp:1.0.3')
+@Grab('io.github.http-builder-ng:http-builder-ng-okhttp:1.0.4')
 import static groovyx.net.http.HttpBuilder.configure
 import groovy.sql.Sql
 import groovy.json.JsonSlurper
 
 def sql = Sql.newInstance('jdbc:postgresql://localhost/thehoods', 'myapp', 'sloj92GOM', 'org.postgresql.Driver')
-def rows = sql.rows('SELECT a.id, a.text FROM address AS a, block AS b WHERE a.block_id = b.id AND b.neighbourhood_id = 2000 ORDER BY a.id')
+def rows = sql.rows('SELECT a.id AS adr_id, a.text, gr.id AS gr_id FROM geolocate_request AS gr, address AS a WHERE a.id = gr.address_id ORDER BY gr.id')
 // sql.connection.close( )
 
-println "Retrieved ${rows.size()} assets"
+println "Retrieved ${rows.size()} addresses"
 def jsonParser = new JsonSlurper( )
 
 def http = configure {
@@ -15,42 +15,37 @@ def http = configure {
 }
 
 rows.each{
-    def stAddress = it.text + " NW"
-    if( stAddress.length() > 3 ) {
-        if( stAddress.substring(stAddress.length()-2).equals('NW') ) {
-            def plussed = stAddress.replaceAll(' ','+')
-            def address = "${plussed},Edmonton,AB,Canada"
+    def address = it.text + " NW,Edmonton,AB,Canada"
 
-            def responseContent = http.get {
-                request.uri.path = '/search'
-                request.uri.query = [format:'json', q:address]
-            }
+    def responseContent = http.get {
+        request.uri.path = '/search'
+        request.uri.query = [format:'json', q:address]
+    }
 
-            def json = responseContent
-            if( json.size() == 1 ) {
-                if( (json[0].class=='building') || (json[0].class=='place') ) {
-                    println "${stAddress}, ${json[0].lat}, ${json[0].lon}"
-                    // json[0].lat
-                    
-                    // UPDATE THE ADDRESS RECORD
-                    sql.execute \
-                        "UPDATE address SET latitude=?, longitude=?, geolocate_status=? WHERE id=?",
-                        [ 1, 2, 3 ]
-                    
-                } else {
-                    println "ERROR class is neither building nor place for ${it.id} ${stAddress}: ${json}"
-                }
-            } else {
-                println "ERROR Not exactly one item for id ${it.id} ${stAddress}: ${json}"
-            }
-            sleep 12000
+    def json = responseContent
+    if( json.size() == 1 ) {
+        if( (json[0].class=='building') || (json[0].class=='place') ) {
+            println "${address}, ${json[0].lat}, ${json[0].lon}"
+
+            sql.execute \
+                'UPDATE address SET latitude=?, longitude=?, geolocate_state=? WHERE id=?', 
+                [ new BigDecimal(json[0].lat), new BigDecimal(json[0].lon), 'S', it.adr_id ]
 
         } else {
-            println "ERROR ${it.id} ${stAddress} does not end in NW"
+            println "ERROR 'class' is neither 'building' nor 'place' for ${it.adr_id} ${address}: ${json}"
+            sql.execute \
+                'UPDATE address SET geolocate_state=? WHERE id=?', [ 'F', it.adr_id ]
         }
     } else {
-        println "ERROR ${it.id} ${stAddress} too short"
+        println "ERROR ${json.size()} nominatim item(s) retturned for ${it.adr_id} ${address}: ${json}"
+        sql.execute \
+            'UPDATE address SET geolocate_state=? WHERE id=?', [ 'F', it.adr_id ]
     }
-}
+
+    sql.execute \
+        'DELETE FROM geolocate_request WHERE id=?', [ it.gr_id ]
+
+    sleep 10 * 1000
+  }
 
 return
