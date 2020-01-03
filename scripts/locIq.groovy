@@ -1,4 +1,4 @@
-@Grab('io.github.http-builder-ng:http-builder-ng-okhttp:1.0.4')
+//@Grab('io.github.http-builder-ng:http-builder-ng-okhttp:1.0.4')
 import LocationIq.ApiException
 import com.locationiq.client.model.Location
 import com.locationiq.client.api.SearchApi
@@ -22,7 +22,7 @@ key.setApiKey( accessToken );
 
 SearchApi api = new SearchApi( )
 
-String q = '9301 93 St NW,Edmonton,AB,Canada'
+String q = '9324 95 St NW,Edmonton,AB,Canada'
 String format = 'json'
 Integer normalizecity = 0
 Integer addressdetails = null

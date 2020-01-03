@@ -1,6 +1,31 @@
 @Grab('io.github.http-builder-ng:http-builder-ng-core:1.0.4')
 //@Grab('io.github.http-builder-ng:http-builder-ng-okhttp:1.0.4')
 
+/*
+ * Connects to your local 'thehoods' database.
+ * Reads all the address ids that are in geolocate_request.
+ * For each address...
+ *   Appends " NW,Edmonton,AB,Canada" to address.text
+ *   Asks LocationIQ to geolocate the address
+ *   If successful then save lat+long to address row
+ *   Either way, update address.geolocate_state
+ *   Delete the geolocate_request row
+ *   Sleep several seconds
+ * Log every address to standard out.
+ * WARNING: No transaction control (could update an address and not delete the request).
+ */
+
+// Create geolocate requests for an entire neighbourhood
+//INSERT INTO geolocate_request
+//SELECT a.id,
+//       a.version,
+//       a.id,
+//       CURRENT_TIMESTAMP
+//FROM address AS a,
+//     block AS b
+//WHERE a.block_id = b.id
+//AND   b.neighbourhood_id = 2000
+
 import static groovyx.net.http.HttpBuilder.configure
 import groovy.sql.Sql
 import groovy.json.JsonSlurper
@@ -23,7 +48,8 @@ def http = configure {
     }
 }
 
-def accessToken = 'pk.c38db45c9734358e5da9d2da20aec392' // markg@shiho
+// Use a "throw away" token:
+def accessToken = 'pk.21b6d06ed56552a6fb321dbc084e2cde' // markg@shiho
 //def accessToken = 'pk.3bc69031431258dca' // https://github.com/location-iq/leaflet-geocoder
 
 rows.each{

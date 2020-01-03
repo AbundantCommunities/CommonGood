@@ -494,7 +494,7 @@
                     <g:each in="${navChildren.children}" var="child">
                         <div <g:if test="${authorized.canWrite()==Boolean.TRUE}">id="${child.id}"</g:if> class="content-children-row">
                             <g:if test="${authorized.canWrite()==Boolean.TRUE}"><span class="drag-handle"><asset:image src="reorder-row.png" width="18" height="18" style="vertical-align:middle;"/></span></g:if>
-                            <g:link controller='Navigate' action='${navChildren.childType.toLowerCase()}' id='${child.id}'>${child.address}</g:link>:
+                            <g:link controller='Navigate' action='${navChildren.childType.toLowerCase()}' id='${child.id}'>${child.text}</g:link>:
                             <g:if test="${child.families.size()>0}">
                             <g:each in="${child.families}" var="family" status="i">
                                 <g:link controller='Navigate' action='family' id='${family.id}'><g:if test="${!family.interviewed}"><span style='font-weight:bold'></g:if>${family.name}<g:if test="${!family.interviewed}"></span></g:if></g:link><g:if test="${i+1<child.families.size()}">,</g:if>
@@ -533,7 +533,7 @@
                         <select id="addresses-select" onchange="addressSelected();">
                             <option value="0"></option>
                             <g:each in="${navChildren.children}" var="child">
-                                <option value="${child.id}">${child.address}</option>
+                                <option value="${child.id}">${child.text}</option>
                             </g:each>
                         </select>
                         <script type="text/javascript">
