@@ -4,6 +4,15 @@
     <head>
         <meta name="layout" content="navigate"/>
         <title>CommonGood - Block</title>
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+            integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+            crossorigin=""/>
+        <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
+            integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+            crossorigin=""></script>
+        <style type="text/css">
+            #mapid { height: 400px; }
+        </style>
         <script type="text/javascript">
 
             <g:if test="${authorized.canWrite()==Boolean.TRUE}">
@@ -386,6 +395,8 @@
 
                 document.getElementById("block-detail").setAttribute("style","min-height:94px;height:"+newHeight+"px;");
 
+
+
             }
 
 
@@ -489,7 +500,7 @@
             </div>
             <div class="content-section">
                 <div class="content-heading">Addresses for ${navSelection.levelInHierarchy} ${navSelection.description}<g:if test="${authorized.canWrite()==Boolean.TRUE}">&nbsp;&nbsp;<a href="#" onclick="presentNewModal();" style="font-weight:normal;">+ Add New Addresses</a></g:if></div>
-                <div id="listWithHandle">
+                <div id="listWithHandle" style="width:500px;display:inline-block;vertical-align:top;">
                 <g:if test="${navChildren.children.size() > 0}">
                     <g:each in="${navChildren.children}" var="child">
                         <div <g:if test="${authorized.canWrite()==Boolean.TRUE}">id="${child.id}"</g:if> class="content-children-row">
@@ -510,6 +521,88 @@
                     <div class="content-children-row light-text">no addresses</div>
                 </g:else>
                 </div>
+                <div style="display:inline-block;width:400px;border:solid gray;"><div id="mapid"></div></div>
+                <script type="text/javascript">
+
+                    var addressLatLongs = [];
+
+                    <g:each in="${navChildren.children}" var="child">
+                        addressLatLongs.push({addressId:${child.id}, text:"${child.text}", latitude:${child.latitude}, longitude:${child.longitude}});
+                    </g:each>
+
+                    // Calculate center point.
+                    latMin = 0;
+                    latMax = 0;
+                    longMin = 0;
+                    longMax = 0;
+
+                    if (addressLatLongs.length>0) {
+                        latMin=addressLatLongs[0].latitude;
+                        latMax=addressLatLongs[0].latitude;
+                        longMin=addressLatLongs[0].longitude;
+                        longMax=addressLatLongs[0].longitude;
+                        for (i=0; i< addressLatLongs.length; i++) {
+                            if (addressLatLongs[i].latitude<latMin) {
+                                latMin=addressLatLongs[i].latitude;
+                            }
+                            if (addressLatLongs[i].latitude>latMax) {
+                                latMax=addressLatLongs[i].latitude;
+                            }
+                            if (addressLatLongs[i].longitude<longMin) {
+                                longMin=addressLatLongs[i].longitude;
+                            }
+                            if (addressLatLongs[i].longitude>longMax) {
+                                longMax=addressLatLongs[i].longitude;
+                            }
+                        }
+                    }
+
+                    var centerLatitude = 0.0;
+                    var centerLongitude = 0.0;
+
+                    // Check if at least one address with latlong specified.
+                    if ((Math.abs(latMin)+Math.abs(latMax)+Math.abs(longMin)+Math.abs(longMax))>0) {
+                        centerLatitude = latMax-((latMax-latMin)/2);
+                        centerLongitude = longMax-((longMax-longMin)/2);
+                    }
+
+                    var mymap;
+
+                    if (centerLatitude!=0 || centerLongitude!=0) {
+                        mymap = L.map('mapid').setView([centerLatitude,centerLongitude], 17);
+                    } else {
+                        // Temporary: if no addresses with latlong, then center and zoom to neighbourhood.
+                        // Eventually we'll have center point and zoom level for the block.
+                        mymap = L.map('mapid').setView([53.56722,-113.43821], 15);
+                    }
+
+                    L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+                        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+                        maxZoom: 19,
+                        id: 'mapbox/streets-v11',
+                        accessToken: 'pk.eyJ1IjoidGltMTIzIiwiYSI6ImNrMmp2YjVoOTFpbWszbnFnems5ZjM2bW8ifQ.oNovhkW55h19gppWuNagQw'
+                    }).addTo(mymap);
+
+                    var markers = [];
+
+                    if (addressLatLongs.length > 0) {
+                        for (i=0; i<addressLatLongs.length; i++) {
+                            var aMarker = L.circleMarker([addressLatLongs[i].latitude,addressLatLongs[i].longitude], {radius:4}).addTo(mymap);
+                            aMarker.bindPopup('<a href="/CommonGood/navigate/address/'+addressLatLongs[i].addressId+'">'+addressLatLongs[i].text+'</a>');
+                            markers.push(aMarker);
+
+                        }
+                    }
+
+                    // var popup = L.popup();
+                    // function onMapClick(e) {
+                    //     popup
+                    //         .setLatLng(e.latlng)
+                    //         .setContent(e.latlng.toString())
+                    //         .openOn(mymap);
+                    // }
+                    // mymap.on('click', onMapClick);
+                </script>
                 <div class="content-children-row"></div>
                 <form id="reorder-form" action="<g:createLink controller='Block' action='reorder' />" method="POST">
                     <input id="reorder-this-id" type="hidden" name="addressId" value=""/>
@@ -518,11 +611,10 @@
             </div>
             <div id="transparent-overlay">
             </div>
-
             <g:if test="${authorized.canWrite()==Boolean.TRUE}">
             <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}">
 
-                <div id="new-bc-container" class="modal" style="height:205px;">
+                <div id="new-bc-container" class="modal" style="height:205px;z-index:2001;">
                     <div class="modal-title">Add Block Connector</div>
                     <div id="select-block" class="modal-row">Select block that the Block Connector lives on: 
                         <select id="blocks-select" onchange="blockSelected();">
@@ -563,7 +655,7 @@
                     </div>
                 </div>
 
-                <div id="edit-container" class="modal">
+                <div id="edit-container" class="modal" style="z-index:2001;">
                     <div class="modal-title">Edit Block</div>
                     <form id="edit-form" action="<g:createLink controller='block' action='save' />" method="POST">
                         <input type="hidden" name="id" value="${navSelection.id}" />
@@ -579,7 +671,7 @@
 
             </g:if>
 
-            <div id="new-container" class="modal">
+            <div id="new-container" class="modal" style="z-index:2001;">
                 <div class="modal-title">New Addresses</div>
                 <div class="footnote">Add multiple addresses by pressing Return after each.</div>
                 <form id="new-form" action="<g:createLink controller='block' action='addAddresses' />" method="POST">
