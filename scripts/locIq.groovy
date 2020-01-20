@@ -34,6 +34,7 @@ Integer namedetails = null
 Integer dedupe = null
 Integer extratags = null
 Integer statecode = null
+
 List<Location> response = api.search(q, format, normalizecity, addressdetails, viewbox, bounded, limit, acceptLanguage, countrycodes, namedetails, dedupe, extratags, statecode)
 
 for( locn in response ) {
