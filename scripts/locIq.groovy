@@ -1,4 +1,3 @@
-//@Grab('io.github.http-builder-ng:http-builder-ng-okhttp:1.0.4')
 import LocationIq.ApiException
 import com.locationiq.client.model.Location
 import com.locationiq.client.api.SearchApi
@@ -22,7 +21,7 @@ key.setApiKey( accessToken );
 
 SearchApi api = new SearchApi( )
 
-String q = '9324 95 St NW,Edmonton,AB,Canada'
+String q = '9302 93 St NW,Edmonton,AB,Canada'
 String format = 'json'
 Integer normalizecity = 0
 Integer addressdetails = null
@@ -38,5 +37,6 @@ Integer statecode = null
 List<Location> response = api.search(q, format, normalizecity, addressdetails, viewbox, bounded, limit, acceptLanguage, countrycodes, namedetails, dedupe, extratags, statecode)
 
 for( locn in response ) {
-    println( "FOUND ${locn}" )
+    // locn is instance of com.locationiq.client.model.Location
+    println( "FOUND ${locn.displayName} at ${locn.lat}, ${locn.lon}" )
 }
