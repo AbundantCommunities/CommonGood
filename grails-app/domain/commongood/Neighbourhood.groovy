@@ -12,6 +12,7 @@ class Neighbourhood {
     // The centre of this neighbourhood
     BigDecimal centreLatitude  // in degrees; negative is south of equator
     BigDecimal centreLongitude  // in degrees; negative is east of Greenwich
+    String boundary  // A WKT string, like a MULTIPOLYGON
 
     Date dateCreated
     Date lastUpdated
@@ -24,6 +25,7 @@ class Neighbourhood {
         emailAnonymousRequests defaultValue: "TRUE"
         centreLatitude  defaultValue: 0.0
         centreLongitude defaultValue: 0.0
+        boundary defaultValue: "''", type: 'text'
     }
 
     static constraints = {

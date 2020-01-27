@@ -9,6 +9,7 @@ class Block {
     // The centre of this block
     BigDecimal centreLatitude  // in degrees; negative is south of equator
     BigDecimal centreLongitude  // in degrees; negative is east of Greenwich
+    String boundary  // A WKT string, like a MULTIPOLYGON
 
     Date dateCreated
     Date lastUpdated
@@ -25,6 +26,7 @@ class Block {
     static mapping = {
         centreLatitude  defaultValue: 0.0
         centreLongitude defaultValue: 0.0
+        boundary defaultValue: "''", type: 'text'
     }
     
     String getDisplayName( ) {
