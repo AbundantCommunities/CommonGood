@@ -25,7 +25,7 @@ class Neighbourhood {
         emailAnonymousRequests defaultValue: "TRUE"
         centreLatitude  defaultValue: 0.0
         centreLongitude defaultValue: 0.0
-        boundary defaultValue: "''", type: 'text'
+        boundary type: 'text'
     }
 
     static constraints = {
@@ -34,6 +34,7 @@ class Neighbourhood {
         // One metre is close enough for our purposes.
         centreLatitude  nullable: true, scale: 5
         centreLongitude nullable: true, scale: 5
+        boundary nullable: true
     }
 
     public void createDisclosureKey( ) {
