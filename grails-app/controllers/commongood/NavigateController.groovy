@@ -61,9 +61,7 @@ class NavigateController {
                     [level:'Neighbourhood', id: theBlock.neighbourhood.id, description: theBlock.neighbourhood.name]
                 ],
 
-            navSelection: [ levelInHierarchy:'Block', id:blockId, description:theBlock.description,
-                            code:theBlock.code, orderWithinNeighbourhood:theBlock.orderWithinNeighbourhood,
-                            blockConnectors:blockConnectors ],
+            navSelection: [ levelInHierarchy:'Block', block:theBlock, blockConnectors:blockConnectors ],
 
             navChildren:
                 [

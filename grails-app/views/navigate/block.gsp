@@ -19,8 +19,8 @@
             <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}">
 
                 function populateEditModal() {
-                    document.getElementById('blockCodeInput').value = decodeEntities("${navSelection.code}");
-                    document.getElementById('blockDescriptionInput').value = decodeEntities("${navSelection.description}");
+                    document.getElementById('blockCodeInput').value = decodeEntities("${navSelection.block.code}");
+                    document.getElementById('blockDescriptionInput').value = decodeEntities("${navSelection.block.description}");
                 }
 
                 function presentEditModal() {
@@ -169,7 +169,7 @@
                             }
                             blocksSelect.options[blocksSelect.options.length] = new Option(selectText, blocks[i].id);
 
-                            if (blocks[i].id == ${navSelection.id}) {
+                            if (blocks[i].id == ${navSelection.block.id}) {
                                 optionToSelect = i;
                             }
                         }
@@ -445,26 +445,26 @@
                 <div class="content-heading">${navSelection.levelInHierarchy}</div>
 
                 <div class="content-row">
-                    <div class="content-row-item" style="width:210px;">Block code: </div><div class="content-row-item">${navSelection.code}</div>
+                    <div class="content-row-item" style="width:210px;">Block code: </div><div class="content-row-item">${navSelection.block.code}</div>
                 </div>
                 <div class="content-row">
-                    <div class="content-row-item" style="width:210px;">Description: </div><div class="content-row-item">${navSelection.description}</div>
+                    <div class="content-row-item" style="width:210px;">Description: </div><div class="content-row-item">${navSelection.block.description}</div>
                 </div>
 
                 <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE && authorized.canWrite()==Boolean.TRUE}">
                     <div id="content-actions-left-side">
-                        <div class="content-left-action"><g:link controller='block' action='contactList' id='${navSelection.id}'>Contact List</g:link></div>
+                        <div class="content-left-action"><g:link controller='block' action='contactList' id='${navSelection.block.id}'>Contact List</g:link></div>
                         <div class="content-left-action">&nbsp;</div>
                     </div>
 
                     <div id="content-actions">
                         <div class="content-action"><a href="#" onclick="presentEditModal();">Edit</a></div>
-                        <div class="content-action"><g:link controller="Delete" action="confirmBlock" id="${navSelection.id}">Delete</g:link></div>
+                        <div class="content-action"><g:link controller="Delete" action="confirmBlock" id="${navSelection.block.id}">Delete</g:link></div>
                     </div>
                 </g:if>
                 <g:else>
                     <div id="content-actions" style="left:820px;">
-                        <div class="content-action"><g:link controller='block' action='contactList' id='${navSelection.id}'>Contact List</g:link></div>
+                        <div class="content-action"><g:link controller='block' action='contactList' id='${navSelection.block.id}'>Contact List</g:link></div>
                     </div>
                 </g:else>
 
@@ -473,7 +473,7 @@
                     <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}"><script type="text/javascript">var existingBCs = [];</script></g:if>
                     <g:if test="${navSelection.blockConnectors.size() > 0}">
                         <g:each in="${navSelection.blockConnectors}" var="bc" status="i">
-                            <div style="height:20px;"><g:link controller='Navigate' action='familymember' id='${bc.id}'>${bc.fullName}</g:link><g:if test="${authorized.forNeighbourhood()==Boolean.TRUE && authorized.canWrite()==Boolean.TRUE}"> <span style="font-size:smaller;">(<a id="revoke|${bc.id}|${navSelection.id}" href="#" onclick="revokeBC(this);">revoke</a>)</span></g:if></div>
+                            <div style="height:20px;"><g:link controller='Navigate' action='familymember' id='${bc.id}'>${bc.fullName}</g:link><g:if test="${authorized.forNeighbourhood()==Boolean.TRUE && authorized.canWrite()==Boolean.TRUE}"> <span style="font-size:smaller;">(<a id="revoke|${bc.id}|${navSelection.block.id}" href="#" onclick="revokeBC(this);">revoke</a>)</span></g:if></div>
                             <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE && authorized.canWrite()==Boolean.TRUE}"><script type="text/javascript">existingBCs.push(${bc.id});</script></g:if>
                         </g:each>
                         <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}">
@@ -499,7 +499,7 @@
 
             </div>
             <div class="content-section">
-                <div class="content-heading">Addresses for ${navSelection.levelInHierarchy} ${navSelection.description}<g:if test="${authorized.canWrite()==Boolean.TRUE}">&nbsp;&nbsp;<a href="#" onclick="presentNewModal();" style="font-weight:normal;">+ Add New Addresses</a></g:if></div>
+                <div class="content-heading">Addresses for ${navSelection.levelInHierarchy} ${navSelection.block.description}<g:if test="${authorized.canWrite()==Boolean.TRUE}">&nbsp;&nbsp;<a href="#" onclick="presentNewModal();" style="font-weight:normal;">+ Add New Addresses</a></g:if></div>
                 <div id="listWithHandle" style="width:500px;display:inline-block;vertical-align:top;">
                 <g:if test="${navChildren.children.size() > 0}">
                     <g:each in="${navChildren.children}" var="child">
@@ -521,6 +521,9 @@
                     <div class="content-children-row light-text">no addresses</div>
                 </g:else>
                 </div>
+
+
+                <g:if test="${navSelection.block.neighbourhood.hasFeature('gismaps')}">
                 <div style="display:inline-block;width:400px;border:solid gray;"><div id="mapid"></div></div>
                 <script type="text/javascript">
 
@@ -603,6 +606,9 @@
                     // }
                     // mymap.on('click', onMapClick);
                 </script>
+                </g:if>  <%-- End of test for featureFlag gismaps --%>
+
+
                 <div class="content-children-row"></div>
                 <form id="reorder-form" action="<g:createLink controller='Block' action='reorder' />" method="POST">
                     <input id="reorder-this-id" type="hidden" name="addressId" value=""/>
@@ -644,7 +650,7 @@
                                 <option value=""></option>
                             </select>
                         </div>
-                        <input type="hidden" name="id" value="${navSelection.id}" />
+                        <input type="hidden" name="id" value="${navSelection.block.id}" />
                     </form>
                     <div id="button-row-div">
                         <div class="button-row">
@@ -658,7 +664,7 @@
                 <div id="edit-container" class="modal" style="z-index:2001;">
                     <div class="modal-title">Edit Block</div>
                     <form id="edit-form" action="<g:createLink controller='block' action='save' />" method="POST">
-                        <input type="hidden" name="id" value="${navSelection.id}" />
+                        <input type="hidden" name="id" value="${navSelection.block.id}" />
                         <div class="modal-row">Block code: <input id="blockCodeInput" type="text" name="code" value=""/></div>
                         <div class="modal-row">Block description: <input id="blockDescriptionInput" type="text" name="description" value=""/></div>
                     </form>
@@ -675,7 +681,7 @@
                 <div class="modal-title">New Addresses</div>
                 <div class="footnote">Add multiple addresses by pressing Return after each.</div>
                 <form id="new-form" action="<g:createLink controller='block' action='addAddresses' />" method="POST">
-                    <input type="hidden" name="id" value="${navSelection.id}" />
+                    <input type="hidden" name="id" value="${navSelection.block.id}" />
                     <div class="modal-row">Addresses: <br/><textarea id="addressesInput" class="note-style" name="addresses" cols=56 rows=8></textarea></div>
                 </form>
                 <div class="button-row">

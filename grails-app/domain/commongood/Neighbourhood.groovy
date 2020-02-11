@@ -37,6 +37,10 @@ class Neighbourhood {
         boundary nullable: true
     }
 
+    public Boolean hasFeature( feature ) {
+        featureFlags.contains( feature )
+    }
+
     public void createDisclosureKey( ) {
         if( disclosureKey ) {
             throw new RuntimeException("Disclosure key exists")
@@ -46,6 +50,7 @@ class Neighbourhood {
         }
         
     }
+
     public String toString( ) {
         return "NH ${id} ${name}"
     }
