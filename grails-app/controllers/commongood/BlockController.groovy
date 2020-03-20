@@ -62,7 +62,6 @@ class BlockController {
                 addr.orderWithinBlock = lastOrder
                 addr.latitude = 0.0
                 addr.longitude = 0.0
-                addr.geolocateState = ' '
                 addr.save( flush:true, failOnError: true )
             }
         }

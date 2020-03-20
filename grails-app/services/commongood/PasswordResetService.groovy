@@ -32,6 +32,7 @@ class PasswordResetService {
     // For hashing new password
     FreshRandomness fresher = new FreshRandomness( )
 
+    // We use MailGun (Software as a Service) to send email
     static private String emailDomainName = System.getenv("CG_EMAIL_DOMAIN")
     static private String emailPrivateKey = System.getenv("CG_EMAIL_PRIVATE_KEY")
     static {
