@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
+    <data-source source="LOCAL" name="CommonGood Lccal" uuid="e7dd1037-7d85-4558-9093-c73fe7f5dbfb">
+      <driver-ref>postgresql</driver-ref>
+      <synchronize>true</synchronize>
+      <imported>true</imported>
+      <remarks>grails
+
+/Users/theguy/IdeaProjects/CommonGood/grails-app/conf/DataSource.groovy</remarks>
+      <jdbc-driver>org.postgresql.Driver</jdbc-driver>
+      <jdbc-url>jdbc:postgresql://localhost/thehoods</jdbc-url>
+    </data-source>
+    <data-source source="LOCAL" name="CommonGood dev" uuid="d2eac8bb-18c0-40eb-83c2-8a8ee66bd22d">
+      <driver-ref>postgresql</driver-ref>
+      <synchronize>true</synchronize>
+      <imported>true</imported>
+      <remarks>grails
+
+/Users/theguy/IdeaProjects/CommonGood/grails-app/conf/DataSource.groovy</remarks>
+      <jdbc-driver>org.postgresql.Driver</jdbc-driver>
+      <jdbc-url>jdbc:postgresql://localhost/thehoods</jdbc-url>
+    </data-source>
+  </component>
+</project>

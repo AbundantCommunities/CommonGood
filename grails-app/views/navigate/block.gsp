@@ -15,6 +15,15 @@
         </style>
         <script type="text/javascript">
 
+            <g:if test="${navSelection.boundary.type != 'nada'}">
+                var boundaryType = '${navSelection.boundary.type}';
+                var boundary = [
+                    <g:each in="${navSelection.boundary.coordinates}" var="coord" status="i">
+                        [${coord.getY()},${coord.getX()}],
+                    </g:each>
+                ];
+            </g:if>
+
             <g:if test="${authorized.canWrite()==Boolean.TRUE}">
             <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}">
 
@@ -74,10 +83,6 @@
                 }
 
             </g:if>
-
-
-
-
 
 
             function presentNewModal() {
@@ -394,9 +399,6 @@
                 </g:if>
 
                 document.getElementById("block-detail").setAttribute("style","min-height:94px;height:"+newHeight+"px;");
-
-
-
             }
 
 

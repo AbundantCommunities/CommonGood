@@ -11,6 +11,7 @@ class NavigateController {
     def domainAuthorizationService
     def authorizationService
     def blockService
+    def gisService
 
     // Allows a GSP to have a link back to the last place to which the user
     // navigated. Example: remember( 'family', familyId )
@@ -61,7 +62,7 @@ class NavigateController {
                     [level:'Neighbourhood', id: theBlock.neighbourhood.id, description: theBlock.neighbourhood.name]
                 ],
 
-            navSelection: [ levelInHierarchy:'Block', block:theBlock, blockConnectors:blockConnectors ],
+            navSelection: [ levelInHierarchy:'Block', block:theBlock, blockConnectors:blockConnectors, boundary:gisService.getBoundaryCoordinates(theBlock) ],
 
             navChildren:
                 [

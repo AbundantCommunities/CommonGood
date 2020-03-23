@@ -12,6 +12,7 @@ class Block {
     Date lastUpdated
 
     static hasMany = [ addresses:Address ]
+    static transients = [ 'displayName' ]
 
     static constraints = {
         boundary nullable: true
@@ -20,8 +21,8 @@ class Block {
     static mapping = {
         boundary type: 'text'
     }
-    
+
     String getDisplayName( ) {
-        "(${code}) ${description}"
+        "Block ${code}:${description}"
     }
 }
