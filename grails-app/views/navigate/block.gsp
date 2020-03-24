@@ -15,15 +15,6 @@
         </style>
         <script type="text/javascript">
 
-            <g:if test="${navSelection.boundary.type != 'nada'}">
-                var boundaryType = '${navSelection.boundary.type}';
-                var boundary = [
-                    <g:each in="${navSelection.boundary.coordinates}" var="coord" status="i">
-                        [${coord.getY()},${coord.getX()}],
-                    </g:each>
-                ];
-            </g:if>
-
             <g:if test="${authorized.canWrite()==Boolean.TRUE}">
             <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}">
 
@@ -526,60 +517,43 @@
 
 
                 <g:if test="${navSelection.block.neighbourhood.hasFeature('gismaps')}">
-                <div style="display:inline-block;width:400px;border:solid gray;"><div id="mapid"></div></div>
+                <div style="display:inline-block;width:400px;"><div style="border:solid gray;"><div id="mapid"></div></div><div id="mapcaption" style="margin:10px;font-size:small;"></div></div>
                 <script type="text/javascript">
 
-                    var addressLatLongs = [];
+                <g:if test="${navSelection.boundary.type != 'nada'}">
+                    var boundaryType = '${navSelection.boundary.type}';
+                    var boundary = [
+                        <g:each in="${navSelection.boundary.coordinates}" var="coord" status="i">
+                            [${coord.getY()},${coord.getX()}],
+                        </g:each>
+                    ];
 
-                    <g:each in="${navChildren.children}" var="child">
-                        addressLatLongs.push({addressId:${child.id}, text:"${child.text}", latitude:${child.latitude}, longitude:${child.longitude}});
-                    </g:each>
+                    var mymap = L.map('mapid');
 
-                    // Calculate center point.
-                    latMin = 0;
-                    latMax = 0;
-                    longMin = 0;
-                    longMax = 0;
+                    var boundaryPoly;
+                    var invertedPoly;
 
-                    if (addressLatLongs.length>0) {
-                        latMin=addressLatLongs[0].latitude;
-                        latMax=addressLatLongs[0].latitude;
-                        longMin=addressLatLongs[0].longitude;
-                        longMax=addressLatLongs[0].longitude;
-                        for (i=0; i< addressLatLongs.length; i++) {
-                            if (addressLatLongs[i].latitude<latMin) {
-                                latMin=addressLatLongs[i].latitude;
-                            }
-                            if (addressLatLongs[i].latitude>latMax) {
-                                latMax=addressLatLongs[i].latitude;
-                            }
-                            if (addressLatLongs[i].longitude<longMin) {
-                                longMin=addressLatLongs[i].longitude;
-                            }
-                            if (addressLatLongs[i].longitude>longMax) {
-                                longMax=addressLatLongs[i].longitude;
-                            }
-                        }
+                    if (boundaryType=='neighbourhood' || boundaryType=='block') {
+                        boundaryPoly = L.polygon(boundary);
                     }
 
-                    var centerLatitude = 0.0;
-                    var centerLongitude = 0.0;
+                    if (boundaryType=='block') {
+                        // add inverted polygon to map
+                        invertedPoly = L.polygon(
+                            [[[90, -180],
+                             [90, 180],
+                             [-90, 180],
+                             [-90, -180]], //outer ring, the world
+                             boundaryPoly.getLatLngs()] // cutout
+                            );
 
-                    // Check if at least one address with latlong specified.
-                    if ((Math.abs(latMin)+Math.abs(latMax)+Math.abs(longMin)+Math.abs(longMax))>0) {
-                        centerLatitude = latMax-((latMax-latMin)/2);
-                        centerLongitude = longMax-((longMax-longMin)/2);
+                        mymap.addLayer(invertedPoly);
+
+                    } else { // neighbourhood, so add caption about block boundary
+                        document.getElementById('mapcaption').innerHTML = 'The boundary for the block has not been specified. <span><a href="JavaScript:presentEditModal();">Edit</a></span> the block to specify its boundary.'
                     }
 
-                    var mymap;
-
-                    if (centerLatitude!=0 || centerLongitude!=0) {
-                        mymap = L.map('mapid').setView([centerLatitude,centerLongitude], 17);
-                    } else {
-                        // Temporary: if no addresses with latlong, then center and zoom to neighbourhood.
-                        // Eventually we'll have center point and zoom level for the block.
-                        mymap = L.map('mapid').setView([53.56722,-113.43821], 15);
-                    }
+                    mymap.fitBounds(boundaryPoly.getBounds());
 
                     L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
                         attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
@@ -587,26 +561,11 @@
                         id: 'mapbox/streets-v11',
                         accessToken: 'pk.eyJ1IjoidGltMTIzIiwiYSI6ImNrMmp2YjVoOTFpbWszbnFnems5ZjM2bW8ifQ.oNovhkW55h19gppWuNagQw'
                     }).addTo(mymap);
-
-                    var markers = [];
-
-                    if (addressLatLongs.length > 0) {
-                        for (i=0; i<addressLatLongs.length; i++) {
-                            var aMarker = L.circleMarker([addressLatLongs[i].latitude,addressLatLongs[i].longitude], {radius:4}).addTo(mymap);
-                            aMarker.bindPopup('<a href="/CommonGood/navigate/address/'+addressLatLongs[i].addressId+'">'+addressLatLongs[i].text+'</a>');
-                            markers.push(aMarker);
-
-                        }
-                    }
-
-                    // var popup = L.popup();
-                    // function onMapClick(e) {
-                    //     popup
-                    //         .setLatLng(e.latlng)
-                    //         .setContent(e.latlng.toString())
-                    //         .openOn(mymap);
-                    // }
-                    // mymap.on('click', onMapClick);
+                </g:if>
+                <g:else>
+                    document.getElementById('mapid').style = "position:relative;";
+                    document.getElementById('mapid').innerHTML = '<p style="text-align:center;margin:0;line-height:2.0;position:absolute;top:50%;left:50%;margin-right:-50%;transform: translate(-50%, -50%);">Mapping features are not available.<br>Neighbourhood boundary has not been specified.</p>';
+                </g:else>
                 </script>
                 </g:if>  <%-- End of test for featureFlag gismaps --%>
 
