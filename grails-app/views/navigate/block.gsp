@@ -4,12 +4,47 @@
     <head>
         <meta name="layout" content="navigate"/>
         <title>CommonGood - Block</title>
-        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
-            integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
-            crossorigin=""/>
-        <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
-            integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
-            crossorigin=""></script>
+
+        <asset:stylesheet src="leaflet/leaflet.css"/>
+        <asset:javascript src="leaflet/leaflet.js"/>
+
+        <asset:javascript src="draw/Leaflet.draw.js"/>
+        <asset:javascript src="draw/Leaflet.Draw.Event.js"/>
+        <asset:stylesheet src="draw/leaflet.draw.css"/>
+
+        <asset:javascript src="draw/Toolbar.js"/>
+        <asset:javascript src="draw/Tooltip.js"/>
+
+        <asset:javascript src="draw/ext/GeometryUtil.js"/>
+        <asset:javascript src="draw/ext/LatLngUtil.js"/>
+        <asset:javascript src="draw/ext/LineUtil.Intersect.js"/>
+        <asset:javascript src="draw/ext/Polygon.Intersect.js"/>
+        <asset:javascript src="draw/ext/Polyline.Intersect.js"/>
+        <asset:javascript src="draw/ext/TouchEvents.js"/>
+
+        <asset:javascript src="draw/draw/DrawToolbar.js"/>
+        <asset:javascript src="draw/draw/handler/Draw.Feature.js"/>
+        <asset:javascript src="draw/draw/handler/Draw.SimpleShape.js"/>
+        <asset:javascript src="draw/draw/handler/Draw.Polyline.js"/>
+        <asset:javascript src="draw/draw/handler/Draw.Marker.js"/>
+        <asset:javascript src="draw/draw/handler/Draw.Circle.js"/>
+        <asset:javascript src="draw/draw/handler/Draw.CircleMarker.js"/>
+        <asset:javascript src="draw/draw/handler/Draw.Polygon.js"/>
+        <asset:javascript src="draw/draw/handler/Draw.Rectangle.js"/>
+
+
+        <asset:javascript src="draw/edit/EditToolbar.js"/>
+        <asset:javascript src="draw/edit/handler/EditToolbar.Edit.js"/>
+        <asset:javascript src="draw/edit/handler/EditToolbar.Delete.js"/>
+
+        <asset:javascript src="draw/Control.Draw.js"/>
+
+        <asset:javascript src="draw/edit/handler/Edit.Poly.js"/>
+        <asset:javascript src="draw/edit/handler/Edit.SimpleShape.js"/>
+        <asset:javascript src="draw/edit/handler/Edit.Rectangle.js"/>
+        <asset:javascript src="draw/edit/handler/Edit.Marker.js"/>
+        <asset:javascript src="draw/edit/handler/Edit.CircleMarker.js"/>
+        <asset:javascript src="draw/edit/handler/Edit.Circle.js"/>
         <style type="text/css">
             #mapid { height: 400px; }
         </style>
@@ -21,6 +56,7 @@
                 function populateEditModal() {
                     document.getElementById('blockCodeInput').value = decodeEntities("${navSelection.block.code}");
                     document.getElementById('blockDescriptionInput').value = decodeEntities("${navSelection.block.description}");
+
                 }
 
                 function presentEditModal() {
@@ -29,6 +65,7 @@
                     // set height of overlay to match height of pagecontainer height
                     document.getElementById("transparent-overlay").setAttribute("style","height:"+pagecontainerDiv.clientHeight+"px;");
 
+                    setup_edit_map();
                     populateEditModal();
                     
                     // show overlay and new-container divs and focus to family name
@@ -41,6 +78,7 @@
                 function dismissEditModal() {
                     document.getElementById("edit-container").style.visibility='hidden';
                     document.getElementById("transparent-overlay").style.visibility='hidden';
+                    cancel_edit_block();
                 }
 
 
@@ -69,6 +107,21 @@
 
                         document.getElementById("blockCodeInput").value = blockCode;
                         document.getElementById("blockDescriptionInput").value = blockDescription;
+
+                        var blockPolygonArray = [];
+
+                        if (editBoundaryPoly != null) {
+
+                            for (i=0;i<editBoundaryPoly.getLatLngs()[0].length;i++) {
+                                blockPolygonArray.push([editBoundaryPoly.getLatLngs()[0][i].lng,editBoundaryPoly.getLatLngs()[0][i].lat]);
+                            }
+
+                        }
+
+                        var blockPolygonJSON = JSON.stringify(blockPolygonArray);
+
+                        document.getElementById("blockBoundaryInput").value = blockPolygonJSON;
+
                         document.getElementById('edit-form').submit();
                     }
                 }
@@ -412,9 +465,9 @@
                 }
 
                 #edit-container {
-                    top:90px;
-                    left:280px;
-                    width:370px;
+                    top:70px;
+                    left:180px;
+                    width:570px;
                 }
 
             </g:if>
@@ -430,6 +483,9 @@
                 top:7px;
                 left:500px;
             }
+
+            #editmapid { height: 380px;  }
+
 
         </style>
     </head>
@@ -528,7 +584,7 @@
                         </g:each>
                     ];
 
-                    var mymap = L.map('mapid');
+                    var map = L.map('mapid');
 
                     var boundaryPoly;
                     var invertedPoly;
@@ -547,20 +603,20 @@
                              boundaryPoly.getLatLngs()] // cutout
                             );
 
-                        mymap.addLayer(invertedPoly);
+                        map.addLayer(invertedPoly);
 
                     } else { // neighbourhood, so add caption about block boundary
                         document.getElementById('mapcaption').innerHTML = 'The boundary for the block has not been specified. <span><a href="JavaScript:presentEditModal();">Edit</a></span> the block to specify its boundary.'
                     }
 
-                    mymap.fitBounds(boundaryPoly.getBounds());
+                    map.fitBounds(boundaryPoly.getBounds());
 
                     L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
                         attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
                         maxZoom: 19,
                         id: 'mapbox/streets-v11',
                         accessToken: 'pk.eyJ1IjoidGltMTIzIiwiYSI6ImNrMmp2YjVoOTFpbWszbnFnems5ZjM2bW8ifQ.oNovhkW55h19gppWuNagQw'
-                    }).addTo(mymap);
+                    }).addTo(map);
                 </g:if>
                 <g:else>
                     document.getElementById('mapid').style = "position:relative;";
@@ -628,14 +684,232 @@
                         <input type="hidden" name="id" value="${navSelection.block.id}" />
                         <div class="modal-row">Block code: <input id="blockCodeInput" type="text" name="code" value=""/></div>
                         <div class="modal-row">Block description: <input id="blockDescriptionInput" type="text" name="description" value=""/></div>
+                        <input id="blockBoundaryInput" type="hidden" name="boundary" value="" />
                     </form>
+
+
+
+
+                    <div style="height:474px;border:black solid 2px;background-color:gray;padding:5px;margin-top:10px;">
+                        <div id="editmapid"></div>
+                        <div style="width:150px;height:90px;display:inline-block;padding-right:10px;border-right:white solid 1px;margin-top:5px;">
+                            <div id="draw_button" class="button-small" style="width:110px;" onclick="javascript:drawStart();">Draw Block Boundary</div>
+                            <div id="done_drawing_button" class="button-small" style="width:110px;" onclick="javascript:drawDone();">Done Drawing</div>
+                            <div id="cancel_drawing_button" class="button-small" style="width:110px;" onclick="javascript:drawCancel();">Cancel Drawing</div>
+                            <div id="edit_button" class="button-small" style="width:110px;" onclick="javascript:editStart()">Edit Block Boundary</div>
+                            <div id="done_editing_button" class="button-small" style="width:110px;" onclick="javascript:editDone()">Done Editing</div>
+                            <div id="start_over_button" class="button-small" style="width:110px;" onclick="javascript:startOver()">Start Over</div>
+                            <div id="done_button" class="button-small" style="width:110px;" onclick="javascript:done()">done</div>
+                        </div>
+                        <div style="display:inline-block;vertical-align:top;margin-top:5px;font-family:sans-serif;font-size:small;color:white;word-wrap: normal;">
+                            <div id="help_text_div" style="width:330px;margin-left:10px;">To draw the block's boundary, start by clicking the 'Draw Block Boundary' button.</div>
+                        </div>
+                    </div>
+
                     <div class="button-row">
                         <div class="button" onclick="JavaScript:dismissEditModal();">Cancel</div>
                         <div class="button-spacer"></div>
                         <div class="button bold" onclick="JavaScript:saveBlock();">Save</div>
                     </div>
                 </div>
+                <script type="text/javascript">
 
+                    var editmap = L.map('editmapid');
+
+                    var editBoundaryPoly = null;
+                    var editInvertedPoly = null;
+
+                    L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+                        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+                        maxZoom: 19,
+                        id: 'mapbox/streets-v11',
+                        accessToken: 'pk.eyJ1IjoidGltMTIzIiwiYSI6ImNrMmp2YjVoOTFpbWszbnFnems5ZjM2bW8ifQ.oNovhkW55h19gppWuNagQw'
+                    }).addTo(editmap);
+
+
+
+                    editmap.on('draw:created', function (e) {
+                        editBoundaryPoly = e.layer;
+                        polygonDrawer.disable();
+
+                        document.getElementById('help_text_div').innerHTML = "To edit the block's boundary, click the 'Edit Block Boundary' button. To start over click the 'Start Over' buttton.";
+                        document.getElementById('done_drawing_button').style.display = 'none';
+                        document.getElementById('cancel_drawing_button').style.display = 'none';
+                        document.getElementById('edit_button').style.display = '';
+                        document.getElementById('start_over_button').style.display = '';
+
+                        invert_and_fit();
+
+                    });
+
+
+                    function setup_edit_map() {
+
+                        if (boundaryType=='neighbourhood' || boundaryType=='block') {
+                            editBoundaryPoly = L.polygon(boundary);
+                        }
+
+                        if (boundaryType=='block') {
+                            // add inverted polygon to map
+                            editInvertedPoly = L.polygon(
+                                [[[90, -180],
+                                 [90, 180],
+                                 [-90, 180],
+                                 [-90, -180]], //outer ring, the world
+                                 boundaryPoly.getLatLngs()] // cutout
+                                );
+
+                            editmap.addLayer(editInvertedPoly);
+                        }
+
+                        editmap.fitBounds(editBoundaryPoly.getBounds());
+
+                        if (boundaryType=='neighbourhood') {
+                            editBoundaryPoly = null;
+                        }
+
+                        init_map_ui();
+
+                    }
+
+                    function cancel_edit_block() {
+                        if (editmap.hasLayer(editBoundaryPoly)) {
+                            editmap.removeLayer(editBoundaryPoly);
+                        }
+                        if (editmap.hasLayer(editInvertedPoly)) {
+                            editmap.removeLayer(editInvertedPoly);
+                        }
+
+                    }
+
+                    function init_map_ui() {
+                        if (boundaryType=='block' && editBoundaryPoly != null) {
+                            document.getElementById('help_text_div').innerHTML = "To edit the block's boundary, click the 'Edit Block Boundary' button. To start over click the 'Start Over' buttton.";
+                            document.getElementById('draw_button').style.display = 'none';
+                            document.getElementById('done_drawing_button').style.display = 'none';
+                            document.getElementById('cancel_drawing_button').style.display = 'none';
+                            document.getElementById('edit_button').style.display = '';
+                            document.getElementById('done_editing_button').style.display = 'none';
+                            document.getElementById('start_over_button').style.display = '';
+                            document.getElementById('done_button').style.display = 'none';
+                        } else {
+                            document.getElementById('help_text_div').innerHTML = "To draw the block's boundary, start by clicking the 'Draw Block Boundary' button.";
+                            document.getElementById('draw_button').style.display = '';
+                            document.getElementById('done_drawing_button').style.display = 'none';
+                            document.getElementById('cancel_drawing_button').style.display = 'none';
+                            document.getElementById('edit_button').style.display = 'none';
+                            document.getElementById('done_editing_button').style.display = 'none';
+                            document.getElementById('start_over_button').style.display = 'none';
+                            document.getElementById('done_button').style.display = 'none';
+                        }
+                    }
+
+                    function drawStart() {
+                        document.getElementById('help_text_div').innerHTML = "Click points to draw a path around the block's boundary. To complete the boundary, click the first point or click the 'Done Drawing' button. To cancel drawing, click the 'Cancel Drawing' button.";
+                        document.getElementById('draw_button').style.display = 'none';
+                        document.getElementById('done_drawing_button').style.display = '';
+                        document.getElementById('cancel_drawing_button').style.display = '';
+                        editInvertedPoly = null;
+                        polygonDrawer.enable();
+                    }
+
+                    function drawDone() {
+                        polygonDrawer.completeShape();
+                    }
+
+
+                    function drawCancel() {
+                        //polygonDrawer.completeShape();
+                        polygonDrawer.disable();
+                        init_map_ui();
+                    }
+
+
+                    function editStart() {
+
+                        invert_to_edit();
+                        editmap.fitBounds(editBoundaryPoly.getLatLngs());
+
+                        document.getElementById('help_text_div').innerHTML = "To move a point on the block's boundary path, click and drag it. To delete a point on the path, simply click it. To add a new point to the path, click and drag the square mid-point on the path where you would like to add a new point. When done editing, clikc the 'Done Editing' button.";
+                        document.getElementById('edit_button').style.display = 'none';
+                        document.getElementById('start_over_button').style.display = 'none';
+                        document.getElementById('done_editing_button').style.display = '';
+                        editHandler._enableLayerEdit(editBoundaryPoly);
+
+                    }
+
+                    function editDone() {
+                        editBoundaryPoly.editing.disable();
+
+                        editmap.removeLayer(editBoundaryPoly);
+
+
+                        document.getElementById('help_text_div').innerHTML = "To edit the block's boundary, click the 'Edit Block Boundary' button. To start over click the 'Start Over' buttton.";
+                        document.getElementById('done_editing_button').style.display = 'none';
+                        document.getElementById('edit_button').style.display = '';
+                        document.getElementById('start_over_button').style.display = '';
+
+                        invert_and_fit();
+                    }
+
+
+                    function startOver() {
+                        editmap.removeLayer(editInvertedPoly);
+                        editBoundaryPoly = null;
+                        editInvertedPoly = null;
+                        init_map_ui();
+                    }
+
+                    function done() {
+                        if (editBoundaryPoly != null) {
+                            editmap.fitBounds(editBoundaryPoly.getLatLngs());
+                        }
+                    }
+
+
+                    function invert_and_fit() {
+
+                        editInvertedPoly = L.polygon(
+                            [[[90, -180],
+                             [90, 180],
+                             [-90, 180],
+                             [-90, -180]], //outer ring, the world
+                             editBoundaryPoly.getLatLngs()] // cutout
+                            );
+
+
+                        editmap.addLayer(editInvertedPoly);
+
+                        editmap.fitBounds(editBoundaryPoly.getLatLngs());
+
+                    }
+
+
+                    function invert_to_edit() {
+                        editmap.removeLayer(editInvertedPoly);
+                        editmap.addLayer(editBoundaryPoly);
+                    }
+
+
+                    var polygonDrawer = new L.Draw.Polygon(editmap);
+
+
+                    // disable the original edit toolbar so that there aren't two ways to edit layers
+                    drawControl = new L.Control.Draw({edit: false});
+
+                    editFeatureGroup = L.featureGroup();
+
+                    // manually create an edit toolbar (which won't be visible) when the page loads
+                    toolbar = new L.EditToolbar({
+                      featureGroup: editFeatureGroup
+                    })
+
+                    // and get its edit handler (this should probably be done with a loop like in the OP)
+                    editHandler = toolbar.getModeHandlers()[0].handler;
+
+                    init_map_ui();
+
+                </script>
             </g:if>
 
             <div id="new-container" class="modal" style="z-index:2001;">
