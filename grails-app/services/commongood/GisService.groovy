@@ -24,6 +24,13 @@ class GisService {
         }
     }
 
+    /**
+     * Convert a WKT string that should be a simple polygon to an array
+     * of JTS Coordinate objects.
+     *
+     * @param String like "MULTIPOLYGON (((-113.474414620273 53.532619638549,-113.474149921333 53.5326766290234, ..."
+     * @return Coordinate[ ]
+     */
     Coordinate[ ] parseCoordinates( String bString ) {
         def geomReader = new WKTReader()
         def geom = geomReader.read( bString )

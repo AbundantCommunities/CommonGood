@@ -2,6 +2,7 @@ package commongood
 
 import org.abundantcommunityinitiative.commongood.handy.LogAid
 import org.abundantcommunityinitiative.commongood.handy.JsonWriter
+import org.abundantcommunityinitiative.gis.Convert
 
 class BlockController {
     static allowedMethods = [addAddresses:'POST', addConnector:'POST', contactList:'GET', save:'POST']
@@ -101,6 +102,11 @@ class BlockController {
         result
     }
 
+    /**
+     * The client must pass a JSON array specifying the block's boundary (the GIS coordinates
+     * of the block's perimeter; can be an empty array). Each element of the array is a 2-element
+     * array of [aLong,aLat].
+     */
     def save( ) {
         def blockId = params.long('id')
         log.info "${LogAid.who(session)} requests save change to block/${blockId}"
@@ -109,6 +115,8 @@ class BlockController {
 
         block.code = params.code.trim( )
         block.description = params.description.trim( )
+        block.boundary = Convert.jsonBoundaryToLinearRingAsWKT( params.boundary )
+        println "Saving Block ${block.toString()} with ${block.boundary}"
 
         if( block.code ) {
             block.save( flush:true, failOnError: true )
