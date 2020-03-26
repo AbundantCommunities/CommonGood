@@ -116,7 +116,6 @@ class BlockController {
         block.code = params.code.trim( )
         block.description = params.description.trim( )
         block.boundary = Convert.jsonBoundaryToLinearRingAsWKT( params.boundary )
-        println "Saving Block ${block.toString()} with ${block.boundary}"
 
         if( block.code ) {
             block.save( flush:true, failOnError: true )
