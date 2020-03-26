@@ -65,7 +65,9 @@
                     // set height of overlay to match height of pagecontainer height
                     document.getElementById("transparent-overlay").setAttribute("style","height:"+pagecontainerDiv.clientHeight+"px;");
 
+                    <g:if test="${navSelection.block.neighbourhood.hasFeature('gismaps')}">
                     setup_edit_map();
+                    </g:if>
                     populateEditModal();
                     
                     // show overlay and new-container divs and focus to family name
@@ -78,7 +80,9 @@
                 function dismissEditModal() {
                     document.getElementById("edit-container").style.visibility='hidden';
                     document.getElementById("transparent-overlay").style.visibility='hidden';
+                    <g:if test="${navSelection.block.neighbourhood.hasFeature('gismaps')}">
                     cancel_edit_block();
+                    </g:if>
                 }
 
 
@@ -108,6 +112,7 @@
                         document.getElementById("blockCodeInput").value = blockCode;
                         document.getElementById("blockDescriptionInput").value = blockDescription;
 
+                        <g:if test="${navSelection.block.neighbourhood.hasFeature('gismaps')}">
                         var blockPolygonArray = [];
 
                         if (editBoundaryPoly != null) {
@@ -121,6 +126,7 @@
                         var blockPolygonJSON = JSON.stringify(blockPolygonArray);
 
                         document.getElementById("blockBoundaryInput").value = blockPolygonJSON;
+                        </g:if>
 
                         document.getElementById('edit-form').submit();
                     }
@@ -549,7 +555,12 @@
             </div>
             <div class="content-section">
                 <div class="content-heading">Addresses for ${navSelection.levelInHierarchy} ${navSelection.block.description}<g:if test="${authorized.canWrite()==Boolean.TRUE}">&nbsp;&nbsp;<a href="#" onclick="presentNewModal();" style="font-weight:normal;">+ Add New Addresses</a></g:if></div>
+                <g:if test="${navSelection.block.neighbourhood.hasFeature('gismaps')}">
                 <div id="listWithHandle" style="width:500px;display:inline-block;vertical-align:top;">
+                </g:if>
+                <g:else>
+                <div id="listWithHandle" style="width:900px;display:inline-block;vertical-align:top;">
+                </g:else>
                 <g:if test="${navChildren.children.size() > 0}">
                     <g:each in="${navChildren.children}" var="child">
                         <div <g:if test="${authorized.canWrite()==Boolean.TRUE}">id="${child.id}"</g:if> class="content-children-row">
@@ -576,7 +587,6 @@
                 <div style="display:inline-block;width:400px;"><div style="border:solid gray;"><div id="mapid"></div></div><div id="mapcaption" style="margin:10px;font-size:small;"></div></div>
                 <script type="text/javascript">
 
-                <g:if test="${navSelection.boundary.type != 'nada'}">
                     var boundaryType = '${navSelection.boundary.type}';
                     var boundary = [
                         <g:each in="${navSelection.boundary.coordinates}" var="coord" status="i">
@@ -584,44 +594,45 @@
                         </g:each>
                     ];
 
-                    var map = L.map('mapid');
+                    if (boundaryType != 'nada') {
+                        var map = L.map('mapid');
 
-                    var boundaryPoly;
-                    var invertedPoly;
+                        var boundaryPoly;
+                        var invertedPoly;
 
-                    if (boundaryType=='neighbourhood' || boundaryType=='block') {
-                        boundaryPoly = L.polygon(boundary);
+                        if (boundaryType=='neighbourhood' || boundaryType=='block') {
+                            boundaryPoly = L.polygon(boundary);
+                        }
+
+                        if (boundaryType=='block') {
+                            // add inverted polygon to map
+                            invertedPoly = L.polygon(
+                                [[[90, -180],
+                                 [90, 180],
+                                 [-90, 180],
+                                 [-90, -180]], //outer ring, the world
+                                 boundaryPoly.getLatLngs()] // cutout
+                                );
+
+                            map.addLayer(invertedPoly);
+
+                        } else { // neighbourhood, so add caption about block boundary
+                            document.getElementById('mapcaption').innerHTML = 'The boundary for the block has not been specified. <span><a href="JavaScript:presentEditModal();">Edit</a></span> the block to specify its boundary.'
+                        }
+
+                        map.fitBounds(boundaryPoly.getBounds());
+
+                        L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+                            attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+                            maxZoom: 19,
+                            id: 'mapbox/streets-v11',
+                            accessToken: 'pk.eyJ1IjoidGltMTIzIiwiYSI6ImNrMmp2YjVoOTFpbWszbnFnems5ZjM2bW8ifQ.oNovhkW55h19gppWuNagQw'
+                        }).addTo(map);
+                    } else {
+                        document.getElementById('mapid').style = "position:relative;";
+                        document.getElementById('mapid').innerHTML = '<p style="text-align:center;margin:0;line-height:2.0;position:absolute;top:50%;left:50%;margin-right:-50%;transform: translate(-50%, -50%);">Mapping features are not available.<br>Neighbourhood boundary has not been specified.</p>';
                     }
 
-                    if (boundaryType=='block') {
-                        // add inverted polygon to map
-                        invertedPoly = L.polygon(
-                            [[[90, -180],
-                             [90, 180],
-                             [-90, 180],
-                             [-90, -180]], //outer ring, the world
-                             boundaryPoly.getLatLngs()] // cutout
-                            );
-
-                        map.addLayer(invertedPoly);
-
-                    } else { // neighbourhood, so add caption about block boundary
-                        document.getElementById('mapcaption').innerHTML = 'The boundary for the block has not been specified. <span><a href="JavaScript:presentEditModal();">Edit</a></span> the block to specify its boundary.'
-                    }
-
-                    map.fitBounds(boundaryPoly.getBounds());
-
-                    L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
-                        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-                        maxZoom: 19,
-                        id: 'mapbox/streets-v11',
-                        accessToken: 'pk.eyJ1IjoidGltMTIzIiwiYSI6ImNrMmp2YjVoOTFpbWszbnFnems5ZjM2bW8ifQ.oNovhkW55h19gppWuNagQw'
-                    }).addTo(map);
-                </g:if>
-                <g:else>
-                    document.getElementById('mapid').style = "position:relative;";
-                    document.getElementById('mapid').innerHTML = '<p style="text-align:center;margin:0;line-height:2.0;position:absolute;top:50%;left:50%;margin-right:-50%;transform: translate(-50%, -50%);">Mapping features are not available.<br>Neighbourhood boundary has not been specified.</p>';
-                </g:else>
                 </script>
                 </g:if>  <%-- End of test for featureFlag gismaps --%>
 
@@ -678,6 +689,7 @@
                     </div>
                 </div>
 
+                <g:if test="${navSelection.block.neighbourhood.hasFeature('gismaps')}">
                 <div id="edit-container" class="modal" style="z-index:2001;">
                     <div class="modal-title">Edit Block</div>
                     <form id="edit-form" action="<g:createLink controller='block' action='save' />" method="POST">
@@ -686,13 +698,9 @@
                         <div class="modal-row">Block description: <input id="blockDescriptionInput" type="text" name="description" value=""/></div>
                         <input id="blockBoundaryInput" type="hidden" name="boundary" value="" />
                     </form>
-
-
-
-
                     <div style="height:474px;border:black solid 2px;background-color:gray;padding:5px;margin-top:10px;">
                         <div id="editmapid"></div>
-                        <div style="width:150px;height:90px;display:inline-block;padding-right:10px;border-right:white solid 1px;margin-top:5px;">
+                        <div id="editmapbuttons" style="width:150px;height:90px;display:inline-block;padding-right:10px;border-right:white solid 1px;margin-top:5px;">
                             <div id="draw_button" class="button-small" style="width:110px;" onclick="javascript:drawStart();">Draw Block Boundary</div>
                             <div id="done_drawing_button" class="button-small" style="width:110px;" onclick="javascript:drawDone();">Done Drawing</div>
                             <div id="cancel_drawing_button" class="button-small" style="width:110px;" onclick="javascript:drawCancel();">Cancel Drawing</div>
@@ -701,10 +709,11 @@
                             <div id="start_over_button" class="button-small" style="width:110px;" onclick="javascript:startOver()">Start Over</div>
                             <div id="done_button" class="button-small" style="width:110px;" onclick="javascript:done()">done</div>
                         </div>
-                        <div style="display:inline-block;vertical-align:top;margin-top:5px;font-family:sans-serif;font-size:small;color:white;word-wrap: normal;">
+                        <div id="editmapinstructions" style="display:inline-block;vertical-align:top;margin-top:5px;font-family:sans-serif;font-size:small;color:white;word-wrap: normal;">
                             <div id="help_text_div" style="width:330px;margin-left:10px;">To draw the block's boundary, start by clicking the 'Draw Block Boundary' button.</div>
                         </div>
                     </div>
+
 
                     <div class="button-row">
                         <div class="button" onclick="JavaScript:dismissEditModal();">Cancel</div>
@@ -714,72 +723,74 @@
                 </div>
                 <script type="text/javascript">
 
-                    var editmap = L.map('editmapid');
+                    if (boundaryType!='nada') {
+                        var editmap = L.map('editmapid');
 
-                    var editBoundaryPoly = null;
-                    var editInvertedPoly = null;
+                        var editBoundaryPoly = null;
+                        var editInvertedPoly = null;
 
-                    L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
-                        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-                        maxZoom: 19,
-                        id: 'mapbox/streets-v11',
-                        accessToken: 'pk.eyJ1IjoidGltMTIzIiwiYSI6ImNrMmp2YjVoOTFpbWszbnFnems5ZjM2bW8ifQ.oNovhkW55h19gppWuNagQw'
-                    }).addTo(editmap);
+                        L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+                            attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+                            maxZoom: 19,
+                            id: 'mapbox/streets-v11',
+                            accessToken: 'pk.eyJ1IjoidGltMTIzIiwiYSI6ImNrMmp2YjVoOTFpbWszbnFnems5ZjM2bW8ifQ.oNovhkW55h19gppWuNagQw'
+                        }).addTo(editmap);
 
 
 
-                    editmap.on('draw:created', function (e) {
-                        editBoundaryPoly = e.layer;
-                        polygonDrawer.disable();
+                        editmap.on('draw:created', function (e) {
+                            editBoundaryPoly = e.layer;
+                            polygonDrawer.disable();
 
-                        document.getElementById('help_text_div').innerHTML = "To edit the block's boundary, click the 'Edit Block Boundary' button. To start over click the 'Start Over' buttton.";
-                        document.getElementById('done_drawing_button').style.display = 'none';
-                        document.getElementById('cancel_drawing_button').style.display = 'none';
-                        document.getElementById('edit_button').style.display = '';
-                        document.getElementById('start_over_button').style.display = '';
+                            document.getElementById('help_text_div').innerHTML = "To edit the block's boundary, click the 'Edit Block Boundary' button. To start over click the 'Start Over' buttton.";
+                            document.getElementById('done_drawing_button').style.display = 'none';
+                            document.getElementById('cancel_drawing_button').style.display = 'none';
+                            document.getElementById('edit_button').style.display = '';
+                            document.getElementById('start_over_button').style.display = '';
 
-                        invert_and_fit();
+                            invert_and_fit();
 
-                    });
-
+                        });
+                    }
 
                     function setup_edit_map() {
+                        if (boundaryType!='nada') {
+                            if (boundaryType=='neighbourhood' || boundaryType=='block') {
+                                editBoundaryPoly = L.polygon(boundary);
+                            }
 
-                        if (boundaryType=='neighbourhood' || boundaryType=='block') {
-                            editBoundaryPoly = L.polygon(boundary);
+                            if (boundaryType=='block') {
+                                // add inverted polygon to map
+                                editInvertedPoly = L.polygon(
+                                    [[[90, -180],
+                                     [90, 180],
+                                     [-90, 180],
+                                     [-90, -180]], //outer ring, the world
+                                     boundaryPoly.getLatLngs()] // cutout
+                                    );
+
+                                editmap.addLayer(editInvertedPoly);
+                            }
+
+                            editmap.fitBounds(editBoundaryPoly.getBounds());
+
+                            if (boundaryType=='neighbourhood') {
+                                editBoundaryPoly = null;
+                            }
+
+                            init_map_ui();
                         }
-
-                        if (boundaryType=='block') {
-                            // add inverted polygon to map
-                            editInvertedPoly = L.polygon(
-                                [[[90, -180],
-                                 [90, 180],
-                                 [-90, 180],
-                                 [-90, -180]], //outer ring, the world
-                                 boundaryPoly.getLatLngs()] // cutout
-                                );
-
-                            editmap.addLayer(editInvertedPoly);
-                        }
-
-                        editmap.fitBounds(editBoundaryPoly.getBounds());
-
-                        if (boundaryType=='neighbourhood') {
-                            editBoundaryPoly = null;
-                        }
-
-                        init_map_ui();
-
                     }
 
                     function cancel_edit_block() {
-                        if (editmap.hasLayer(editBoundaryPoly)) {
-                            editmap.removeLayer(editBoundaryPoly);
+                        if (boundaryType!='nada') {
+                            if (editmap.hasLayer(editBoundaryPoly)) {
+                                editmap.removeLayer(editBoundaryPoly);
+                            }
+                            if (editmap.hasLayer(editInvertedPoly)) {
+                                editmap.removeLayer(editInvertedPoly);
+                            }
                         }
-                        if (editmap.hasLayer(editInvertedPoly)) {
-                            editmap.removeLayer(editInvertedPoly);
-                        }
-
                     }
 
                     function init_map_ui() {
@@ -891,25 +902,48 @@
                     }
 
 
-                    var polygonDrawer = new L.Draw.Polygon(editmap);
+                    if (boundaryType!='nada') {
+                        var polygonDrawer = new L.Draw.Polygon(editmap);
 
+                        // disable the original edit toolbar so that there aren't two ways to edit layers
+                        drawControl = new L.Control.Draw({edit: false});
 
-                    // disable the original edit toolbar so that there aren't two ways to edit layers
-                    drawControl = new L.Control.Draw({edit: false});
+                        editFeatureGroup = L.featureGroup();
 
-                    editFeatureGroup = L.featureGroup();
+                        // manually create an edit toolbar (which won't be visible) when the page loads
+                        toolbar = new L.EditToolbar({
+                          featureGroup: editFeatureGroup
+                        })
 
-                    // manually create an edit toolbar (which won't be visible) when the page loads
-                    toolbar = new L.EditToolbar({
-                      featureGroup: editFeatureGroup
-                    })
+                        // and get its edit handler (this should probably be done with a loop like in the OP)
+                        editHandler = toolbar.getModeHandlers()[0].handler;
 
-                    // and get its edit handler (this should probably be done with a loop like in the OP)
-                    editHandler = toolbar.getModeHandlers()[0].handler;
-
-                    init_map_ui();
+                        init_map_ui();
+                    } else {
+                        document.getElementById('editmapid').style = "position:relative;";
+                        document.getElementById('editmapid').innerHTML = '<p style="text-align:center;margin:0;line-height:2.0;position:absolute;top:50%;left:50%;margin-right:-50%;transform: translate(-50%, -50%);color:white;">Mapping features are not available.<br>Neighbourhood boundary has not been specified.</p>';
+                        document.getElementById('editmapbuttons').style = "border:solid 0px;";
+                        document.getElementById('editmapbuttons').innerHTML = '';
+                        document.getElementById('editmapinstructions').innerHTML = '';
+                    }
 
                 </script>
+                </g:if>
+                <g:else>
+                <div id="edit-container" class="modal" style="z-index:2001;">
+                    <div class="modal-title">Edit Block</div>
+                    <form id="edit-form" action="<g:createLink controller='block' action='save' />" method="POST">
+                        <input type="hidden" name="id" value="${navSelection.block.id}" />
+                        <div class="modal-row">Block code: <input id="blockCodeInput" type="text" name="code" value=""/></div>
+                        <div class="modal-row">Block description: <input id="blockDescriptionInput" type="text" name="description" value=""/></div>
+                    </form>
+                    <div class="button-row">
+                        <div class="button" onclick="JavaScript:dismissEditModal();">Cancel</div>
+                        <div class="button-spacer"></div>
+                        <div class="button bold" onclick="JavaScript:saveBlock();">Save</div>
+                    </div>
+                </div>
+                </g:else>
             </g:if>
 
             <div id="new-container" class="modal" style="z-index:2001;">
