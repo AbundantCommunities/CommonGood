@@ -16,6 +16,13 @@ class AddressService {
 
         address.text = params.text
         address.note = params.note
+        if( params.latitude ) {
+            address.latitude = new BigDecimal( params.latitude )
+        }
+        if( params.longitude ) {
+            address.longitude = new BigDecimal( params.longitude )
+        }
+
         address.save( flush:true, failOnError: true )
     }
 }
