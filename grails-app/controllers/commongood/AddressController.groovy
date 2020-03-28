@@ -8,6 +8,11 @@ class AddressController {
     def addressService
     def reorderService
 
+    def edit( ) {
+        def thisAddress = Address.get( Long.valueOf( params.id ) )
+        [ address: thisAddress ]
+    }
+
     def reorder( ) {
         def family = Family.get( Long.valueOf( params.familyId ) )
         def address = family.address

@@ -160,7 +160,7 @@
 
                 <g:if test="${authorized.canWrite()==Boolean.TRUE}">
                 <div id="content-actions">
-                    <div class="content-action"><a href="#" onclick="presentEditModal();">Edit</a></div>
+                    <div class="content-action"><g:link controller="Address" action="edit" id="${navSelection.id}">Edit</g:link></div>
                     <div class="content-action"><g:link controller="Delete" action="confirmAddress" id="${navSelection.id}">Delete</g:link></div>
                     <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}">
                         <div class="content-action"><g:link controller="Move" action="selectDestinationBlock" id="${navSelection.id}">Move</g:link></div>
