@@ -6,11 +6,12 @@ class AddressController {
     static allowedMethods = [families:'GET', save:'POST']
     def authorizationService
     def addressService
+    def gisService
     def reorderService
 
     def edit( ) {
-        def thisAddress = Address.get( Long.valueOf( params.id ) )
-        [ address: thisAddress ]
+        def theAddress = Address.get( Long.valueOf( params.id ) )
+        [ address: theAddress, boundary:gisService.getBoundaryCoordinates( theAddress.block ) ]
     }
 
     def reorder( ) {

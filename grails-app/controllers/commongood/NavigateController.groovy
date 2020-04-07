@@ -102,6 +102,7 @@ class NavigateController {
 
             navSelection: [ levelInHierarchy:'Address', id:addressId, description:theAddress.text, note:theAddress.note,
                             orderWithinBlock:theAddress.orderWithinBlock, possibleInterviewers:possibleInterviewers,
+                            boundary:gisService.getBoundaryCoordinates( theAddress.block ),
                             version:theAddress.version ],
 
             navChildren:

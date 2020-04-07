@@ -8,6 +8,22 @@ class NeighbourhoodController {
     def authorizationService
     def reorderService
 
+    /**
+     * Prototyping possible "what neighbourhood am I in" for REST API.
+     * Renders a JSON object identifying the neighbourhood.
+     */
+    def whereAmI( ) {
+        try {
+            Double lat = Double.valueOf( params.lat )
+            Double lon = Double.valueOf( params.lon )
+            log.info "Someone asked for neighbourhood containing lat=${lat}, lon=${lon}"
+            def theHood = [ id: 123, municipalitysId: 3604, name: 'Goodhood' ]
+            render JsonWriter.write( theHood )
+        } catch( Exception ex ) {
+            render JsonWriter.write( [error: 'it broke'] )
+        }
+    }
+
     def reorder( ) {
         def block = Block.get( Long.valueOf( params.blockId ) )
         def nhood = block.neighbourhood
@@ -120,7 +136,4 @@ class NeighbourhoodController {
 
         render JsonWriter.write( result )
     }
-
-
-
 }
