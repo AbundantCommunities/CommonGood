@@ -1,5 +1,8 @@
 package commongood
 
+import org.abundantcommunityinitiative.gis.Convert
+import org.abundantcommunityinitiative.gis.LatLon
+
 class Block {
     String code
     String description
@@ -10,6 +13,15 @@ class Block {
 
     Date dateCreated
     Date lastUpdated
+
+    // If you name this fn getLatLon, IDEs may complain
+    LatLon latLon( ) {
+        if( boundary == null || boundary.allWhitespace ) {
+            new LatLon( )  // Creates an 'unknown' LatLon
+        } else {
+            Convert.calculateCentroid( boundary )
+        }
+    }
 
     static hasMany = [ addresses:Address ]
     static transients = [ 'displayName' ]

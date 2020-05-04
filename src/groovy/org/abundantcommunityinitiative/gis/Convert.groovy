@@ -1,15 +1,36 @@
 package org.abundantcommunityinitiative.gis
 
 import groovy.json.JsonSlurper
+import org.locationtech.jts.algorithm.Centroid
 import org.locationtech.jts.geom.Coordinate
 import org.locationtech.jts.geom.GeometryFactory
 import org.locationtech.jts.io.WKTReader
 import org.locationtech.jts.io.WKTWriter
 
 class Convert {
+    static Coordinate toCoordinate( LatLon ll ) {
+        if( ll.unknown ) {
+            throw new java.lang.IllegalArgumentException('LatLon is UNKNOWN')
+        } else {
+            new Coordinate(ll.longitude, ll.latitude)
+        }
+    }
+
+    /**
+     * A centroid is the geometric centre of an object.
+     * @param wktString A String holding a WKT representation of a boundary
+     * @return LatLon representing the centre (centroid)
+     */
+    static LatLon calculateCentroid( String wktString ) {
+        def geomReader = new WKTReader()
+        def geom = geomReader.read( wktString )
+        Coordinate centre = Centroid.getCentroid( geom )
+        new LatLon( centre.getY(), centre.getX() )
+    }
+
     /**
      * Does what the name says EXCEPT it returns an empty string if passed
-     * an empty array (in JSON this is "[]")
+     * an empty array (in JSON, "[]" is an empty array)
      */
     static jsonBoundaryToLinearRingAsWKT( String json ) {
         def jsonParser = new JsonSlurper( )

@@ -1,5 +1,7 @@
 package commongood
 
+import org.abundantcommunityinitiative.gis.LatLon
+
 class Address {
 
     Block block
@@ -12,6 +14,15 @@ class Address {
 
     Date dateCreated
     Date lastUpdated
+
+    // If you name this fn getLatLon, IDEs may complain
+    LatLon latLon( ) {
+        if( latitude.equals(BigDecimal.ZERO) && longitude.equals(BigDecimal.ZERO) ) {
+            block.latLon( )
+        } else {
+            new LatLon( latitude, longitude )
+        }
+    }
 
     // In many neighbourhoods an Address has a single Family, but not all.
     static hasMany = [ families:Family ]
