@@ -8,9 +8,9 @@ import org.locationtech.jts.io.WKTReader
 import org.locationtech.jts.io.WKTWriter
 
 class Convert {
-    static Coordinate toCoordinate( LatLon ll ) {
+    static Coordinate toCoordinate(Location ll ) {
         if( ll.unknown ) {
-            throw new java.lang.IllegalArgumentException('LatLon is UNKNOWN')
+            throw new java.lang.IllegalArgumentException('Location is UNKNOWN')
         } else {
             new Coordinate(ll.longitude, ll.latitude)
         }
@@ -19,13 +19,13 @@ class Convert {
     /**
      * A centroid is the geometric centre of an object.
      * @param wktString A String holding a WKT representation of a boundary
-     * @return LatLon representing the centre (centroid)
+     * @return Location representing the centre (centroid)
      */
-    static LatLon calculateCentroid( String wktString ) {
+    static Location calculateCentroid(String wktString ) {
         def geomReader = new WKTReader()
         def geom = geomReader.read( wktString )
         Coordinate centre = Centroid.getCentroid( geom )
-        new LatLon( centre.getY(), centre.getX() )
+        new Location( centre.getY(), centre.getX() )
     }
 
     /**

@@ -1,7 +1,7 @@
 package commongood
 
 import org.abundantcommunityinitiative.gis.Convert
-import org.abundantcommunityinitiative.gis.LatLon
+import org.abundantcommunityinitiative.gis.Location
 
 class Block {
     String code
@@ -15,9 +15,9 @@ class Block {
     Date lastUpdated
 
     // If you name this fn getLatLon, IDEs may complain
-    LatLon latLon( ) {
+    Location latLon( ) {
         if( boundary == null || boundary.allWhitespace ) {
-            new LatLon( )  // Creates an 'unknown' LatLon
+            new Location( )  // Creates an 'unknown' Location
         } else {
             Convert.calculateCentroid( boundary )
         }

@@ -1,6 +1,6 @@
 package commongood
 
-import org.abundantcommunityinitiative.gis.LatLon
+import org.abundantcommunityinitiative.gis.Location
 
 import java.time.Year
 import grails.transaction.Transactional
@@ -244,13 +244,13 @@ class SearchService {
     /**
      * A stepping stone, on the way to a clean, nice way to return GIS coordinates to the SearchController.
      * @param foundAnswers List of maps, each map representing a found answer
-     * @result  List<LatLon> of locations (where our results HAD lat+lon locations)
+     * @result  List<Location> of locations (where our results HAD lat+lon locations)
      */
     def deriveLocations ( foundAnswers ) {
-        List<LatLon> result = new ArrayList<LatLon>( )
+        List<Location> result = new ArrayList<Location>( )
         foundAnswers.each {
             Address address = Address.get( it.addrId )
-            LatLon location = address.latLon()
+            Location location = address.latLon()
             if( !location.unknown ) {
                 result << location
             }

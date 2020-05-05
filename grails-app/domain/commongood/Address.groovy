@@ -1,6 +1,7 @@
 package commongood
 
-import org.abundantcommunityinitiative.gis.LatLon
+
+import org.abundantcommunityinitiative.gis.Location
 
 class Address {
 
@@ -16,11 +17,11 @@ class Address {
     Date lastUpdated
 
     // (Wanted to call this fn getLatLon but my IDE complained)
-    LatLon latLon( ) {
+    Location latLon( ) {
         if( latitude == BigDecimal.ZERO && longitude == BigDecimal.ZERO ) {
             block.latLon( )
         } else {
-            new LatLon( latitude, longitude )
+            new Location( latitude, longitude )
         }
     }
 
