@@ -24,7 +24,7 @@ class Block {
     }
 
     static hasMany = [ addresses:Address ]
-    static transients = [ 'displayName' ]
+    static transients = [ 'displayName', 'latLon' ]
 
     static constraints = {
         boundary nullable: true

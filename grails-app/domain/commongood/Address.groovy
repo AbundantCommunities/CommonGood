@@ -15,17 +15,22 @@ class Address {
     Date dateCreated
     Date lastUpdated
 
-    // If you name this fn getLatLon, IDEs may complain
+    // (Wanted to call this fn getLatLon but my IDE complained)
     LatLon latLon( ) {
-        if( latitude.equals(BigDecimal.ZERO) && longitude.equals(BigDecimal.ZERO) ) {
+        if( latitude == BigDecimal.ZERO && longitude == BigDecimal.ZERO ) {
             block.latLon( )
         } else {
             new LatLon( latitude, longitude )
         }
     }
 
+    String toString( ) {
+        "Address(${id}:${text})"
+    }
+
     // In many neighbourhoods an Address has a single Family, but not all.
     static hasMany = [ families:Family ]
+    static transients = [ 'latLon' ]
 
     static constraints = {
         latitude  min: new BigDecimal('-90'),  max: new BigDecimal('90'),  scale: 5

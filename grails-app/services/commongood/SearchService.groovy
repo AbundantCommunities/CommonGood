@@ -1,5 +1,7 @@
 package commongood
 
+import org.abundantcommunityinitiative.gis.LatLon
+
 import java.time.Year
 import grails.transaction.Transactional
 import groovy.sql.Sql
@@ -33,6 +35,7 @@ class SearchService {
         peopleWithContactInfo( session, q, MIN_AGE, MAX_AGE )
     }
 
+    // TODO Looks like answers() can be removed because we always call answersWithContactInfo()
     def answers( session, q, fromAge, toAge ) {
         Integer fromYear = Year.now().getValue() - toAge
         Integer toYear = Year.now().getValue() - fromAge
@@ -98,7 +101,7 @@ class SearchService {
 
             def select =
                 '''SELECT ans.text, ans.would_assist AS assist, ans.note, p.id AS pid, p.first_names AS firstNames, p.last_name AS lastName, q.short_text AS question,
-                          p.phone_number AS phoneNumber, p.email_address AS emailAddress, addr.text AS homeAddress
+                          p.phone_number AS phoneNumber, p.email_address AS emailAddress, addr.id AS addrId, addr.text AS homeAddress
                  FROM Answer ans, Person p, Family f, Address addr, Question q 
                  WHERE ((TO_TSVECTOR(REGEXP_REPLACE(ans.text,'[.,/,-]',',')) || TO_TSVECTOR(REGEXP_REPLACE(ans.note,'[.,/,-]',',')) @@ TO_TSQUERY( :qExp ))
                         OR LOWER(ans.text) LIKE :qStr OR LOWER(ans.note) LIKE :qStr)
@@ -118,7 +121,7 @@ class SearchService {
 
             def select =
                 '''SELECT ans.text, ans.would_assist AS assist, ans.note, p.id AS pid, p.first_names AS firstNames, p.last_name AS lastName, q.short_text AS question,
-                          p.phone_number AS phoneNumber, p.email_address AS emailAddress, addr.text AS homeAddress
+                          p.phone_number AS phoneNumber, p.email_address AS emailAddress, addr.id AS addrId, addr.text AS homeAddress
                  FROM Answer ans, Person p, Family f, Address addr, Question q 
                  WHERE ((TO_TSVECTOR(REGEXP_REPLACE(ans.text,'[.,/,-]',',')) || TO_TSVECTOR(REGEXP_REPLACE(ans.note,'[.,/,-]',',')) @@ TO_TSQUERY( :qExp ))
                         OR LOWER(ans.text) LIKE :qStr OR LOWER(ans.note) LIKE :qStr)
@@ -137,6 +140,7 @@ class SearchService {
         return answers
     }
 
+    // TODO Looks like people() can be removed because we always call peopleWithContactInfo()
     def people( session, q, fromAge, toAge ) {
         peopleWithContactInfo( session, q, fromAge, toAge )
     }
@@ -207,15 +211,12 @@ class SearchService {
             if( toYear > 2200 ) {
                 return ''
             } else {
-                println "TO YEAR is ${toYear}"
                 return 'AND p.birth_year != 0 AND p.birth_year <= :toYear'
             }
         } else {
             if( toYear > 2200 ) {
-                println "FROM YEAR is ${fromYear}"
                 return 'AND p.birth_year >= :fromYear'
             } else {
-                println "FROM YEAR is ${fromYear} and TO YEAR is ${toYear}"
                 return 'AND p.birth_year >= :fromYear AND p.birth_year <= :toYear'
             }
         }
@@ -229,17 +230,32 @@ class SearchService {
             if( toYear > 2200 ) {
                 return 'AND p.birthYear != :fromYear AND p.birthYear != :toYear'
             } else {
-                println "TO YEAR is ${toYear}"
                 return 'AND p.birthYear != 0 AND p.birthYear != :fromYear AND p.birthYear <= :toYear'
             }
         } else {
             if( toYear > 2200 ) {
-                println "FROM YEAR is ${fromYear}"
                 return 'AND p.birthYear >= :fromYear AND p.birthYear != :toYear'
             } else {
-                println "FROM YEAR is ${fromYear} and TO YEAR is ${toYear}"
                 return 'AND p.birthYear >= :fromYear AND p.birthYear <= :toYear'
             }
         }
+    }
+
+    /**
+     * A stepping stone, on the way to a clean, nice way to return GIS coordinates to the SearchController.
+     * @param foundAnswers List of maps, each map representing a found answer
+     * @result  List<LatLon> of locations (where our results HAD lat+lon locations)
+     */
+    def deriveLocations ( foundAnswers ) {
+        List<LatLon> result = new ArrayList<LatLon>( )
+        foundAnswers.each {
+            Address address = Address.get( it.addrId )
+            LatLon location = address.latLon()
+            if( !location.unknown ) {
+                result << location
+            }
+        }
+        log.info "Pulled ${result.size()} locations out of search results"
+        result
     }
 }

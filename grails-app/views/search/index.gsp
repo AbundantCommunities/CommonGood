@@ -414,5 +414,8 @@
             </div>
             <div id="transparent-overlay"></div>
             <div id="emaildiv" class="modal"></div>
+        <g:each in="${locations}" var="location">
+            ${location}<br/>
+        </g:each>
     </body>
 </html>

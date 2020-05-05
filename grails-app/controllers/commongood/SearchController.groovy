@@ -18,7 +18,6 @@ class SearchController {
         // No need to ask AuthorizationService about permission.
         // SearchService limits results to NH or Block of signed in user.
         log.info "${LogAid.who(session)} ${session.authorized} searching for '${params.q}'"
-        def contactInfo = params.boolean('contactInfo')
         def fromAge = params.int('fromAge')
         def toAge = params.int('toAge')
 
@@ -31,10 +30,7 @@ class SearchController {
 
         def people
         def answers
-
-        if( !contactInfo ) {
-            contactInfo = false
-        }
+        def locations = null
 
         if ( advSearch ) {
             if( !fromAge ) {
@@ -45,24 +41,19 @@ class SearchController {
             }
         }
 
-        if ( contactInfo ) {
-            if ( advSearch ) {
-                people = searchService.peopleWithContactInfo( session, params.q, fromAge, toAge )
-                answers = searchService.answersWithContactInfo( session, params.q, fromAge, toAge )
-            } else {
-                people = searchService.peopleWithContactInfo( session, params.q )
-                answers = searchService.answersWithContactInfo( session, params.q )
-            }
+
+        if ( advSearch ) {
+            people = searchService.peopleWithContactInfo( session, params.q, fromAge, toAge )
+            answers = searchService.answersWithContactInfo( session, params.q, fromAge, toAge )
         } else {
-            if ( advSearch ) {
-                people = searchService.people( session, params.q, fromAge, toAge )
-                answers = searchService.answers( session, params.q, fromAge, toAge )
-            } else {
-                people = searchService.people( session, params.q )
-                answers = searchService.answers( session, params.q )
-            }
+            people = searchService.peopleWithContactInfo( session, params.q )
+            answers = searchService.answersWithContactInfo( session, params.q )
         }
 
-        return [ contactInfo:params.contactInfo, q:params.q, fromAge:params.fromAge, toAge:params.toAge, answers:answers, people:people ]
+        if( session.neighbourhood.hasFeature('gismaps') ) {
+            locations = searchService.deriveLocations( answers )
+        }
+
+        return [ q:params.q, fromAge:params.fromAge, toAge:params.toAge, answers:answers, people:people, locations:locations ]
     }
 }

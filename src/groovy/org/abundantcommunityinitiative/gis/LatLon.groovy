@@ -22,4 +22,12 @@ class LatLon {
     LatLon( ) {
         unknown = Boolean.TRUE
     }
+
+    String toString( ) {
+        if( unknown ) {
+            'LatLon(unknown)'
+        } else {
+            "LatLon(${latitude},${longitude})"
+        }
+    }
 }
