@@ -432,6 +432,10 @@
             </g:if>
             </g:if>
 
+            <g:if test="${session.neighbourhood.featureFlags.contains('gismaps')==Boolean.TRUE}">
+            var addressLatLngs = [];
+            </g:if>
+
             window.onload = function onWindowLoad() {
                 // Need to set height of block detail section based on current number of block connectors and NC vs BC authorization.
 
@@ -555,7 +559,7 @@
             </div>
             <div class="content-section">
                 <div class="content-heading">Addresses for ${navSelection.levelInHierarchy} ${navSelection.block.description}<g:if test="${authorized.canWrite()==Boolean.TRUE}">&nbsp;&nbsp;<a href="#" onclick="presentNewModal();" style="font-weight:normal;">+ Add New Addresses</a></g:if></div>
-                <g:if test="${navSelection.block.neighbourhood.hasFeature('gismaps')}">
+                <g:if test="${session.neighbourhood.featureFlags.contains('gismaps')==Boolean.TRUE}">
                 <div id="listWithHandle" style="width:500px;display:inline-block;vertical-align:top;">
                 </g:if>
                 <g:else>
@@ -575,6 +579,12 @@
                                  <span class="light-text">no family entered for address</span>
                             </g:else>
                         </div>
+                        <g:if test="${session.neighbourhood.featureFlags.contains('gismaps')==Boolean.TRUE}">
+                        <script type="text/javascript">
+                            var addressLatLng = {lat:${child.latitude}, lng:${child.longitude}};
+                            addressLatLngs.push(addressLatLng);
+                        </script>
+                        </g:if>
                     </g:each>
                 </g:if>
                 <g:else>
@@ -611,7 +621,8 @@
                                  [90, 180],
                                  [-90, 180],
                                  [-90, -180]], //outer ring, the world
-                                 boundaryPoly.getLatLngs()] // cutout
+                                 boundaryPoly.getLatLngs()],
+                                 {opacity:0.4} // cutout
                                 );
 
                             map.addLayer(invertedPoly);
@@ -628,6 +639,15 @@
                             id: 'mapbox/streets-v11',
                             accessToken: 'pk.eyJ1IjoidGltMTIzIiwiYSI6ImNrMmp2YjVoOTFpbWszbnFnems5ZjM2bW8ifQ.oNovhkW55h19gppWuNagQw'
                         }).addTo(map);
+
+                        // add markers for any address lat/lngs
+                        if (addressLatLngs.length > 0) {
+                            for (i=0;i<addressLatLngs.length;i++) {
+                                L.circleMarker(L.latLng(addressLatLngs[i].lat,addressLatLngs[i].lng), {radius:4}).addTo(map);
+                            }
+                        }
+
+
                     } else {
                         document.getElementById('mapid').style = "position:relative;";
                         document.getElementById('mapid').innerHTML = '<p style="text-align:center;margin:0;line-height:2.0;position:absolute;top:50%;left:50%;margin-right:-50%;transform: translate(-50%, -50%);">Mapping features are not available.<br>Neighbourhood boundary has not been specified.</p>';
@@ -722,7 +742,6 @@
                     </div>
                 </div>
                 <script type="text/javascript">
-
                     if (boundaryType!='nada') {
                         var editmap = L.map('editmapid');
 
@@ -766,7 +785,8 @@
                                      [90, 180],
                                      [-90, 180],
                                      [-90, -180]], //outer ring, the world
-                                     boundaryPoly.getLatLngs()] // cutout
+                                     boundaryPoly.getLatLngs()], // cutout
+                                     {opacity:0.4}
                                     );
 
                                 editmap.addLayer(editInvertedPoly);
@@ -885,7 +905,8 @@
                              [90, 180],
                              [-90, 180],
                              [-90, -180]], //outer ring, the world
-                             editBoundaryPoly.getLatLngs()] // cutout
+                             editBoundaryPoly.getLatLngs()], // cutout
+                             {opacity:0.4}
                             );
 
 
