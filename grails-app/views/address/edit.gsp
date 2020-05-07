@@ -4,12 +4,13 @@
     <head>
         <meta name="layout" content="basic">
         <title>Common Good - Edit Address</title>
+        <g:if test="${session.neighbourhood.featureFlags.contains('gismaps')}">
         <asset:stylesheet src="leaflet/leaflet.css"/>
         <asset:javascript src="leaflet/leaflet.js"/>
         <style type="text/css">
             #mapid { height: 400px; }
         </style>
-
+        </g:if>
 
         <script type="text/javascript">
 
@@ -109,15 +110,10 @@
 
                                     function onMapClick(e) {
                                         addressMarker = L.marker(e.latlng, { draggable: true } );
-                                        if (boundaryPoly.getBounds().contains(addressMarker.getLatLng())) {
-                                            map.off('click', onMapClick);
-                                            document.getElementById('help_text_div').innerHTML = "To adjust the location of the address, simply click and drag the marker. To start over, click the 'Start Over' button.";
-                                            document.getElementById('start_over_button').style.display = '';
-                                            map.addLayer(addressMarker);
-                                        } else {
-                                            addressMarker = null;
-                                            alert("That location appears to be outside of the block's boundary.");
-                                        }
+                                        map.off('click', onMapClick);
+                                        document.getElementById('help_text_div').innerHTML = "To adjust the location of the address, simply click and drag the marker. To start over, click the 'Start Over' button.";
+                                        document.getElementById('start_over_button').style.display = '';
+                                        map.addLayer(addressMarker);
 
                                     }
 

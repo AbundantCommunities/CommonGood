@@ -5,6 +5,14 @@
         <meta name="layout" content="navigate"/>
         <title>CommonGood - Address</title>
 
+        <g:if test="${session.neighbourhood.featureFlags.contains('gismaps')==Boolean.TRUE}">
+        <asset:stylesheet src="leaflet/leaflet.css"/>
+        <asset:javascript src="leaflet/leaflet.js"/>
+        <style type="text/css">
+            #mapid { height: 400px; }
+        </style>
+        </g:if>
+
         <g:if test="${authorized.canWrite()==Boolean.TRUE}">
         <script type="text/javascript">            
 
@@ -173,7 +181,12 @@
             </div>
             <div class="content-section">
                 <div class="content-heading">Families for ${navSelection.levelInHierarchy} ${navSelection.description}<g:if test="${authorized.canWrite()==Boolean.TRUE}">&nbsp;&nbsp;<a onclick="presentNewModal();" href="#" style="font-weight:normal;">+ Add New ${navChildren.childType}</a></g:if></div>
-                <div id="listWithHandle">
+                <g:if test="${session.neighbourhood.featureFlags.contains('gismaps')==Boolean.TRUE}">
+                <div id="listWithHandle" style="width:500px;display:inline-block;vertical-align:top;">
+                </g:if>
+                <g:else>
+                <div id="listWithHandle" style="width:900px;display:inline-block;vertical-align:top;">
+                </g:else>
                 <g:if test="${navChildren.children.size() > 0}">
                     <g:each in="${navChildren.children}" var="child">
                         <div <g:if test="${authorized.canWrite()==Boolean.TRUE}">id="${child.id}"</g:if> class="content-children-row">
@@ -186,6 +199,79 @@
                     <div class="content-children-row light-text">no families</div>
                 </g:else>
                 </div>
+
+
+                <g:if test="${session.neighbourhood.featureFlags.contains('gismaps')==Boolean.TRUE}">
+                <div style="display:inline-block;width:400px;"><div style="border:solid gray;"><div id="mapid"></div></div><div id="mapcaption" style="margin:10px;font-size:small;"></div></div>
+                <script type="text/javascript">
+
+                    var boundaryType = '${navSelection.boundary.type}';
+                    var boundary = [
+                        <g:each in="${navSelection.boundary.coordinates}" var="coord" status="i">
+                            [${coord.getY()},${coord.getX()}],
+                        </g:each>
+                    ];
+                    if (boundaryType != 'nada') {
+                        var map = L.map('mapid');
+
+                        var boundaryPoly;
+                        var invertedPoly;
+
+                        if (boundaryType=='neighbourhood' || boundaryType=='block') {
+                            boundaryPoly = L.polygon(boundary);
+                        }
+
+                        if (boundaryType=='block') {
+                            // add inverted polygon to map
+                            invertedPoly = L.polygon(
+                                [[[90, -180],
+                                 [90, 180],
+                                 [-90, 180],
+                                 [-90, -180]], //outer ring, the world
+                                 boundaryPoly.getLatLngs()],
+                                 {opacity:0.4} // cutout
+                                );
+
+                            map.addLayer(invertedPoly);
+
+                        }
+
+                        map.fitBounds(boundaryPoly.getBounds());
+
+                        L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+                            attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+                            maxZoom: 19,
+                            id: 'mapbox/streets-v11',
+                            accessToken: 'pk.eyJ1IjoidGltMTIzIiwiYSI6ImNrMmp2YjVoOTFpbWszbnFnems5ZjM2bW8ifQ.oNovhkW55h19gppWuNagQw'
+                        }).addTo(map);
+
+
+                        // add markers for any address lat/lngs
+                        //if (addressLatLngs.length > 0) {
+                        //    for (i=0;i<addressLatLngs.length;i++) {
+                        //        L.circleMarker(L.latLng(addressLatLngs[i].lat,addressLatLngs[i].lng), {radius:4}).addTo(map);
+                        //    }
+                        //}
+
+                        if (${navSelection.latitude} != 0 || ${navSelection.longitude} != 0) {
+                            L.circleMarker(L.latLng(${navSelection.latitude},${navSelection.longitude}), {radius:4}).addTo(map);
+                        } else { // neighbourhood, so add caption about block boundary
+                            document.getElementById('mapcaption').innerHTML = 'The location for the address has not been specified. <span><g:link controller="Address" action="edit" id="${navSelection.id}">Edit</g:link></span> the address to specify its location.'
+                        }
+
+
+                    } else {
+                        document.getElementById('mapid').style = "position:relative;background-color:darkgrey;";
+                        document.getElementById('mapid').innerHTML = '<p style="text-align:center;margin:0;line-height:2.0;position:absolute;top:50%;left:50%;margin-right:-50%;transform: translate(-50%, -50%);color:white;">Mapping features are not available.<br>Neighbourhood boundary has not been specified.</p>';
+                    }
+
+                </script>
+                </g:if>  <%-- End of test for featureFlag gismaps --%>
+
+
+
+
+
                 <div class="content-children-row"></div>
                 <form id="reorder-form" action="<g:createLink controller='Address' action='reorder' />" method="POST">
                     <input id="reorder-this-id" type="hidden" name="familyId" value=""/>

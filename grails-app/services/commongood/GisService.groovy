@@ -24,4 +24,17 @@ class GisService {
             }
         }
     }
+
+    def getNeighbourhoodBoundaryCoordinates( Neighbourhood neighbourhood ) {
+        if( neighbourhood.boundary != null && neighbourhood.boundary.trim().length() > 0 ) {
+            log.info('Found neighbourhood boundary')
+            return [ type:'neighbourhood', coordinates: Convert.parseCoordinates( neighbourhood.boundary ) ]
+        } else {
+            // Return an empty array
+            log.info('Found no neighbourhood boundary')
+            return  [ type:'nada', coordinates: new Coordinate[ 0 ] ]
+        }
+    }
+
+
 }

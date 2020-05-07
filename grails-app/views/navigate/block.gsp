@@ -5,6 +5,7 @@
         <meta name="layout" content="navigate"/>
         <title>CommonGood - Block</title>
 
+        <g:if test="${session.neighbourhood.featureFlags.contains('gismaps')==Boolean.TRUE}">
         <asset:stylesheet src="leaflet/leaflet.css"/>
         <asset:javascript src="leaflet/leaflet.js"/>
 
@@ -48,6 +49,7 @@
         <style type="text/css">
             #mapid { height: 400px; }
         </style>
+        </g:if>
         <script type="text/javascript">
 
             <g:if test="${authorized.canWrite()==Boolean.TRUE}">
@@ -593,7 +595,7 @@
                 </div>
 
 
-                <g:if test="${navSelection.block.neighbourhood.hasFeature('gismaps')}">
+                <g:if test="${session.neighbourhood.featureFlags.contains('gismaps')==Boolean.TRUE}">
                 <div style="display:inline-block;width:400px;"><div style="border:solid gray;"><div id="mapid"></div></div><div id="mapcaption" style="margin:10px;font-size:small;"></div></div>
                 <script type="text/javascript">
 
@@ -603,7 +605,6 @@
                             [${coord.getY()},${coord.getX()}],
                         </g:each>
                     ];
-
                     if (boundaryType != 'nada') {
                         var map = L.map('mapid');
 
@@ -649,8 +650,8 @@
 
 
                     } else {
-                        document.getElementById('mapid').style = "position:relative;";
-                        document.getElementById('mapid').innerHTML = '<p style="text-align:center;margin:0;line-height:2.0;position:absolute;top:50%;left:50%;margin-right:-50%;transform: translate(-50%, -50%);">Mapping features are not available.<br>Neighbourhood boundary has not been specified.</p>';
+                        document.getElementById('mapid').style = "position:relative;background-color:darkgrey;";
+                        document.getElementById('mapid').innerHTML = '<p style="text-align:center;margin:0;line-height:2.0;position:absolute;top:50%;left:50%;margin-right:-50%;transform: translate(-50%, -50%);color:white;">Mapping features are not available.<br>Neighbourhood boundary has not been specified.</p>';
                     }
 
                 </script>
@@ -922,7 +923,6 @@
                         editmap.addLayer(editBoundaryPoly);
                     }
 
-
                     if (boundaryType!='nada') {
                         var polygonDrawer = new L.Draw.Polygon(editmap);
 
@@ -941,7 +941,7 @@
 
                         init_map_ui();
                     } else {
-                        document.getElementById('editmapid').style = "position:relative;";
+                        document.getElementById('editmapid').style = "position:relative;background-color:darkgrey;";
                         document.getElementById('editmapid').innerHTML = '<p style="text-align:center;margin:0;line-height:2.0;position:absolute;top:50%;left:50%;margin-right:-50%;transform: translate(-50%, -50%);color:white;">Mapping features are not available.<br>Neighbourhood boundary has not been specified.</p>';
                         document.getElementById('editmapbuttons').style = "border:solid 0px;";
                         document.getElementById('editmapbuttons').innerHTML = '';
