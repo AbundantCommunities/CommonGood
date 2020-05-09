@@ -115,7 +115,9 @@ class BlockController {
 
         block.code = params.code.trim( )
         block.description = params.description.trim( )
-        block.boundary = Convert.jsonBoundaryToLinearRingAsWKT( params.boundary )
+        if( session.neighbourhood.hasFeature('gismaps') ) {
+            block.boundary = Convert.jsonBoundaryToLinearRingAsWKT( params.boundary )
+        }
 
         if( block.code ) {
             block.save( flush:true, failOnError: true )

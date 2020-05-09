@@ -67,7 +67,7 @@
                     // set height of overlay to match height of pagecontainer height
                     document.getElementById("transparent-overlay").setAttribute("style","height:"+pagecontainerDiv.clientHeight+"px;");
 
-                    <g:if test="${navSelection.block.neighbourhood.hasFeature('gismaps')}">
+                    <g:if test="${session.neighbourhood.featureFlags.contains('gismaps')==Boolean.TRUE}">
                     setup_edit_map();
                     </g:if>
                     populateEditModal();
@@ -114,7 +114,7 @@
                         document.getElementById("blockCodeInput").value = blockCode;
                         document.getElementById("blockDescriptionInput").value = blockDescription;
 
-                        <g:if test="${navSelection.block.neighbourhood.hasFeature('gismaps')}">
+                        <g:if test="${session.neighbourhood.featureFlags.contains('gismaps')==Boolean.TRUE}">
                         var blockPolygonArray = [];
 
                         if (editBoundaryPoly != null) {
@@ -710,7 +710,7 @@
                     </div>
                 </div>
 
-                <g:if test="${navSelection.block.neighbourhood.hasFeature('gismaps')}">
+                <g:if test="${session.neighbourhood.featureFlags.contains('gismaps')==Boolean.TRUE}">
                 <div id="edit-container" class="modal" style="z-index:2001;">
                     <div class="modal-title">Edit Block</div>
                     <form id="edit-form" action="<g:createLink controller='block' action='save' />" method="POST">
