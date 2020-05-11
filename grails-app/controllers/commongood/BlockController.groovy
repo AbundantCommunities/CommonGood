@@ -103,9 +103,9 @@ class BlockController {
     }
 
     /**
-     * The client must pass a JSON array specifying the block's boundary (the GIS coordinates
-     * of the block's perimeter; can be an empty array). Each element of the array is a 2-element
-     * array of [aLong,aLat].
+     * param.boundary can be null or an empty string, otherwise must must be a JSON array
+     * specifying the GIS coordinates of the block's perimeter; can be an empty array).
+     * Each element of the array is a 2-element array of [longitude,latitude].
      */
     def save( ) {
         def blockId = params.long('id')
@@ -115,9 +115,7 @@ class BlockController {
 
         block.code = params.code.trim( )
         block.description = params.description.trim( )
-        if( session.neighbourhood.hasFeature('gismaps') ) {
-            block.boundary = Convert.jsonBoundaryToLinearRingAsWKT( params.boundary )
-        }
+        block.boundary = Convert.jsonBoundaryToLinearRingAsWKT( params.boundary )
 
         if( block.code ) {
             block.save( flush:true, failOnError: true )
@@ -156,8 +154,6 @@ class BlockController {
         da.write = true
         da.save( flush:true, failOnError: true )
         redirect controller:'navigate', action:'block', id:blockId
-
-
     }
 
     // Get a JSON list of addresses for a given block
@@ -176,6 +172,4 @@ class BlockController {
 
         render JsonWriter.write( result )
     }
-
-
 }

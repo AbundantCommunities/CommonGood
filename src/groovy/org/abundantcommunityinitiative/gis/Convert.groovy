@@ -29,25 +29,30 @@ class Convert {
     }
 
     /**
-     * Does what the name says EXCEPT it returns an empty string if passed
-     * an empty array (in JSON, "[]" is an empty array)
+     * Does what the name says EXCEPT it returns an empty string if passed null or
+     * and empty string or a string of all whitespace or an empty array (in JSON,
+     * "[]" is an empty array)
      */
     static jsonBoundaryToLinearRingAsWKT( String json ) {
-        def jsonParser = new JsonSlurper( )
-        def boundary = jsonParser.parseText( json ) // an ArrayList object
-        if( boundary.size() == 0 ) {
+        if( json == null || json.trim.isEmpty() ) {
             return ''
         } else {
-            Coordinate[] coordinates = new Coordinate[0]
-            for (vertex in boundary) {
-                coordinates += new Coordinate(vertex[0], vertex[1])
-            }
-            coordinates += coordinates[0]
+            def jsonParser = new JsonSlurper( )
+            def boundary = jsonParser.parseText( json ) // an ArrayList object
+            if( boundary.size() == 0 ) {
+                return ''
+            } else {
+                Coordinate[] coordinates = new Coordinate[0]
+                for (vertex in boundary) {
+                    coordinates += new Coordinate(vertex[0], vertex[1])
+                }
+                coordinates += coordinates[0]
 
-            def factory = new GeometryFactory()
-            def linearRing = factory.createLinearRing(coordinates)
-            def stringifier = new WKTWriter()
-            return stringifier.write(linearRing)
+                def factory = new GeometryFactory()
+                def linearRing = factory.createLinearRing(coordinates)
+                def stringifier = new WKTWriter()
+                return stringifier.write(linearRing)
+            }
         }
     }
 
