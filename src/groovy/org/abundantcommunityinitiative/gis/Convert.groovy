@@ -34,7 +34,7 @@ class Convert {
      * "[]" is an empty array)
      */
     static jsonBoundaryToLinearRingAsWKT( String json ) {
-        if( json == null || json.trim.isEmpty() ) {
+        if( json == null || json.trim().isEmpty() ) {
             return ''
         } else {
             def jsonParser = new JsonSlurper( )
