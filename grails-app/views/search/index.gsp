@@ -415,7 +415,7 @@
             <div id="transparent-overlay"></div>
             <div id="emaildiv" class="modal"></div>
         <g:each in="${locations}" var="location">
-            ${location}<br/>
+            ${location.key.latLon()} ==> ${location.value}<br/>
         </g:each>
     </body>
 </html>

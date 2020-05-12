@@ -19,10 +19,6 @@ class SearchService {
     // We call log.info before and after each query, to monitor performance
     // Some of these searches have the potential to run very slowly.
 
-    def answers( session, q ) {
-        answers( session, q, MIN_AGE, MAX_AGE )
-    }
-
     def answersWithContactInfo( session, q ) {
         answersWithContactInfo( session, q, MIN_AGE, MAX_AGE )
     }
@@ -33,56 +29,6 @@ class SearchService {
 
     def peopleWithContactInfo( session, q ) {
         peopleWithContactInfo( session, q, MIN_AGE, MAX_AGE )
-    }
-
-    // TODO Looks like answers() can be removed because we always call answersWithContactInfo()
-    def answers( session, q, fromAge, toAge ) {
-        Integer fromYear = Year.now().getValue() - toAge
-        Integer toYear = Year.now().getValue() - fromAge
-
-        String qStr = simpleQuery( q )    // for simple string search
-        String qExp = fullTextQuery( q )  // for Postgres Full Text Search
-
-        final Sql sql = new Sql(dataSource)
-        def answers
-
-        if( session.authorized.forNeighbourhood() ) {
-            def neighbourhoodId = session.neighbourhood.id
-            log.info "${session.user.logName} search hood ${neighbourhoodId} answers for '${qExp}', birthYears ${fromYear}:${toYear}"
-            def select = 
-                '''SELECT ans.text, ans.would_assist AS assist, ans.note, p.id AS pid, p.first_names AS firstNames, p.last_name AS lastName, q.short_text AS question
-                 FROM Answer ans LEFT OUTER JOIN answer_group grp ON ans.answer_group_id = grp.id, Person p, Question q
-                 WHERE ((TO_TSVECTOR(REGEXP_REPLACE(ans.text,'[.,/,-]',',')) || TO_TSVECTOR(REGEXP_REPLACE(ans.note,'[.,/,-]',',')) || TO_TSVECTOR(REGEXP_REPLACE(COALESCE(grp.name,''),'[.,/,-]',',')) @@ TO_TSQUERY( :qExp ))
-                        OR LOWER(ans.text) LIKE :qStr OR LOWER(ans.note) LIKE :qStr)
-                 AND ans.person_id = p.id
-                 AND ans.question_id = q.id ''' +
-                ageSelectionSQL( fromYear, toYear ) +
-                ''' AND q.neighbourhood_id = :id
-                 ORDER BY p.first_names, p.last_name, p.id'''
-
-            answers = sql.rows( select, [ qStr:qStr, qExp:qExp, id:neighbourhoodId, fromYear:fromYear, toYear:toYear ] )
-
-        } else {
-            def blockId = session.block.id
-            log.info "${session.user.logName} search block ${blockId} answers for '${q}', birthYears ${fromYear}:${toYear}"
-            def select =
-                '''SELECT ans.text, ans.would_assist AS assist, ans.note, p.id AS pid, p.first_names AS firstNames, p.last_name AS lastName, q.short_text AS question
-                 FROM Answer ans, Person p, Family f, Address addr, Question q
-                 WHERE ((TO_TSVECTOR(REGEXP_REPLACE(ans.text,'[.,/,-]',',')) || TO_TSVECTOR(REGEXP_REPLACE(ans.note,'[.,/,-]',',')) @@ TO_TSQUERY( :qExp ))
-                        OR LOWER(ans.text) LIKE :qStr OR LOWER(ans.note) LIKE :qStr)
-                 AND ans.person_id = p.id
-                 AND ans.question_id = q.id 
-                 AND p.family_id = f.id 
-                 AND f.address_id = addr.id ''' +
-                 ageSelectionSQL( fromYear, toYear ) +
-                 ''' AND addr.block_id = :id 
-                 ORDER BY p.first_names, p.last_name, p.id'''
-
-            answers = sql.rows( select, [ qStr:qStr, qExp:qExp, id:blockId, fromYear:fromYear, toYear:toYear ] )
-        }
-
-        log.info "Found ${answers.size()} answers"
-        return answers
     }
 
     def answersWithContactInfo( session, q, fromAge, toAge ) {
@@ -247,15 +193,24 @@ class SearchService {
      * @result  List<Location> of locations (where our results HAD lat+lon locations)
      */
     def deriveLocations ( foundAnswers ) {
-        List<Location> result = new ArrayList<Location>( )
+        // A Groovy map is an instance of LinkedHashMap
+        def res = [:]
+        def countAnswers = 0
         foundAnswers.each {
             Address address = Address.get( it.addrId )
             Location location = address.latLon()
             if( !location.unknown ) {
-                result << location
+                countAnswers++
+                if( address in res ) {
+                    // Append this answer to the others
+                    res[address] << it
+                } else {
+                    // Make a list of just this one answer
+                    res[address] = [ it ]
+                }
             }
         }
-        log.info "Pulled ${result.size()} locations out of search results"
-        result
+        log.info "Pulled ${res.size()} locations with ${countAnswers} answers"
+        return res
     }
 }

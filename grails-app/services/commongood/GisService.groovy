@@ -25,7 +25,7 @@ class GisService {
         }
     }
 
-    def getNeighbourhoodBoundaryCoordinates( Neighbourhood neighbourhood ) {
+    def getBoundaryCoordinates(Neighbourhood neighbourhood ) {
         if( neighbourhood.boundary != null && neighbourhood.boundary.trim().length() > 0 ) {
             log.info('Found neighbourhood boundary')
             return [ type:'neighbourhood', coordinates: Convert.parseCoordinates( neighbourhood.boundary ) ]

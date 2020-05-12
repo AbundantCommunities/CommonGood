@@ -34,7 +34,7 @@ class NavigateController {
             navContext: [ ],
 
             navSelection: [ levelInHierarchy:'Neighbourhood', id:hoodId,
-                                description:theHood.name, questions: questions, boundary:gisService.getNeighbourhoodBoundaryCoordinates(theHood) ],
+                                description:theHood.name, questions: questions, boundary:gisService.getBoundaryCoordinates(theHood) ],
 
             navChildren:
                 [
