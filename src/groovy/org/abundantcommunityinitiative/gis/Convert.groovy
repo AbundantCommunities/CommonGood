@@ -21,7 +21,7 @@ class Convert {
      * @param wktString A String holding a WKT representation of a boundary
      * @return Location representing the centre (centroid)
      */
-    static Location calculateCentroid(String wktString ) {
+    static Location calculateCentroid( String wktString ) {
         def geomReader = new WKTReader()
         def geom = geomReader.read( wktString )
         Coordinate centre = Centroid.getCentroid( geom )

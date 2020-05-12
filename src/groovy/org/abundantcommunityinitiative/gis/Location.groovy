@@ -13,6 +13,15 @@ class Location {
     Boolean unknown  // if True than lat & lon are UNKNOWN
 
     // Note that JTS's Coordinate constructor wants lon first, then lat.
+    Location( double lat, double lon ) {
+        latitude = lat
+        longitude = lon
+        latitude = latitude.setScale( 5, BigDecimal.ROUND_HALF_EVEN )
+        longitude = longitude.setScale( 5, BigDecimal.ROUND_HALF_EVEN )
+        unknown = Boolean.FALSE
+    }
+
+    // Note that JTS's Coordinate constructor wants lon first, then lat.
     Location(BigDecimal lat, BigDecimal lon ) {
         latitude = lat
         longitude = lon
