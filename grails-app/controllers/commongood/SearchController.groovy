@@ -6,6 +6,7 @@ class SearchController {
 
     def searchService
     def authorizationService
+    def gisService
 
     def form( ) {
         log.debug "${LogAid.who(session)} ${session.authorized} asked for search form"
@@ -31,6 +32,7 @@ class SearchController {
         def people
         def answers
         def locations = null
+        def neighbourhoodBoundary = null
 
         if ( advSearch ) {
             if( !fromAge ) {
@@ -52,8 +54,17 @@ class SearchController {
 
         if( session.neighbourhood.hasFeature('gismaps') ) {
             locations = searchService.deriveLocations( answers )
+            neighbourhoodBoundary = gisService.getBoundaryCoordinates( session.neighbourhood )
         }
 
-        return [ q:params.q, fromAge:params.fromAge, toAge:params.toAge, answers:answers, people:people, locations:locations ]
+        [
+            q: params.q,
+            fromAge: params.fromAge,
+            toAge: params.toAge,
+            answers: answers,
+            people: people,
+            locations: locations,
+            neighbourhoodBoundary: neighbourhoodBoundary
+        ]
     }
 }
