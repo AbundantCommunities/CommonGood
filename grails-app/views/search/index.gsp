@@ -346,7 +346,7 @@
     </head>
     <body>
             <div class="content-section">
-                <div style="margin-bottom:7px;">You searched for: golf</div>
+                <div style="margin-bottom:7px;">You searched for: ${q}</div>
                 <g:if test="${people.size()>0 || answers.size()>0}">
                     <div class="searchResults" style="margin-bottom:7px;"><span style="font-weight:bold;">Show:</span>  Search Results | <a href="Javascript:showContactInfo();">Contact Info</a></div>
                     <div class="contactInfo" style="display:none;margin-bottom:7px;"><span style="font-weight:bold;">Show:</span>  <a href="Javascript:showSearchResults();">Search Results</a> | Contact Info</div>
