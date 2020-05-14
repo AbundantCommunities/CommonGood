@@ -5,6 +5,11 @@
         <meta name="layout" content="basic">
         <title>CommonGood Search</title>
         <asset:javascript src="copy2clipboard.js"/>
+        <asset:stylesheet src="leaflet/leaflet.css"/>
+        <asset:javascript src="leaflet/leaflet.js"/>
+        <style type="text/css">
+            #mapid { height: 400px; }
+        </style>
         <script type="text/javascript">
         
             var people = [];
@@ -21,9 +26,8 @@
                 for (i=0;i<allContactInfoElements.length;i++) {
                     allContactInfoElements[i].style.display = '';
                 }
-
-                // document.getElementById('show-contact-form').submit();
             }
+
             function showSearchResults() {
                 var allContactInfoElements = document.getElementsByClassName('contactInfo');
                 var allSearchResultsElements = document.getElementsByClassName('searchResults');
@@ -35,10 +39,6 @@
                 for (i=0;i<allContactInfoElements.length;i++) {
                     allContactInfoElements[i].style.display = 'none';
                 }
-
-
-
-                document.getElementById('show-search-form').submit();
             }
 
             function constructAgeDescription(fromAge,toAge) {
@@ -117,8 +117,6 @@
             }
 
 
-
-            <g:if test="${contactInfo=='yes'}">
             function constructLine(fNames,lName,phone,email,address) {
 
                 var lineIsClean = true;
@@ -313,17 +311,23 @@
             }
 
 
-            </g:if>
-
             window.onload = function onWindowLoad() {
                 <g:if test="${people.size()==0 && answers.size()==0}">
                     document.getElementById("failedQueryDescription").innerHTML = constructQueryDescription(failedDescription,'${q}','${fromAge}','${toAge}',${people.size()},${answers.size()});
                 </g:if>
                 <g:if test="${people.size()>0}">
-                    document.getElementById("peopleQueryDescription").innerHTML = constructQueryDescription(peopleDescription,'${q}','${fromAge}','${toAge}',${people.size()},${answers.size()});
+                    var peopleQueryDescriptionElements = document.getElementsByClassName('peopleQueryDescription');
+                    var theInnerHTML = constructQueryDescription(peopleDescription,'${q}','${fromAge}','${toAge}',${people.size()},${answers.size()});
+                    for (i=0;i<peopleQueryDescriptionElements.length;i++) {
+                        peopleQueryDescriptionElements[i].innerHTML = theInnerHTML;
+                    }
                 </g:if>
                 <g:if test="${answers.size()>0}">
-                    document.getElementById("answersQueryDescription").innerHTML = constructQueryDescription(answersDescription,'${q}','${fromAge}','${toAge}',${people.size()},${answers.size()});
+                    var answersQueryDescriptionElements = document.getElementsByClassName('answersQueryDescription');
+                    var theInnerHTML = constructQueryDescription(answersDescription,'${q}','${fromAge}','${toAge}',${people.size()},${answers.size()});
+                    for (i=0;i<answersQueryDescriptionElements.length;i++) {
+                        answersQueryDescriptionElements[i].innerHTML = theInnerHTML;
+                    }
                 </g:if>
             }
 
@@ -342,74 +346,169 @@
     </head>
     <body>
             <div class="content-section">
-
-                <div style="width:910px;">
-                    <div class="content-heading" style="display:inline-block;">&nbsp;</div>
-                    <g:if test="${people.size()>0 || answers.size()>0}">
-                        <div class="contactInfo" style="display:none;float:right;"><span style="font-weight:bold;">Show:</span>  <a href="Javascript:showSearchResults();">Search Results</a> | Contact Info</div>
-                        <div class="searchResults" style="display:inline-block;float:right;"><span style="font-weight:bold;">Show:</span>  Search Results | <a href="Javascript:showContactInfo();">Contact Info</a></div>
-                    </g:if>
-                </div>
-
+                <div style="margin-bottom:7px;">You searched for: golf</div>
+                <g:if test="${people.size()>0 || answers.size()>0}">
+                    <div class="searchResults" style="margin-bottom:7px;"><span style="font-weight:bold;">Show:</span>  Search Results | <a href="Javascript:showContactInfo();">Contact Info</a></div>
+                    <div class="contactInfo" style="display:none;margin-bottom:7px;"><span style="font-weight:bold;">Show:</span>  <a href="Javascript:showSearchResults();">Search Results</a> | Contact Info</div>
+                </g:if>
                 <g:if test="${people.size()>0 || answers.size()>0}">
                     <div style="width:910px;">
-                        <div style="display:inline-block;float:right;"><span><a href="JavaScript:emailList();">Email Contact List</a> | </span><a href='JavaScript:doDownload();'>Download Results</a></div>
+                        <div ><span><a href="JavaScript:emailList();">Email Contact List</a> | </span><a href='JavaScript:doDownload();'>Download Results</a></div>
                     </div>
+                </g:if>
+            </div>
+            <div class="content-section">
+
+                <g:if test="${answers.size() > 0}">
+                <g:each in="${answers}" var="answer">
+                <script type="text/javascript">
+                    var anAnswer = {question:decodeEntities('${answer.question}'), answer:decodeEntities('${answer.text}'), firstNames:decodeEntities('${answer.firstNames}'), lastName:decodeEntities('${answer.lastName}'), phoneNumber:decodeEntities('${answer.phoneNumber}'), emailAddress:decodeEntities('${answer.emailAddress}'), homeAddress:decodeEntities('${answer.homeAddress}'), assist:${answer.assist}};
+                    answers.push(anAnswer);
+                </script>
+                </g:each>
+                </g:if>
+
+                <g:if test="${people.size() > 0}">
+                <g:each in="${people}" var="person">
+                <script type="text/javascript">
+                    var aPerson = {firstNames:decodeEntities('${person[1]}'), lastName:decodeEntities('${person[2]}'), phoneNumber:decodeEntities('${person[3]}'), emailAddress:decodeEntities('${person[4]}'), homeAddress:decodeEntities('${person[5]}')};
+                    people.push(aPerson);
+                </script>
+                </g:each>
                 </g:if>
 
                 <g:if test="${people.size() == 0 && answers.size() == 0}">
                     <h4 id="failedQueryDescription"></h4>
                 </g:if>
 
-                <g:if test="${people.size() > 0}">
-                    <div style="margin-top:-5px;margin-bottom:-15px;">
-                        <h4 id="peopleQueryDescription"></h4>
+
+                <div class='searchResults'>
+                    <div style="display:inline-block;width:470px;">
+                        <g:if test="${people.size() > 0}">
+                        <div style="margin-bottom:-15px;margin-top:-15px;">
+                            <h4 class="peopleQueryDescription"></h4>
+                        </div>
+                        <g:each in="${people}" var="person">
+                            <div class="content-children-row" >
+                                <div>
+                                    <g:link controller="navigate" action="familymember" id="${person[0]}">${person[1]} ${person[2]}</g:link>
+                                </div>
+                            </div>
+                        </g:each>
+                        <div class="content-children-row" style="height:5px;"></div>
+                        </g:if>
+
+                        <g:if test="${answers.size() > 0}">
+                        <div style="margin-top:-5px;margin-bottom:-15px;">
+                            <h4><span class="answersQueryDescription"></span> <span style="font-weight:normal;">(<span style="font-weight:bold;">bold</span> = would assist):</span></h4>
+                        </div>
+                        <g:each in="${answers}" var="answer">
+                            <div class="content-children-row" >
+                                <div>
+                                    <span><g:link controller="navigate" action="familymember" id="${answer.pid}">${answer.firstNames} ${answer.lastName}</g:link> </span>
+                                    <span class="<g:if test='${answer.assist}'>bold</g:if>">${answer.text}</span> 
+                                    <span style="font-size:x-small;">(${answer.question})</span>
+                                </div>
+                            </div>
+                        </g:each>
+                        <div class="content-children-row" style="height:5px;"></div>
+                        </g:if>
+                    </div>
+                    <div style="display:inline-block;width:430px;vertical-align:top;">
+                        <div style="display:inline-block;width:420px;"><div style="border:solid gray;"><div id="mapid"></div></div><div id="mapcaption" style="margin:10px;font-size:small;"></div></div>
+                        <script type="text/javascript">
+
+                            var boundaryType = '${neighbourhoodBoundary.type}';
+                            var boundary = [
+                                <g:each in="${neighbourhoodBoundary.coordinates}" var="coord" status="i">
+                                    [${coord.getY()},${coord.getX()}],
+                                </g:each>
+                            ];
+                            if (boundaryType != 'nada') {
+                                var map = L.map('mapid');
+
+                                var boundaryPoly;
+                                var invertedPoly;
+
+                                boundaryPoly = L.polygon(boundary);
+
+                                // add inverted polygon to map
+                                invertedPoly = L.polygon(
+                                    [[[90, -180],
+                                     [90, 180],
+                                     [-90, 180],
+                                     [-90, -180]], //outer ring, the world
+                                     boundaryPoly.getLatLngs()],
+                                     {opacity:0.4} // cutout
+                                    );
+
+                                map.addLayer(invertedPoly);
+
+
+
+                                map.fitBounds(boundaryPoly.getBounds());
+
+                                L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+                                    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+                                    maxZoom: 19,
+                                    id: 'mapbox/streets-v11',
+                                    accessToken: 'pk.eyJ1IjoidGltMTIzIiwiYSI6ImNrMmp2YjVoOTFpbWszbnFnems5ZjM2bW8ifQ.oNovhkW55h19gppWuNagQw'
+                                }).addTo(map);
+
+                                var bounds = L.latLngBounds();
+                                <g:each in="${locations}" var="location">
+                                var aLatLng = L.latLng(${location.key.latLon().latitude},${location.key.latLon().longitude});
+                                L.circleMarker(aLatLng, {radius:4}).addTo(map);
+                                bounds.extend(aLatLng);
+                                </g:each>
+
+                                <g:if test="${locations.size()>0}">
+                                map.fitBounds(bounds, {padding: [25, 25]});
+                                </g:if>
+
+                            } else {
+                                document.getElementById('mapid').style = "position:relative;background-color:darkgrey;";
+                                document.getElementById('mapid').innerHTML = '<p style="text-align:center;margin:0;line-height:2.0;position:absolute;top:50%;left:50%;margin-right:-50%;transform: translate(-50%, -50%);color:white;">Mapping features are not available.<br>Neighbourhood boundary has not been specified.</p>';
+                            }
+
+                        </script>
+                    </div>
+                </div>
+
+
+                <div class='contactInfo' style="display:none;">
+                    <g:if test="${people.size() > 0}">
+                    <div style="margin-top:-15px;margin-bottom:-15px;">
+                        <h4 class="peopleQueryDescription"></h4>
                     </div>
                     <g:each in="${people}" var="person">
-                        <script type="text/javascript">
-                            var aPerson = {firstNames:decodeEntities('${person[1]}'), lastName:decodeEntities('${person[2]}'), phoneNumber:decodeEntities('${person[3]}'), emailAddress:decodeEntities('${person[4]}'), homeAddress:decodeEntities('${person[5]}')};
-                            people.push(aPerson);
-                        </script>
-                        <div class="content-children-row contactInfo" style="display:none;">
+                        <div class="content-children-row">
                             <div class="cell190 name"><g:link controller="navigate" action="familymember" id="${person[0]}">${person[1]} ${person[2]}</g:link></div>
                             <div class="cell120 phone">${person[3]}</div>
                             <div class="cell300 email"><a href="#" onclick="doEmailOne('${person[4]}');">${person[4]}</a></div>
                             <div class="cell250 address">${person[5]}</div>
                         </div>
-                        <div class="content-children-row searchResults" >
-                            <div>
-                                <g:link controller="navigate" action="familymember" id="${person[0]}">${person[1]} ${person[2]}</g:link>
-                            </div>
-                        </div>
                     </g:each>
                     <div class="content-children-row" style="height:5px;"></div>
-                </g:if>
+                    </g:if>
 
-                <g:if test="${answers.size() > 0}">
+                    <g:if test="${answers.size() > 0}">
                     <div style="margin-top:-5px;margin-bottom:-15px;">
-                        <h4><span id="answersQueryDescription"></span> <span style="font-weight:normal;">(<span style="font-weight:bold;">bold</span> = would assist):</span></h4>
+                        <h4><span class="answersQueryDescription"></span> <span style="font-weight:normal;">(<span style="font-weight:bold;">bold</span> = would assist):</span></h4>
                     </div>
                     <g:each in="${answers}" var="answer">
-                        <script type="text/javascript">
-                            var anAnswer = {question:decodeEntities('${answer.question}'), answer:decodeEntities('${answer.text}'), firstNames:decodeEntities('${answer.firstNames}'), lastName:decodeEntities('${answer.lastName}'), phoneNumber:decodeEntities('${answer.phoneNumber}'), emailAddress:decodeEntities('${answer.emailAddress}'), homeAddress:decodeEntities('${answer.homeAddress}'), assist:${answer.assist}};
-                            answers.push(anAnswer);
-                        </script>
-                        <div class="content-children-row contactInfo" style="display:none;">
+                        <div class="content-children-row">
                             <g:link controller="navigate" action="familymember" id="${answer.pid}"><div class="cell190 name <g:if test='${answer.assist}'>bold</g:if>">${answer.firstNames} ${answer.lastName}</div></g:link>
                             <div class="cell120 phone">${answer.phoneNumber}</div>
                             <div class="cell300 email"><a href="#" onclick="doEmailOne('${answer.emailAddress}');">${answer.emailAddress}</a></div>
                             <div class="cell250 address">${answer.homeAddress}</div>
                         </div>
-                        <div class="content-children-row searchResults" >
-                            <div class="cell550">
-                                <span class="<g:if test='${answer.assist}'>bold</g:if>">${answer.text}</span> 
-                                <span style="font-size:x-small;">(${answer.question})</span>
-                            </div>
-                            <g:link controller="navigate" action="familymember" id="${answer.pid}"><div class="cell300">${answer.firstNames} ${answer.lastName}</div></g:link>
-                        </div>
                     </g:each>
                     <div class="content-children-row" style="height:5px;"></div>
-                </g:if>
+                    </g:if>
+                </div>
+
+
 
             </div>
             <div id="transparent-overlay"></div>
