@@ -16,8 +16,9 @@ import groovy.time.TimeCategory
 import groovy.time.TimeDuration
 
 // We will tell the user in what neighbourhood these coordinates exist
-def ourLat = 53.52784
-def ourLon = -113.47027
+// Answer = Bonnie Doon
+def ourLat = 53.5257363
+def ourLon = -113.6072145
 
 Coordinate myCoordinate = new Coordinate( ourLon, ourLat )
 GeometryFactory factory = new GeometryFactory( )
