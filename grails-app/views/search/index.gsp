@@ -515,7 +515,7 @@
             <div id="emaildiv" class="modal"></div>
 
         <g:each in="${locations.keySet()}" var="block">
-            <b>${block}</b><br/>
+            <b>${block}</b> ${block.latLon()} ${block.boundary}<br/>
             <g:each in="${locations[block].keySet()}" var="person">
                 &nbsp;&nbsp;&nbsp;&nbsp;${person}<br/>
                 <g:each in="${locations[block][person]}" var="answer">
