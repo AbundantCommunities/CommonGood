@@ -1,10 +1,9 @@
 /*
- * Learning JTS Topology Suite.
  * Define ourLat & ourLon for a point in a YEG neighbourhood.
  * Open and read the boundaries of YEG's neighbourhoods.
- * Announce which neighbourhood contained ourLat & ourLon.
+ * Announce which neighbourhood contains ourLat & ourLon.
  */
-@Grab('com.xlson.groovycsv:groovycsv:1.1')
+@Grab('com.xlson.groovycsv:groovycsv:1.3')
 import static com.xlson.groovycsv.CsvParser.parseCsv
 import org.locationtech.jts.io.WKTReader
 
@@ -26,13 +25,13 @@ ourLon = -113.6072145
 ourLat = 53.5226462
 ourLon = -113.4691658
 
-// Sweet Grass
-ourLat = 53.4630202
-ourLon = -113.5275937
-
 // The Orchards at Ellerslie
 ourLat = 53.402374
 ourLon = -113.4661818
+
+// Sweet Grass
+ourLat = 53.4630202
+ourLon = -113.5275937
 
 Coordinate myCoordinate = new Coordinate( ourLon, ourLat )
 GeometryFactory factory = new GeometryFactory( )

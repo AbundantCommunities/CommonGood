@@ -145,5 +145,32 @@
     </orderEntry>
     <orderEntry type="module" module-name="CommonGood-grailsPlugins" />
     <orderEntry type="library" name="grails-2.5.6" level="application" />
+    <orderEntry type="module-library">
+      <library name="Grab:groovycsv-1.1.jar">
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.groovy/grapes/com.xlson.groovycsv/groovycsv/jars/groovycsv-1.1.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="Grab:opencsv-2.3.jar">
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.groovy/grapes/net.sf.opencsv/opencsv/jars/opencsv-2.3.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="Grab:groovy-all-1.8.8.jar">
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.groovy/grapes/org.codehaus.groovy/groovy-all/jars/groovy-all-1.8.8.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
   </component>
 </module>
