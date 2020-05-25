@@ -513,8 +513,15 @@
             </div>
             <div id="transparent-overlay"></div>
             <div id="emaildiv" class="modal"></div>
-        <g:each in="${locations}" var="location">
-            ${location.key.latLon()} ==> ${location.value}<br/>
+
+        <g:each in="${locations.keySet()}" var="block">
+            <b>${block}</b><br/>
+            <g:each in="${locations[block].keySet()}" var="person">
+                &nbsp;&nbsp;&nbsp;&nbsp;${person}<br/>
+                <g:each in="${locations[block][person]}" var="answer">
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ANSWER: ${answer}<br/>
+                </g:each>
+            </g:each>
         </g:each>
     </body>
 </html>

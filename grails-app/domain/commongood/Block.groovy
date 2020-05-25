@@ -34,7 +34,11 @@ class Block {
         boundary type: 'text'
     }
 
+    String toString( ) {
+        "BLOCK ${code}, \"${description}\""
+    }
+
     String getDisplayName( ) {
-        "Block ${code}:${description}"
+        "${code}: ${description}"
     }
 }

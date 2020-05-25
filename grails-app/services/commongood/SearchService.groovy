@@ -46,8 +46,11 @@ class SearchService {
             log.info "${session.user.logName} search hood ${neighbourhoodId} answers for '${q}', birthYears ${fromYear}:${toYear} with contact info"
 
             def select =
-                '''SELECT ans.text, ans.would_assist AS assist, ans.note, p.id AS pid, p.first_names AS firstNames, p.last_name AS lastName, q.short_text AS question,
-                          p.phone_number AS phoneNumber, p.email_address AS emailAddress, addr.id AS addrId, addr.text AS homeAddress
+                '''SELECT ans.text, ans.would_assist AS assist, ans.note, 
+                          p.id AS pid, p.first_names AS firstNames, p.last_name AS lastName, 
+                          q.short_text AS question,
+                          p.phone_number AS phoneNumber, p.email_address AS emailAddress, 
+                          addr.id AS addrId, addr.text AS homeAddress
                  FROM Answer ans, Person p, Family f, Address addr, Question q 
                  WHERE ((TO_TSVECTOR(REGEXP_REPLACE(ans.text,'[.,/,-]',',')) || TO_TSVECTOR(REGEXP_REPLACE(ans.note,'[.,/,-]',',')) @@ TO_TSQUERY( :qExp ))
                         OR LOWER(ans.text) LIKE :qStr OR LOWER(ans.note) LIKE :qStr)
@@ -66,8 +69,11 @@ class SearchService {
             log.info "${session.user.logName} search block ${blockId} answers for '${q}', birthYears ${fromYear}:${toYear} with contact info"
 
             def select =
-                '''SELECT ans.text, ans.would_assist AS assist, ans.note, p.id AS pid, p.first_names AS firstNames, p.last_name AS lastName, q.short_text AS question,
-                          p.phone_number AS phoneNumber, p.email_address AS emailAddress, addr.id AS addrId, addr.text AS homeAddress
+                '''SELECT ans.text, ans.would_assist AS assist, ans.note, 
+                          p.id AS pid, p.first_names AS firstNames, p.last_name AS lastName, 
+                          q.short_text AS question,
+                          p.phone_number AS phoneNumber, p.email_address AS emailAddress, 
+                          addr.id AS addrId, addr.text AS homeAddress
                  FROM Answer ans, Person p, Family f, Address addr, Question q 
                  WHERE ((TO_TSVECTOR(REGEXP_REPLACE(ans.text,'[.,/,-]',',')) || TO_TSVECTOR(REGEXP_REPLACE(ans.note,'[.,/,-]',',')) @@ TO_TSQUERY( :qExp ))
                         OR LOWER(ans.text) LIKE :qStr OR LOWER(ans.note) LIKE :qStr)
@@ -193,24 +199,37 @@ class SearchService {
      * @result  List<Location> of locations (where our results HAD lat+lon locations)
      */
     def deriveLocations ( foundAnswers ) {
-        // A Groovy map is an instance of LinkedHashMap
-        def res = [:]
-        def countAnswers = 0
+        // TODO merge deriveLocations into answersWithContactInfo
+        log.info "deriveLocations for ${foundAnswers.size()} answers"
+        def result = [:]
+        def countLocatedAnswers = 0
         foundAnswers.each {
             Address address = Address.get( it.addrId )
+            Block block = address.block
             Location location = address.latLon()
+            Person person = Person.get( it.pid )
+
             if( !location.unknown ) {
-                countAnswers++
-                if( address in res ) {
-                    // Append this answer to the others
-                    res[address] << it
+                countLocatedAnswers++
+            }
+
+            if( block in result ) {
+                def blockAnswers = result[ block ]
+                if( person in blockAnswers ) {
+                    // Append the answer to the list of answers from person
+                    blockAnswers[person] << it
                 } else {
-                    // Make a list of just this one answer
-                    res[address] = [ it ]
+                    // Add this person to the blockAnswers map
+                    // The person will have (at least for now) just one answer in its list
+                    blockAnswers[person] = [ it ]
                 }
+            } else {
+                // Make an entry for this block; the entry will have (at least for now) just one person in its map
+                // We write (person) else the key will be the string 'person'.
+                result[block] = [ (person):[it] ]
             }
         }
-        log.info "Pulled ${res.size()} locations with ${countAnswers} answers"
-        return res
+        log.info "Pulled ${result.size()} locations with ${countLocatedAnswers} answers"
+        return result
     }
 }

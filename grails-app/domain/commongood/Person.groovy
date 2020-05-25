@@ -40,6 +40,10 @@ class Person {
         return "${firstNames} ${lastName} ${id}"
     }
 
+    String toString( ) {
+        return "PERSON ${id}, \"${fullName}\""
+    }
+
     static constraints = {
         // we allowed dup email addresses in the early years...
         // ...too bad, because enforcing uniqueness is preferable.

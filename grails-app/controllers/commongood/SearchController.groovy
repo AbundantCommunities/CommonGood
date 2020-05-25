@@ -52,10 +52,8 @@ class SearchController {
             answers = searchService.answersWithContactInfo( session, params.q )
         }
 
-        if( session.neighbourhood.hasFeature('gismaps') ) {
-            locations = searchService.deriveLocations( answers )
-            neighbourhoodBoundary = gisService.getBoundaryCoordinates( session.neighbourhood )
-        }
+        locations = searchService.deriveLocations( answers )
+        neighbourhoodBoundary = gisService.getBoundaryCoordinates( session.neighbourhood )
 
         [
             q: params.q,
