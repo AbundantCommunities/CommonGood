@@ -9,53 +9,117 @@
         <asset:javascript src="leaflet/leaflet.js"/>
         <style type="text/css">
             #mapid { height: 400px; }
+
+            .leaflet-tooltip-pane .text {
+              color: white; 
+              font-weight: bold;
+              background: transparent;
+              border:0;
+              box-shadow: none;
+              font-size:1em;
+            }
+
+            #emaildiv {
+                top:90px;
+                left:200px;
+                width:540px;
+            }
+
+
         </style>
         <script type="text/javascript">
         
             var people = [];
             var answers = [];
+            var currentViewElement;
+            var currentShowElement;
 
-            function showContactInfo() {
-                var allContactInfoElements = document.getElementsByClassName('contactInfo');
-                var allSearchResultsElements = document.getElementsByClassName('searchResults');
 
-                for (i=0;i<allSearchResultsElements.length;i++) {
-                    allSearchResultsElements[i].style.display = 'none';
-                }
+            function showAnswers() {
+                document.getElementById('resultsAnswersSelected').style.display='';
+                document.getElementById('resultsPeopleSelected').style.display='none';
+                currentViewElement.style.display='none';
+                document.getElementById('mapAnswerResults').style.display='';
+                currentViewElement = document.getElementById('mapAnswerResults');
 
-                for (i=0;i<allContactInfoElements.length;i++) {
-                    allContactInfoElements[i].style.display = '';
-                }
+                document.getElementById('showMapAnswerResultsSelected').style.display='';
+                document.getElementById('showAnswerResultsSelected').style.display='none';
+                document.getElementById('showContactInfoAnswerResultsSelected').style.display='none';
+                document.getElementById('showContactInfoPeopleResultsSelected').style.display='none';
+
             }
 
-            function showSearchResults() {
-                var allContactInfoElements = document.getElementsByClassName('contactInfo');
-                var allSearchResultsElements = document.getElementsByClassName('searchResults');
+            function showFamilyMembers() {
+                document.getElementById('resultsAnswersSelected').style.display='none';
+                document.getElementById('resultsPeopleSelected').style.display='';
+                currentViewElement.style.display='none';
+                document.getElementById('contactInfoPeopleResults').style.display='';
+                currentViewElement = document.getElementById('contactInfoPeopleResults');
 
-                for (i=0;i<allSearchResultsElements.length;i++) {
-                    allSearchResultsElements[i].style.display = '';
-                }
+                document.getElementById('showMapAnswerResultsSelected').style.display='none';
+                document.getElementById('showAnswerResultsSelected').style.display='none';
+                document.getElementById('showContactInfoAnswerResultsSelected').style.display='none';
+                document.getElementById('showContactInfoPeopleResultsSelected').style.display='';
 
-                for (i=0;i<allContactInfoElements.length;i++) {
-                    allContactInfoElements[i].style.display = 'none';
-                }
+
             }
+
+            function showMapAnswerResults() {
+                currentViewElement.style.display='none';
+                document.getElementById('mapAnswerResults').style.display='';
+                currentViewElement = document.getElementById('mapAnswerResults');
+
+                document.getElementById('showMapAnswerResultsSelected').style.display='';
+                document.getElementById('showAnswerResultsSelected').style.display='none';
+                document.getElementById('showContactInfoAnswerResultsSelected').style.display='none';
+                document.getElementById('showContactInfoPeopleResultsSelected').style.display='none';
+            }
+
+            function showAnswerResults() {
+                currentViewElement.style.display='none';
+                document.getElementById('answerResults').style.display='';
+                currentViewElement = document.getElementById('answerResults');
+
+                document.getElementById('showMapAnswerResultsSelected').style.display='none';
+                document.getElementById('showAnswerResultsSelected').style.display='';
+                document.getElementById('showContactInfoAnswerResultsSelected').style.display='none';
+                document.getElementById('showContactInfoPeopleResultsSelected').style.display='none';
+
+            }
+
+            function showContactInfoAnswerResults() {
+                currentViewElement.style.display='none';
+                document.getElementById('contactInfoAnswerResults').style.display='';
+                currentViewElement = document.getElementById('contactInfoAnswerResults');
+
+                document.getElementById('showMapAnswerResultsSelected').style.display='none';
+                document.getElementById('showAnswerResultsSelected').style.display='none';
+                document.getElementById('showContactInfoAnswerResultsSelected').style.display='';
+                document.getElementById('showContactInfoPeopleResultsSelected').style.display='none';
+            }
+
+
 
             function constructAgeDescription(fromAge,toAge) {
                 if (fromAge.length==0 && toAge.length==0) {
-                    return "";
+                    return ".";
                 } else if (fromAge.length>0 && toAge.length>0) {
                     if (fromAge==toAge) {
-                        return " age "+fromAge;
+                        return ", to include only family members age "+fromAge+".";
                     } else {
-                        return " aged "+fromAge+" to "+toAge;
+                        return ", to include only family members age "+fromAge+" to "+toAge+".";
                     }
                 } else if (fromAge.length>0) {
-                    return " age "+fromAge+" or older";
+                    return ", to include only family members age "+fromAge+" or older.";
                 } else {
-                    return " age "+toAge+" or younger";
+                    return ", to include only family members age "+toAge+" or younger.";
                 }
             }
+
+            function constructSearchCriteria(q,fromAge,toAge) {
+                return 'You searched for &quot;'+q+'&quot;'+constructAgeDescription(fromAge,toAge);
+            }
+
 
             var failedDescription = 1;
             var peopleDescription = 2;
@@ -312,50 +376,66 @@
 
 
             window.onload = function onWindowLoad() {
-                <g:if test="${people.size()==0 && answers.size()==0}">
-                    document.getElementById("failedQueryDescription").innerHTML = constructQueryDescription(failedDescription,'${q}','${fromAge}','${toAge}',${people.size()},${answers.size()});
-                </g:if>
-                <g:if test="${people.size()>0}">
-                    var peopleQueryDescriptionElements = document.getElementsByClassName('peopleQueryDescription');
-                    var theInnerHTML = constructQueryDescription(peopleDescription,'${q}','${fromAge}','${toAge}',${people.size()},${answers.size()});
-                    for (i=0;i<peopleQueryDescriptionElements.length;i++) {
-                        peopleQueryDescriptionElements[i].innerHTML = theInnerHTML;
-                    }
-                </g:if>
-                <g:if test="${answers.size()>0}">
-                    var answersQueryDescriptionElements = document.getElementsByClassName('answersQueryDescription');
-                    var theInnerHTML = constructQueryDescription(answersDescription,'${q}','${fromAge}','${toAge}',${people.size()},${answers.size()});
-                    for (i=0;i<answersQueryDescriptionElements.length;i++) {
-                        answersQueryDescriptionElements[i].innerHTML = theInnerHTML;
-                    }
-                </g:if>
+                document.getElementById('search-criteria-div').innerHTML = constructSearchCriteria("${q}","${fromAge}","${toAge}");
+                if (${answers.size()>0}) {
+                    currentViewElement = document.getElementById('mapAnswerResults');
+                } else {
+                    currentViewElement = document.getElementById('contactInfoPeopleResults');
+                }
             }
 
         </script>
 
-        <style type="text/css">
-
-            #emaildiv {
-                top:90px;
-                left:200px;
-                width:540px;
-            }
-
-        </style>
-
     </head>
     <body>
             <div class="content-section">
-                <div style="margin-bottom:7px;">You searched for: ${q}</div>
-                <g:if test="${people.size()>0 || answers.size()>0}">
-                    <div class="searchResults" style="margin-bottom:7px;"><span style="font-weight:bold;">Show:</span>  Search Results | <a href="Javascript:showContactInfo();">Contact Info</a></div>
-                    <div class="contactInfo" style="display:none;margin-bottom:7px;"><span style="font-weight:bold;">Show:</span>  <a href="Javascript:showSearchResults();">Search Results</a> | Contact Info</div>
-                </g:if>
-                <g:if test="${people.size()>0 || answers.size()>0}">
-                    <div style="width:910px;">
-                        <div ><span><a href="JavaScript:emailList();">Email Contact List</a> | </span><a href='JavaScript:doDownload();'>Download Results</a></div>
+                <div id="search-criteria-div" style="margin-bottom:7px;">You searched for </div>
+                <g:if test="${answers.size()>0 && people.size()>0}">
+                <div id="resultsAnswersSelected">
+                    <div style="height:25px;line-height:25px;margin-bottom:10px;">
+                        <div style="display:inline-block;width:105px;">Search found: </div><div style="width:200px;text-align:center;display:inline-block;margin-bottom:7px;border:solid black thin;border-color:#B48B6A;border-radius:5px;color:white;background-color:#B48B6A;">${answers.size()} answer(s)</div>
                     </div>
+                    <div style="height:25px;line-height:25px;margin-bottom:10px;">
+                        <div style="display:inline-block;width:105px;"></div><a href="javascript:showFamilyMembers();"><div style="width:200px;text-align:center;display:inline-block;margin-bottom:7px;border:solid black thin;border-color:#B48B6A;border-radius:5px;">${people.size()} family member(s)</div></a>
+                    </div>
+                </div>
+                <div id="resultsPeopleSelected" style="display:none;">
+                    <div style="height:25px;line-height:25px;margin-bottom:10px;">
+                        <div style="display:inline-block;width:105px;">Search found: </div><a href="javascript:showAnswers();"><div style="width:200px;text-align:center;display:inline-block;margin-bottom:7px;border:solid black thin;border-color:#B48B6A;border-radius:5px;">${answers.size()} answer(s)</div></a>
+                    </div>
+                    <div style="height:25px;line-height:25px;margin-bottom:10px;">
+                        <div style="display:inline-block;width:105px;"></div><div style="width:200px;text-align:center;display:inline-block;margin-bottom:7px;border:solid black thin;border-color:#B48B6A;border-radius:5px;color:white;background-color:#B48B6A;">${people.size()} family member(s)</div>
+                    </div>
+                </div>
                 </g:if>
+                <g:elseif test="${answers.size()>0}">
+                <div>
+                <div style="display:inline-block;width:105px;">Search found: </div><div style="display:inline-block;margin-bottom:7px;">${answers.size()} answer(s)</div>
+                </div>
+                </g:elseif>
+                <g:elseif test="${people.size()>0}">
+                <div>
+                <div style="display:inline-block;width:105px;">Search found: </div><div style="display:inline-block;margin-bottom:7px;">${people.size()} family member(s)</div>
+                </div>
+                </g:elseif>
+                <g:else>
+                <div style="display:inline-block;width:105px;">Search found: </div><div style="display:inline-block;margin-bottom:7px;">&quot;${q}&quot; not found.</div>
+                </g:else>
+
+
+                <g:if test="${answers.size()>0}">
+                    <div id="showMapAnswerResultsSelected" style="margin-bottom:7px;">Show: Map | <a href="Javascript:showAnswerResults();">Answers</a> | <a href="Javascript:showContactInfoAnswerResults();">Contact Info</a></div>
+                    <div id="showAnswerResultsSelected" style="display:none;margin-bottom:7px;">Show: <a href="Javascript:showMapAnswerResults();">Map</a> | Answers | <a href="Javascript:showContactInfoAnswerResults();">Contact Info</a></div>
+                    <div id="showContactInfoAnswerResultsSelected" style="display:none;margin-bottom:7px;">Show: <a href="Javascript:showMapAnswerResults();">Map</a> | <a href="Javascript:showAnswerResults();">Answers</a> | Contact Info</div>
+                    <div id="showContactInfoPeopleResultsSelected" style="display:none;margin-bottom:7px;">Show: <span style="color:lightgrey">Map</span> | <span style="color:lightgrey">Answers</span> | Contact Info</div>
+                </g:if>
+                <g:if test="${people.size()>0 || answers.size()>0}">
+                    <div ><span><a href="JavaScript:emailList();">Email Contact List</a> | </span><a href='JavaScript:doDownload();'>Download Results</a></div>
+                </g:if>
+
+
+
+
             </div>
             <div class="content-section">
 
@@ -377,57 +457,87 @@
                 </g:each>
                 </g:if>
 
-                <g:if test="${people.size() == 0 && answers.size() == 0}">
-                    <h4 id="failedQueryDescription"></h4>
+                <g:if test="${locations.keySet().size()>0}">
+                <script type="text/javascript">
+                    var blocksToMap = [];
+                    var aBlock;
+
+                    <g:set var="countLocationUnknown" value="${0}" />
+                    <g:set var="countLocationKnown" value="${0}" />
+
+                    <g:each in="${locations.keySet()}" var="block">
+                        <g:if test="${block.latLon().unknown == false}">
+                            <g:set var="countLocationKnown" value="${countLocationKnown + 1}" />
+                            aBlock = { legendId: ${countLocationKnown}, centroidLatitude: ${block.latLon().latitude}, centroidLongitude: ${block.latLon().longitude} };
+                            blocksToMap.push(aBlock);
+                        </g:if>
+                        <g:else>
+                            <g:set var="countLocationUnknown" value="${countLocationUnknown + 1}" />
+                        </g:else>
+                    </g:each>
+
+                    var blockBoundariesToMap = [];
+                    var coordinates;
+
+                    <g:each in="${blockBoundaries.keySet()}" var="block" status="i">
+                        coordinates = [];
+                        <g:if test="${blockBoundaries[block].type == 'block'}">
+                        <g:each in="${blockBoundaries[block].coordinates}" var="coord">
+                            coordinates.push([${coord.getY()},${coord.getX()}]);
+                        </g:each>
+                        </g:if>
+                        if (coordinates.length>0) {
+                            blockBoundariesToMap.push(coordinates);
+                        }
+                    </g:each>
+
+                </script>
                 </g:if>
 
+                <g:if test="${locations.keySet().size()>0}">
+                <div id='mapAnswerResults'>
+                    <div style="margin-bottom:8px;">People with answers containing &quot;${q}&quot; live on ${locations.keySet().size()} block(s) in the neighbourhood.</div>
+                    <g:if test="${countLocationUnknown == 1}">
+                    <div style="margin-bottom:8px;">1 of these blocks does not have location information and, therefore is not highlighted on the map.</div>
+                    </g:if>
+                    <g:elseif test="${countLocationUnknown > 1}">
+                    <div style="margin-bottom:18px;">${countLocationUnknown} of these blocks do not have location information and, therefore, are not highlighted on the map.</div>
+                    </g:elseif>
+                    <div style="display:inline-block;width:400px;">
+                        <g:set var="counter" value="${1}" />
+                        <g:each in="${locations.keySet()}" var="block" status="i">
+                        <div class="content-children-row">
 
-                <div class='searchResults'>
-                    <div style="display:inline-block;width:470px;">
-                        <g:if test="${people.size() > 0}">
-                        <div style="margin-bottom:-15px;margin-top:-15px;">
-                            <h4 class="peopleQueryDescription"></h4>
-                        </div>
-                        <g:each in="${people}" var="person">
-                            <div class="content-children-row" >
-                                <div>
-                                    <g:link controller="navigate" action="familymember" id="${person[0]}">${person[1]} ${person[2]}</g:link>
-                                </div>
+                            <div style="display:inline-block;width:20px;font-weight:bold;">
+                                <g:if test="${block.latLon().unknown != true}">${counter}<g:set var="counter" value="${counter + 1}" /></g:if>
                             </div>
+                            <div style="display:inline-block;width:300px;"><g:link controller="Navigate" action="block" id="${block.id}"><b>Block ${block.code} (${block.description})</b></g:link></div>
+                            <g:each in="${locations[block].keySet()}" var="person">
+                            <div>
+                                <div style="display:inline-block;width:20px;"></div>
+                                <div style="display:inline-block;width:300px;"><g:link controller="Navigate" action="familymember" id="${person.id}">${person.firstNames} ${person.lastName}</g:link></div>
+                            </div>
+                            </g:each>
+                        </div>
                         </g:each>
                         <div class="content-children-row" style="height:5px;"></div>
-                        </g:if>
-
-                        <g:if test="${answers.size() > 0}">
-                        <div style="margin-top:-5px;margin-bottom:-15px;">
-                            <h4><span class="answersQueryDescription"></span> <span style="font-weight:normal;">(<span style="font-weight:bold;">bold</span> = would assist):</span></h4>
-                        </div>
-                        <g:each in="${answers}" var="answer">
-                            <div class="content-children-row" >
-                                <div>
-                                    <span><g:link controller="navigate" action="familymember" id="${answer.pid}">${answer.firstNames} ${answer.lastName}</g:link> </span>
-                                    <span class="<g:if test='${answer.assist}'>bold</g:if>">${answer.text}</span> 
-                                    <span style="font-size:x-small;">(${answer.question})</span>
-                                </div>
-                            </div>
-                        </g:each>
-                        <div class="content-children-row" style="height:5px;"></div>
-                        </g:if>
                     </div>
-                    <div style="display:inline-block;width:430px;vertical-align:top;">
-                        <div style="display:inline-block;width:420px;"><div style="border:solid gray;"><div id="mapid"></div></div><div id="mapcaption" style="margin:10px;font-size:small;"></div></div>
+
+                    <div style="display:inline-block;width:500px;vertical-align:top;">
+                        <div style="display:inline-block;width:490px;"><div style="border:solid gray;"><div id="mapid"></div></div><div id="mapcaption" style="margin:10px;font-size:small;"></div></div>
                         <script type="text/javascript">
 
                             var boundaryType = '${neighbourhoodBoundary.type}';
-                            var boundary = [
-                                <g:each in="${neighbourhoodBoundary.coordinates}" var="coord" status="i">
-                                    [${coord.getY()},${coord.getX()}],
-                                </g:each>
-                            ];
+                            var boundary = [ ];
+                            <g:each in="${neighbourhoodBoundary.coordinates}" var="coord">
+                                boundary.push([${coord.getY()},${coord.getX()}]);
+                            </g:each>
+
+                            var boundaryPoly;
+                            
                             if (boundaryType != 'nada') {
                                 var map = L.map('mapid');
 
-                                var boundaryPoly;
                                 var invertedPoly;
 
                                 boundaryPoly = L.polygon(boundary);
@@ -439,14 +549,10 @@
                                      [-90, 180],
                                      [-90, -180]], //outer ring, the world
                                      boundaryPoly.getLatLngs()],
-                                     {opacity:0.4} // cutout
+                                     {opacity:0.4,stroke:false,fillColor:"gray",fillOpacity:0.3} // cutout
                                     );
 
                                 map.addLayer(invertedPoly);
-
-
-
-                                map.fitBounds(boundaryPoly.getBounds());
 
                                 L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
                                     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
@@ -455,16 +561,60 @@
                                     accessToken: 'pk.eyJ1IjoidGltMTIzIiwiYSI6ImNrMmp2YjVoOTFpbWszbnFnems5ZjM2bW8ifQ.oNovhkW55h19gppWuNagQw'
                                 }).addTo(map);
 
-                                var bounds = L.latLngBounds();
-                                <g:each in="${locations}" var="location">
-                                var aLatLng = L.latLng(${location.key.latLon().latitude},${location.key.latLon().longitude});
-                                L.circleMarker(aLatLng, {radius:4}).addTo(map);
-                                bounds.extend(aLatLng);
-                                </g:each>
+                                if (blocksToMap.length>0) {
+                                    var aLatLng;
+                                    var blockMarkersData = [];
 
-                                <g:if test="${locations.size()>0}">
-                                map.fitBounds(bounds, {padding: [25, 25]});
-                                </g:if>
+                                    for (i=0;i<blocksToMap.length;i++) {
+                                        aLatLng = L.latLng(blocksToMap[i].centroidLatitude,blocksToMap[i].centroidLongitude);
+
+                                        blockMarkersData.push({
+                                            "type": "Feature",
+                                            "geometry": {
+                                                "type": "Point",
+                                                "coordinates": [blocksToMap[i].centroidLongitude,blocksToMap[i].centroidLatitude]
+                                            },
+                                            "properties": {
+                                                "text": blocksToMap[i].legendId.toString(),
+                                                "radius": 10
+                                            }
+                                        });
+
+                                    }
+
+                                    var blockMarkers = new L.geoJson(blockMarkersData, {
+                                        pointToLayer: function(feature, latlng) {
+                                            return new L.CircleMarker([latlng.lat, latlng.lng], {radius: feature.properties.radius, fillColor: '#3388ff', fillOpacity: 1.0});
+                                        },
+                                        onEachFeature: function(feature, layer) {
+                                            var text = L.tooltip({
+                                                permanent: true,
+                                                direction: 'center',
+                                                className: 'text'
+                                            })
+                                            .setContent(feature.properties.text)
+                                            .setLatLng(layer.getLatLng());
+                                            text.addTo(map);
+                                        }
+                                    }).addTo(map);
+
+                                }
+
+                                if (blockBoundariesToMap.length>0) {
+                                    var bounds = L.latLngBounds();
+                                    var aPolygon;
+
+                                    for (i=0;i<blockBoundariesToMap.length;i++) {
+                                        aPolygon = L.polygon(blockBoundariesToMap[i],{stroke:false});
+                                        map.addLayer(aPolygon);
+                                        bounds.extend(aPolygon.getBounds());
+                                    }
+
+                                    map.fitBounds(bounds);
+
+                                } else {
+                                    map.fitBounds(boundaryPoly);
+                                }
 
                             } else {
                                 document.getElementById('mapid').style = "position:relative;background-color:darkgrey;";
@@ -474,12 +624,41 @@
                         </script>
                     </div>
                 </div>
+                </g:if>
+
+                <g:if test="${answers.size() > 0}">
+                <div id='answerResults' style="display:none;">
+                    <div style="height:10px;">&nbsp;</div>
+                    <div>
+                        <div class="cell190 name">Name</div>
+                        <div class="cell300 answer">Answer</div>
+                        <div class="cell190 question">Question</div>
+                    </div>
+                    <g:each in="${answers}" var="answer">
+                    <div class="content-children-row" >
+                        <div class="cell190 name"><g:link controller="navigate" action="familymember" id="${answer.pid}">${answer.firstNames} ${answer.lastName}</g:link></div>
+                        <div class="cell300 answer">${answer.text}</div>
+                        <div class="cell190 question">${answer.question}</div>
+                    </div>
+                    </g:each>
+                    <div class="content-children-row" style="height:5px;"></div>
+                </div>                
+                </g:if>
 
 
-                <div class='contactInfo' style="display:none;">
-                    <g:if test="${people.size() > 0}">
-                    <div style="margin-top:-15px;margin-bottom:-15px;">
-                        <h4 class="peopleQueryDescription"></h4>
+                <g:if test="${people.size() > 0}">
+                <g:if test="${answers.size() > 0}">
+                <div id='contactInfoPeopleResults' style="display:none;">
+                </g:if>
+                <g:else>
+                <div id='contactInfoPeopleResults'>
+                </g:else>                
+                    <div style="height:10px;">&nbsp;</div>
+                    <div>
+                        <div class="cell190 name">Name</div>
+                        <div class="cell120 phone">Phone</div>
+                        <div class="cell300 email">Email</div>
+                        <div class="cell250 address">Address</div>
                     </div>
                     <g:each in="${people}" var="person">
                         <div class="content-children-row">
@@ -490,11 +669,18 @@
                         </div>
                     </g:each>
                     <div class="content-children-row" style="height:5px;"></div>
-                    </g:if>
+                </div>
+                </g:if>
 
-                    <g:if test="${answers.size() > 0}">
-                    <div style="margin-top:-5px;margin-bottom:-15px;">
-                        <h4><span class="answersQueryDescription"></span> <span style="font-weight:normal;">(<span style="font-weight:bold;">bold</span> = would assist):</span></h4>
+
+                <g:if test="${answers.size() > 0}">
+                <div id='contactInfoAnswerResults' style="display:none;">
+                    <div style="height:10px;">&nbsp;</div>
+                    <div>
+                        <div class="cell190 name">Name</div>
+                        <div class="cell120 phone">Phone</div>
+                        <div class="cell300 email">Email</div>
+                        <div class="cell250 address">Address</div>
                     </div>
                     <g:each in="${answers}" var="answer">
                         <div class="content-children-row">
@@ -505,23 +691,15 @@
                         </div>
                     </g:each>
                     <div class="content-children-row" style="height:5px;"></div>
-                    </g:if>
                 </div>
+                </g:if>
 
-
+                <g:if test="${answers.size() == 0 && people.size() == 0}">
+                <div id='noResults'>Search failed to find &quot;${q}&quot;.</div>
+                </g:if>
 
             </div>
             <div id="transparent-overlay"></div>
-            <div id="emaildiv" class="modal"></div>
-
-        <g:each in="${locations.keySet()}" var="block">
-            <b>${block}</b> ${block.latLon()} ${block.boundary}<br/>
-            <g:each in="${locations[block].keySet()}" var="person">
-                &nbsp;&nbsp;&nbsp;&nbsp;${person}<br/>
-                <g:each in="${locations[block][person]}" var="answer">
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ANSWER: ${answer}<br/>
-                </g:each>
-            </g:each>
-        </g:each>
+            <div id="emaildiv" class="modal" style="z-index:1000;"></div>
     </body>
 </html>
