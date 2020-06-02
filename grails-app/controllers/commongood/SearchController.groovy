@@ -5,7 +5,6 @@ import org.abundantcommunityinitiative.commongood.handy.LogAid
 class SearchController {
 
     def searchService
-    def authorizationService
     def gisService
 
     def form( ) {
@@ -31,8 +30,9 @@ class SearchController {
 
         def people
         def answers
-        def locations = null
-        def neighbourhoodBoundary = null
+        def locations
+        def blockBoundaries
+        def neighbourhoodBoundary
 
         if ( advSearch ) {
             if( !fromAge ) {
@@ -53,6 +53,10 @@ class SearchController {
         }
 
         locations = searchService.deriveLocations( answers )
+        blockBoundaries = [:]
+        for( block in locations.keySet() ) {
+            blockBoundaries[block] = gisService.getBoundaryCoordinates( block )
+        }
         neighbourhoodBoundary = gisService.getBoundaryCoordinates( session.neighbourhood )
 
         [
@@ -62,7 +66,8 @@ class SearchController {
             answers: answers,
             people: people,
             locations: locations,
-            neighbourhoodBoundary: neighbourhoodBoundary
+            neighbourhoodBoundary: neighbourhoodBoundary,
+            blockBoundaries: blockBoundaries
         ]
     }
 }

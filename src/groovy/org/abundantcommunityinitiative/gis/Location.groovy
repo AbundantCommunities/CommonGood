@@ -1,7 +1,5 @@
 package org.abundantcommunityinitiative.gis
 
-import sun.font.TrueTypeFont
-
 /**
  * A Location is a lightweight object holding a latitude and a longitude (unless its
  * unknown property is True). Similar to JTS's Coordinate class, but allows us to
