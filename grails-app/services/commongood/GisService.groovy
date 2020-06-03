@@ -8,6 +8,15 @@ import org.abundantcommunityinitiative.gis.Convert
 @Transactional
 class GisService {
 
+    static public String mapboxAccessToken = System.getenv("CG_MAPBOX_ACCESS_TOKEN")
+    static {
+        if( mapboxAccessToken ) {
+            println "Picked up CG_MAPBOX_ACCESS_TOKEN = ${mapboxAccessToken}"
+        } else {
+            throw new RuntimeException("Missing environment variable CG_MAPBOX_ACCESS_TOKEN")
+        }
+    }
+
     def getBoundaryCoordinates( Block block ) {
         if( block.boundary != null && block.boundary.trim().length() > 0 ) {
             log.info('Found block boundary')
