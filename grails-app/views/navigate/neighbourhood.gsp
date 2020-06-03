@@ -5,14 +5,11 @@
         <meta name="layout" content="navigate"/>
         <title>CommonGood Neighbourhood</title>
 
-        <g:if test="${session.neighbourhood.featureFlags.contains('gismaps')==Boolean.TRUE}">
         <asset:stylesheet src="leaflet/leaflet.css"/>
         <asset:javascript src="leaflet/leaflet.js"/>
         <style type="text/css">
             #mapid { height: 400px; }
         </style>
-        </g:if>
-
 
         <script type="text/javascript">
 
@@ -171,12 +168,7 @@
                     <div class="content-heading">Your ${navChildren.childType}<g:if test="${navChildren.children.size() > 1}">s</g:if> in ${navSelection.levelInHierarchy} ${navSelection.description}</div>
                 </g:elseif>
 
-                <g:if test="${session.neighbourhood.featureFlags.contains('gismaps')==Boolean.TRUE}">
                 <div id="listWithHandle" style="width:500px;display:inline-block;vertical-align:top;">
-                </g:if>
-                <g:else>
-                <div id="listWithHandle" style="width:900px;display:inline-block;vertical-align:top;">
-                </g:else>
                 <g:if test="${navChildren.children.size() > 0}">
                     <g:each in="${navChildren.children}" var="child">
                         <div <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE && authorized.canWrite()==Boolean.TRUE}">id="${child.id}"</g:if> class="content-children-row">
@@ -199,7 +191,6 @@
                 </g:else>
                 </div>
 
-                <g:if test="${session.neighbourhood.featureFlags.contains('gismaps')==Boolean.TRUE}">
                 <div style="display:inline-block;width:400px;"><div style="border:solid gray;"><div id="mapid"></div></div><div id="mapcaption" style="margin:10px;font-size:small;"></div></div>
                 <script type="text/javascript">
 
@@ -245,11 +236,6 @@
                     }
 
                 </script>
-                </g:if>  <%-- End of test for featureFlag gismaps --%>
-
-
-
-
 
                 <div class="content-children-row"></div>
                 <form id="reorder-form" action="<g:createLink controller='Neighbourhood' action='reorder' />" method="POST">

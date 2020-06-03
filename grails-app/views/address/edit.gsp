@@ -4,20 +4,17 @@
     <head>
         <meta name="layout" content="basic">
         <title>Common Good - Edit Address</title>
-        <g:if test="${session.neighbourhood.featureFlags.contains('gismaps')}">
         <asset:stylesheet src="leaflet/leaflet.css"/>
         <asset:javascript src="leaflet/leaflet.js"/>
         <style type="text/css">
             #mapid { height: 400px; }
         </style>
-        </g:if>
 
         <script type="text/javascript">
 
             var addressMarker = null;
 
             function doSave() {
-                <g:if test="${session.neighbourhood.featureFlags.contains('gismaps')}">
                 if (addressMarker != null) {
                     var addressLat = addressMarker.getLatLng().lat;
                     var addressLng = addressMarker.getLatLng().lng;
@@ -27,7 +24,6 @@
                     document.getElementById('latitude-input').value = 0.0;
                     document.getElementById('longitude-input').value = 0.0;
                 }
-                </g:if>
                 document.getElementById('edit-form').submit();
             }
 
@@ -55,7 +51,6 @@
                         <div class="content-row">
                             <div class="content-row-item" style="width:80px;">Note: </div><div class="content-row-item"><textarea id="note" name="note" rows="4" cols="48">${address.note}</textarea></div>
                         </div>
-                        <g:if test="${session.neighbourhood.featureFlags.contains('gismaps')}">
                         <div class="content-row">
                             <div style="height:474px;border:black solid 2px;background-color:gray;padding:5px;margin-top:10px;">
                                 <div id="mapid"></div>
@@ -153,7 +148,6 @@
 
 
                         </div>
-                        </g:if>
                     </form>
                     <div class="button-row">
                         <div class="button" onclick="JavaScript:doCancel();">Cancel</div>

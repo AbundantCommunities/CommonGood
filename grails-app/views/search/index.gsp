@@ -613,7 +613,7 @@
                                     map.fitBounds(bounds);
 
                                 } else {
-                                    map.fitBounds(boundaryPoly);
+                                    map.fitBounds(boundaryPoly.getBounds());
                                 }
 
                             } else {
@@ -628,7 +628,7 @@
 
                 <g:if test="${answers.size() > 0}">
                 <div id='answerResults' style="display:none;">
-                    <div style="height:10px;">&nbsp;</div>
+                    <div style="height:25px;"><span style="font-weight:bold;">bold</span> = would assist</div>
                     <div>
                         <div class="cell190 name">Name</div>
                         <div class="cell300 answer">Answer</div>
@@ -636,7 +636,7 @@
                     </div>
                     <g:each in="${answers}" var="answer">
                     <div class="content-children-row" >
-                        <div class="cell190 name"><g:link controller="navigate" action="familymember" id="${answer.pid}">${answer.firstNames} ${answer.lastName}</g:link></div>
+                        <div class="cell190 name <g:if test='${answer.assist}'>bold</g:if>"><g:link controller="navigate" action="familymember" id="${answer.pid}">${answer.firstNames} ${answer.lastName}</g:link></div>
                         <div class="cell300 answer">${answer.text}</div>
                         <div class="cell190 question">${answer.question}</div>
                     </div>
@@ -675,7 +675,7 @@
 
                 <g:if test="${answers.size() > 0}">
                 <div id='contactInfoAnswerResults' style="display:none;">
-                    <div style="height:10px;">&nbsp;</div>
+                    <div style="height:25px;"><span style="font-weight:bold;">bold</span> = would assist</div>
                     <div>
                         <div class="cell190 name">Name</div>
                         <div class="cell120 phone">Phone</div>

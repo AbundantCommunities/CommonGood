@@ -5,7 +5,6 @@
         <meta name="layout" content="navigate"/>
         <title>CommonGood - Block</title>
 
-        <g:if test="${session.neighbourhood.featureFlags.contains('gismaps')==Boolean.TRUE}">
         <asset:stylesheet src="leaflet/leaflet.css"/>
         <asset:javascript src="leaflet/leaflet.js"/>
 
@@ -49,7 +48,6 @@
         <style type="text/css">
             #mapid { height: 400px; }
         </style>
-        </g:if>
         <script type="text/javascript">
 
             <g:if test="${authorized.canWrite()==Boolean.TRUE}">
@@ -67,9 +65,7 @@
                     // set height of overlay to match height of pagecontainer height
                     document.getElementById("transparent-overlay").setAttribute("style","height:"+pagecontainerDiv.clientHeight+"px;");
 
-                    <g:if test="${session.neighbourhood.featureFlags.contains('gismaps')==Boolean.TRUE}">
                     setup_edit_map();
-                    </g:if>
                     populateEditModal();
                     
                     // show overlay and new-container divs and focus to family name
@@ -82,9 +78,7 @@
                 function dismissEditModal() {
                     document.getElementById("edit-container").style.visibility='hidden';
                     document.getElementById("transparent-overlay").style.visibility='hidden';
-                    <g:if test="${navSelection.block.neighbourhood.hasFeature('gismaps')}">
                     cancel_edit_block();
-                    </g:if>
                 }
 
 
@@ -114,7 +108,6 @@
                         document.getElementById("blockCodeInput").value = blockCode;
                         document.getElementById("blockDescriptionInput").value = blockDescription;
 
-                        <g:if test="${session.neighbourhood.featureFlags.contains('gismaps')==Boolean.TRUE}">
                         var blockPolygonArray = [];
 
                         if (editBoundaryPoly != null) {
@@ -128,7 +121,6 @@
                         var blockPolygonJSON = JSON.stringify(blockPolygonArray);
 
                         document.getElementById("blockBoundaryInput").value = blockPolygonJSON;
-                        </g:if>
 
                         document.getElementById('edit-form').submit();
                     }
@@ -434,9 +426,7 @@
             </g:if>
             </g:if>
 
-            <g:if test="${session.neighbourhood.featureFlags.contains('gismaps')==Boolean.TRUE}">
             var addressLatLngs = [];
-            </g:if>
 
             window.onload = function onWindowLoad() {
                 // Need to set height of block detail section based on current number of block connectors and NC vs BC authorization.
@@ -537,7 +527,7 @@
                             <div style="height:20px;"><g:link controller='Navigate' action='familymember' id='${bc.id}'>${bc.fullName}</g:link><g:if test="${authorized.forNeighbourhood()==Boolean.TRUE && authorized.canWrite()==Boolean.TRUE}"> <span style="font-size:smaller;">(<a id="revoke|${bc.id}|${navSelection.block.id}" href="#" onclick="revokeBC(this);">revoke</a>)</span></g:if></div>
                             <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE && authorized.canWrite()==Boolean.TRUE}"><script type="text/javascript">existingBCs.push(${bc.id});</script></g:if>
                         </g:each>
-                        <g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}">
+                        <g:if test="${authorized.canWrite()==Boolean.TRUE && authorized.forNeighbourhood()==Boolean.TRUE}">
                             <form id="revoke-form" action="<g:createLink controller='authorization' action='deauthorizeBlockConnector'/>" method="POST">
                                 <input id="revoke-bc-id" type="hidden" name="id"/>
                                 <input id="revoke-bc-block-id" type="hidden" name="blockId"/>
@@ -561,12 +551,7 @@
             </div>
             <div class="content-section">
                 <div class="content-heading">Addresses for ${navSelection.levelInHierarchy} ${navSelection.block.description}<g:if test="${authorized.canWrite()==Boolean.TRUE}">&nbsp;&nbsp;<a href="#" onclick="presentNewModal();" style="font-weight:normal;">+ Add New Addresses</a></g:if></div>
-                <g:if test="${session.neighbourhood.featureFlags.contains('gismaps')==Boolean.TRUE}">
                 <div id="listWithHandle" style="width:500px;display:inline-block;vertical-align:top;">
-                </g:if>
-                <g:else>
-                <div id="listWithHandle" style="width:900px;display:inline-block;vertical-align:top;">
-                </g:else>
                 <g:if test="${navChildren.children.size() > 0}">
                     <g:each in="${navChildren.children}" var="child">
                         <div <g:if test="${authorized.canWrite()==Boolean.TRUE}">id="${child.id}"</g:if> class="content-children-row">
@@ -581,12 +566,10 @@
                                  <span class="light-text">no family entered for address</span>
                             </g:else>
                         </div>
-                        <g:if test="${session.neighbourhood.featureFlags.contains('gismaps')==Boolean.TRUE}">
                         <script type="text/javascript">
                             var addressLatLng = {lat:${child.latitude}, lng:${child.longitude}};
                             addressLatLngs.push(addressLatLng);
                         </script>
-                        </g:if>
                     </g:each>
                 </g:if>
                 <g:else>
@@ -595,7 +578,6 @@
                 </div>
 
 
-                <g:if test="${session.neighbourhood.featureFlags.contains('gismaps')==Boolean.TRUE}">
                 <div style="display:inline-block;width:400px;"><div style="border:solid gray;"><div id="mapid"></div></div><div id="mapcaption" style="margin:10px;font-size:small;"></div></div>
                 <script type="text/javascript">
 
@@ -629,7 +611,7 @@
                             map.addLayer(invertedPoly);
 
                         } else { // neighbourhood, so add caption about block boundary
-                            document.getElementById('mapcaption').innerHTML = 'The boundary for the block has not been specified. <span><a href="JavaScript:presentEditModal();">Edit</a></span> the block to specify its boundary.'
+                            document.getElementById('mapcaption').innerHTML = 'The boundary for the block has not been specified.<g:if test="${authorized.canWrite()==Boolean.TRUE}"><g:if test="${authorized.forNeighbourhood()==Boolean.TRUE}"> <span><a href="JavaScript:presentEditModal();">Edit</a></span> the block to specify its boundary.</g:if></g:if>'
                         }
 
                         map.fitBounds(boundaryPoly.getBounds());
@@ -655,7 +637,6 @@
                     }
 
                 </script>
-                </g:if>  <%-- End of test for featureFlag gismaps --%>
 
 
                 <div class="content-children-row"></div>
@@ -710,7 +691,6 @@
                     </div>
                 </div>
 
-                <g:if test="${session.neighbourhood.featureFlags.contains('gismaps')==Boolean.TRUE}">
                 <div id="edit-container" class="modal" style="z-index:2001;">
                     <div class="modal-title">Edit Block</div>
                     <form id="edit-form" action="<g:createLink controller='block' action='save' />" method="POST">
@@ -949,22 +929,6 @@
                     }
 
                 </script>
-                </g:if>
-                <g:else>
-                <div id="edit-container" class="modal" style="z-index:2001;">
-                    <div class="modal-title">Edit Block</div>
-                    <form id="edit-form" action="<g:createLink controller='block' action='save' />" method="POST">
-                        <input type="hidden" name="id" value="${navSelection.block.id}" />
-                        <div class="modal-row">Block code: <input id="blockCodeInput" type="text" name="code" value=""/></div>
-                        <div class="modal-row">Block description: <input id="blockDescriptionInput" type="text" name="description" value=""/></div>
-                    </form>
-                    <div class="button-row">
-                        <div class="button" onclick="JavaScript:dismissEditModal();">Cancel</div>
-                        <div class="button-spacer"></div>
-                        <div class="button bold" onclick="JavaScript:saveBlock();">Save</div>
-                    </div>
-                </div>
-                </g:else>
             </g:if>
 
             <div id="new-container" class="modal" style="z-index:2001;">
