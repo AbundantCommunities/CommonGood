@@ -234,7 +234,7 @@
                             attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
                             maxZoom: 19,
                             id: 'mapbox/streets-v11',
-                            accessToken: 'pk.eyJ1IjoidGltMTIzIiwiYSI6ImNrMmp2YjVoOTFpbWszbnFnems5ZjM2bW8ifQ.oNovhkW55h19gppWuNagQw'
+                            accessToken: '${commongood.GisService.mapboxAccessToken}'
                         }).addTo(map);
 
                         if (${navSelection.latitude} != 0 || ${navSelection.longitude} != 0) {
