@@ -554,6 +554,35 @@
                 <div id="listWithHandle" style="width:500px;display:inline-block;vertical-align:top;">
                 <g:if test="${navChildren.children.size() > 0}">
                     <g:each in="${navChildren.children}" var="child">
+                        <script type="text/javascript">
+                            var addressLatLng = {lat:${child.latitude}, lng:${child.longitude}};
+                            if (addressLatLng.lat != 0 || addressLatLng.lng != 0) {
+                                addressLatLngs.push(addressLatLng);
+                            }
+                        </script>
+                    </g:each>
+
+                    <script type="text/javascript">
+                        if (addressLatLngs.length < ${navChildren.children.size()}) {
+                            var str1, str2;
+                            if (${navChildren.children.size()}==1) {
+                                str1 = 'The single address for this block has not been located.';
+                                str2 = '';
+                            } else {
+                                str1 = 'Of the ${navChildren.children.size()} addresses for this block, ';
+                                if (addressLatLngs.length==0) {
+                                    str2 = 'none of them have been located.'
+                                } else if ((${navChildren.children.size()}-addressLatLngs.length)==1) {
+                                    str2 = (${navChildren.children.size()}-addressLatLngs.length).toString()+' of them has not been located.'
+                                } else {
+                                    str2 = (${navChildren.children.size()}-addressLatLngs.length).toString()+' of them have not been located.'
+                                }
+                            }
+                            document.write('<div style="margin-bottom:10px;">'+str1+str2+' To locate an address, edit the address.</div>');
+                        }
+                    </script>
+
+                    <g:each in="${navChildren.children}" var="child">
                         <div <g:if test="${authorized.canWrite()==Boolean.TRUE}">id="${child.id}"</g:if> class="content-children-row">
                             <g:if test="${authorized.canWrite()==Boolean.TRUE}"><span class="drag-handle"><asset:image src="reorder-row.png" width="18" height="18" style="vertical-align:middle;"/></span></g:if>
                             <g:link controller='Navigate' action='${navChildren.childType.toLowerCase()}' id='${child.id}'>${child.text}</g:link>:
@@ -566,10 +595,6 @@
                                  <span class="light-text">no family entered for address</span>
                             </g:else>
                         </div>
-                        <script type="text/javascript">
-                            var addressLatLng = {lat:${child.latitude}, lng:${child.longitude}};
-                            addressLatLngs.push(addressLatLng);
-                        </script>
                     </g:each>
                 </g:if>
                 <g:else>
@@ -582,11 +607,11 @@
                 <script type="text/javascript">
 
                     var boundaryType = '${navSelection.boundary.type}';
-                    var boundary = [
-                        <g:each in="${navSelection.boundary.coordinates}" var="coord" status="i">
-                            [${coord.getY()},${coord.getX()}],
-                        </g:each>
-                    ];
+                    var boundary = [ ];
+                    <g:each in="${navSelection.boundary.coordinates}" var="coord" status="i">
+                        boundary.push([${coord.getY()},${coord.getX()}]);
+                    </g:each>
+
                     if (boundaryType != 'nada') {
                         var map = L.map('mapid');
 
