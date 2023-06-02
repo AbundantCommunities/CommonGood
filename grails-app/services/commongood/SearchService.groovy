@@ -50,8 +50,8 @@ class SearchService {
                           p.id AS pid, p.first_names AS firstNames, p.last_name AS lastName, 
                           q.short_text AS question,
                           p.phone_number AS phoneNumber, p.email_address AS emailAddress, 
-                          addr.id AS addrId, addr.text AS homeAddress
-                 FROM Answer ans, Person p, Family f, Address addr, Question q 
+                          addr.id AS addrId, addr.text AS homeAddress, blk.code AS blockCode
+                 FROM Answer ans, Person p, Family f, Address addr, Block blk, Question q
                  WHERE ((TO_TSVECTOR(REGEXP_REPLACE(ans.text,'[.,/,-]',',')) || TO_TSVECTOR(REGEXP_REPLACE(ans.note,'[.,/,-]',',')) @@ TO_TSQUERY( :qExp ))
                         OR LOWER(ans.text) LIKE :qStr OR LOWER(ans.note) LIKE :qStr)
                  AND ans.person_id = p.id 
@@ -59,7 +59,8 @@ class SearchService {
                  ageSelectionSQL( fromYear, toYear ) +
                  ''' AND q.neighbourhood_id = :id 
                  AND p.family_id = f.id 
-                 AND f.address_id = addr.id 
+                 AND f.address_id = addr.id
+                 AND addr.block_id = blk.id
                  ORDER BY p.first_names, p.last_name, p.id'''
 
             answers = sql.rows( select, [ qStr:qStr, qExp:qExp, id:neighbourhoodId, fromYear:fromYear, toYear:toYear ] )
@@ -73,14 +74,15 @@ class SearchService {
                           p.id AS pid, p.first_names AS firstNames, p.last_name AS lastName, 
                           q.short_text AS question,
                           p.phone_number AS phoneNumber, p.email_address AS emailAddress, 
-                          addr.id AS addrId, addr.text AS homeAddress
-                 FROM Answer ans, Person p, Family f, Address addr, Question q 
+                          addr.id AS addrId, addr.text AS homeAddress, blk.code AS blockCode
+                 FROM Answer ans, Person p, Family f, Address addr, Block blk, Question q
                  WHERE ((TO_TSVECTOR(REGEXP_REPLACE(ans.text,'[.,/,-]',',')) || TO_TSVECTOR(REGEXP_REPLACE(ans.note,'[.,/,-]',',')) @@ TO_TSQUERY( :qExp ))
                         OR LOWER(ans.text) LIKE :qStr OR LOWER(ans.note) LIKE :qStr)
                  AND ans.person_id = p.id 
                  AND ans.question_id = q.id 
                  AND p.family_id = f.id 
-                 AND f.address_id = addr.id ''' +
+                 AND f.address_id = addr.id
+                 AND addr.block_id = blk.id ''' +
                  ageSelectionSQL( fromYear, toYear ) +
                  ''' AND addr.block_id = :id 
                  ORDER BY p.first_names, p.last_name, p.id'''
@@ -109,8 +111,8 @@ class SearchService {
             log.info "${session.user.logName} search hood ${neighbourhoodId} people for '${q}', birthYears ${fromYear}:${toYear}"
 
             peeps = Person.executeQuery(
-                'select p.id, p.firstNames, p.lastName, p.phoneNumber, p.emailAddress, a.text \
-                 from Person p join p.family f join f.address a \
+                'select p.id, p.firstNames, p.lastName, p.phoneNumber, p.emailAddress, a.text, b.code \
+                 from Person p join p.family f join f.address a join a.block b \
                  where (LOWER(a.text) like :q OR LOWER(a.note) like :q OR LOWER(f.name) like :q OR LOWER(f.note) like :q \
                  OR LOWER(p.firstNames) like :q OR LOWER(p.lastName) like :q OR LOWER(p.phoneNumber) like :q OR LOWER(p.emailAddress) like :q \
                  OR LOWER(p.note) like :q) ' +
@@ -122,8 +124,8 @@ class SearchService {
             log.info "${session.user.logName} search block ${blockId} people for '${q}', birthYears ${fromYear}:${toYear}"
 
             peeps = Person.executeQuery(
-                'select p.id, p.firstNames, p.lastName, p.phoneNumber, p.emailAddress, a.text \
-                 from Person p join p.family f join f.address a \
+                'select p.id, p.firstNames, p.lastName, p.phoneNumber, p.emailAddress, a.text, b.code \
+                 from Person p join p.family f join f.address a join a.block b \
                  where (LOWER(a.text) like :q OR LOWER(a.note) like :q OR LOWER(f.name) like :q OR LOWER(f.note) like :q \
                  OR LOWER(p.firstNames) like :q OR LOWER(p.lastName) like :q OR LOWER(p.phoneNumber) like :q OR LOWER(p.emailAddress) like :q \
                  OR LOWER(p.note) like :q) ' +

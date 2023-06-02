@@ -325,9 +325,9 @@
                         var content;
 
                         if (answers.length>0) {
-                            content = "Question,Answer,Name,Phone,Email,Address\n";
+                            content = "Question,Answer,Name,Phone,Email,Address,Block\n";
                         } else {
-                            content = "Name,Phone,Email,Address\n";
+                            content = "Name,Phone,Email,Address,Block\n";
                         }
                         if (people.length > 0) {
                             for (i=0;i<people.length;i++) {
@@ -338,7 +338,8 @@
                                     +csvFriendlyValue(people[i].lastName)+","
                                     +csvFriendlyValue(people[i].phoneNumber)+","
                                     +csvFriendlyValue(people[i].emailAddress)+","
-                                    +csvFriendlyValue(people[i].homeAddress)+"\n";
+                                    +csvFriendlyValue(people[i].homeAddress)+","
+                                    +csvFriendlyValue(people[i].blockCode)+"\n";
                             }
                         }
 
@@ -350,7 +351,8 @@
                                     +csvFriendlyValue(answers[i].lastName)+","
                                     +csvFriendlyValue(answers[i].phoneNumber)+","
                                     +csvFriendlyValue(answers[i].emailAddress)+","
-                                    +csvFriendlyValue(answers[i].homeAddress)+"\n";
+                                    +csvFriendlyValue(answers[i].homeAddress)+","
+                                    +csvFriendlyValue(answers[i].blockCode)+"\n";
                             }
                         }
 
@@ -448,7 +450,9 @@
                 <g:if test="${answers.size() > 0}">
                 <g:each in="${answers}" var="answer">
                 <script type="text/javascript">
-                    var anAnswer = {question:decodeEntities('${answer.question}'), answer:decodeEntities('${answer.text}'), firstNames:decodeEntities('${answer.firstNames}'), lastName:decodeEntities('${answer.lastName}'), phoneNumber:decodeEntities('${answer.phoneNumber}'), emailAddress:decodeEntities('${answer.emailAddress}'), homeAddress:decodeEntities('${answer.homeAddress}'), assist:${answer.assist}};
+                    var anAnswer = {question:decodeEntities('${answer.question}'), answer:decodeEntities('${answer.text}'), firstNames:decodeEntities('${answer.firstNames}'), lastName:decodeEntities('${answer.lastName}'), phoneNumber:decodeEntities('${answer.phoneNumber}'), emailAddress:decodeEntities('${answer.emailAddress}'), homeAddress:decodeEntities('${answer.homeAddress}'),
+                        blockCode:decodeEntities('${answer.blockCode}'),
+                        assist:${answer.assist}};
                     answers.push(anAnswer);
                 </script>
                 </g:each>
@@ -457,7 +461,9 @@
                 <g:if test="${people.size() > 0}">
                 <g:each in="${people}" var="person">
                 <script type="text/javascript">
-                    var aPerson = {firstNames:decodeEntities('${person[1]}'), lastName:decodeEntities('${person[2]}'), phoneNumber:decodeEntities('${person[3]}'), emailAddress:decodeEntities('${person[4]}'), homeAddress:decodeEntities('${person[5]}')};
+                    var aPerson = {firstNames:decodeEntities('${person[1]}'), lastName:decodeEntities('${person[2]}'), phoneNumber:decodeEntities('${person[3]}'), emailAddress:decodeEntities('${person[4]}'),
+                        homeAddress:decodeEntities('${person[5]}'),
+                        blockCode:decodeEntities('${person[6]}')};
                     people.push(aPerson);
                 </script>
                 </g:each>
