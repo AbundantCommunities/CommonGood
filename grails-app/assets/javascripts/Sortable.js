@@ -825,8 +825,13 @@
 					//		in this case set afterId to 0
 
 					var thisId = dragEl.id;
-
-					var afterId = newPreviousElementSiblingId;
+                    
+                    var afterId;
+                    if (!newPreviousElementSiblingId) {
+                        afterId = 0;
+                    } else {
+                        afterId = newPreviousElementSiblingId;
+                    }
 
 					doReorder(thisId,afterId);
 
