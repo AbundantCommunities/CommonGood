@@ -19,6 +19,51 @@ class BackupService {
             result <<= "question,${it.id},${wrap(it.code)},${wrap(it.shortText)},${wrap(it.text)}"
         }
 
+        def addressesAll = [ ]
+
+        Block[] blocks = Block.findAllByNeighbourhood( nh, [sort: 'orderWithinNeighbourhood'] )
+        blocks.each {
+            result <<= "block,${it.id},${wrap(it.code)},${wrap(it.description)}"
+
+            Address[] addresses = Address.findAllByBlock( it, [sort: 'orderWithinBlock'] )
+            addresses.each {
+                result <<= "address,${it.id},${it.block.id},${wrap(it.text)},${wrap(it.note)}"
+
+		Family[] families = Family.findAllByAddress( it, [sort: 'orderWithinAddress'] )
+            	families.each {
+                	result <<= "family,${it.id},${it.address.id},${wrap(it.name)},${wrap(it.note)}"
+
+            		Person[] persons = Person.findAllByFamily( it, [sort: 'orderWithinFamily'] )
+            		persons.each {
+                		result <<= "person,${it.id},${it.family.id},${wrap(it.firstNames)},${wrap(it.lastName)},${wrap(it.emailAddress)},${wrap(it.phoneNumber)},${it.birthYear},${wrap(it.note)}"
+
+            			Answer[] answers = Answer.findAllByPerson( it, [sort: 'question'] )
+            			answers.each {
+                			result <<= "answer,${it.id},${it.person.id},${it.question.id},${wrap(it.text)},${wrap(it.note)},${it.wouldAssist}"
+            			}
+
+            		}
+
+
+            	}
+            }
+
+
+        }
+        return result
+    }
+
+
+
+    def extractNeighbourhoodNormalized( Long neighbourhoodId ) {
+        def result = [ ]
+
+        Neighbourhood nh = Neighbourhood.get( neighbourhoodId )
+        Question[] questions = Question.findAllByNeighbourhood( nh, [sort: 'orderWithinQuestionnaire'] )
+        questions.each {
+            result <<= "question,${it.id},${wrap(it.code)},${wrap(it.shortText)},${wrap(it.text)}"
+        }
+
         Block[] blocks = Block.findAllByNeighbourhood( nh, [sort: 'orderWithinNeighbourhood'] )
         blocks.each {
             result <<= "block,${it.id},${wrap(it.code)},${wrap(it.description)}"
@@ -69,6 +114,8 @@ class BackupService {
 
         return result
     }
+
+
 
     def wrap( String text ) {
         // Replace apostrophe character (') with two apostrophes ('').
